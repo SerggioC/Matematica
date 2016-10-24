@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<group android:checkableBehavior="single">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="Início"
+        android:titleCondensed="Início"/>
+    <item
+        android:id="@+id/nav_mmc"
+        android:icon="@mipmap/ic_mmc"
+        android:title="MMC - Mínimo Múltiplo Comum"
+        android:titleCondensed="MMC"/>
+    <item
+        android:id="@+id/nav_mdc"
+        android:icon="@mipmap/ic_mdc"
+        android:title="MDC - Máximo Divisor Comum"
+        android:titleCondensed="MDC"/>
+    <item
+        android:id="@+id/nav_fatorizar"
+        android:icon="@mipmap/ic_factor"
+        android:title="Fatorização em Números Primos"
+        android:titleCondensed="Fatorizar"/>
+    <item
+        android:id="@+id/nav_divisores"
+        android:icon="@drawable/ic_menu_manage"
+        android:title="Divisores de um Número"
+        android:titleCondensed="Divisores"/>
+    <item
+        android:id="@+id/nav_num_divisors"
+        android:icon="@drawable/ic_menu_send"
+        android:title="Número de Divisores"/>
+    <item
+        android:id="@+id/nav_primos_si"
+        android:icon="@drawable/ic_menu_share"
+        android:title="Primos entre si"/>
+    <item android:title="Outros">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Partilhar"/>
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Enviar e-mail"/>
+            <item
+                android:id="@+id/nav_about"
+                android:title="@string/nav_about_us" />
+        </menu>
+    </item>
+</group>
+
+
+</menu>
