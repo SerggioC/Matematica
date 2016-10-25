@@ -1,11 +1,13 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.helper.OnSwipeTouchListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +100,7 @@ public class DivisoresFragment extends Fragment {
     }
 
     public void calcDivisores(View view) {
-        TextView text_divisores = (TextView) view.findViewById(R.id.result_divisores);
+//        TextView text_divisores = (TextView) view.findViewById(R.id.result_divisores);
         EditText edittext = (EditText) view.findViewById(R.id.editNum);
         String editnumText = (String) edittext.getText().toString();
 
@@ -106,7 +109,7 @@ public class DivisoresFragment extends Fragment {
             return;
         }
         if (editnumText.equals("0")) {
-            text_divisores.setText("O número zero não tem divisores.");
+            Toast.makeText(getActivity(), "O número zero não tem divisores!", Toast.LENGTH_LONG).show();
             return;
         }
         try {
@@ -119,36 +122,94 @@ public class DivisoresFragment extends Fragment {
                     str = "{" + i;
                 }
             }
-            str = str + "}";
-            text_divisores.setText(str);
+            String str_divisores = str + "}";
 
-            LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.teste);
-
-            // Add textview 1
-            TextView textView1 = new TextView(getContext());
-            textView1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            textView1.setText("programmatically created TextView1");
-            textView1.setBackgroundColor(0xff66ff66); // hex color 0xAARRGGBB
-            textView1.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
-            linearLayout.addView(textView1);
-
-            // Add textview 2
-            TextView textView2 = new TextView(getContext());
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.RIGHT;
-            layoutParams.setMargins(10, 10, 10, 10); // (left, top, right, bottom)
-            textView2.setLayoutParams(layoutParams);
-            textView2.setText("programmatically created TextView2");
-            textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-            textView2.setBackgroundColor(0xffffdbdb); // hex color 0xAARRGGBB
-            linearLayout.addView(textView2);
-
+            createCardViewLayout(str_divisores);
 
         } catch (NumberFormatException exception) {
-            Toast.makeText(getActivity(), "Esse número é demasiado grande!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    void createCardViewLayout(String str_divisores) {
+        final LinearLayout historyDivisores = (LinearLayout) getActivity().findViewById(R.id.history_divisores);
+
+        //criar novo cardview
+        final CardView cardview = new CardView(getActivity());
+        cardview.setLayoutParams(new CardView.LayoutParams(
+                CardView.LayoutParams.MATCH_PARENT,   // width
+                CardView.LayoutParams.WRAP_CONTENT)); // height
+        cardview.setPreventCornerOverlap(true);
+
+        //int pixels = (int) (dips * scale + 0.5f);
+        final float scale = getActivity().getResources().getDisplayMetrics().density;
+        int lr_dip = (int) (16 * scale + 0.5f);
+        int tb_dip = (int) (8 * scale + 0.5f);
+        cardview.setRadius((int) (4 * scale + 0.5f));
+        cardview.setCardElevation((int) (2 * scale + 0.5f));
+        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
+        cardview.setUseCompatPadding(true);
+
+        int cv_color = ContextCompat.getColor(getActivity(), R.color.lightGreen);
+        cardview.setCardBackgroundColor(cv_color);
+
+        // Add cardview to history_divisores
+        historyDivisores.addView(cardview, 0);
+
+        // criar novo textview
+        TextView textView = new TextView(getActivity());
+        textView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        textView.setText(str_divisores);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+
+        // add the textview to the cardview
+        cardview.addView(textView);
+
+
+        cardview.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+            public void onSwipeTop() {
+                Toast.makeText(getActivity(), "top", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onSwipeRight() {
+                animateRemoving(cardview, historyDivisores, 1);
+            }
+
+            public void onSwipeLeft() {
+                animateRemoving(cardview, historyDivisores, -1);
+            }
+
+            public void onSwipeBottom() {
+                Toast.makeText(getActivity(), "bottom", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+
+    }
+
+    void animateRemoving(final CardView cardview, final LinearLayout historyDivisores, int left_right) {
+        cardview.animate().translationX(left_right * 500).alpha(0).setDuration(200).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                historyDivisores.removeView(cardview);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
     }
 
     public ArrayList<Integer> getAllDivisores(int numero) {
