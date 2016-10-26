@@ -1,11 +1,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.sergiocruz.Matematica.fragment.DivisoresFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sergiocruz.Matematica.fragment.FatorizarFragment">
 
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,11 +16,11 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="Calcular todos os divisores de um número inteiro"
+                android:text="Fatorização em números primos"
                 android:textAlignment="center"
                 android:layout_gravity="center"
                 android:textAllCaps="false"
@@ -36,7 +36,7 @@
                 android:paddingTop="16dp">
 
                 <TextView
-                    android:id="@+id/num"
+                    android:id="@+id/num2"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="end"
@@ -48,7 +48,7 @@
                     />
 
                 <EditText
-                    android:id="@+id/editNum"
+                    android:id="@+id/editNumFact"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="end"
@@ -59,15 +59,15 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/button_calc_divisores"
+                android:id="@+id/button_calc_fatores"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
-                android:text="Calcular"/>
+                android:text="Fatorizar"/>
 
             <LinearLayout
-                android:id="@+id/history_divisores"
+                android:id="@+id/history_fatores"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

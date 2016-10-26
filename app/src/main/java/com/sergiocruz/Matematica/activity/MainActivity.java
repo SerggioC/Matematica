@@ -20,9 +20,9 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.fragment.DivisoresFragment;
+import com.sergiocruz.Matematica.fragment.FatorizarFragment;
 import com.sergiocruz.Matematica.fragment.HomeFragment;
 import com.sergiocruz.Matematica.fragment.MoviesFragment;
-import com.sergiocruz.Matematica.fragment.NotificationsFragment;
 import com.sergiocruz.Matematica.fragment.PhotosFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -213,9 +213,9 @@ public class MainActivity extends AppCompatActivity {
                 MoviesFragment moviesFragment = new MoviesFragment();
                 return moviesFragment;
             case 3:
-                // notifications fragment
-                NotificationsFragment notificationsFragment = new NotificationsFragment();
-                return notificationsFragment;
+                // Fragment Fatorizar em números primos
+                FatorizarFragment fatorizarFragment = new FatorizarFragment();
+                return fatorizarFragment;
             case 4:
                 // Fragment Divisores
                 DivisoresFragment divisoresFragment = new DivisoresFragment();
@@ -442,6 +442,13 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().getItem(navItemIndex).setActionView(null);
         navItemIndex = 4;
         CURRENT_TAG = TAG_DIVISORES;
+        loadFragment();
+    }
+    public void fatorizar(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 3;
+        CURRENT_TAG = TAG_FATORIZAR;
         loadFragment();
     }
 

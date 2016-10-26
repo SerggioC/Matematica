@@ -1,6 +1,5 @@
 package com.sergiocruz.Matematica.fragment;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,17 +19,16 @@ import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DivisoresFragment.OnFragmentInteractionListener} interface
+ * {@link FatorizarFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DivisoresFragment#newInstance} factory method to
+ * Use the {@link FatorizarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DivisoresFragment extends Fragment {
+public class FatorizarFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,7 +40,7 @@ public class DivisoresFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public DivisoresFragment() {
+    public FatorizarFragment() {
         // Required empty public constructor
     }
 
@@ -53,16 +50,30 @@ public class DivisoresFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DivisoresFragment.
+     * @return A new instance of fragment FatorizarFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DivisoresFragment newInstance(String param1, String param2) {
-        DivisoresFragment fragment = new DivisoresFragment();
+    public static FatorizarFragment newInstance(String param1, String param2) {
+        FatorizarFragment fragment = new FatorizarFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static ArrayList<Long> getFatoresPrimos(long number) {
+        ArrayList<Long> factoresPrimos = new ArrayList<Long>();
+        for (long i = 2; i <= number / i; i++) {
+            while (number % i == 0) {
+                factoresPrimos.add(i);
+                number /= i;
+            }
+        }
+        if (number > 1) {
+            factoresPrimos.add(number);
+        }
+        return factoresPrimos;
     }
 
     @Override
@@ -78,55 +89,55 @@ public class DivisoresFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_divisores, container, false);
-
-        Button button = (Button) view.findViewById(R.id.button_calc_divisores);
+        final View view = inflater.inflate(R.layout.fragment_fatorizar, container, false);
+        Button button = (Button) view.findViewById(R.id.button_calc_fatores);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calcDivisores(view);
+                calcfatoresPrimos(view);
             }
         });
         return view;
 
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
 
     }
 
-    public void calcDivisores(View view) {
-//        TextView text_divisores = (TextView) view.findViewById(R.id.result_divisores);
-        EditText edittext = (EditText) view.findViewById(R.id.editNum);
+    private void calcfatoresPrimos(View view) {
+
+        EditText edittext = (EditText) view.findViewById(R.id.editNumFact);
         String editnumText = (String) edittext.getText().toString();
 
         if (editnumText.equals(null) || editnumText.equals("")) {
-//            text_divisores.setText("");
             return;
         }
         if (editnumText.equals("0")) {
-            Toast.makeText(getActivity(), "O número zero não tem divisores!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "O número zero não tem fatores primos!", Toast.LENGTH_LONG).show();
             return;
         }
         try {
-            //int num = Integer.parseInt(editnumText);
+
             long num = Long.parseLong(editnumText);
-            //ArrayList<Integer> nums = getAllDivisores(num);
-            ArrayList<Long> nums = getAllDivisoresLong(num);
-            String str = "";
-            for (long i : nums) {
-                str = str + ", " + i;
-                if (i == 1L) {
-                    str = num + " tem " + nums.size() + " divisores:\n" + "{" + i;
+
+            ArrayList<Long> nums = getFatoresPrimos(num);
+            String str_fatores = num + " tem " + nums.size() + " fatores:\n" + "{";
+            int sizeList = nums.size();
+            for (int i = 0; i < sizeList; i++) {
+            //for (long i : nums) {
+                if (i == sizeList-1) {
+                    str_fatores += nums.get((int) i) + "}";
+                } else {
+                    str_fatores += nums.get((int) i) + ", ";
                 }
             }
-            String str_divisores = str + "}";
+            //for (long i : nums) {
+            //    str += i + ", ";
+//                if (i == 2L) {
+//                    str = num + " tem " + nums.size() + " fatores:\n" + "{" + i;
+//                }
+            // }
+            //String str_fatores = str + "}";
 
-            createCardViewLayout(str_divisores);
+            createCardViewLayout(str_fatores);
 
         } catch (NumberFormatException exception) {
             Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
@@ -134,7 +145,7 @@ public class DivisoresFragment extends Fragment {
     }
 
     void createCardViewLayout(String str_divisores) {
-        final ViewGroup historyDivisores = (ViewGroup) getActivity().findViewById(R.id.history_divisores);
+        final ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
 
         //criar novo cardview
         final CardView cardview = new CardView(getActivity());
@@ -156,7 +167,7 @@ public class DivisoresFragment extends Fragment {
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history_divisores at the top (index 0)
-        historyDivisores.addView(cardview, 0);
+        historyFatores.addView(cardview, 0);
 
         // criar novo textview
         final TextView textView = new TextView(getActivity());
@@ -182,7 +193,7 @@ public class DivisoresFragment extends Fragment {
 
                     @Override
                     public void onDismiss(View view, Object token) {
-                        historyDivisores.removeView(cardview);
+                        historyFatores.removeView(cardview);
                     }
                 }));
 
@@ -208,58 +219,13 @@ public class DivisoresFragment extends Fragment {
 
     }
 
-    void animateRemoving(final CardView cardview, final LinearLayout historyDivisores, int left_right) {
-        cardview.animate().translationX(left_right * 500).alpha(0).setDuration(200).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                historyDivisores.removeView(cardview);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-    }
-
-    public ArrayList<Integer> getAllDivisores(int numero) {
-        int upperlimit = (int) (Math.sqrt(numero));
-        ArrayList<Integer> divisores = new ArrayList<Integer>();
-        for (int i = 1; i <= upperlimit; i += 1) {
-            if (numero % i == 0) {
-                divisores.add(i);
-                if (i != numero / i) {
-                    divisores.add(numero / i);
-                }
-            }
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
         }
-        Collections.sort(divisores);
-        return divisores;
     }
-
-    public ArrayList<Long> getAllDivisoresLong(Long numero) {
-        long upperlimit = (long) (Math.sqrt(numero));
-        ArrayList<Long> divisores = new ArrayList<Long>();
-        for (int i = 1; i <= upperlimit; i += 1) {
-            if (numero % i == 0) {
-                divisores.add((long) i);
-                if (i != numero / i) {
-                    long elem = numero / i;
-                    divisores.add(elem);
-                }
-            }
-        }
-        Collections.sort(divisores);
-        return divisores;
-    }
-
 
     @Override
     public void onAttach(Context context) {
