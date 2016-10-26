@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.activity.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,14 +59,14 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        MainActivity.logMe(this, "debug", "savedInstanceState == null oncreate HomeFragment" );
+        //MainActivity.logMe(this, "debug", "savedInstanceState == null oncreate HomeFragment" );
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        MainActivity.logMe(this, "debug", "onCreateView HomeFragment" );
+        //MainActivity.logMe(this, "debug", "onCreateView HomeFragment" );
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 

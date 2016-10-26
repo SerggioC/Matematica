@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.helper.OnSwipeTouchListener;
+import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,7 +132,7 @@ public class DivisoresFragment extends Fragment {
     }
 
     void createCardViewLayout(String str_divisores) {
-        final LinearLayout historyDivisores = (LinearLayout) getActivity().findViewById(R.id.history_divisores);
+        final ViewGroup historyDivisores = (ViewGroup) getActivity().findViewById(R.id.history_divisores);
 
         //criar novo cardview
         final CardView cardview = new CardView(getActivity());
@@ -153,11 +153,11 @@ public class DivisoresFragment extends Fragment {
         int cv_color = ContextCompat.getColor(getActivity(), R.color.lightGreen);
         cardview.setCardBackgroundColor(cv_color);
 
-        // Add cardview to history_divisores
+        // Add cardview to history_divisores at the top (index 0)
         historyDivisores.addView(cardview, 0);
 
         // criar novo textview
-        TextView textView = new TextView(getActivity());
+        final TextView textView = new TextView(getActivity());
         textView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -168,25 +168,40 @@ public class DivisoresFragment extends Fragment {
         // add the textview to the cardview
         cardview.addView(textView);
 
+        // Create a generic swipe-to-dismiss touch listener.
+        cardview.setOnTouchListener(new SwipeToDismissTouchListener(
+                cardview,
+                null,
+                new SwipeToDismissTouchListener.DismissCallbacks() {
+                    @Override
+                    public boolean canDismiss(Object token) {
+                        return true;
+                    }
 
-        cardview.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-            public void onSwipeTop() {
-                Toast.makeText(getActivity(), "top", Toast.LENGTH_SHORT).show();
-            }
+                    @Override
+                    public void onDismiss(View view, Object token) {
+                        historyDivisores.removeView(cardview);
+                    }
+                }));
 
-            public void onSwipeRight() {
-                animateRemoving(cardview, historyDivisores, 1);
-            }
-
-            public void onSwipeLeft() {
-                animateRemoving(cardview, historyDivisores, -1);
-            }
-
-            public void onSwipeBottom() {
-                Toast.makeText(getActivity(), "bottom", Toast.LENGTH_SHORT).show();
-            }
-
-        });
+//        cardview.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
+//            public void onSwipeTop() {
+//                Toast.makeText(getActivity(), "top", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            public void onSwipeRight() {
+//                animateRemoving(cardview, historyDivisores, 1);
+//            }
+//
+//            public void onSwipeLeft() {
+//                animateRemoving(cardview, historyDivisores, -1);
+//            }
+//
+//            public void onSwipeBottom() {
+//                Toast.makeText(getActivity(), "bottom", Toast.LENGTH_SHORT).show();
+//            }
+//
+//        });
 
 
     }
