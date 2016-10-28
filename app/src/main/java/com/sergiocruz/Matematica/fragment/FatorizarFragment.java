@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,32 +112,60 @@ public class FatorizarFragment extends Fragment {
         if (editnumText.equals(null) || editnumText.equals("")) {
             return;
         }
-        if (editnumText.equals("0")) {
-            Toast.makeText(getActivity(), "O número zero não tem fatores primos!", Toast.LENGTH_LONG).show();
+        if (editnumText.equals("0") || editnumText.equals("1")) {
+            Toast.makeText(getActivity(), "O número " + editnumText + " não tem fatores primos!", Toast.LENGTH_LONG).show();
             return;
         }
-        try {
 
+        try {
             long num = Long.parseLong(editnumText);
 
-            ArrayList<Long> nums = getFatoresPrimos(num);
-            String str_fatores = num + " tem " + nums.size() + " fatores:\n" + "{";
-            int sizeList = nums.size();
-            for (int i = 0; i < sizeList; i++) {
-            //for (long i : nums) {
-                if (i == sizeList-1) {
-                    str_fatores += nums.get((int) i) + "}";
-                } else {
-                    str_fatores += nums.get((int) i) + ", ";
+            // Lista dos fatores primos
+            ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
+
+            //HashMap
+            HashMap<String, Integer> dataset = new HashMap<String, Integer>();
+
+            // String de todos os fatores {2, 2, 2, ... 3, 3, ...}
+            String str_fatores = "Fatores primos de " + num + ":\n" + "{";
+
+            // Tamanho da lista de umeros primos
+            int sizeList = fatoresPrimos.size();
+
+            for (int i = 1; i <= sizeList; i++) {
+                if (i != sizeList) {
+
+                    str_fatores += fatoresPrimos.get(i - 1) + ", ";
+
+                } else if (i == sizeList) {
+
+                    str_fatores += fatoresPrimos.get(i - 1) + "}";
+
                 }
             }
-            //for (long i : nums) {
-            //    str += i + ", ";
-//                if (i == 2L) {
-//                    str = num + " tem " + nums.size() + " fatores:\n" + "{" + i;
-//                }
-            // }
-            //String str_fatores = str + "}";
+
+            Integer counter = 1;
+            Long lastItem = fatoresPrimos.get(0);
+
+            for (int i = 0; i < sizeList; i++) {
+                if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                    counter++;
+                    dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                } else if (i == 0){
+                    counter = 1;
+                    dataset.put(String.valueOf(fatoresPrimos.get(0)), counter);
+                }
+                else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0){
+                    counter = 1;
+                    dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                }
+                lastItem = fatoresPrimos.get(i);
+            }
+            dataset.put(String.valueOf(fatoresPrimos.get(sizeList - 1)), counter);
+
+
+            Log.e("TAG Sergio >>>", "calcfatoresPrimos: " + dataset);
+
 
             createCardViewLayout(str_fatores);
 

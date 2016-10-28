@@ -37,12 +37,12 @@
                     android:id="@+id/linear_mmc"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/clickable_view_height"
-                    android:clickable="true"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView2"
+                        android:onClick="mmc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -51,6 +51,7 @@
 
                     <TextView
                         android:id="@+id/textView2"
+                        android:onClick="mmc"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -82,6 +83,7 @@
 
                     <ImageView
                         android:id="@+id/imageView3"
+                        android:onClick="mdc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -90,6 +92,7 @@
 
                     <TextView
                         android:id="@+id/textmdc"
+                        android:onClick="mdc"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -111,8 +114,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
                 card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp"
-                android:onClick="fatorizar">
+                card_view:cardCornerRadius="8dp">
 
                 <LinearLayout
                     android:id="@+id/linear_factor"
@@ -124,6 +126,7 @@
 
                     <ImageView
                         android:id="@+id/imageView4"
+                        android:onClick="fatorizar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -132,6 +135,7 @@
 
                     <TextView
                         android:id="@+id/textfactor"
+                        android:onClick="fatorizar"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -155,24 +159,25 @@
 
                 <LinearLayout
                     android:id="@+id/linear_divisores"
-                    android:clickable="true"
-                    android:onClick="divisores"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/clickable_view_height"
+                    android:clickable="true"
                     android:elevation="18dp"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView5"
+                        android:onClick="divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
-                        app:srcCompat="@mipmap/ic_mdc"/>
+                        app:srcCompat="@mipmap/ic_divisores"/>
 
                     <TextView
                         android:id="@+id/text_divisores"
+                        android:onClick="divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -204,14 +209,16 @@
 
                     <ImageView
                         android:id="@+id/imageView6"
+                        android:onClick="n_divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
-                        app:srcCompat="@mipmap/ic_mdc"/>
+                        app:srcCompat="@mipmap/ic_divisores"/>
 
                     <TextView
                         android:id="@+id/text_num_divisores"
+                        android:onClick="n_divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -243,14 +250,16 @@
 
                     <ImageView
                         android:id="@+id/imageView7"
+                        android:onClick="primos_si"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
-                        app:srcCompat="@mipmap/ic_mdc"/>
+                        app:srcCompat="@mipmap/ic_primes"/>
 
                     <TextView
                         android:id="@+id/text_primos"
+                        android:onClick="primos_si"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"

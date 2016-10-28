@@ -47,14 +47,28 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
     public SwipeToDismissTouchListener(View view, Object token, DismissCallbacks callbacks) {
         ViewConfiguration vc = ViewConfiguration.get(view.getContext());
         mSlop = vc.getScaledTouchSlop();
-        mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
+        mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 32;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         mAnimationTime = view.getContext().getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
         mView = view;
         mToken = token;
         mCallbacks = callbacks;
+
+
+
+
     }
+//
+//    final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+//        public void onLongPress(MotionEvent e) {
+//            Log.e("", "Longpress detected");
+//        }
+//    });
+//
+//    public boolean onTouchEvent(MotionEvent event) {
+//        return gestureDetector.onTouchEvent(event);
+//    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {

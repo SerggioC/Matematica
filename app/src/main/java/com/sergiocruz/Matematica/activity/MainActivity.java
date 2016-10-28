@@ -27,33 +27,30 @@ import com.sergiocruz.Matematica.fragment.PhotosFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
-    private View navHeader;
-//    private ImageView imgNavHeaderBg, imgProfile;
-//    private TextView txtName, txtWebsite;
-    private Toolbar toolbar;
-    private FloatingActionButton fab;
-
-    // urls to load navigation header background image
-    // and profile image
-//    private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
-//    private static final String urlProfileImg = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
-
-    // index to identify current nav menu item
-    public static int navItemIndex = 0;
-    public static int navItemIndexOld = 0;
-
     // tags used to attach the fragments
     private static final String TAG_HOME = "home";
     private static final String TAG_MMC = "mmc";
     private static final String TAG_MDC = "mdc";
     private static final String TAG_FATORIZAR = "fatorizar";
     private static final String TAG_DIVISORES = "divisores";
+
+    // urls to load navigation header background image
+    // and profile image
+//    private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
+//    private static final String urlProfileImg = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
     private static final String TAG_NDIVISORES = "ndivisores";
     private static final String TAG_PRIMOS_SI = "primos_si";
+    // index to identify current nav menu item
+    public static int navItemIndex = 0;
+    public static int navItemIndexOld = 0;
     public static String CURRENT_TAG = TAG_HOME;
-
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+    private View navHeader;
+    //    private ImageView imgNavHeaderBg, imgProfile;
+//    private TextView txtName, txtWebsite;
+    private Toolbar toolbar;
+    private FloatingActionButton fab;
     // toolbar titles respected to selected nav menu item
     private String[] activityTitles;
 
@@ -61,6 +58,36 @@ public class MainActivity extends AppCompatActivity {
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
 
+    public final static void logMe(Object obj, String level, String str) {
+        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+        final String ltag = "Sergio >>> " + str + " :";
+        final String msg = " Class: " + obj.getClass().getSimpleName() +
+                " / Method: " + ste[3].getMethodName() +
+                " / Invoked by: " + ste[4].getMethodName();
+        switch (level) {
+            case "verbose":
+                Log.v(ltag, msg);
+                break;
+            case "debug":
+                Log.d(ltag, msg);
+                break;
+            case "info":
+                Log.i(ltag, msg);
+                break;
+            case "warn":
+                Log.w(ltag, msg);
+                break;
+            case "error":
+                Log.e(ltag, msg);
+                break;
+            case "assert":
+                Log.wtf(ltag, msg);
+                break;
+            default:
+                Log.w(ltag, msg);
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // load nav menu header data
-       // loadNavHeader();
+        // loadNavHeader();
 
         // initializing navigation menu
         setUpNavigationView();
@@ -111,39 +138,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /***
-     * Load navigation menu header information
-     * like background image, profile image
-     * name, website, notifications action view (dot)
-     */
-    private void loadNavHeader() {
-        // name, website
-//        txtName.setText("Matemática dos Números Naturais");
-//        txtName.setTextColor(getResources().getColor(R.color.topDrawerTextColor));
-//        txtWebsite.setText("www.sergio.cruz.com\nsergiocrz@gmail.com");
-//        //txtWebsite.setTextColor(Color.parseColor("#000000"));
-//        txtWebsite.setTextColor(getResources().getColor(R.color.topDrawerTextColor));
-        /*
-
-        // loading header background image
-        Glide.with(this).load(urlNavHeaderBg)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgNavHeaderBg);
-
-        // Loading profile image
-        Glide.with(this).load(urlProfileImg)
-                .crossFade()
-                .thumbnail(0.5f)
-                .bitmapTransform(new CircleTransform(this))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgProfile);
-*/
-
-        // showing dot next to home label
-        navigationView.getMenu().getItem(0).setActionView(R.layout.menu_dot);
-        //logMe(this, "debug", "Loading NavHeader" );
-    }
 
     /***
      * Returns respected fragment that user
@@ -176,8 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 // update the main content by replacing fragments
                 Fragment fragment = getFragment();
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
-                        android.R.anim.fade_out);
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
                 fragmentTransaction.commitAllowingStateLoss();
             }
@@ -234,22 +227,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().getItem(navItemIndex).setActionView(R.layout.menu_dot);
     }
 
-    public final static void logMe(Object obj, String level, String str) {
-        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        final String ltag = "Sergio >>> " + str + " :";
-        final String msg = " Class: " + obj.getClass().getSimpleName() +
-                " / Method: " + ste[3].getMethodName() +
-                " / Invoked by: " + ste[4].getMethodName();
-        switch (level) {
-            case "verbose": Log.v(ltag, msg); break;
-            case "debug": Log.d(ltag, msg);  break;
-            case "info": Log.i(ltag, msg); break;
-            case "warn": Log.w(ltag, msg); break;
-            case "error": Log.e(ltag, msg);  break;
-            case "assert": Log.wtf(ltag, msg); break;
-            default: Log.w(ltag, msg); break;
-        }
-    }
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -267,56 +244,46 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.home:
                         navItemIndex = 0;
                         CURRENT_TAG = TAG_HOME;
-                        logMe(this, "debug", "GOING TO TAG_HOME" );
                         break;
                     case R.id.nav_mmc:
                         navItemIndex = 1;
                         CURRENT_TAG = TAG_MMC;
-                        logMe(this, "debug", "GOING To MMC" );
                         break;
                     case R.id.nav_mdc:
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_MDC;
-                        logMe(this, "debug", "GOING TO TAG_MDC" );
                         break;
                     case R.id.nav_fatorizar:
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_FATORIZAR;
-                        logMe(this, "debug", "GOING TO TAG_FATORIZAR" );
                         break;
                     case R.id.nav_divisores:
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_DIVISORES;
-                        logMe(this, "debug", "GOING TO TAG_DIVISORES" );
                         break;
                     case R.id.nav_num_divisors:
                         navItemIndex = 5;
                         CURRENT_TAG = TAG_NDIVISORES;
-                        logMe(this, "debug", "GOING TO TAG_NDIVISORES" );
                         break;
                     case R.id.nav_primos_si:
                         navItemIndex = 6;
                         CURRENT_TAG = TAG_PRIMOS_SI;
-                        logMe(this, "debug", "GOING TO TAG_PRIMOS_SI" );
                         break;
                     case R.id.nav_about:
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
                         drawer.closeDrawers();
-                        logMe(this, "debug", "GOING TO nav_about" );
 
                         return true;
                     case R.id.nav_send:
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, SendMailActivity.class));
                         drawer.closeDrawers();
-                        logMe(this, "debug", "GOING TO nav_send" );
                         return true;
                     case R.id.nav_share:
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, ShareActivity.class));
                         drawer.closeDrawers();
-                        logMe(this, "debug", "GOING TO nav_share" );
                         return true;
                     default:
                         navItemIndex = 0;
@@ -385,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onBackPressed();
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -394,9 +362,9 @@ public class MainActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.main, menu);
         }
 
-        // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 3) {
-            getMenuInflater().inflate(R.menu.notifications, menu);
+        // if fragment is fatorizar, load the menu
+        if (navItemIndex == 3 || navItemIndex == 4) {
+            getMenuInflater().inflate(R.menu.menu_history, menu);
         }
         return true;
     }
@@ -416,14 +384,14 @@ public class MainActivity extends AppCompatActivity {
 
         // user is in notifications fragment
         // and selected 'Mark all as Read'
-        if (id == R.id.action_mark_all_read) {
-            Toast.makeText(getApplicationContext(), "All notifications marked as read!", Toast.LENGTH_LONG).show();
+        if (id == R.id.action_share_history) {
+            Toast.makeText(getApplicationContext(), "Partilhar Resultados", Toast.LENGTH_LONG).show();
         }
 
         // user is in notifications fragment
         // and selected 'Clear All'
-        if (id == R.id.action_clear_notifications) {
-            Toast.makeText(getApplicationContext(), "Clear all notifications!", Toast.LENGTH_LONG).show();
+        if (id == R.id.action_clear_all_history) {
+            Toast.makeText(getApplicationContext(), "Apagar histórico de resultados", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -437,6 +405,30 @@ public class MainActivity extends AppCompatActivity {
             fab.hide();
     }
 
+    public void mmc(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 1;
+        CURRENT_TAG = TAG_MMC;
+        loadFragment();
+    }
+
+    public void mdc(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 2;
+        CURRENT_TAG = TAG_MDC;
+        loadFragment();
+    }
+
+    public void fatorizar(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 3;
+        CURRENT_TAG = TAG_FATORIZAR;
+        loadFragment();
+    }
+
     public void divisores(View view) {
         //remove dot in menu
         navigationView.getMenu().getItem(navItemIndex).setActionView(null);
@@ -444,11 +436,20 @@ public class MainActivity extends AppCompatActivity {
         CURRENT_TAG = TAG_DIVISORES;
         loadFragment();
     }
-    public void fatorizar(View view) {
+
+    public void n_divisores(View view) {
         //remove dot in menu
         navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 3;
-        CURRENT_TAG = TAG_FATORIZAR;
+        navItemIndex = 5;
+        CURRENT_TAG = TAG_NDIVISORES;
+        loadFragment();
+    }
+
+    public void primos_si(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 6;
+        CURRENT_TAG = TAG_PRIMOS_SI;
         loadFragment();
     }
 
