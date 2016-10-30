@@ -361,11 +361,11 @@ public class MainActivity extends AppCompatActivity {
         if (navItemIndex == 0) {
             getMenuInflater().inflate(R.menu.main, menu);
         }
-
+/*
         // if fragment is fatorizar, load the menu
         if (navItemIndex == 3 || navItemIndex == 4) {
             getMenuInflater().inflate(R.menu.menu_history, menu);
-        }
+        }*/
         return true;
     }
 
@@ -390,9 +390,10 @@ public class MainActivity extends AppCompatActivity {
 
         // user is in notifications fragment
         // and selected 'Clear All'
-        if (id == R.id.action_clear_all_history) {
+/*        if (id == R.id.action_clear_all_history) {
+            FatorizarFragment.remove_history();
             Toast.makeText(getApplicationContext(), "Apagar histórico de resultados", Toast.LENGTH_LONG).show();
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

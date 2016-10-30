@@ -10,4 +10,5 @@
     <dimen name="profile_width">75dp</dimen>
     <dimen name="profile_height">75dp</dimen>
     <dimen name="clickable_view_height">100dp</dimen>
+    <dimen name="left_right_layout_margin">8dp</dimen>
 </resources>

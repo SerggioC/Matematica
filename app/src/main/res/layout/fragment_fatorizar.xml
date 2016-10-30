@@ -7,13 +7,17 @@
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/lightGrey">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="@dimen/left_right_layout_margin"
+            android:paddingRight="@dimen/left_right_layout_margin">
 
             <TextView
                 android:id="@+id/textView5"
@@ -52,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="end"
-                    android:background="@color/lightGreen"
+                    android:background="@color/lightYellow"
                     android:inputType="number"
                     android:textAlignment="center"
                     android:textSize="22sp"/>

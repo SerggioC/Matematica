@@ -7,5 +7,6 @@
     <color name="black">#000000</color>
     <color name="bgCardColor">#9769bc4d</color>
     <color name="lightGreen">#f1f8e9</color>
-
+    <color name="lightGrey">#FAFAFA</color>
+    <color name="lightYellow">#FFFDE7</color>
 </resources>

@@ -100,22 +100,17 @@ public class DivisoresFragment extends Fragment {
     }
 
     public void calcDivisores(View view) {
-//        TextView text_divisores = (TextView) view.findViewById(R.id.result_divisores);
         EditText edittext = (EditText) view.findViewById(R.id.editNum);
         String editnumText = (String) edittext.getText().toString();
-
         if (editnumText.equals(null) || editnumText.equals("")) {
-//            text_divisores.setText("");
             return;
         }
-        if (editnumText.equals("0")) {
-            Toast.makeText(getActivity(), "O número zero não tem divisores!", Toast.LENGTH_LONG).show();
+        long num = Long.parseLong(editnumText);
+        if (editnumText.equals("0") || num == 0L) {
+            Toast.makeText(getActivity(), "O número "+ num + " não tem divisores!", Toast.LENGTH_LONG).show();
             return;
         }
         try {
-            //int num = Integer.parseInt(editnumText);
-            long num = Long.parseLong(editnumText);
-            //ArrayList<Integer> nums = getAllDivisores(num);
             ArrayList<Long> nums = getAllDivisoresLong(num);
             String str = "";
             for (long i : nums) {
@@ -125,9 +120,7 @@ public class DivisoresFragment extends Fragment {
                 }
             }
             String str_divisores = str + "}";
-
             createCardViewLayout(str_divisores);
-
         } catch (NumberFormatException exception) {
             Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
         }
@@ -185,27 +178,6 @@ public class DivisoresFragment extends Fragment {
                         historyDivisores.removeView(cardview);
                     }
                 }));
-
-//        cardview.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
-//            public void onSwipeTop() {
-//                Toast.makeText(getActivity(), "top", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            public void onSwipeRight() {
-//                animateRemoving(cardview, historyDivisores, 1);
-//            }
-//
-//            public void onSwipeLeft() {
-//                animateRemoving(cardview, historyDivisores, -1);
-//            }
-//
-//            public void onSwipeBottom() {
-//                Toast.makeText(getActivity(), "bottom", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        });
-
-
     }
 
     void animateRemoving(final CardView cardview, final LinearLayout historyDivisores, int left_right) {
