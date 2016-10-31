@@ -40,6 +40,17 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
  * to handle interaction events.
  * Use the {@link FatorizarFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ *
+ *
+ *
+ * ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+ clipboard.setText(string);
+ *
+ *
+ *
+ *
+ *
  */
 public class FatorizarFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -106,8 +117,6 @@ public class FatorizarFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_history, menu);
-
-
     }
 
 
@@ -210,7 +219,7 @@ public class FatorizarFragment extends Fragment {
             }
 
             SpannableStringBuilder ssb = new SpannableStringBuilder(str_fatores);
-            int value_length = 0;
+            int value_length;
 
             Iterator iterator = dataset.entrySet().iterator();
 
@@ -276,16 +285,20 @@ public class FatorizarFragment extends Fragment {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        //Adicionar o texto com o resultado
         textView.setText(str_divisores);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        textView.setTag("str");
 
         // add the textview to the cardview
         cardview.addView(textView);
 
+
+
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
-                null,
+                getActivity(),
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
                     public boolean canDismiss(Object token) {
@@ -293,7 +306,7 @@ public class FatorizarFragment extends Fragment {
                     }
 
                     @Override
-                    public void onDismiss(View view, Object token) {
+                    public void onDismiss(View view) {
                         historyFatores.removeView(cardview);
                     }
                 }));

@@ -3,11 +3,23 @@ package com.sergiocruz.Matematica.helper;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.sergiocruz.Matematica.R;
 
 /*****
  * Project Matematica
@@ -16,59 +28,84 @@ import android.view.ViewGroup;
  ******/
 
 public class SwipeToDismissTouchListener implements View.OnTouchListener {
+
+    private final Handler handler = new Handler();
+    boolean mBooleanIsPressed = false;
     // Cached ViewConfiguration and system-wide constant values
     private int mSlop;
     private int mMinFlingVelocity;
     private int mMaxFlingVelocity;
     private long mAnimationTime;
-
     // Fixed properties
     private View mView;
     private DismissCallbacks mCallbacks;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
-
     // Transient properties
     private float mDownX;
     private float mDownY;
     private boolean mSwiping;
     private int mSwipingSlop;
-    private Object mToken;
+    private Activity mActivity;
+    private final Runnable runnable = new Runnable() {
+        public void run() {
+            if (mBooleanIsPressed == true) {
+                show_popup_options();
+                mBooleanIsPressed = false;
+            }
+        }
+    };
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
-
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given view.
      *
      * @param view      The view to make dismissable.
-     * @param token     An optional token/cookie object to be passed through to the callback.
+     * @param activity  An optional token/cookie object to be passed through to the callback.
      * @param callbacks The callback to trigger when the user has indicated that he would like to
      *                  dismiss this view.
      */
-    public SwipeToDismissTouchListener(View view, Object token, DismissCallbacks callbacks) {
+    public SwipeToDismissTouchListener(View view, Activity activity, DismissCallbacks callbacks) {
         ViewConfiguration vc = ViewConfiguration.get(view.getContext());
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 32;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
-        mAnimationTime = view.getContext().getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
+        mAnimationTime = view.getContext().getResources().getInteger(android.R.integer.config_shortAnimTime);
         mView = view;
-        mToken = token;
+        mActivity = activity;
         mCallbacks = callbacks;
-
-
-
-
     }
-//
-//    final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-//        public void onLongPress(MotionEvent e) {
-//            Log.e("", "Longpress detected");
-//        }
-//    });
-//
-//    public boolean onTouchEvent(MotionEvent event) {
-//        return gestureDetector.onTouchEvent(event);
-//    }
+
+    private void show_popup_options() {
+
+        //Creating the instance of PopupMenu
+        PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.CENTER_HORIZONTAL);
+        //Inflating the Popup using xml file
+        popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
+        final View theView = this.mView;
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+
+                int id = item.getItemId();
+                if (id == R.id.action_clipboard) {
+
+                    String theClipText = ((TextView) ((CardView)theView).getChildAt(0)).getText().toString();
+
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard ", theClipText);
+                    clipboard.setPrimaryClip(clip);
+
+                    Toast.makeText(mView.getContext(), "Resultado copiado", Toast.LENGTH_SHORT).show();
+                }
+
+
+                return true;
+            }
+        });
+        popup.show();
+    }
+
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -84,14 +121,25 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 // TODO: ensure this is a finger, and set a flag
                 mDownX = motionEvent.getRawX();
                 mDownY = motionEvent.getRawY();
-                if (mCallbacks.canDismiss(mToken)) {
-                    mVelocityTracker = VelocityTracker.obtain();
-                    mVelocityTracker.addMovement(motionEvent);
-                }
+
+                mVelocityTracker = VelocityTracker.obtain();
+                mVelocityTracker.addMovement(motionEvent);
+
+
+                // Execute your Runnable after 500 milliseconds = 0.5 second
+                handler.postDelayed(runnable, 600);
+                mBooleanIsPressed = true;
+
                 return true;
             }
 
             case MotionEvent.ACTION_UP: {
+
+                if (mBooleanIsPressed) {
+                    mBooleanIsPressed = false;
+                    handler.removeCallbacks(runnable);
+                }
+
                 if (mVelocityTracker == null) {
                     break;
                 }
@@ -142,8 +190,15 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 mSwiping = false;
                 break;
             }
+            case MotionEvent.ACTION_SCROLL: {
+                if (mBooleanIsPressed) {
+                    mBooleanIsPressed = false;
+                    handler.removeCallbacks(runnable);
+                }
+            }
 
             case MotionEvent.ACTION_CANCEL: {
+
                 if (mVelocityTracker == null) {
                     break;
                 }
@@ -162,6 +217,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
             }
 
             case MotionEvent.ACTION_MOVE: {
+
                 if (mVelocityTracker == null) {
                     break;
                 }
@@ -183,6 +239,11 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 }
 
                 if (mSwiping) {
+                    //a mover não disparar longpress
+                    if (mBooleanIsPressed) {
+                        mBooleanIsPressed = false;
+                        handler.removeCallbacks(runnable);
+                    }
                     mTranslationX = deltaX;
                     mView.setTranslationX(deltaX - mSwipingSlop);
                     // TODO: use an ease-out interpolator or such
@@ -208,7 +269,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mCallbacks.onDismiss(mView, mToken);
+                mCallbacks.onDismiss(mView);
                 // Reset view presentation
                 mView.setAlpha(1f);
                 mView.setTranslationX(0);
@@ -241,9 +302,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         /**
          * Called when the user has indicated they she would like to dismiss the view.
          *
-         * @param view  The originating {@link View} to be dismissed.
-         * @param token The optional token passed to this object's constructor.
+         * @param view The originating {@link View} to be dismissed.
          */
-        void onDismiss(View view, Object token);
+        void onDismiss(View view);
     }
 }

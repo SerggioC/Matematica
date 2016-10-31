@@ -158,7 +158,7 @@ public class DivisoresFragment extends Fragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         textView.setText(str_divisores);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 
         // add the textview to the cardview
         cardview.addView(textView);
@@ -166,7 +166,7 @@ public class DivisoresFragment extends Fragment {
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
-                null,
+                getActivity(),
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
                     public boolean canDismiss(Object token) {
@@ -174,7 +174,7 @@ public class DivisoresFragment extends Fragment {
                     }
 
                     @Override
-                    public void onDismiss(View view, Object token) {
+                    public void onDismiss(View view) {
                         historyDivisores.removeView(cardview);
                     }
                 }));

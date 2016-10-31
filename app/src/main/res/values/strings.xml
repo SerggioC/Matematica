@@ -37,4 +37,7 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="activity_title_send_mail">Enviar e-mail</string>
     <string name="activity_title_share">Partilhar</string>
+    <string name="action_clipboard_result">Copiar</string>
+    <string name="action_clear_result">Apagar</string>
+    <string name="action_share_result">Enviar</string>
 </resources>
