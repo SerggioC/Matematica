@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -79,6 +78,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.CENTER_HORIZONTAL);
+
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
         final View theView = this.mView;
@@ -90,6 +90,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 int id = item.getItemId();
                 if (id == R.id.action_clipboard) {
 
+                    // Texto dos resultados no textview
                     String theClipText = ((TextView) ((CardView)theView).getChildAt(0)).getText().toString();
 
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -98,8 +99,14 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
                     Toast.makeText(mView.getContext(), "Resultado copiado", Toast.LENGTH_SHORT).show();
                 }
+                if (id == R.id.action_clear_result) {
+                    final ViewGroup history = (ViewGroup) theView.getParent();
+
+                    //theView.setVisibility(theView.GONE);
+                    history.removeView(theView);
 
 
+                }
                 return true;
             }
         });
