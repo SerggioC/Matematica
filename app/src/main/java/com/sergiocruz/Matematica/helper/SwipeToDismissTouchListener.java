@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -55,6 +56,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
     };
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
+
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given view.
      *
@@ -76,29 +78,55 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
     private void show_popup_options() {
 
+
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.CENTER_HORIZONTAL);
+
+
 
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
         final View theView = this.mView;
 
+
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
             public boolean onMenuItemClick(MenuItem item) {
 
                 int id = item.getItemId();
                 if (id == R.id.action_clipboard) {
 
                     // Texto dos resultados no textview
-                    String theClipText = ((TextView) ((CardView)theView).getChildAt(0)).getText().toString();
+                    String theClipText = ((TextView) ((CardView) theView).getChildAt(0)).getText().toString();
 
+                    // aceder ao clipboard manager
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard ", theClipText);
-                    clipboard.setPrimaryClip(clip);
 
-                    Toast.makeText(mView.getContext(), "Resultado copiado", Toast.LENGTH_SHORT).show();
+                    boolean hasEqualItem = false;
+
+                    if (clipboard.hasPrimaryClip()) {
+
+                        int clipItems = clipboard.getPrimaryClip().getItemCount();
+                        for (int i = 0; i < clipItems; i++) {
+                            if (clipboard.getPrimaryClip().getItemAt(i).getText().toString().equals(theClipText)) {
+                                Log.i("Sergio >>>", "clipboard: " + clipboard.getPrimaryClip().getItemAt(i).getText().toString() +
+                                        " clipItems: " + clipItems);
+                                hasEqualItem = true;
+                            }
+                        }
+                    }
+
+                    if (hasEqualItem) {
+                        Toast.makeText(mView.getContext(), "Resultado já está na área de transferência.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard", theClipText);
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(mView.getContext(), "Copiado para a área de transferência.", Toast.LENGTH_SHORT).show();
+                    }
+
                 }
+
                 if (id == R.id.action_clear_result) {
                     final ViewGroup history = (ViewGroup) theView.getParent();
 
@@ -206,6 +234,11 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
             case MotionEvent.ACTION_CANCEL: {
 
+                if (mBooleanIsPressed) {
+                    mBooleanIsPressed = false;
+                    handler.removeCallbacks(runnable);
+                }
+
                 if (mVelocityTracker == null) {
                     break;
                 }
@@ -229,9 +262,21 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                     break;
                 }
 
+
                 mVelocityTracker.addMovement(motionEvent);
                 float deltaX = motionEvent.getRawX() - mDownX;
                 float deltaY = motionEvent.getRawY() - mDownY;
+
+                if (deltaY > 10 && mBooleanIsPressed) {
+
+                    //a mover verticalmente não disparar longpress
+                    if (mBooleanIsPressed) {
+                        mBooleanIsPressed = false;
+                        handler.removeCallbacks(runnable);
+                    }
+                }
+
+
                 if (Math.abs(deltaX) > mSlop && Math.abs(deltaY) < Math.abs(deltaX) / 2) {
                     mSwiping = true;
                     mSwipingSlop = (deltaX > 0 ? mSlop : -mSlop);
@@ -246,6 +291,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 }
 
                 if (mSwiping) {
+
                     //a mover não disparar longpress
                     if (mBooleanIsPressed) {
                         mBooleanIsPressed = false;

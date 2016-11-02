@@ -168,6 +168,7 @@ public class FatorizarFragment extends Fragment {
         EditText edittext = (EditText) view.findViewById(R.id.editNumFact);
         String editnumText = edittext.getText().toString();
         long num;
+
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
             return;
         }
@@ -198,6 +199,8 @@ public class FatorizarFragment extends Fragment {
             }
 
             str_fatores += fatoresPrimos.get(sizeList - 1) + "}\n = ";
+
+            str_fatores = "Fatorização de " + num + " = \n";
 
             Integer counter = 1;
             Long lastItem = fatoresPrimos.get(0);
@@ -254,7 +257,7 @@ public class FatorizarFragment extends Fragment {
         }
     }
 
-    void createCardViewLayout(View view, SpannableStringBuilder str_divisores) {
+    void createCardViewLayout(View view, SpannableStringBuilder str_result) {
         final ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
 
         //criar novo cardview
@@ -268,32 +271,29 @@ public class FatorizarFragment extends Fragment {
         final float scale = getActivity().getResources().getDisplayMetrics().density;
         int lr_dip = (int) (16 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
-        cardview.setRadius((int) (2 * scale + 0.5f));
+        cardview.setRadius((int) (4 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
 
-        int cv_color = ContextCompat.getColor(getActivity(), R.color.white);
+        int cv_color = ContextCompat.getColor(getActivity(), R.color.lightGreen);
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history_divisores at the top (index 0)
         historyFatores.addView(cardview, 0);
 
-        // criar novo textview
+        // criar novo Textview
         final TextView textView = new TextView(getActivity());
         textView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         //Adicionar o texto com o resultado
-        textView.setText(str_divisores);
+        textView.setText(str_result);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        textView.setTag("str");
 
         // add the textview to the cardview
         cardview.addView(textView);
-
-
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(

@@ -8,82 +8,96 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/left_right_layout_margin"
-            android:layout_marginRight="@dimen/left_right_layout_margin"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center_horizontal"
-            card_view:cardBackgroundColor="@color/bgCardColor"
-            card_view:cardCornerRadius="4dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Calcular todos os divisores de um número inteiro"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:textAllCaps="false"
-                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                android:textSize="22sp"
-                android:textStyle="normal"/>
-
-            <LinearLayout
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp">
-
-                <TextView
-                    android:id="@+id/num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_gravity="end"
-                    android:gravity="center_vertical"
-                    android:text="Número: "
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textSize="20dp"
-                    />
-
-                <EditText
-                    android:id="@+id/editNum"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="end"
-                    android:background="@color/lightGreen"
-                    android:inputType="number"
-                    android:textAlignment="center"
-                    android:textSize="22sp"/>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/button_calc_divisores"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:text="Calcular"/>
+                android:layout_marginLeft="@dimen/left_right_layout_margin"
+                android:layout_marginRight="@dimen/left_right_layout_margin"
+                android:layout_marginTop="8dp"
+                card_view:cardBackgroundColor="@color/bgCardColor"
+                card_view:cardCornerRadius="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="@dimen/left_right_layout_margin"
+                    android:paddingRight="@dimen/left_right_layout_margin">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif"
+                        android:text="Calcular todos os divisores de um número inteiro"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:textSize="22sp"
+                        android:textStyle="normal"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:paddingBottom="16dp"
+                        android:paddingTop="16dp">
+
+                        <TextView
+                            android:id="@+id/num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="end"
+                            android:gravity="center_vertical"
+                            android:text="Número: "
+                            android:textAllCaps="false"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textSize="20dp"/>
+
+                        <EditText
+                            android:id="@+id/editNum"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="end"
+                            android:background="@color/lightGreen"
+                            android:inputType="number"
+                            android:textAlignment="center"
+                            android:textSize="22sp"/>
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/button_calc_divisores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Calcular"/>
+
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/history_divisores"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical">
             </LinearLayout>
-
         </LinearLayout>
-        </android.support.v7.widget.CardView>
     </ScrollView>
 </FrameLayout>

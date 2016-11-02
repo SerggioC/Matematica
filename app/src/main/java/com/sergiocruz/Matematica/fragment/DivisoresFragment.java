@@ -102,10 +102,21 @@ public class DivisoresFragment extends Fragment {
     public void calcDivisores(View view) {
         EditText edittext = (EditText) view.findViewById(R.id.editNum);
         String editnumText = (String) edittext.getText().toString();
-        if (editnumText.equals(null) || editnumText.equals("")) {
+        long num;
+
+        if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
             return;
         }
-        long num = Long.parseLong(editnumText);
+
+        try {
+            // Tentar converter o string para long
+            num = Long.parseLong(editnumText);
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
         if (editnumText.equals("0") || num == 0L) {
             Toast.makeText(getActivity(), "O número "+ num + " não tem divisores!", Toast.LENGTH_LONG).show();
             return;
