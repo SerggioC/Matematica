@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.helper.CreateCardView;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
@@ -249,16 +250,21 @@ public class FatorizarFragment extends Fragment {
                 iterator.remove(); // avoids a ConcurrentModificationException
             }
 
+            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
-            createCardViewLayout(view, ssb);
+            //Criar o cardview com os resultados
+            //createCardViewLayout(history, ssb);
+            CreateCardView.create(history, ssb, getActivity());
+
 
         } catch (ArrayIndexOutOfBoundsException exception) {
             Toast.makeText(getActivity(), "Erro: " + exception, Toast.LENGTH_LONG).show();
         }
     }
 
-    void createCardViewLayout(View view, SpannableStringBuilder str_result) {
-        final ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
+    void createCardViewLayout(final ViewGroup history, SpannableStringBuilder str_result) {
+        //final ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
+        //final ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
         //criar novo cardview
         final CardView cardview = new CardView(getActivity());
@@ -279,8 +285,8 @@ public class FatorizarFragment extends Fragment {
         int cv_color = ContextCompat.getColor(getActivity(), R.color.lightGreen);
         cardview.setCardBackgroundColor(cv_color);
 
-        // Add cardview to history_divisores at the top (index 0)
-        historyFatores.addView(cardview, 0);
+        // Add cardview to history layout at the top (index 0)
+        history.addView(cardview, 0);
 
         // criar novo Textview
         final TextView textView = new TextView(getActivity());
@@ -307,7 +313,7 @@ public class FatorizarFragment extends Fragment {
 
                     @Override
                     public void onDismiss(View view) {
-                        historyFatores.removeView(cardview);
+                        history.removeView(cardview);
                     }
                 }));
     }

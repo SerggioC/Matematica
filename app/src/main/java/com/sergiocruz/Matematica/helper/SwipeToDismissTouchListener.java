@@ -83,10 +83,9 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.CENTER_HORIZONTAL);
 
 
-
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-        final View theView = this.mView;
+        final CardView theView = (CardView) this.mView;
 
 
         //registering popup with OnMenuItemClickListener
@@ -130,8 +129,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 if (id == R.id.action_clear_result) {
                     final ViewGroup history = (ViewGroup) theView.getParent();
 
+                    animateRemoving(theView, history);
+
                     //theView.setVisibility(theView.GONE);
-                    history.removeView(theView);
+                    //history.removeView(theView);
 
 
                 }
@@ -141,6 +142,26 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup.show();
     }
 
+    void animateRemoving(final CardView cardview, final ViewGroup history) {
+        cardview.animate().translationX(3000).alpha(0).setDuration(400).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                history.removeView(cardview);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+        });
+    }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {

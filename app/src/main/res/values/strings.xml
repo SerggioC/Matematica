@@ -40,4 +40,5 @@
     <string name="action_clipboard_result">Copiar</string>
     <string name="action_clear_result">Apagar</string>
     <string name="action_share_result">Enviar</string>
+    <string name="action_help_result">Como calcular?</string>
 </resources>

@@ -1,23 +1,26 @@
 package com.sergiocruz.Matematica.fragment;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.SpannableStringBuilder;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.helper.CreateCardView;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
@@ -68,11 +71,48 @@ public class DivisoresFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Inflate the menu; this adds items to the action bar if it is present.
+
+        inflater.inflate(R.menu.menu_history, menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        // and selected 'Mark all as Read'
+        if (id == R.id.action_share_history) {
+            Toast.makeText(getActivity(), "Partilhar Resultados", Toast.LENGTH_LONG).show();
+        }
+
+        // and selected 'Clear All'
+        if (id == R.id.action_clear_all_history) {
+            Toast.makeText(getActivity(), "Histórico de resultados apagado", Toast.LENGTH_LONG).show();
+            remove_history();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public void remove_history() {
+        ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history_divisores);
+        if ((history).getChildCount() > 0)
+            (history).removeAllViews();
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,7 +171,14 @@ public class DivisoresFragment extends Fragment {
                 }
             }
             String str_divisores = str + "}";
-            createCardViewLayout(str_divisores);
+            //createCardViewLayout(str_divisores);
+
+            SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
+            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_divisores);
+
+            CreateCardView.create(history, ssb, getActivity());
+
+
         } catch (NumberFormatException exception) {
             Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
         }
@@ -191,26 +238,7 @@ public class DivisoresFragment extends Fragment {
                 }));
     }
 
-    void animateRemoving(final CardView cardview, final LinearLayout historyDivisores, int left_right) {
-        cardview.animate().translationX(left_right * 500).alpha(0).setDuration(200).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                historyDivisores.removeView(cardview);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-    }
 
     public ArrayList<Integer> getAllDivisores(int numero) {
         int upperlimit = (int) (Math.sqrt(numero));
