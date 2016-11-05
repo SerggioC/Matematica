@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sergiocruz.Matematica.fragment.MoviesFragment">
+    tools:context="com.sergiocruz.Matematica.fragment.MDCFragment">
 
     <ImageView
         android:layout_width="100dp"

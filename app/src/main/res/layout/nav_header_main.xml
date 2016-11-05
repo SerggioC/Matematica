@@ -12,8 +12,8 @@
         android:id="@+id/img_header_bg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:src="@drawable/kids_math"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/mathv3"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,21 +38,11 @@
             android:alpha="0.7"
             android:background="@color/white"
             android:padding="4dp"
-            android:text="Matemática dos Números Naturais"
+            android:text="Matemática"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/black"
             android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/website"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha="0.7"
-            android:background="@color/white"
-            android:padding="4dp"
-            android:text="sergiocrz@gmail.com"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/black"/>
 
     </LinearLayout>
 

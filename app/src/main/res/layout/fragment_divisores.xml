@@ -11,8 +11,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -37,22 +38,22 @@
 
                     <TextView
                         android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="sans-serif"
-                        android:text="Calcular todos os divisores de um número inteiro"
+                        android:text="Calcular os divisores de um número"
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                         android:textSize="22sp"
                         android:textStyle="normal"/>
 
-                    <LinearLayout
+<!--                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal"
-                        android:paddingBottom="16dp"
+                        android:paddingBottom="8dp"
                         android:paddingTop="16dp">
 
                         <TextView
@@ -71,18 +72,55 @@
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:layout_gravity="end"
-                            android:background="@color/lightGreen"
+                            android:background="@drawable/edittextstyle"
                             android:inputType="number"
                             android:textAlignment="center"
                             android:textSize="22sp"/>
-                    </LinearLayout>
+
+
+                    </LinearLayout>-->
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="16dp"
+                        android:layout_gravity="center_vertical">
+
+                        <EditText
+                            android:id="@+id/editNum"
+                            android:layout_width="fill_parent"
+                            android:layout_height="40dp"
+                            android:hint=" Introduzir número..."
+                            android:inputType="number"
+                            android:textAlignment="center"
+                            android:textSize="22dp"
+                            android:maxLines="1"
+                            android:background="@drawable/edittextstyle"
+                            android:layout_marginLeft="5dp"
+                            />
+
+                        <Button
+                            android:id="@+id/btn_clear"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@android:drawable/btn_dialog" />
+
+                    </FrameLayout>
+
 
                     <Button
                         android:id="@+id/button_calc_divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:text="Calcular"/>
+                        android:text="Calcular"
+                        android:elevation="4dp"
+                        android:textAllCaps="false"
+                        android:background="@drawable/apptheme_btn_default_holo_light"/>
 
 
                 </LinearLayout>

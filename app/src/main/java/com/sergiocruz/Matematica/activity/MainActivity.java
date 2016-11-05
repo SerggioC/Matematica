@@ -22,8 +22,8 @@ import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.fragment.DivisoresFragment;
 import com.sergiocruz.Matematica.fragment.FatorizarFragment;
 import com.sergiocruz.Matematica.fragment.HomeFragment;
-import com.sergiocruz.Matematica.fragment.MoviesFragment;
-import com.sergiocruz.Matematica.fragment.PhotosFragment;
+import com.sergiocruz.Matematica.fragment.MDCFragment;
+import com.sergiocruz.Matematica.fragment.MMCFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -199,12 +199,12 @@ public class MainActivity extends AppCompatActivity {
                 return homeFragment;
             case 1:
                 // photos
-                PhotosFragment photosFragment = new PhotosFragment();
-                return photosFragment;
+                MMCFragment MMCFragment = new MMCFragment();
+                return MMCFragment;
             case 2:
                 // movies fragment
-                MoviesFragment moviesFragment = new MoviesFragment();
-                return moviesFragment;
+                MDCFragment MDCFragment = new MDCFragment();
+                return MDCFragment;
             case 3:
                 // Fragment Fatorizar em números primos
                 FatorizarFragment fatorizarFragment = new FatorizarFragment();

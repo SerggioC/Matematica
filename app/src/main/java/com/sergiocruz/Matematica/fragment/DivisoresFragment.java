@@ -84,6 +84,8 @@ public class DivisoresFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_history, menu);
+        inflater.inflate(R.menu.menu_help_divisores, menu);
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -127,8 +129,22 @@ public class DivisoresFragment extends Fragment {
                 calcDivisores(view);
             }
         });
+
+        Button clearTextBtn = (Button) view.findViewById(R.id.btn_clear);
+        clearTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearTextview(view);
+            }
+        });
+
         return view;
 
+    }
+
+    private void clearTextview(View view) {
+        EditText ed = (EditText) view.findViewById(R.id.editNum);
+        ed.setText("");
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -145,6 +161,7 @@ public class DivisoresFragment extends Fragment {
         long num;
 
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
+            Toast.makeText(getActivity(), "Introduzir um número inteiro.", Toast.LENGTH_SHORT).show();
             return;
         }
 

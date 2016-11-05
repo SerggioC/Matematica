@@ -41,17 +41,12 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
  * to handle interaction events.
  * Use the {@link FatorizarFragment#newInstance} factory method to
  * create an instance of this fragment.
- *
- *
- *
- *
+ * <p>
+ * <p>
+ * <p>
+ * <p>
  * ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
- clipboard.setText(string);
- *
- *
- *
- *
- *
+ * clipboard.setText(string);
  */
 public class FatorizarFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -118,6 +113,8 @@ public class FatorizarFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_history, menu);
+        inflater.inflate(R.menu.menu_help_fatorizar, menu);
+
     }
 
 
@@ -147,6 +144,7 @@ public class FatorizarFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_fatorizar, container, false);
+
         Button button = (Button) view.findViewById(R.id.button_calc_fatores);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,9 +152,22 @@ public class FatorizarFragment extends Fragment {
                 calcfatoresPrimos(view);
             }
         });
+
+        Button clearTextBtn = (Button) view.findViewById(R.id.btn_clear);
+        clearTextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearTextview(view);
+            }
+        });
+
         return view;
     }
 
+    private void clearTextview(View view) {
+        EditText ed = (EditText) view.findViewById(R.id.editNumFact);
+        ed.setText("");
+    }
 
     public void remove_history() {
         ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
@@ -171,13 +182,14 @@ public class FatorizarFragment extends Fragment {
         long num;
 
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
+            Toast.makeText(getActivity(), "Introduzir um número inteiro.", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
             // Tentar converter o string para long
             num = Long.parseLong(editnumText);
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (num == 0L || num == 1L) {
@@ -186,70 +198,78 @@ public class FatorizarFragment extends Fragment {
         }
 
         try {
+
             // Lista dos fatores primos
             ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
 
             // String de todos os fatores {2, 2, 2, ... 3, 3, ...}
-            String str_fatores = "Fatores primos de " + num + ":\n" + "{";
+            //String str_fatores = "Fatores primos de " + num + ":\n" + "{";
 
             // Tamanho da lista de números primos
             int sizeList = fatoresPrimos.size();
 
-            for (int i = 0; i < sizeList - 1; i++) {
-                str_fatores += fatoresPrimos.get(i) + ", ";
-            }
+//            for (int i = 0; i < sizeList - 1; i++) {
+//              str_fatores += fatoresPrimos.get(i) + ", ";
+//            }
+//            str_fatores += fatoresPrimos.get(sizeList - 1) + "}\n = ";
 
-            str_fatores += fatoresPrimos.get(sizeList - 1) + "}\n = ";
+            String str_fatores;
+            SpannableStringBuilder ssb;
 
-            str_fatores = "Fatorização de " + num + " = \n";
+            if (sizeList == 1) {
+                str_fatores = num + " é um número primo.";
+                ssb = new SpannableStringBuilder(str_fatores);
 
-            Integer counter = 1;
-            Long lastItem = fatoresPrimos.get(0);
+            } else {
+                str_fatores = "Fatorização de " + num + " = \n";
+                ssb = new SpannableStringBuilder(str_fatores);
 
-            //TreeMap
-            LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
+                Integer counter = 1;
+                Long lastItem = fatoresPrimos.get(0);
 
-            for (int i = 0; i < fatoresPrimos.size(); i++) {
-                if (i == 0) {
-                    dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
-                } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                    counter++;
-                    dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-                } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                    counter = 1;
-                    dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-                }
-                lastItem = fatoresPrimos.get(i);
-            }
+                //TreeMap
+                LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
 
-            SpannableStringBuilder ssb = new SpannableStringBuilder(str_fatores);
-            int value_length;
-
-            Iterator iterator = dataset.entrySet().iterator();
-
-            while (iterator.hasNext()) {
-                Map.Entry pair = (Map.Entry) iterator.next();
-
-                if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                    //Expoente 1
-                    ssb.append(pair.getKey().toString());
-
-                } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                    //Expoente superior a 1
-                    value_length = pair.getValue().toString().length();
-                    ssb.append(pair.getKey().toString() + pair.getValue().toString());
-                    ssb.setSpan(new SuperscriptSpan(), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                for (int i = 0; i < fatoresPrimos.size(); i++) {
+                    if (i == 0) {
+                        dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
+                    } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                        counter++;
+                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                    } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                        counter = 1;
+                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                    }
+                    lastItem = fatoresPrimos.get(i);
                 }
 
-                if (iterator.hasNext()) {
-                    ssb.append("×");
+                int value_length;
+
+                Iterator iterator = dataset.entrySet().iterator();
+
+                while (iterator.hasNext()) {
+                    Map.Entry pair = (Map.Entry) iterator.next();
+
+                    if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                        //Expoente 1
+                        ssb.append(pair.getKey().toString());
+
+                    } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                        //Expoente superior a 1
+                        value_length = pair.getValue().toString().length();
+                        ssb.append(pair.getKey().toString() + pair.getValue().toString());
+                        ssb.setSpan(new SuperscriptSpan(), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    if (iterator.hasNext()) {
+                        ssb.append("×");
+                    }
+
+                    iterator.remove(); // avoids a ConcurrentModificationException
                 }
-
-                iterator.remove(); // avoids a ConcurrentModificationException
             }
-
             ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
             //Criar o cardview com os resultados

@@ -54,6 +54,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
             }
         }
     };
+
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
 
@@ -68,7 +69,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
     public SwipeToDismissTouchListener(View view, Activity activity, DismissCallbacks callbacks) {
         ViewConfiguration vc = ViewConfiguration.get(view.getContext());
         mSlop = vc.getScaledTouchSlop();
-        mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 32;
+        mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
         mAnimationTime = view.getContext().getResources().getInteger(android.R.integer.config_shortAnimTime);
         mView = view;
@@ -150,7 +151,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                history.removeView(cardview);
+                //history.removeView(cardview);
+                performDismiss();
             }
 
             @Override
@@ -181,8 +183,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 mVelocityTracker = VelocityTracker.obtain();
                 mVelocityTracker.addMovement(motionEvent);
 
-
-                // Execute your Runnable after 500 milliseconds = 0.5 second
+                // Execute your Runnable after 600 milliseconds = 0.5 second
                 handler.postDelayed(runnable, 600);
                 mBooleanIsPressed = true;
 
@@ -334,7 +335,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         // Animate the dismissed view to zero-height and then fire the dismiss callback.
         // This triggers layout on each animation frame; in the future we may want to do something
         // smarter and more performant.
-
         final ViewGroup.LayoutParams lp = mView.getLayoutParams();
         final int originalHeight = mView.getHeight();
 
@@ -342,19 +342,21 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(Animator animation2) {
                 mCallbacks.onDismiss(mView);
                 // Reset view presentation
                 mView.setAlpha(1f);
                 mView.setTranslationX(0);
                 lp.height = originalHeight;
                 mView.setLayoutParams(lp);
+
             }
         });
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
                 lp.height = (Integer) valueAnimator.getAnimatedValue();
                 mView.setLayoutParams(lp);
             }
