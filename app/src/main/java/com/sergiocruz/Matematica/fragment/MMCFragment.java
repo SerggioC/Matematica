@@ -4,6 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,9 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.helper.CreateCardView;
+
+import java.util.ArrayList;
+
+import static java.lang.Long.parseLong;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +70,46 @@ public class MMCFragment extends Fragment {
         return fragment;
     }
 
+    /*****************************************************************
+     * MMC: Minimo multiplo comum (lcm: least common multiplier)
+     *****************************************************************/
+    private static long mmc(long a, long b) {
+        return a * (b / mdc(a, b));
+    }
+
+    private static long mmc(ArrayList<Long> input) {
+        long result = input.get(0);
+        for (int i = 1; i < input.size(); i++)
+            result = mmc(result, input.get(i));
+        return result;
+    }
+
+    /****************************************************************
+     * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
+     *****************************************************************/
+    private static long mdc(long a, long b) {
+        while (b > 0) {
+            long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    private static long mdc(long[] input) {
+        long result = input[0];
+        for (int i = 1; i < input.length; i++)
+            result = mdc(result, input[i]);
+        return result;
+    }
+
+    /****************************************************************
+     * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
+     *****************************************************************/
+    private final static Long mdc2(Long a, Long b) {
+        return b == 0 ? a : mdc(b, a % b);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,37 +134,551 @@ public class MMCFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_mmc, container, false);
 
-
-        Button button = (Button) view.findViewById(R.id.button_calc_fatores);
+        Button button = (Button) view.findViewById(R.id.button_calc_mmc);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calc_mmc(2,2);
+                calc_mmc(view);
             }
         });
 
-        Button clearTextBtn = (Button) view.findViewById(R.id.btn_clear);
-        clearTextBtn.setOnClickListener(new View.OnClickListener() {
+        Button clearTextBtn_1 = (Button) view.findViewById(R.id.btn_clear_1);
+        clearTextBtn_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearTextview(view);
+                EditText ed1 = (EditText) getActivity().findViewById(R.id.mmc_num_1);
+                ed1.setText("");
+            }
+        });
+        Button clearTextBtn_2 = (Button) view.findViewById(R.id.btn_clear_2);
+        clearTextBtn_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed2 = (EditText) getActivity().findViewById(R.id.mmc_num_2);
+                ed2.setText("");
+            }
+        });
+        Button clearTextBtn_3 = (Button) view.findViewById(R.id.btn_clear_3);
+        clearTextBtn_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed3 = (EditText) getActivity().findViewById(R.id.mmc_num_3);
+                ed3.setText("");
+            }
+        });
+        Button clearTextBtn_4 = (Button) view.findViewById(R.id.btn_clear_4);
+        clearTextBtn_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed4 = (EditText) getActivity().findViewById(R.id.mmc_num_4);
+                ed4.setText("");
+            }
+        });
+        Button clearTextBtn_5 = (Button) view.findViewById(R.id.btn_clear_5);
+        clearTextBtn_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed5 = (EditText) getActivity().findViewById(R.id.mmc_num_5);
+                ed5.setText("");
+            }
+        });
+        Button clearTextBtn_6 = (Button) view.findViewById(R.id.btn_clear_6);
+        clearTextBtn_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed6 = (EditText) getActivity().findViewById(R.id.mmc_num_6);
+                ed6.setText("");
+            }
+        });
+
+        ImageButton add_mmc = (ImageButton) view.findViewById(R.id.button_add_mmc);
+        add_mmc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                add_mmc(view);
+            }
+        });
+
+
+        final EditText mmc_num_1 = (EditText) view.findViewById(R.id.mmc_num_1);
+        mmc_num_1.addTextChangedListener(new TextWatcher() {
+
+            long num1;
+            String oldnum1;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum1 = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num1 = parseLong(s.toString());
+
+                } catch (Exception e) {
+                    mmc_num_1.setText(oldnum1);
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        final EditText mmc_num_2 = (EditText) view.findViewById(R.id.mmc_num_2);
+        mmc_num_2.addTextChangedListener(new TextWatcher() {
+
+            long num2;
+            String oldnum2;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum2 = s.toString();
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num2 = parseLong(s.toString());
+
+                } catch (Exception e) {
+                    mmc_num_2.setText(oldnum2);
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        final EditText mmc_num_3 = (EditText) view.findViewById(R.id.mmc_num_3);
+        mmc_num_3.addTextChangedListener(new TextWatcher() {
+
+            long num3;
+            String oldnum3;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum3 = s.toString();
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num3 = parseLong(s.toString());
+
+                } catch (Exception e) {
+                    mmc_num_3.setText(oldnum3);
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        final EditText mmc_num_4 = (EditText) view.findViewById(R.id.mmc_num_4);
+        mmc_num_4.addTextChangedListener(new TextWatcher() {
+
+            long num4;
+            String oldnum4;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum4 = s.toString();
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num4 = parseLong(s.toString());
+
+                } catch (Exception e) {
+                    mmc_num_4.setText(oldnum4);
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        final EditText mmc_num_5 = (EditText) view.findViewById(R.id.mmc_num_5);
+        mmc_num_5.addTextChangedListener(new TextWatcher() {
+
+            long num5;
+            String oldnum5;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum5 = s.toString();
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num5 = parseLong(s.toString());
+
+                } catch (Exception e) {
+                    mmc_num_5.setText(oldnum5);
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        final EditText mmc_num_6 = (EditText) view.findViewById(R.id.mmc_num_6);
+        mmc_num_6.addTextChangedListener(new TextWatcher() {
+
+            long num6;
+            String oldnum6;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum6 = s.toString();
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num6 = parseLong(s.toString());
+
+                } catch (Exception e) {
+                    mmc_num_6.setText(oldnum6);
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
         return view;
     }
 
-    private int calc_mmc(int a, int b) {
+    public void add_mmc(View view) {
 
-        return b == 0 ? a : calc_mmc(b, a % b);
+        LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
+        LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
+        FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
+        FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
+        FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
+        FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
+
+
+        boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
+        boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
+        boolean f4_visible = f_4.getVisibility() == View.VISIBLE;
+        boolean ll_56_visibe = ll_56.getVisibility() == View.VISIBLE;
+        boolean f5_visible = f_5.getVisibility() == View.VISIBLE;
+        boolean f6_visible = f_6.getVisibility() == View.VISIBLE;
+
+
+        if (!ll_34_visibe || f3_visible || f4_visible) {
+            ll_34.setVisibility(View.VISIBLE);
+
+            if (!f3_visible) {
+                f_3.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!f4_visible) {
+                f_4.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
+
+        if (!ll_56_visibe || f5_visible || f6_visible) {
+            ll_56.setVisibility(View.VISIBLE);
+
+            if (!f5_visible) {
+                f_5.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!f6_visible) {
+                f_6.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
 
     }
 
+    private void calc_mmc(View view) {
+
+        EditText edittext1 = (EditText) view.findViewById(R.id.mmc_num_1);
+        String str_num1 = edittext1.getText().toString();
+        EditText edittext2 = (EditText) view.findViewById(R.id.mmc_num_2);
+        String str_num2 = edittext2.getText().toString();
+        EditText edittext3 = (EditText) view.findViewById(R.id.mmc_num_3);
+        String str_num3 = edittext3.getText().toString();
+        EditText edittext4 = (EditText) view.findViewById(R.id.mmc_num_4);
+        String str_num4 = edittext4.getText().toString();
+        EditText edittext5 = (EditText) view.findViewById(R.id.mmc_num_5);
+        String str_num5 = edittext5.getText().toString();
+        EditText edittext6 = (EditText) view.findViewById(R.id.mmc_num_6);
+        String str_num6 = edittext6.getText().toString();
+
+        long num1, num2, num3, num4, num5, num6;
+
+        if (str_num1.equals(null) || str_num1.equals("") || str_num1 == null || str_num2.equals(null) || str_num2.equals("") || str_num2 == null) {
+            Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ArrayList<Long> numbers = new ArrayList<Long>();
+
+        try {
+            // Tentar converter o string para long
+            num1 = parseLong(str_num1);
+            if (num1 == 0L) {
+                Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                return;
+            } else if (num1 > 0L) {
+                numbers.add(num1);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Número 1" + str_num1 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            // Tentar converter o string para long
+            num2 = parseLong(str_num2);
+            if (num2 == 0L) {
+                Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                return;
+            } else if (num2 > 0L) {
+                numbers.add(num2);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Número 2" + str_num2 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!str_num3.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num3 = parseLong(str_num3);
+                if (num3 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num3 > 0L) {
+                    numbers.add(num3);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 3" + str_num3 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        if (!str_num4.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num4 = parseLong(str_num4);
+                if (num4 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num4 > 0L) {
+                    numbers.add(num4);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 4" + str_num4 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        if (!str_num5.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num5 = parseLong(str_num5);
+                if (num5 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num5 > 0L) {
+                    numbers.add(num5);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 5" + str_num5 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        if (!str_num6.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num6 = parseLong(str_num6);
+                if (num6 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num6 > 0L) {
+                    numbers.add(num6);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 6" + str_num6 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        Log.d("Sergio>>>", "calc_mmc: numerbs size " + numbers.size() + " str_num1 " + str_num1 + " str_num2 " + str_num2);
+
+        String mmc_string = "mmc(";
+        Long mmc;
+
+        if (numbers.size() < 2) {
+            mmc_string += num1 + ", " + num2 + ")= ";
+            mmc = mmc(num1, num2);
+        } else {
+            for (int i = 0; i < numbers.size() - 1; i++) {
+                mmc_string += numbers.get(i) + ", ";
+            }
+            mmc_string += numbers.get(numbers.size() - 1) + ")= ";
+            mmc = mmc(numbers);
+        }
+
+        mmc_string += mmc.toString();
+        SpannableStringBuilder ssb = new SpannableStringBuilder(mmc_string);
+        ViewGroup history = (ViewGroup) view.findViewById(R.id.history_mmc);
+        CreateCardView.create(history, ssb, getActivity());
+
+
+
+/*         if (num == 0L || num == 1L) {
+            Toast.makeText(getActivity(), "O número " + num + " não tem fatores primos!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+
+            // Lista dos fatores primos
+            ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
+
+            // String de todos os fatores {2, 2, 2, ... 3, 3, ...}
+            //String str_fatores = "Fatores primos de " + num + ":\n" + "{";
+
+            // Tamanho da lista de números primos
+            int sizeList = fatoresPrimos.size();
+
+//            for (int i = 0; i < sizeList - 1; i++) {
+//              str_fatores += fatoresPrimos.get(i) + ", ";
+//            }
+//            str_fatores += fatoresPrimos.get(sizeList - 1) + "}\n = ";
+
+            String str_fatores;
+            SpannableStringBuilder ssb;
+
+            if (sizeList == 1) {
+                str_fatores = num + " é um número primo.";
+                ssb = new SpannableStringBuilder(str_fatores);
+
+            } else {
+                str_fatores = "Fatorização de " + num + " = \n";
+                ssb = new SpannableStringBuilder(str_fatores);
+
+                Integer counter = 1;
+                Long lastItem = fatoresPrimos.get(0);
+
+                //TreeMap
+                LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
+
+                for (int i = 0; i < fatoresPrimos.size(); i++) {
+                    if (i == 0) {
+                        dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
+                    } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                        counter++;
+                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                    } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                        counter = 1;
+                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                    }
+                    lastItem = fatoresPrimos.get(i);
+                }
+
+                int value_length;
+
+                Iterator iterator = dataset.entrySet().iterator();
+
+                while (iterator.hasNext()) {
+                    Map.Entry pair = (Map.Entry) iterator.next();
+
+                    if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                        //Expoente 1
+                        ssb.append(pair.getKey().toString());
+
+                    } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                        //Expoente superior a 1
+                        value_length = pair.getValue().toString().length();
+                        ssb.append(pair.getKey().toString() + pair.getValue().toString());
+                        ssb.setSpan(new SuperscriptSpan(), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+
+                    if (iterator.hasNext()) {
+                        ssb.append("×");
+                    }
+
+                    iterator.remove(); // avoids a ConcurrentModificationException
+                }
+            }
+            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_mmc);
+
+            //Criar o cardview com os resultados
+            CreateCardView.create(history, ssb, getActivity());
+
+
+        } catch (ArrayIndexOutOfBoundsException exception) {
+            Toast.makeText(getActivity(), "Erro: " + exception, Toast.LENGTH_LONG).show();
+        }*/
+
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -135,11 +701,6 @@ public class MMCFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void clearTextview(View view) {
-        EditText ed = (EditText) view.findViewById(R.id.editNumFact);
-        ed.setText("");
-    }
 
     public void remove_history() {
         ViewGroup historyMMC = (ViewGroup) getActivity().findViewById(R.id.history_mmc);
@@ -170,6 +731,7 @@ public class MMCFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this
