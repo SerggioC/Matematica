@@ -6,9 +6,9 @@
 
     <stroke
         android:width="2dp"
-        android:color="@color/colorPrimary"/>
+        android:color="@color/bgCardColor"/>
 
-    <corners android:radius="5dp"/>
+    <corners android:radius="6dp"/>
 
     <gradient
         android:angle="270"

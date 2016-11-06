@@ -26,6 +26,7 @@ import com.sergiocruz.Matematica.helper.CreateCardView;
 
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 /**
@@ -71,10 +72,10 @@ public class MMCFragment extends Fragment {
     }
 
     /*****************************************************************
-     * MMC: Minimo multiplo comum (lcm: least common multiplier)
+     * MMC: Mínimo múltiplo comum (lcm: least common multiplier)
      *****************************************************************/
     private static long mmc(long a, long b) {
-        return a * (b / mdc(a, b));
+        return (b / mdc(a, b)) * a;
     }
 
     private static long mmc(ArrayList<Long> input) {
@@ -203,11 +204,18 @@ public class MMCFragment extends Fragment {
             }
         });
 
+        ImageButton remove_mmc = (ImageButton) view.findViewById(R.id.button_remove_mmc);
+        remove_mmc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                remove_mmc(view);
+            }
+        });
+
 
         final EditText mmc_num_1 = (EditText) view.findViewById(R.id.mmc_num_1);
         mmc_num_1.addTextChangedListener(new TextWatcher() {
-
-            long num1;
+            Integer num1;
             String oldnum1;
 
             @Override
@@ -217,13 +225,12 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                if (s.toString().equals("")) {
                     return;
                 }
                 try {
                     // Tentar converter o string para long
-                    num1 = parseLong(s.toString());
-
+                    num1 = parseInt(s.toString());
                 } catch (Exception e) {
                     mmc_num_1.setText(oldnum1);
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -239,8 +246,7 @@ public class MMCFragment extends Fragment {
 
         final EditText mmc_num_2 = (EditText) view.findViewById(R.id.mmc_num_2);
         mmc_num_2.addTextChangedListener(new TextWatcher() {
-
-            long num2;
+            Integer num2;
             String oldnum2;
 
             @Override
@@ -251,13 +257,12 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                if (s.toString().equals("")) {
                     return;
                 }
                 try {
                     // Tentar converter o string para long
-                    num2 = parseLong(s.toString());
-
+                    num2 = parseInt(s.toString());
                 } catch (Exception e) {
                     mmc_num_2.setText(oldnum2);
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -267,30 +272,27 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
         final EditText mmc_num_3 = (EditText) view.findViewById(R.id.mmc_num_3);
         mmc_num_3.addTextChangedListener(new TextWatcher() {
-
-            long num3;
+            Integer num3;
             String oldnum3;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 oldnum3 = s.toString();
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                if (s.toString().equals("")) {
                     return;
                 }
                 try {
                     // Tentar converter o string para long
-                    num3 = parseLong(s.toString());
+                    num3 = parseInt(s.toString());
 
                 } catch (Exception e) {
                     mmc_num_3.setText(oldnum3);
@@ -307,24 +309,22 @@ public class MMCFragment extends Fragment {
 
         final EditText mmc_num_4 = (EditText) view.findViewById(R.id.mmc_num_4);
         mmc_num_4.addTextChangedListener(new TextWatcher() {
-
-            long num4;
+            Integer num4;
             String oldnum4;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 oldnum4 = s.toString();
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                if (s.toString().equals("")) {
                     return;
                 }
                 try {
                     // Tentar converter o string para long
-                    num4 = parseLong(s.toString());
+                    num4 = parseInt(s.toString());
 
                 } catch (Exception e) {
                     mmc_num_4.setText(oldnum4);
@@ -335,14 +335,12 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
         final EditText mmc_num_5 = (EditText) view.findViewById(R.id.mmc_num_5);
         mmc_num_5.addTextChangedListener(new TextWatcher() {
-
-            long num5;
+            Integer num5;
             String oldnum5;
 
             @Override
@@ -353,12 +351,12 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                if (s.toString().equals("")) {
                     return;
                 }
                 try {
                     // Tentar converter o string para long
-                    num5 = parseLong(s.toString());
+                    num5 = parseInt(s.toString());
 
                 } catch (Exception e) {
                     mmc_num_5.setText(oldnum5);
@@ -369,31 +367,27 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
         final EditText mmc_num_6 = (EditText) view.findViewById(R.id.mmc_num_6);
         mmc_num_6.addTextChangedListener(new TextWatcher() {
-
-            long num6;
+            Integer num6;
             String oldnum6;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 oldnum6 = s.toString();
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s == null || s.toString() == "" || s.toString().equals("")) {
+                if (s.toString().equals("")) {
                     return;
                 }
                 try {
                     // Tentar converter o string para long
-                    num6 = parseLong(s.toString());
-
+                    num6 = parseInt(s.toString());
                 } catch (Exception e) {
                     mmc_num_6.setText(oldnum6);
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -403,7 +397,6 @@ public class MMCFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -418,7 +411,6 @@ public class MMCFragment extends Fragment {
         FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
         FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
         FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
-
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -456,6 +448,56 @@ public class MMCFragment extends Fragment {
 
     }
 
+    public void remove_mmc(View view) {
+
+        LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
+        LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
+        FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
+        FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
+        FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
+        FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
+        EditText edittext3 = (EditText) view.findViewById(R.id.mmc_num_3);
+        EditText edittext4 = (EditText) view.findViewById(R.id.mmc_num_4);
+        EditText edittext5 = (EditText) view.findViewById(R.id.mmc_num_5);
+        EditText edittext6 = (EditText) view.findViewById(R.id.mmc_num_6);
+
+        boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
+        boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
+        boolean f4_visible = f_4.getVisibility() == View.VISIBLE;
+        boolean ll_56_visibe = ll_56.getVisibility() == View.VISIBLE;
+        boolean f5_visible = f_5.getVisibility() == View.VISIBLE;
+        boolean f6_visible = f_6.getVisibility() == View.VISIBLE;
+
+        if (ll_56_visibe) {
+            if (f6_visible) {
+                edittext6.setText("");
+                f_6.setVisibility(View.GONE);
+                return;
+            }
+            if (f5_visible) {
+                edittext5.setText("");
+                f_5.setVisibility(View.GONE);
+                ll_56.setVisibility(View.GONE);
+                return;
+            }
+        }
+
+        if (ll_34_visibe) {
+            if (f4_visible) {
+                edittext4.setText("");
+                f_4.setVisibility(View.GONE);
+                return;
+            }
+            if (f3_visible) {
+                edittext3.setText("");
+                f_3.setVisibility(View.GONE);
+                ll_34.setVisibility(View.GONE);
+                return;
+            }
+        }
+
+    }
+
     private void calc_mmc(View view) {
 
         EditText edittext1 = (EditText) view.findViewById(R.id.mmc_num_1);
@@ -473,39 +515,38 @@ public class MMCFragment extends Fragment {
 
         long num1, num2, num3, num4, num5, num6;
 
-        if (str_num1.equals(null) || str_num1.equals("") || str_num1 == null || str_num2.equals(null) || str_num2.equals("") || str_num2 == null) {
-            Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
-            return;
-        }
         ArrayList<Long> numbers = new ArrayList<Long>();
 
-        try {
-            // Tentar converter o string para long
-            num1 = parseLong(str_num1);
-            if (num1 == 0L) {
-                Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+        if (!str_num1.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num1 = parseLong(str_num1);
+                if (num1 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num1 > 0L) {
+                    numbers.add(num1);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 1" + str_num1 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (num1 > 0L) {
-                numbers.add(num1);
             }
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Número 1" + str_num1 + " demasiado grande.", Toast.LENGTH_SHORT).show();
-            return;
         }
-        try {
-            // Tentar converter o string para long
-            num2 = parseLong(str_num2);
-            if (num2 == 0L) {
-                Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+        if (!str_num2.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num2 = parseLong(str_num2);
+                if (num2 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num2 > 0L) {
+                    numbers.add(num2);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 2" + str_num2 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (num2 > 0L) {
-                numbers.add(num2);
             }
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), "Número 2" + str_num2 + " demasiado grande.", Toast.LENGTH_SHORT).show();
-            return;
         }
-
         if (!str_num3.equals("")) {
             try {
                 // Tentar converter o string para long
@@ -566,23 +607,27 @@ public class MMCFragment extends Fragment {
                 return;
             }
         }
-        Log.d("Sergio>>>", "calc_mmc: numerbs size " + numbers.size() + " str_num1 " + str_num1 + " str_num2 " + str_num2);
+        if (numbers.size() < 2) {
+            Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.d("Sergio>>>", "calc_mmc: numbers size " + numbers.size() + " str_num1 " + str_num1 + " str_num2 " + str_num2);
 
         String mmc_string = "mmc(";
-        Long mmc;
+        Long result_mmc = null;
 
-        if (numbers.size() < 2) {
-            mmc_string += num1 + ", " + num2 + ")= ";
-            mmc = mmc(num1, num2);
-        } else {
+        if (numbers.size() > 1) {
+//            mmc_string += num1 + ", " + num2 + ")= ";
+//            mmc = mmc(num1, num2);
+//        } else {
             for (int i = 0; i < numbers.size() - 1; i++) {
                 mmc_string += numbers.get(i) + ", ";
             }
             mmc_string += numbers.get(numbers.size() - 1) + ")= ";
-            mmc = mmc(numbers);
+            result_mmc = mmc(numbers);
         }
 
-        mmc_string += mmc.toString();
+        mmc_string += result_mmc.toString();
         SpannableStringBuilder ssb = new SpannableStringBuilder(mmc_string);
         ViewGroup history = (ViewGroup) view.findViewById(R.id.history_mmc);
         CreateCardView.create(history, ssb, getActivity());

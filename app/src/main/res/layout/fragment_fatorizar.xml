@@ -23,7 +23,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/left_right_layout_margin"
                 android:layout_marginRight="@dimen/left_right_layout_margin"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="4dp">
 
@@ -31,8 +31,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:paddingLeft="@dimen/left_right_layout_margin"
                     android:paddingRight="@dimen/left_right_layout_margin">
 
@@ -44,45 +44,13 @@
                         android:fontFamily="sans-serif"
                         android:text="Fatorização em números primos"
                         android:textAlignment="center"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:textSize="22sp"
-                        android:textStyle="normal"/>
-
-<!--                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingBottom="8dp"
-                        android:paddingTop="16dp">
-
-                        <TextView
-                            android:id="@+id/num2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_gravity="end"
-                            android:gravity="center_vertical"
-                            android:text="Número: "
-                            android:textAllCaps="false"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textSize="20dp"/>
-
-                        <EditText
-                            android:id="@+id/editNumFactssdsdsdsd"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:layout_gravity="end"
-                            android:background="@drawable/edittextstyle"
-                            android:inputType="number"
-                            android:textAlignment="center"
-                            android:textSize="22sp"/>
-                    </LinearLayout>-->
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="8dp"
-                        android:paddingTop="16dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
                         android:layout_gravity="center_vertical">
 
                         <EditText
@@ -92,19 +60,15 @@
                             android:hint=" Introduzir número..."
                             android:inputType="number"
                             android:textAlignment="center"
-                            android:textSize="22dp"
                             android:maxLines="1"
-                            android:background="@drawable/edittextstyle"
-                            android:layout_marginLeft="5dp"
-                            />
+                            android:background="@drawable/edittextstyle"/>
 
                         <Button
                             android:id="@+id/btn_clear"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
-                            android:layout_marginRight="5dp"
                             android:layout_gravity="center_vertical|right"
-                            android:background="@android:drawable/btn_dialog" />
+                            android:background="@drawable/ic_clear_text" />
 
                     </FrameLayout>
                     <Button
