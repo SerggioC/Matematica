@@ -1,5 +1,6 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -7,12 +8,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,21 +102,30 @@ public class FatorizarFragment extends Fragment {
     }
 
     private ArrayList<ArrayList<Long>> getTabelaFatoresPrimos(long number) {
+
         ArrayList<ArrayList<Long>> factoresPrimos = new ArrayList<ArrayList<Long>>();
+        ArrayList<Long> results = new ArrayList<>();
+        ArrayList<Long> divisores = new ArrayList<>();
 
-        factoresPrimos.get(1).add(new ArrayList<Long>());
-        factoresPrimos.get(1).add(number);
-
+        results.add(number);
         for (long i = 2; i <= number / i; i++) {
             while (number % i == 0) {
-                factoresPrimos.get(0).add(i);
+                divisores.add(i);
                 number /= i;
-                factoresPrimos.get(1).add(number);
+                results.add(number);
             }
         }
         if (number > 1) {
-            factoresPrimos.get(0).add(number);
+            divisores.add(number);
         }
+
+        if (number != 1) {
+            results.add(1L);
+        }
+
+        factoresPrimos.add(results);
+        factoresPrimos.add(divisores);
+
         return factoresPrimos;
     }
 
@@ -219,34 +232,46 @@ public class FatorizarFragment extends Fragment {
 
         try {
 
-            // Lista dos fatores primos
-            ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
-
+            //Array de arrays
             ArrayList<ArrayList<Long>> tabela_fatores = new ArrayList<>();
+
             tabela_fatores = getTabelaFatoresPrimos(num);
+
             Log.i("Sergio>>>", "calcfatoresPrimos:  tabela fatores: " + tabela_fatores);
 
-            // String de todos os fatores {2, 2, 2, ... 3, 3, ...}
-            //String str_fatores = "Fatores primos de " + num + ":\n" + "{";
+
+            // Lista dos fatores primos
+            //ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
+
+            /* resultadosDivisao|fatoresPrimos
+            *                100|2
+            *                 50|2
+            *                 25|5
+            *                  5|5
+            *                  1|1
+            *
+            * */
+
+            ArrayList<Long> resultadosDivisao = tabela_fatores.get(0);
+            ArrayList<Long> fatoresPrimos = tabela_fatores.get(1);
 
             // Tamanho da lista de números primos
             int sizeList = fatoresPrimos.size();
 
-//            for (int i = 0; i < sizeList - 1; i++) {
-//              str_fatores += fatoresPrimos.get(i) + ", ";
-//            }
-//            str_fatores += fatoresPrimos.get(sizeList - 1) + "}\n = ";
-
-            String str_fatores;
-            SpannableStringBuilder ssb;
+            String str_fatores = "";
+            String str_results = "";
+            String str_divisores = "";
+            SpannableStringBuilder ssb_fatores;
+            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
             if (sizeList == 1) {
                 str_fatores = num + " é um número primo.";
-                ssb = new SpannableStringBuilder(str_fatores);
+                ssb_fatores = new SpannableStringBuilder(str_fatores);
+                CreateCardView.create(history, ssb_fatores, getActivity());
 
             } else {
                 str_fatores = "Fatorização de " + num + " = \n";
-                ssb = new SpannableStringBuilder(str_fatores);
+                ssb_fatores = new SpannableStringBuilder(str_fatores);
 
                 Integer counter = 1;
                 Long lastItem = fatoresPrimos.get(0);
@@ -254,6 +279,7 @@ public class FatorizarFragment extends Fragment {
                 //TreeMap
                 LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
 
+                //Contar os expoentes
                 for (int i = 0; i < fatoresPrimos.size(); i++) {
                     if (i == 0) {
                         dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
@@ -271,52 +297,62 @@ public class FatorizarFragment extends Fragment {
 
                 Iterator iterator = dataset.entrySet().iterator();
 
+                //Criar os expoentes
                 while (iterator.hasNext()) {
                     Map.Entry pair = (Map.Entry) iterator.next();
 
                     if (Integer.parseInt(pair.getValue().toString()) == 1) {
                         //Expoente 1
-                        ssb.append(pair.getKey().toString());
+                        ssb_fatores.append(pair.getKey().toString());
 
                     } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
                         //Expoente superior a 1
                         value_length = pair.getValue().toString().length();
-                        ssb.append(pair.getKey().toString() + pair.getValue().toString());
-                        ssb.setSpan(new SuperscriptSpan(), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                        ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
                     if (iterator.hasNext()) {
-                        ssb.append("×");
+                        ssb_fatores.append("×");
                     }
 
                     iterator.remove(); // avoids a ConcurrentModificationException
                 }
-            }
-            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
-            //Criar o cardview com os resultados
-            CreateCardView.create(history, ssb, getActivity());
+
+                for (int i = 0; i < sizeList - 1; i++) {
+                    str_divisores += String.valueOf(fatoresPrimos.get(i)) + "\n";
+                }
+                str_divisores += String.valueOf(fatoresPrimos.get(sizeList - 1));
+
+                for (int i = 0; i < resultadosDivisao.size() - 1; i++) {
+                    str_results += String.valueOf(resultadosDivisao.get(i)) + "\n";
+                }
+                str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
+
+                createCardViewLayout(history, str_results, str_divisores, ssb_fatores, sizeList);
+
+            }
 
         } catch (ArrayIndexOutOfBoundsException exception) {
             Toast.makeText(getActivity(), "Erro: " + exception, Toast.LENGTH_LONG).show();
         }
     }
 
-    void createCardViewLayout(final ViewGroup history, SpannableStringBuilder str_result) {
-        //final ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
-        //final ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
+    void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores, int sizeList) {
 
+        Activity thisActivity = getActivity();
         //criar novo cardview
-        final CardView cardview = new CardView(getActivity());
+        final CardView cardview = new CardView(thisActivity);
         cardview.setLayoutParams(new CardView.LayoutParams(
                 CardView.LayoutParams.MATCH_PARENT,   // width
                 CardView.LayoutParams.WRAP_CONTENT)); // height
         cardview.setPreventCornerOverlap(true);
 
         //int pixels = (int) (dips * scale + 0.5f);
-        final float scale = getActivity().getResources().getDisplayMetrics().density;
+        final float scale = thisActivity.getResources().getDisplayMetrics().density;
         int lr_dip = (int) (16 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
         cardview.setRadius((int) (4 * scale + 0.5f));
@@ -324,29 +360,82 @@ public class FatorizarFragment extends Fragment {
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
 
-        int cv_color = ContextCompat.getColor(getActivity(), R.color.lightGreen);
+        int cv_color = ContextCompat.getColor(thisActivity, R.color.lightGreen);
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
+
+        LinearLayout ll_horizontal = new LinearLayout(thisActivity);
+        ll_horizontal.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_horizontal.setOrientation(LinearLayout.HORIZONTAL);
+
+        LinearLayout ll_vertical_results = new LinearLayout(thisActivity);
+        ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_results.setOrientation(LinearLayout.VERTICAL);
+        ll_vertical_results.setPadding(8, 0, 16, 0);
+
+        LinearLayout ll_vertical_separador = new LinearLayout(thisActivity);
+        ll_vertical_separador.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
+        ll_vertical_separador.setOrientation(LinearLayout.VERTICAL);
+        ll_vertical_separador.setBackgroundColor(ContextCompat.getColor(thisActivity, R.color.separatorLineColor));
+        ll_vertical_separador.setPadding(2, 4, 2, 4);
+
+        LinearLayout ll_vertical_divisores = new LinearLayout(thisActivity);
+        ll_vertical_divisores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_divisores.setOrientation(LinearLayout.VERTICAL);
+        ll_vertical_divisores.setPadding(16, 0, 16, 0);
+
+
+        LinearLayout ll_horizontal_ssb_fatores = new LinearLayout(thisActivity);
+        ll_horizontal_ssb_fatores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_horizontal_ssb_fatores.setOrientation(LinearLayout.HORIZONTAL);
+
+
+        TextView textView_results = new TextView(thisActivity);
+        textView_results.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView_results.setText(str_results);
+        textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView_results.setGravity(Gravity.RIGHT);
+
+        ll_vertical_results.addView(textView_results);
+
+        TextView textView_divisores = new TextView(thisActivity);
+        textView_divisores.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView_divisores.setText(str_divisores);
+        textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView_divisores.setGravity(Gravity.LEFT);
+
+        ll_vertical_divisores.addView(textView_divisores);
+
+        //Adicionar os LL Verticais ao Horizontal
+        ll_horizontal.addView(ll_vertical_results);
+
+        ll_horizontal.addView(ll_vertical_separador);
+
+        //LinearLayout divisores
+        ll_horizontal.addView(ll_vertical_divisores);
+
         // criar novo Textview
-        final TextView textView = new TextView(getActivity());
-        textView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        final TextView textView = new TextView(thisActivity);
+        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView.setPadding(16, 0, 0, 0);
 
-        //Adicionar o texto com o resultado
-        textView.setText(str_result);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
+        textView.setText(ssb_fatores);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
-        // add the textview to the cardview
-        cardview.addView(textView);
+        // add the textview to the Linear layout horizontal
+        ll_horizontal.addView(textView);
+
+        cardview.addView(ll_horizontal);
+
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
-                getActivity(),
+                thisActivity,
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
                     public boolean canDismiss(Object token) {
