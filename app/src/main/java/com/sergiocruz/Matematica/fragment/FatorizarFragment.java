@@ -11,6 +11,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -92,6 +93,25 @@ public class FatorizarFragment extends Fragment {
         }
         if (number > 1) {
             factoresPrimos.add(number);
+        }
+        return factoresPrimos;
+    }
+
+    private ArrayList<ArrayList<Long>> getTabelaFatoresPrimos(long number) {
+        ArrayList<ArrayList<Long>> factoresPrimos = new ArrayList<ArrayList<Long>>();
+
+        factoresPrimos.get(1).add(new ArrayList<Long>());
+        factoresPrimos.get(1).add(number);
+
+        for (long i = 2; i <= number / i; i++) {
+            while (number % i == 0) {
+                factoresPrimos.get(0).add(i);
+                number /= i;
+                factoresPrimos.get(1).add(number);
+            }
+        }
+        if (number > 1) {
+            factoresPrimos.get(0).add(number);
         }
         return factoresPrimos;
     }
@@ -202,6 +222,10 @@ public class FatorizarFragment extends Fragment {
             // Lista dos fatores primos
             ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
 
+            ArrayList<ArrayList<Long>> tabela_fatores = new ArrayList<>();
+            tabela_fatores = getTabelaFatoresPrimos(num);
+            Log.i("Sergio>>>", "calcfatoresPrimos:  tabela fatores: " + tabela_fatores);
+
             // String de todos os fatores {2, 2, 2, ... 3, 3, ...}
             //String str_fatores = "Fatores primos de " + num + ":\n" + "{";
 
@@ -273,9 +297,7 @@ public class FatorizarFragment extends Fragment {
             ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
             //Criar o cardview com os resultados
-            //createCardViewLayout(history, ssb);
             CreateCardView.create(history, ssb, getActivity());
-
 
         } catch (ArrayIndexOutOfBoundsException exception) {
             Toast.makeText(getActivity(), "Erro: " + exception, Toast.LENGTH_LONG).show();

@@ -44,4 +44,5 @@
     <string name="action_ajuda_fatorizar">Como fatorizar um número?</string>
     <string name="action_ajuda_divisores">Como obter os divisores?</string>
     <string name="action_ajuda_mmc">Como calcular o MMC?</string>
+    <string name="action_ajuda_mdc">Como calcular o MDC?</string>
 </resources>

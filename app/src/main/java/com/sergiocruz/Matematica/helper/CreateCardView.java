@@ -19,10 +19,7 @@ import com.sergiocruz.Matematica.R;
 
 public class CreateCardView {
 
-
     public static void create(final ViewGroup history, SpannableStringBuilder str_result, Activity activity) {
-        //final ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
-        //final ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
 
         //criar novo cardview
         final CardView cardview = new CardView(activity);
@@ -49,8 +46,8 @@ public class CreateCardView {
         // criar novo Textview
         final TextView textView = new TextView(activity);
         textView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+                ViewGroup.LayoutParams.MATCH_PARENT,   //largura
+                ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
 
         //Adicionar o texto com o resultado
         textView.setText(str_result);
@@ -75,6 +72,4 @@ public class CreateCardView {
                     }
                 }));
     }
-
-
 }

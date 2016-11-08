@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,20 +31,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_MDC = "mdc";
     private static final String TAG_FATORIZAR = "fatorizar";
     private static final String TAG_DIVISORES = "divisores";
-
-    // urls to load navigation header background image
-    // and profile image
-//    private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
-//    private static final String urlProfileImg = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
     private static final String TAG_NDIVISORES = "ndivisores";
     private static final String TAG_PRIMOS_SI = "primos_si";
     // index to identify current nav menu item
     public static int navItemIndex = 0;
-    public static int navItemIndexOld = 0;
+
     public static String CURRENT_TAG = TAG_HOME;
     private NavigationView navigationView;
     private DrawerLayout drawer;
-    private View navHeader;
     private Toolbar toolbar;
 
     // toolbar titles respected to selected nav menu item
@@ -54,37 +47,6 @@ public class MainActivity extends AppCompatActivity {
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
-
-    public final static void logMe(Object obj, String level, String str) {
-        final StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-        final String ltag = "Sergio >>> " + str + " :";
-        final String msg = " Class: " + obj.getClass().getSimpleName() +
-                " / Method: " + ste[3].getMethodName() +
-                " / Invoked by: " + ste[4].getMethodName();
-        switch (level) {
-            case "verbose":
-                Log.v(ltag, msg);
-                break;
-            case "debug":
-                Log.d(ltag, msg);
-                break;
-            case "info":
-                Log.i(ltag, msg);
-                break;
-            case "warn":
-                Log.w(ltag, msg);
-                break;
-            case "error":
-                Log.e(ltag, msg);
-                break;
-            case "assert":
-                Log.wtf(ltag, msg);
-                break;
-            default:
-                Log.w(ltag, msg);
-                break;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,13 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Icones coloridos no menu de gaveta lateral
         navigationView.setItemIconTintList(null);
-
-        // Navigation view header
-        navHeader = navigationView.getHeaderView(0);
-//        txtName = (TextView) navHeader.findViewById(R.id.name);
-//        txtWebsite = (TextView) navHeader.findViewById(R.id.website);
-//        imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
-//        imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);

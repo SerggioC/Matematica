@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -195,6 +194,22 @@ public class MMCFragment extends Fragment {
                 ed6.setText("");
             }
         });
+        Button clearTextBtn_7 = (Button) view.findViewById(R.id.btn_clear_7);
+        clearTextBtn_7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed7 = (EditText) getActivity().findViewById(R.id.mmc_num_7);
+                ed7.setText("");
+            }
+        });
+        Button clearTextBtn_8 = (Button) view.findViewById(R.id.btn_clear_8);
+        clearTextBtn_8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText ed8 = (EditText) getActivity().findViewById(R.id.mmc_num_8);
+                ed8.setText("");
+            }
+        });
 
         ImageButton add_mmc = (ImageButton) view.findViewById(R.id.button_add_mmc);
         add_mmc.setOnClickListener(new View.OnClickListener() {
@@ -233,6 +248,7 @@ public class MMCFragment extends Fragment {
                     num1 = parseInt(s.toString());
                 } catch (Exception e) {
                     mmc_num_1.setText(oldnum1);
+                    mmc_num_1.setSelection(mmc_num_1.getText().length()); //Colocar o cursor no final do texto
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -265,6 +281,7 @@ public class MMCFragment extends Fragment {
                     num2 = parseInt(s.toString());
                 } catch (Exception e) {
                     mmc_num_2.setText(oldnum2);
+                    mmc_num_2.setSelection(mmc_num_2.getText().length());
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -296,6 +313,7 @@ public class MMCFragment extends Fragment {
 
                 } catch (Exception e) {
                     mmc_num_3.setText(oldnum3);
+                    mmc_num_3.setSelection(mmc_num_3.getText().length());
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -328,6 +346,7 @@ public class MMCFragment extends Fragment {
 
                 } catch (Exception e) {
                     mmc_num_4.setText(oldnum4);
+                    mmc_num_4.setSelection(mmc_num_4.getText().length());
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -360,6 +379,7 @@ public class MMCFragment extends Fragment {
 
                 } catch (Exception e) {
                     mmc_num_5.setText(oldnum5);
+                    mmc_num_5.setSelection(mmc_num_5.getText().length());
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -390,6 +410,69 @@ public class MMCFragment extends Fragment {
                     num6 = parseInt(s.toString());
                 } catch (Exception e) {
                     mmc_num_6.setText(oldnum6);
+                    mmc_num_6.setSelection(mmc_num_6.getText().length());
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        final EditText mmc_num_7 = (EditText) view.findViewById(R.id.mmc_num_7);
+        mmc_num_7.addTextChangedListener(new TextWatcher() {
+            Integer num7;
+            String oldnum7;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum7 = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num7 = parseInt(s.toString());
+                } catch (Exception e) {
+                    mmc_num_6.setText(oldnum7);
+                    mmc_num_7.setSelection(mmc_num_7.getText().length());
+                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        final EditText mmc_num_8 = (EditText) view.findViewById(R.id.mmc_num_8);
+        mmc_num_8.addTextChangedListener(new TextWatcher() {
+            Integer num8;
+            String oldnum8;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum8 = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para long
+                    num8 = parseInt(s.toString());
+                } catch (Exception e) {
+                    mmc_num_8.setText(oldnum8);
+                    mmc_num_8.setSelection(mmc_num_8.getText().length());
                     Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -407,10 +490,15 @@ public class MMCFragment extends Fragment {
 
         LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
         LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
+        LinearLayout ll_78 = (LinearLayout) view.findViewById(R.id.linear_layout_78);
         FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
         FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
         FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
         FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
+        FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
+        FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
+        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mmc);
+        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mmc);
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -418,6 +506,9 @@ public class MMCFragment extends Fragment {
         boolean ll_56_visibe = ll_56.getVisibility() == View.VISIBLE;
         boolean f5_visible = f_5.getVisibility() == View.VISIBLE;
         boolean f6_visible = f_6.getVisibility() == View.VISIBLE;
+        boolean ll_78_visibe = ll_78.getVisibility() == View.VISIBLE;
+        boolean f7_visible = f_7.getVisibility() == View.VISIBLE;
+        boolean f8_visible = f_8.getVisibility() == View.VISIBLE;
 
 
         if (!ll_34_visibe || f3_visible || f4_visible) {
@@ -425,6 +516,7 @@ public class MMCFragment extends Fragment {
 
             if (!f3_visible) {
                 f_3.setVisibility(View.VISIBLE);
+                less_one.setVisibility(View.VISIBLE);
                 return;
             }
             if (!f4_visible) {
@@ -445,6 +537,19 @@ public class MMCFragment extends Fragment {
                 return;
             }
         }
+        if (!ll_78_visibe || f7_visible || f8_visible) {
+            ll_78.setVisibility(View.VISIBLE);
+
+            if (!f7_visible) {
+                f_7.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (!f8_visible) {
+                f_8.setVisibility(View.VISIBLE);
+                add_one.setVisibility(View.INVISIBLE);
+                return;
+            }
+        }
 
     }
 
@@ -452,14 +557,22 @@ public class MMCFragment extends Fragment {
 
         LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
         LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
+        LinearLayout ll_78 = (LinearLayout) view.findViewById(R.id.linear_layout_78);
         FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
         FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
         FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
         FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
+        FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
+        FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
         EditText edittext3 = (EditText) view.findViewById(R.id.mmc_num_3);
         EditText edittext4 = (EditText) view.findViewById(R.id.mmc_num_4);
         EditText edittext5 = (EditText) view.findViewById(R.id.mmc_num_5);
         EditText edittext6 = (EditText) view.findViewById(R.id.mmc_num_6);
+        EditText edittext7 = (EditText) view.findViewById(R.id.mmc_num_7);
+        EditText edittext8 = (EditText) view.findViewById(R.id.mmc_num_8);
+
+        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mmc);
+        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mmc);
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -467,6 +580,24 @@ public class MMCFragment extends Fragment {
         boolean ll_56_visibe = ll_56.getVisibility() == View.VISIBLE;
         boolean f5_visible = f_5.getVisibility() == View.VISIBLE;
         boolean f6_visible = f_6.getVisibility() == View.VISIBLE;
+        boolean ll_78_visibe = ll_78.getVisibility() == View.VISIBLE;
+        boolean f7_visible = f_7.getVisibility() == View.VISIBLE;
+        boolean f8_visible = f_8.getVisibility() == View.VISIBLE;
+
+        if (ll_78_visibe) {
+            if (f8_visible) {
+                edittext8.setText("");
+                f_8.setVisibility(View.GONE);
+                add_one.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (f7_visible) {
+                edittext7.setText("");
+                f_7.setVisibility(View.GONE);
+                ll_78.setVisibility(View.GONE);
+                return;
+            }
+        }
 
         if (ll_56_visibe) {
             if (f6_visible) {
@@ -492,6 +623,7 @@ public class MMCFragment extends Fragment {
                 edittext3.setText("");
                 f_3.setVisibility(View.GONE);
                 ll_34.setVisibility(View.GONE);
+                less_one.setVisibility(View.INVISIBLE);
                 return;
             }
         }
@@ -512,8 +644,12 @@ public class MMCFragment extends Fragment {
         String str_num5 = edittext5.getText().toString();
         EditText edittext6 = (EditText) view.findViewById(R.id.mmc_num_6);
         String str_num6 = edittext6.getText().toString();
+        EditText edittext7 = (EditText) view.findViewById(R.id.mmc_num_7);
+        String str_num7 = edittext7.getText().toString();
+        EditText edittext8 = (EditText) view.findViewById(R.id.mmc_num_8);
+        String str_num8 = edittext8.getText().toString();
 
-        long num1, num2, num3, num4, num5, num6;
+        long num1, num2, num3, num4, num5, num6, num7, num8;
 
         ArrayList<Long> numbers = new ArrayList<Long>();
 
@@ -607,19 +743,47 @@ public class MMCFragment extends Fragment {
                 return;
             }
         }
+
+        if (!str_num7.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num7 = parseLong(str_num7);
+                if (num7 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num7 > 0L) {
+                    numbers.add(num7);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 7" + str_num7 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        if (!str_num8.equals("")) {
+            try {
+                // Tentar converter o string para long
+                num8 = parseLong(str_num8);
+                if (num8 == 0L) {
+                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    return;
+                } else if (num8 > 0L) {
+                    numbers.add(num8);
+                }
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Número 8" + str_num8 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
         if (numbers.size() < 2) {
             Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
             return;
         }
-        Log.d("Sergio>>>", "calc_mmc: numbers size " + numbers.size() + " str_num1 " + str_num1 + " str_num2 " + str_num2);
 
         String mmc_string = "mmc(";
         Long result_mmc = null;
 
         if (numbers.size() > 1) {
-//            mmc_string += num1 + ", " + num2 + ")= ";
-//            mmc = mmc(num1, num2);
-//        } else {
             for (int i = 0; i < numbers.size() - 1; i++) {
                 mmc_string += numbers.get(i) + ", ";
             }
