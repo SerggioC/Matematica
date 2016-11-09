@@ -85,7 +85,7 @@ public class DivisoresFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_divisores, menu);
-
+        inflater.inflate(R.menu.main, menu); //buy pro
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -233,7 +233,7 @@ public class DivisoresFragment extends Fragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         textView.setText(str_divisores);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
         // add the textview to the cardview
         cardview.addView(textView);

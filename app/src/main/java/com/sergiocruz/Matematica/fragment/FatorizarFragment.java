@@ -13,7 +13,6 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -129,7 +128,40 @@ public class FatorizarFragment extends Fragment {
         return factoresPrimos;
     }
 
+    private ArrayList<ArrayList<Long>> getTabelaFatoresPrimos2(long number) {
 
+        ArrayList<ArrayList<Long>> factoresPrimos = new ArrayList<ArrayList<Long>>();
+        ArrayList<Long> results = new ArrayList<>();
+        ArrayList<Long> divisores = new ArrayList<>();
+
+        results.add(number);
+
+        while (number % 2L == 0) {
+            divisores.add(2L);
+            number /= 2;
+            results.add(number);
+        }
+
+        for (long i = 3; i <= number / i; i+=2) {
+            while (number % i == 0) {
+                divisores.add(i);
+                number /= i;
+                results.add(number);
+            }
+        }
+        if (number > 1) {
+            divisores.add(number);
+        }
+
+        if (number != 1) {
+            results.add(1L);
+        }
+
+        factoresPrimos.add(results);
+        factoresPrimos.add(divisores);
+
+        return factoresPrimos;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +179,7 @@ public class FatorizarFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_fatorizar, menu);
-
+        inflater.inflate(R.menu.main, menu); //buy pro
     }
 
 
@@ -237,9 +269,6 @@ public class FatorizarFragment extends Fragment {
 
             tabela_fatores = getTabelaFatoresPrimos(num);
 
-            Log.i("Sergio>>>", "calcfatoresPrimos:  tabela fatores: " + tabela_fatores);
-
-
             // Lista dos fatores primos
             //ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
 
@@ -271,7 +300,6 @@ public class FatorizarFragment extends Fragment {
 
             } else {
                 str_fatores = "Fatorização de " + num + " = \n";
-                ssb_fatores = new SpannableStringBuilder(str_fatores);
 
                 Integer counter = 1;
                 Long lastItem = fatoresPrimos.get(0);
@@ -281,6 +309,7 @@ public class FatorizarFragment extends Fragment {
 
                 //Contar os expoentes
                 for (int i = 0; i < fatoresPrimos.size(); i++) {
+                    str_fatores += fatoresPrimos.get(i) + "×";
                     if (i == 0) {
                         dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                     } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -292,6 +321,8 @@ public class FatorizarFragment extends Fragment {
                     }
                     lastItem = fatoresPrimos.get(i);
                 }
+                str_fatores = str_fatores.substring(0,str_fatores.length()-1) + "=\n";
+                ssb_fatores = new SpannableStringBuilder(str_fatores);
 
                 int value_length;
 
@@ -332,7 +363,7 @@ public class FatorizarFragment extends Fragment {
                 }
                 str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
 
-                createCardViewLayout(history, str_results, str_divisores, ssb_fatores, sizeList);
+                createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
 
             }
 
@@ -341,7 +372,7 @@ public class FatorizarFragment extends Fragment {
         }
     }
 
-    void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores, int sizeList) {
+    void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores) {
 
         Activity thisActivity = getActivity();
         //criar novo cardview
@@ -353,7 +384,7 @@ public class FatorizarFragment extends Fragment {
 
         //int pixels = (int) (dips * scale + 0.5f);
         final float scale = thisActivity.getResources().getDisplayMetrics().density;
-        int lr_dip = (int) (16 * scale + 0.5f);
+        int lr_dip = (int) (4 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
         cardview.setRadius((int) (4 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
@@ -366,7 +397,6 @@ public class FatorizarFragment extends Fragment {
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
-
         LinearLayout ll_horizontal = new LinearLayout(thisActivity);
         ll_horizontal.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_horizontal.setOrientation(LinearLayout.HORIZONTAL);
@@ -374,7 +404,7 @@ public class FatorizarFragment extends Fragment {
         LinearLayout ll_vertical_results = new LinearLayout(thisActivity);
         ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_results.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_results.setPadding(8, 0, 16, 0);
+        ll_vertical_results.setPadding(0, 0, 16, 0);
 
         LinearLayout ll_vertical_separador = new LinearLayout(thisActivity);
         ll_vertical_separador.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
@@ -396,7 +426,7 @@ public class FatorizarFragment extends Fragment {
         TextView textView_results = new TextView(thisActivity);
         textView_results.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView_results.setText(str_results);
-        textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         textView_results.setGravity(Gravity.RIGHT);
 
         ll_vertical_results.addView(textView_results);
@@ -404,7 +434,7 @@ public class FatorizarFragment extends Fragment {
         TextView textView_divisores = new TextView(thisActivity);
         textView_divisores.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView_divisores.setText(str_divisores);
-        textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         textView_divisores.setGravity(Gravity.LEFT);
 
         ll_vertical_divisores.addView(textView_divisores);
@@ -424,7 +454,8 @@ public class FatorizarFragment extends Fragment {
 
         //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
         textView.setText(ssb_fatores);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        textView.setTag("texto");
 
         // add the textview to the Linear layout horizontal
         ll_horizontal.addView(textView);

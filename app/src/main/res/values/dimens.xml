@@ -9,7 +9,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="profile_width">75dp</dimen>
     <dimen name="profile_height">75dp</dimen>
-    <dimen name="clickable_view_height">80dp</dimen>
+    <dimen name="clickable_view_height">90dp</dimen>
     <dimen name="left_right_layout_margin">4dp</dimen>
     <dimen name="edittext_height">36dp</dimen>
     <dimen name="edittextsize">20sp</dimen>

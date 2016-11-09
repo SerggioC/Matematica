@@ -130,6 +130,7 @@ public class MMCFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_mmc, menu);
+        inflater.inflate(R.menu.main, menu); //buy pro
 
     }
 

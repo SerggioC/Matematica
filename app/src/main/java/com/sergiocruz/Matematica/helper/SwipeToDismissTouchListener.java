@@ -81,8 +81,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
 
         //Creating the instance of PopupMenu
-        PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.CENTER_HORIZONTAL);
-
+        PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.TOP);
 
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
@@ -98,7 +97,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 if (id == R.id.action_clipboard) {
 
                     // Texto dos resultados no textview
-                    String theClipText = ((TextView) ((CardView) theView).getChildAt(0)).getText().toString();
+                    //String theClipText = ((TextView) ((CardView) theView).getChildAt(0)).getText().toString();
+
+                    String theClipText = ((TextView) theView.findViewWithTag("texto")).getText().toString();
+                    Log.i("Sergio>>>", "onMenuItemClick: thecliptext"+ theClipText);
 
                     // aceder ao clipboard manager
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -124,18 +126,17 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                         clipboard.setPrimaryClip(clip);
                         Toast.makeText(mView.getContext(), "Copiado para a área de transferência.", Toast.LENGTH_SHORT).show();
                     }
-
                 }
 
                 if (id == R.id.action_clear_result) {
                     final ViewGroup history = (ViewGroup) theView.getParent();
 
                     animateRemoving(theView, history);
-
                     //theView.setVisibility(theView.GONE);
                     //history.removeView(theView);
-
-
+                }
+                if (id == R.id.action_help_result) {
+                    Toast.makeText(mView.getContext(), "HEEEEELLLLP!!!", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             }

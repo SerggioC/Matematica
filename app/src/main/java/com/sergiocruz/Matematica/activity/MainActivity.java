@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_MDC = "mdc";
     private static final String TAG_FATORIZAR = "fatorizar";
     private static final String TAG_DIVISORES = "divisores";
-    private static final String TAG_NDIVISORES = "ndivisores";
-    private static final String TAG_PRIMOS_SI = "primos_si";
+    private static final String TAG_PRIMES_TABLE = "primes_table";
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
@@ -195,13 +194,9 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_DIVISORES;
                         break;
-                    case R.id.nav_num_divisors:
+                    case R.id.nav_prime_table:
                         navItemIndex = 5;
-                        CURRENT_TAG = TAG_NDIVISORES;
-                        break;
-                    case R.id.nav_primos_si:
-                        navItemIndex = 6;
-                        CURRENT_TAG = TAG_PRIMOS_SI;
+                        CURRENT_TAG = TAG_PRIMES_TABLE;
                         break;
                     case R.id.nav_about:
                         // launch new intent instead of loading fragment
@@ -311,8 +306,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
+        if (id == R.id.action_buy) {
+            Toast.makeText(getApplicationContext(), "Comprar versão PRO para remover anúncios", Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -364,20 +359,13 @@ public class MainActivity extends AppCompatActivity {
         loadFragment();
     }
 
-    public void n_divisores(View view) {
+    public void primes_table(View view) {
         //remove dot in menu
         navigationView.getMenu().getItem(navItemIndex).setActionView(null);
         navItemIndex = 5;
-        CURRENT_TAG = TAG_NDIVISORES;
+        CURRENT_TAG = TAG_PRIMES_TABLE;
         loadFragment();
     }
 
-    public void primos_si(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 6;
-        CURRENT_TAG = TAG_PRIMOS_SI;
-        loadFragment();
-    }
 
 }

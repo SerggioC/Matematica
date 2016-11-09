@@ -4,7 +4,7 @@
 <group android:checkableBehavior="single">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@mipmap/ic_launcher"
         android:title="Início"
         android:titleCondensed="Início"/>
     <item
@@ -24,17 +24,14 @@
         android:titleCondensed="Fatorizar"/>
     <item
         android:id="@+id/nav_divisores"
-        android:icon="@drawable/ic_menu_manage"
+        android:icon="@mipmap/ic_divisores"
         android:title="Divisores de um Número"
         android:titleCondensed="Divisores"/>
     <item
-        android:id="@+id/nav_num_divisors"
-        android:icon="@drawable/ic_menu_send"
-        android:title="Número de Divisores"/>
-    <item
-        android:id="@+id/nav_primos_si"
-        android:icon="@drawable/ic_menu_share"
-        android:title="Primos entre si"/>
+        android:id="@+id/nav_prime_table"
+        android:icon="@mipmap/ic_primes"
+        android:title="Tabela de números primos"/>
+
     <item android:title="Outros">
         <menu>
             <item

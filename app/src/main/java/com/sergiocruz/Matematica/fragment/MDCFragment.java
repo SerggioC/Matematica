@@ -132,6 +132,7 @@ public class MDCFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_mdc, menu);
+        inflater.inflate(R.menu.main, menu); //buy pro
 
     }
 

@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context="com.sergiocruz.Matematica.fragment.HomeFragment">
 
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -15,14 +16,22 @@
 
         <LinearLayout
             android:id="@+id/linear_main"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/math_board"/>
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp"
@@ -35,26 +44,27 @@
                 <LinearLayout
                     android:id="@+id/linear_mmc"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/clickable_view_height"
+                    android:layout_height="wrap_content"
+                    android:onClick="mmc"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView2"
-                        android:onClick="mmc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
+                        android:onClick="mmc"
                         app:srcCompat="@mipmap/ic_mmc"/>
 
                     <TextView
                         android:id="@+id/textView2"
-                        android:onClick="mmc"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="MMC - Calcular o Mínimo múltiplo comum entre dois ou mais números"
+                        android:onClick="mmc"
+                        android:text="MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números"
                         android:textAppearance="@style/TextAppearance.AppCompat"/>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -62,7 +72,7 @@
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp"
@@ -74,27 +84,28 @@
                 <LinearLayout
                     android:id="@+id/linear_mdc"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/clickable_view_height"
+                    android:layout_height="wrap_content"
                     android:elevation="18dp"
+                    android:onClick="mdc"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView3"
-                        android:onClick="mdc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
+                        android:onClick="mdc"
                         app:srcCompat="@mipmap/ic_mdc"/>
 
                     <TextView
                         android:id="@+id/textmdc"
-                        android:onClick="mdc"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="MDC - Calcular o Máximo divisor comum entre dois ou mais números"
+                        android:onClick="mdc"
+                        android:text="MDC - Calcular o Máximo Divisor Comum entre dois ou mais números"
                         android:textAppearance="@style/TextAppearance.AppCompat"/>
 
 
@@ -104,7 +115,7 @@
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_3"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp"
@@ -116,26 +127,27 @@
                 <LinearLayout
                     android:id="@+id/linear_factor"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/clickable_view_height"
+                    android:layout_height="wrap_content"
                     android:elevation="18dp"
+                    android:onClick="fatorizar"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView4"
-                        android:onClick="fatorizar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
+                        android:onClick="fatorizar"
                         app:srcCompat="@mipmap/ic_factor"/>
 
                     <TextView
                         android:id="@+id/textfactor"
-                        android:onClick="fatorizar"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
+                        android:onClick="fatorizar"
                         android:text="Factorizar - Decompor um número em fatores primos"
                         android:textAppearance="@style/TextAppearance.AppCompat"/>
                 </LinearLayout>
@@ -144,7 +156,7 @@
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_4"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp"
@@ -156,27 +168,27 @@
                 <LinearLayout
                     android:id="@+id/linear_divisores"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/clickable_view_height"
-                    android:clickable="true"
+                    android:layout_height="wrap_content"
                     android:elevation="18dp"
+                    android:onClick="divisores"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView5"
-                        android:onClick="divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
+                        android:onClick="divisores"
                         app:srcCompat="@mipmap/ic_divisores"/>
 
                     <TextView
                         android:id="@+id/text_divisores"
-                        android:onClick="divisores"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
+                        android:onClick="divisores"
                         android:text="Divisores - Calcular todos os divisores de um número inteiro"
                         android:textAppearance="@style/TextAppearance.AppCompat"/>
                 </LinearLayout>
@@ -184,48 +196,8 @@
 
             <android.support.v7.widget.CardView
                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
-
-                <LinearLayout
-                    android:id="@+id/linear_num_divisores"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/clickable_view_height"
-                    android:elevation="18dp"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/imageView6"
-                        android:onClick="n_divisores"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        app:srcCompat="@mipmap/ic_divisores"/>
-
-                    <TextView
-                        android:id="@+id/text_num_divisores"
-                        android:onClick="n_divisores"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:text="Número de Divisores - Cálculo do número total de divisores de um inteiro"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_6"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="8dp"
@@ -237,32 +209,34 @@
                 <LinearLayout
                     android:id="@+id/linear_primos"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/clickable_view_height"
+                    android:layout_height="wrap_content"
                     android:elevation="18dp"
+                    android:onClick="primes_table"
                     android:orientation="horizontal"
                     android:padding="8dp">
 
                     <ImageView
                         android:id="@+id/imageView7"
-                        android:onClick="primos_si"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="16dp"
+                        android:onClick="primes_table"
                         app:srcCompat="@mipmap/ic_primes"/>
 
                     <TextView
                         android:id="@+id/text_primos"
-                        android:onClick="primos_si"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="Averiguar se dois ou mais números são primos entre si"
+                        android:onClick="primes_table"
+                        android:text="Tabela de números primos num dado intervalo"
                         android:textAppearance="@style/TextAppearance.AppCompat"/>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>

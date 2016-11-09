@@ -12,27 +12,25 @@
     <string name="nav_mdc">MDC</string>
     <string name="nav_fatorizar">Fatorizar</string>
     <string name="nav_divisores">Divisores</string>
-    <string name="nav_ndivisores">Número de Divisores</string>
-    <string name="nav_primos_si">Primos entre si</string>
+    <string name="nav_primes_table">Tabela de números primos</string>
     <string name="nav_share">Partilhar</string>
     <string name="nav_sendmail">Enviar e-mail</string>
     <string name="nav_about_us">Sobre</string>
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">
-        <item>Home</item>
+        <item>Matemática - Inicio</item>
         <item>MMC</item>
         <item>MDC</item>
-        <item>Fatorizar</item>
+        <item>Fatorizar número</item>
         <item>Divisores</item>
-        <item>Número de Divisores</item>
-        <item>Primos entre si</item>
+        <item>Tabela de números primos</item>
     </string-array>
 
     <string name="activity_title_about_us">About Us</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="action_clear_all_history">Apagar o histórico</string>
-    <string name="action_logout">Logout</string>
+    <string name="action_buy">Remover anúncios</string>
     <string name="action_share_history">Partilhar resultados</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="activity_title_send_mail">Enviar e-mail</string>
