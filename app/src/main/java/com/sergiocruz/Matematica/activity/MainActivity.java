@@ -311,19 +311,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        // user is in notifications fragment
-        // and selected 'Mark all as Read'
-        if (id == R.id.action_share_history) {
-            Toast.makeText(getApplicationContext(), "Partilhar Resultados", Toast.LENGTH_LONG).show();
-        }
-
-        // user is in notifications fragment
-        // and selected 'Clear All'
-/*        if (id == R.id.action_clear_all_history) {
-            FatorizarFragment.remove_history();
-            Toast.makeText(getApplicationContext(), "Apagar histórico de resultados", Toast.LENGTH_LONG).show();
-        }*/
-
         return super.onOptionsItemSelected(item);
     }
 

@@ -15,8 +15,5 @@
         android:id="@+id/action_share_result"
         android:title="@string/action_share_result"
         app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_help_result"
-        android:title="@string/action_help_result"
-        app:showAsAction="never"/>
+
 </menu>

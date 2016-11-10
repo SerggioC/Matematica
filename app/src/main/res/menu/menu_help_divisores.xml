@@ -3,7 +3,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_ajuda"
+        android:id="@+id/action_help_divisores"
         android:title="@string/action_ajuda_divisores"
         app:showAsAction="never" />
 

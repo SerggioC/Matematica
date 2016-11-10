@@ -38,9 +38,9 @@
     <string name="action_clipboard_result">Copiar</string>
     <string name="action_clear_result">Apagar</string>
     <string name="action_share_result">Enviar...</string>
-    <string name="action_help_result">Como calcular?</string>
     <string name="action_ajuda_fatorizar">Como fatorizar um número?</string>
     <string name="action_ajuda_divisores">Como obter os divisores?</string>
     <string name="action_ajuda_mmc">Como calcular o MMC?</string>
     <string name="action_ajuda_mdc">Como calcular o MDC?</string>
+    <string name="help_text_divisores">Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.</string>
 </resources>

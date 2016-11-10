@@ -333,7 +333,7 @@
             </android.support.v7.widget.CardView>
 
             <LinearLayout
-                android:id="@+id/history_mmc"
+                android:id="@+id/history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

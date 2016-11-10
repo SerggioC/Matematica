@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.helper.CreateCardView;
+import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
@@ -45,12 +46,6 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
  * to handle interaction events.
  * Use the {@link FatorizarFragment#newInstance} factory method to
  * create an instance of this fragment.
- * <p>
- * <p>
- * <p>
- * <p>
- * ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
- * clipboard.setText(string);
  */
 public class FatorizarFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -179,7 +174,6 @@ public class FatorizarFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_fatorizar, menu);
-        inflater.inflate(R.menu.main, menu); //buy pro
     }
 
 
@@ -190,15 +184,12 @@ public class FatorizarFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // and selected 'Mark all as Read'
         if (id == R.id.action_share_history) {
-            Toast.makeText(getActivity(), "Partilhar Resultados", Toast.LENGTH_LONG).show();
+            MenuHelper.share_history(getActivity());
         }
 
-        // and selected 'Clear All'
         if (id == R.id.action_clear_all_history) {
-            Toast.makeText(getActivity(), "Histórico de resultados apagado", Toast.LENGTH_LONG).show();
-            remove_history();
+            MenuHelper.remove_history(getActivity());
         }
 
         return super.onOptionsItemSelected(item);
@@ -234,11 +225,6 @@ public class FatorizarFragment extends Fragment {
         ed.setText("");
     }
 
-    public void remove_history() {
-        ViewGroup historyFatores = (ViewGroup) getActivity().findViewById(R.id.history_fatores);
-        if ((historyFatores).getChildCount() > 0)
-            (historyFatores).removeAllViews();
-    }
 
     private void calcfatoresPrimos(View view) {
 
@@ -291,7 +277,7 @@ public class FatorizarFragment extends Fragment {
             String str_results = "";
             String str_divisores = "";
             SpannableStringBuilder ssb_fatores;
-            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_fatores);
+            ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
 
             if (sizeList == 1) {
                 str_fatores = num + " é um número primo.";

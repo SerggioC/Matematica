@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.helper.CreateCardView;
+import com.sergiocruz.Matematica.helper.MenuHelper;
 
 import java.util.ArrayList;
 
@@ -132,8 +133,6 @@ public class MDCFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_mdc, menu);
-        inflater.inflate(R.menu.main, menu); //buy pro
-
     }
 
     @Override
@@ -796,7 +795,7 @@ public class MDCFragment extends Fragment {
 
         mdc_string += result_mdc.toString();
         SpannableStringBuilder ssb = new SpannableStringBuilder(mdc_string);
-        ViewGroup history = (ViewGroup) view.findViewById(R.id.history_mdc);
+        ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
         CreateCardView.create(history, ssb, getActivity());
 
 
@@ -899,25 +898,15 @@ public class MDCFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // and selected 'Mark all as Read'
         if (id == R.id.action_share_history) {
-            Toast.makeText(getActivity(), "Partilhar Resultados", Toast.LENGTH_LONG).show();
+            MenuHelper.share_history(getActivity());
         }
 
-        // and selected 'Clear All'
         if (id == R.id.action_clear_all_history) {
-            Toast.makeText(getActivity(), "Histórico de resultados apagado", Toast.LENGTH_LONG).show();
-            remove_history();
+            MenuHelper.remove_history(getActivity());
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public void remove_history() {
-        ViewGroup historyMDC = (ViewGroup) getActivity().findViewById(R.id.history_mdc);
-        if ((historyMDC).getChildCount() > 0)
-            (historyMDC).removeAllViews();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

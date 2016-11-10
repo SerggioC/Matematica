@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.helper.CreateCardView;
+import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class DivisoresFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,7 @@ public class DivisoresFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -85,8 +88,8 @@ public class DivisoresFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_divisores, menu);
-        inflater.inflate(R.menu.main, menu); //buy pro
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -94,25 +97,23 @@ public class DivisoresFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // and selected 'Mark all as Read'
         if (id == R.id.action_share_history) {
-            Toast.makeText(getActivity(), "Partilhar Resultados", Toast.LENGTH_LONG).show();
+            MenuHelper.share_history(getActivity());
         }
 
-        // and selected 'Clear All'
         if (id == R.id.action_clear_all_history) {
-            Toast.makeText(getActivity(), "Histórico de resultados apagado", Toast.LENGTH_LONG).show();
-            remove_history();
+            MenuHelper.remove_history(getActivity());
+        }
+        if (id == R.id.action_help_divisores) {
+            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+
+            String help_divisores = getString(R.string.help_text_divisores);
+
+            SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
+            CreateCardView.create(history, ssb, getActivity());
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    public void remove_history() {
-        ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history_divisores);
-        if ((history).getChildCount() > 0)
-            (history).removeAllViews();
     }
 
 
@@ -175,7 +176,7 @@ public class DivisoresFragment extends Fragment {
 
 
         if (editnumText.equals("0") || num == 0L) {
-            Toast.makeText(getActivity(), "O número "+ num + " não tem divisores!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "O número " + num + " não tem divisores!", Toast.LENGTH_LONG).show();
             return;
         }
         try {
@@ -191,7 +192,7 @@ public class DivisoresFragment extends Fragment {
             //createCardViewLayout(str_divisores);
 
             SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
-            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_divisores);
+            ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
 
             CreateCardView.create(history, ssb, getActivity());
 
@@ -202,7 +203,7 @@ public class DivisoresFragment extends Fragment {
     }
 
     void createCardViewLayout(String str_divisores) {
-        final ViewGroup historyDivisores = (ViewGroup) getActivity().findViewById(R.id.history_divisores);
+        final ViewGroup historyDivisores = (ViewGroup) getActivity().findViewById(R.id.history);
 
         //criar novo cardview
         final CardView cardview = new CardView(getActivity());
@@ -255,23 +256,6 @@ public class DivisoresFragment extends Fragment {
                 }));
     }
 
-
-
-    public ArrayList<Integer> getAllDivisores(int numero) {
-        int upperlimit = (int) (Math.sqrt(numero));
-        ArrayList<Integer> divisores = new ArrayList<Integer>();
-        for (int i = 1; i <= upperlimit; i += 1) {
-            if (numero % i == 0) {
-                divisores.add(i);
-                if (i != numero / i) {
-                    divisores.add(numero / i);
-                }
-            }
-        }
-        Collections.sort(divisores);
-        return divisores;
-    }
-
     public ArrayList<Long> getAllDivisoresLong(Long numero) {
         long upperlimit = (long) (Math.sqrt(numero));
         ArrayList<Long> divisores = new ArrayList<Long>();
@@ -287,7 +271,6 @@ public class DivisoresFragment extends Fragment {
         Collections.sort(divisores);
         return divisores;
     }
-
 
     @Override
     public void onAttach(Context context) {

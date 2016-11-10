@@ -9,5 +9,10 @@
         android:id="@+id/action_share_history"
         android:title="@string/action_share_history"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_buy"
+        android:orderInCategory="100"
+        android:title="@string/action_buy"
+        app:showAsAction="never" />
 
 </menu>

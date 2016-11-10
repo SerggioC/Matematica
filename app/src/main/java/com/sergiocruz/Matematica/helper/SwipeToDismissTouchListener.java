@@ -5,10 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -85,8 +85,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
-        final CardView theView = (CardView) this.mView;
 
+        final CardView theView = (CardView) this.mView;
 
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -96,11 +96,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 int id = item.getItemId();
                 if (id == R.id.action_clipboard) {
 
-                    // Texto dos resultados no textview
-                    //String theClipText = ((TextView) ((CardView) theView).getChildAt(0)).getText().toString();
-
                     String theClipText = ((TextView) theView.findViewWithTag("texto")).getText().toString();
-                    Log.i("Sergio>>>", "onMenuItemClick: thecliptext"+ theClipText);
 
                     // aceder ao clipboard manager
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -112,8 +108,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                         int clipItems = clipboard.getPrimaryClip().getItemCount();
                         for (int i = 0; i < clipItems; i++) {
                             if (clipboard.getPrimaryClip().getItemAt(i).getText().toString().equals(theClipText)) {
-                                Log.i("Sergio >>>", "clipboard: " + clipboard.getPrimaryClip().getItemAt(i).getText().toString() +
-                                        " clipItems: " + clipItems);
                                 hasEqualItem = true;
                             }
                         }
@@ -130,19 +124,25 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
                 if (id == R.id.action_clear_result) {
                     final ViewGroup history = (ViewGroup) theView.getParent();
-
                     animateRemoving(theView, history);
-                    //theView.setVisibility(theView.GONE);
-                    //history.removeView(theView);
                 }
-                if (id == R.id.action_help_result) {
-                    Toast.makeText(mView.getContext(), "HEEEEELLLLP!!!", Toast.LENGTH_SHORT).show();
+                if (id == R.id.action_share_result) {
+
+                    String text_fromTextView = ((TextView) theView.findViewWithTag("texto")).getText().toString();
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Matemática\n" + text_fromTextView);
+                    sendIntent.setType("text/plain");
+                    mActivity.startActivity(sendIntent);
+
                 }
+
                 return true;
             }
         });
         popup.show();
     }
+
 
     void animateRemoving(final CardView cardview, final ViewGroup history) {
         cardview.animate().translationX(3000).alpha(0).setDuration(400).setListener(new Animator.AnimatorListener() {
