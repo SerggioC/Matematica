@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,6 +56,11 @@ public class MDCFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void showToast() {
+        Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_SHORT);
+        thetoast.setGravity(Gravity.CENTER,0,0);
+        thetoast.show();
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -251,7 +257,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_1.setText(oldnum1);
                     mdc_num_1.setSelection(mdc_num_1.getText().length()); //Colocar o cursor no final do texto
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -284,7 +290,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_2.setText(oldnum2);
                     mdc_num_2.setSelection(mdc_num_2.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -316,7 +322,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_3.setText(oldnum3);
                     mdc_num_3.setSelection(mdc_num_3.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -349,7 +355,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_4.setText(oldnum4);
                     mdc_num_4.setSelection(mdc_num_4.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -382,7 +388,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_5.setText(oldnum5);
                     mdc_num_5.setSelection(mdc_num_5.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -413,7 +419,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_6.setText(oldnum6);
                     mdc_num_6.setSelection(mdc_num_6.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -442,9 +448,9 @@ public class MDCFragment extends Fragment {
                     // Tentar converter o string para long
                     num7 = parseInt(s.toString());
                 } catch (Exception e) {
-                    mdc_num_6.setText(oldnum7);
+                    mdc_num_7.setText(oldnum7);
                     mdc_num_7.setSelection(mdc_num_7.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -475,7 +481,7 @@ public class MDCFragment extends Fragment {
                 } catch (Exception e) {
                     mdc_num_8.setText(oldnum8);
                     mdc_num_8.setSelection(mdc_num_8.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }

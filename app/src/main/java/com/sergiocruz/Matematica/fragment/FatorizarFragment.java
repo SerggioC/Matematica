@@ -137,7 +137,7 @@ public class FatorizarFragment extends Fragment {
             results.add(number);
         }
 
-        for (long i = 3; i <= number / i; i+=2) {
+        for (long i = 3; i <= number / i; i += 2) {
             while (number % i == 0) {
                 divisores.add(i);
                 number /= i;
@@ -157,6 +157,7 @@ public class FatorizarFragment extends Fragment {
 
         return factoresPrimos;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,18 +214,13 @@ public class FatorizarFragment extends Fragment {
         clearTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearTextview(view);
+                EditText ed = (EditText) view.findViewById(R.id.editNumFact);
+                ed.setText("");
             }
         });
 
         return view;
     }
-
-    private void clearTextview(View view) {
-        EditText ed = (EditText) view.findViewById(R.id.editNumFact);
-        ed.setText("");
-    }
-
 
     private void calcfatoresPrimos(View view) {
 
@@ -233,18 +229,24 @@ public class FatorizarFragment extends Fragment {
         long num;
 
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
-            Toast.makeText(getActivity(), "Introduzir um número inteiro.", Toast.LENGTH_SHORT).show();
+            Toast thetoast = Toast.makeText(getActivity(), "Introduzir um número inteiro", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
         try {
             // Tentar converter o string para long
             num = Long.parseLong(editnumText);
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+            Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
         if (num == 0L || num == 1L) {
-            Toast.makeText(getActivity(), "O número " + num + " não tem fatores primos!", Toast.LENGTH_LONG).show();
+            Toast thetoast = Toast.makeText(getActivity(), "O número " + num + " não tem fatores primos!", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
 
@@ -253,7 +255,7 @@ public class FatorizarFragment extends Fragment {
             //Array de arrays
             ArrayList<ArrayList<Long>> tabela_fatores = new ArrayList<>();
 
-            tabela_fatores = getTabelaFatoresPrimos(num);
+            tabela_fatores = getTabelaFatoresPrimos2(num);
 
             // Lista dos fatores primos
             //ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
@@ -307,7 +309,7 @@ public class FatorizarFragment extends Fragment {
                     }
                     lastItem = fatoresPrimos.get(i);
                 }
-                str_fatores = str_fatores.substring(0,str_fatores.length()-1) + "=\n";
+                str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
                 ssb_fatores = new SpannableStringBuilder(str_fatores);
 
                 int value_length;
@@ -503,9 +505,5 @@ public class FatorizarFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public static class MapUtil {
-
     }
 }

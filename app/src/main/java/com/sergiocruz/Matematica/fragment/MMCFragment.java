@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,7 @@ import com.sergiocruz.Matematica.helper.MenuHelper;
 
 import java.util.ArrayList;
 
+import static android.widget.Toast.makeText;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
@@ -53,6 +55,11 @@ public class MMCFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void showToast() {
+        Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_SHORT);
+        thetoast.setGravity(Gravity.CENTER,0,0);
+        thetoast.show();
+    }
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -113,6 +120,7 @@ public class MMCFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         // havea menu in this fragment
@@ -249,8 +257,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_1.setText(oldnum1);
                     mmc_num_1.setSelection(mmc_num_1.getText().length()); //Colocar o cursor no final do texto
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
-                    return;
+                    showToast();
                 }
             }
 
@@ -282,7 +289,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_2.setText(oldnum2);
                     mmc_num_2.setSelection(mmc_num_2.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -314,7 +321,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_3.setText(oldnum3);
                     mmc_num_3.setSelection(mmc_num_3.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -347,7 +354,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_4.setText(oldnum4);
                     mmc_num_4.setSelection(mmc_num_4.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -380,7 +387,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_5.setText(oldnum5);
                     mmc_num_5.setSelection(mmc_num_5.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -411,7 +418,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_6.setText(oldnum6);
                     mmc_num_6.setSelection(mmc_num_6.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -440,9 +447,9 @@ public class MMCFragment extends Fragment {
                     // Tentar converter o string para long
                     num7 = parseInt(s.toString());
                 } catch (Exception e) {
-                    mmc_num_6.setText(oldnum7);
+                    mmc_num_7.setText(oldnum7);
                     mmc_num_7.setSelection(mmc_num_7.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -473,7 +480,7 @@ public class MMCFragment extends Fragment {
                 } catch (Exception e) {
                     mmc_num_8.setText(oldnum8);
                     mmc_num_8.setSelection(mmc_num_8.getText().length());
-                    Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_SHORT).show();
+                    showToast();
                     return;
                 }
             }
@@ -485,6 +492,8 @@ public class MMCFragment extends Fragment {
 
         return view;
     }
+
+
 
     public void add_mmc(View view) {
 
@@ -633,21 +642,21 @@ public class MMCFragment extends Fragment {
     private void calc_mmc(View view) {
 
         EditText edittext1 = (EditText) view.findViewById(R.id.mmc_num_1);
-        String str_num1 = edittext1.getText().toString();
+        String str_num1 = edittext1.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext2 = (EditText) view.findViewById(R.id.mmc_num_2);
-        String str_num2 = edittext2.getText().toString();
+        String str_num2 = edittext2.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext3 = (EditText) view.findViewById(R.id.mmc_num_3);
-        String str_num3 = edittext3.getText().toString();
+        String str_num3 = edittext3.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext4 = (EditText) view.findViewById(R.id.mmc_num_4);
-        String str_num4 = edittext4.getText().toString();
+        String str_num4 = edittext4.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext5 = (EditText) view.findViewById(R.id.mmc_num_5);
-        String str_num5 = edittext5.getText().toString();
+        String str_num5 = edittext5.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext6 = (EditText) view.findViewById(R.id.mmc_num_6);
-        String str_num6 = edittext6.getText().toString();
+        String str_num6 = edittext6.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext7 = (EditText) view.findViewById(R.id.mmc_num_7);
-        String str_num7 = edittext7.getText().toString();
+        String str_num7 = edittext7.getText().toString().replaceAll("[^\\d]", "");
         EditText edittext8 = (EditText) view.findViewById(R.id.mmc_num_8);
-        String str_num8 = edittext8.getText().toString();
+        String str_num8 = edittext8.getText().toString().replaceAll("[^\\d]", "");
 
         long num1, num2, num3, num4, num5, num6, num7, num8;
 
@@ -658,13 +667,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num1 = parseLong(str_num1);
                 if (num1 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num1 > 0L) {
                     numbers.add(num1);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 1" + str_num1 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 1" + str_num1 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -673,13 +682,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num2 = parseLong(str_num2);
                 if (num2 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num2 > 0L) {
                     numbers.add(num2);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 2" + str_num2 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 2" + str_num2 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -688,13 +697,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num3 = parseLong(str_num3);
                 if (num3 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num3 > 0L) {
                     numbers.add(num3);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 3" + str_num3 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 3" + str_num3 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -703,13 +712,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num4 = parseLong(str_num4);
                 if (num4 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num4 > 0L) {
                     numbers.add(num4);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 4" + str_num4 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 4" + str_num4 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -718,13 +727,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num5 = parseLong(str_num5);
                 if (num5 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num5 > 0L) {
                     numbers.add(num5);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 5" + str_num5 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 5" + str_num5 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -733,13 +742,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num6 = parseLong(str_num6);
                 if (num6 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num6 > 0L) {
                     numbers.add(num6);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 6" + str_num6 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 6" + str_num6 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -749,13 +758,13 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num7 = parseLong(str_num7);
                 if (num7 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num7 > 0L) {
                     numbers.add(num7);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 7" + str_num7 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 7" + str_num7 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -765,18 +774,18 @@ public class MMCFragment extends Fragment {
                 // Tentar converter o string para long
                 num8 = parseLong(str_num8);
                 if (num8 == 0L) {
-                    Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
+                    makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num8 > 0L) {
                     numbers.add(num8);
                 }
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Número 8" + str_num8 + " demasiado grande.", Toast.LENGTH_SHORT).show();
+                makeText(getActivity(), "Número 8" + str_num8 + " demasiado grande.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
         if (numbers.size() < 2) {
-            Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
+            makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
             return;
         }
 

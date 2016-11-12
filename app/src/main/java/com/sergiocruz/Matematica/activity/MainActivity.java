@@ -22,6 +22,7 @@ import com.sergiocruz.Matematica.fragment.FatorizarFragment;
 import com.sergiocruz.Matematica.fragment.HomeFragment;
 import com.sergiocruz.Matematica.fragment.MDCFragment;
 import com.sergiocruz.Matematica.fragment.MMCFragment;
+import com.sergiocruz.Matematica.fragment.PrimesTableFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -146,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
                 // Fragment Divisores
                 DivisoresFragment divisoresFragment = new DivisoresFragment();
                 return divisoresFragment;
+            case 5:
+                // Fragment Tabela de números Primos
+                PrimesTableFragment primesTableFragment = new PrimesTableFragment();
+                return primesTableFragment;
             default:
                 return new HomeFragment();
         }

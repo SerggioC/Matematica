@@ -50,7 +50,7 @@ public class MenuHelper {
         if (textViews_withTAG.size() > 0) {
             String text_fromTextViews = "";
             for (int i = 0; i < textViews_withTAG.size(); i++) {
-                text_fromTextViews += (((TextView) textViews_withTAG.get(i)).getText().toString()) + "\n\n";
+                text_fromTextViews += (((TextView) textViews_withTAG.get(i)).getText().toString()) + "\n";
             }
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
@@ -58,7 +58,13 @@ public class MenuHelper {
             sendIntent.setType("text/plain");
             activity.startActivity(sendIntent);
         } else {
-            Toast.makeText(activity, "Sem dados para partilhar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Sem resultados para partilhar", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+
+
+
 }

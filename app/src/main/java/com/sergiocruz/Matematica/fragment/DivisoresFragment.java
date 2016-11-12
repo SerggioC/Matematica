@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -135,17 +136,13 @@ public class DivisoresFragment extends Fragment {
         clearTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearTextview(view);
+                EditText ed = (EditText) view.findViewById(R.id.editNum);
+                ed.setText("");
             }
         });
 
         return view;
 
-    }
-
-    private void clearTextview(View view) {
-        EditText ed = (EditText) view.findViewById(R.id.editNum);
-        ed.setText("");
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -162,7 +159,9 @@ public class DivisoresFragment extends Fragment {
         long num;
 
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
-            Toast.makeText(getActivity(), "Introduzir um número inteiro.", Toast.LENGTH_SHORT).show();
+            Toast thetoast = Toast.makeText(getActivity(), "Introduzir um número inteiro", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
 
@@ -170,13 +169,16 @@ public class DivisoresFragment extends Fragment {
             // Tentar converter o string para long
             num = Long.parseLong(editnumText);
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
+            Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
 
-
         if (editnumText.equals("0") || num == 0L) {
-            Toast.makeText(getActivity(), "O número " + num + " não tem divisores!", Toast.LENGTH_LONG).show();
+            Toast thetoast = Toast.makeText(getActivity(), "O número 0 não tem divisores!", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
         try {
@@ -196,9 +198,10 @@ public class DivisoresFragment extends Fragment {
 
             CreateCardView.create(history, ssb, getActivity());
 
-
         } catch (NumberFormatException exception) {
-            Toast.makeText(getActivity(), "Esse número é demasiado grande.", Toast.LENGTH_LONG).show();
+            Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_LONG);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
         }
     }
 
