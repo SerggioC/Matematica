@@ -1,9 +1,11 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,13 +13,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+
+import static com.sergiocruz.Matematica.R.layout.fragment_primes_table;
 import static java.lang.Integer.parseInt;
 
 /*****
@@ -31,6 +40,8 @@ public class PrimesTableFragment extends Fragment {
     public PrimesTableFragment() {
         // Required empty public constructor
     }
+    // Inicializar o Gridview da tabela
+    GridView history_gridView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +73,8 @@ public class PrimesTableFragment extends Fragment {
         }
 
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(getActivity());
+            GridView history_gridView = (GridView) getActivity().findViewById(R.id.history);
+            history_gridView.setAdapter(null);
         }
 
         return super.onOptionsItemSelected(item);
@@ -72,7 +84,7 @@ public class PrimesTableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_primes_table, container, false);
+        final View view = inflater.inflate(fragment_primes_table, container, false);
 
         Button button = (Button) view.findViewById(R.id.button_gerar_tabela);
         button.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +135,7 @@ public class PrimesTableFragment extends Fragment {
                     min_edittext.setText(oldnum1);
                     min_edittext.setSelection(min_edittext.getText().length()); //Colocar o cursor no final do texto
 
-                    Toast thetoast = Toast.makeText(getActivity(), "Valor mínimo demasiado grande", Toast.LENGTH_LONG);
+                    Toast thetoast = Toast.makeText(getActivity(), "Valor mínimo demasiado alto", Toast.LENGTH_LONG);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }
@@ -158,7 +170,7 @@ public class PrimesTableFragment extends Fragment {
                     max_edittext.setText(oldnum2);
                     max_edittext.setSelection(max_edittext.getText().length()); //Colocar o cursor no final do texto
 
-                    Toast thetoast = Toast.makeText(getActivity(), "Valor máximo demasiado grande", Toast.LENGTH_LONG);
+                    Toast thetoast = Toast.makeText(getActivity(), "Valor máximo demasiado alto", Toast.LENGTH_LONG);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }
@@ -170,6 +182,7 @@ public class PrimesTableFragment extends Fragment {
             }
         });
 
+        gerar_tabela_primos(view);
 
         return view;
     }
@@ -195,13 +208,14 @@ public class PrimesTableFragment extends Fragment {
             // Tentar converter o string do valor mínimo para Integer 2^31
             num_min = Integer.parseInt(min_string);
             if (num_min < 2) {
-                Toast thetoast = Toast.makeText(getActivity(), "Valor mínimo 2", Toast.LENGTH_LONG);
+                Toast thetoast = Toast.makeText(getActivity(), "Menor número primo é 2", Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
-                return;
+                min_edittext.setText("2");
+                num_min = 2;
             }
         } catch (Exception e) {
-            Toast thetoast = Toast.makeText(getActivity(), "Valor mínimo demasiado grande", Toast.LENGTH_LONG);
+            Toast thetoast = Toast.makeText(getActivity(), "Valor mínimo demasiado alto", Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -211,13 +225,14 @@ public class PrimesTableFragment extends Fragment {
             // Tentar converter o string do valor mínimo para Integer 2^31
             num_max = Integer.parseInt(max_string);
             if (num_max < 2) {
-                Toast thetoast = Toast.makeText(getActivity(), "Valor mínimo 2", Toast.LENGTH_LONG);
+                Toast thetoast = Toast.makeText(getActivity(), "Menor número primo é 2", Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
-                return;
+                max_edittext.setText("2");
+                num_max = 2;
             }
         } catch (Exception e) {
-            Toast thetoast = Toast.makeText(getActivity(), "Valor máximo demasiado grande", Toast.LENGTH_LONG);
+            Toast thetoast = Toast.makeText(getActivity(), "Valor máximo demasiado alto", Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -225,12 +240,112 @@ public class PrimesTableFragment extends Fragment {
 
 
         if (num_min > num_max) {
-            min_edittext.setText(max_string);
-            max_edittext.setText(min_string);
+            int swapp = num_min;
+            num_min = num_max;
+            num_max = swapp;
+            min_edittext.setText(String.valueOf(num_min));
+            max_edittext.setText(String.valueOf(num_max));
         }
 
+        new LongOperation().execute(num_min, num_max);
+
+//        final ArrayList<String> primes = getPrimes(num_min, num_max);
+//
+//        final GridView history_gridView = (GridView) view.findViewById(R.id.history);
+//        ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, primes);
+//        history_gridView.setAdapter(primes_adapter);
 
     }
 
 
+    public class LongOperation extends AsyncTask<Integer, Float, ArrayList<String>> {
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected ArrayList<String> doInBackground(Integer... params) {
+
+            int num_min = params[0];
+            int num_max = params[1];
+            ArrayList<String> primes = new ArrayList<>();
+
+            if (num_min == 2) {
+                primes.add(Integer.toString(2));
+            }
+
+            for (int i = num_min; i <= num_max; i++) {
+                boolean isPrime = true;
+                if (i % 2 == 0) {
+                    isPrime = false;
+                }
+                if (isPrime) {
+                    for (int j = 3; j < i; j = j + 2) {
+                        if (i % j == 0) {
+                            isPrime = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (isPrime) {
+                    primes.add(Integer.toString(i));
+
+                }
+
+                NumberFormat number_formatter = new DecimalFormat("#0");
+
+                float percent =  (float) ( (float) i / (float) num_max )*100;
+
+                number_formatter.format(percent);
+
+                publishProgress(percent);
+            }
+            return primes;
+        }
+
+        @Override
+        protected void onProgressUpdate(Float... values) {
+            Log.i("Sergio>>>", "doInBackground: " + values[0]);
+
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> result) {
+            GridView history_gridView = (GridView) getActivity().findViewById(R.id.history);
+            ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
+            history_gridView.setAdapter(primes_adapter);
+
+        }
+
+    }
+
+
+
+    private ArrayList<String> getPrimes(int num_min, int num_max) {
+        ArrayList<String> primes = new ArrayList<>();
+        for (int i = num_min; i <= num_max; i++) {
+            boolean isPrime = true;
+            if (i % 2 == 0) {
+                isPrime = false;
+            }
+            if (isPrime) {
+                for (int j = 3; j < i; j = j + 2) {
+                    if (i % j == 0) {
+                        isPrime = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isPrime) {
+                primes.add(Integer.toString(i));
+            }
+
+        }
+        return primes;
+    }
+
 }
+

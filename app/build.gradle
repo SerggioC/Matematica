@@ -37,4 +37,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     // Glide image library use ->
     // compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support:gridlayout-v7:24.0.0'
 }
