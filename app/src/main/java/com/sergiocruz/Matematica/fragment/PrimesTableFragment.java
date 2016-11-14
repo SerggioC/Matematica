@@ -1,5 +1,6 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,10 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.helper.MenuHelper;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -40,14 +42,14 @@ public class PrimesTableFragment extends Fragment {
     public PrimesTableFragment() {
         // Required empty public constructor
     }
-    // Inicializar o Gridview da tabela
-    GridView history_gridView;
+
+    int num_min, num_max;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // havea menu in this fragment
+        // have a menu in this fragment
         setHasOptionsMenu(true);
 
     }
@@ -69,7 +71,22 @@ public class PrimesTableFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(getActivity());
+
+            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+            String primes_string = "Tabela de Números Primos entre " + num_min + " e " + num_max + ":\n";
+
+            for (int i = 0; i < history.getChildCount(); i++) {
+                TextView tableItem = (TextView) ((ViewGroup) history.getChildAt(i)).getChildAt(0);
+                primes_string += tableItem.getText().toString() + ", ";
+            }
+            primes_string = primes_string.substring(0, primes_string.length() - 2);
+
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Matemática\n" + primes_string);
+            sendIntent.setType("text/plain");
+            getActivity().startActivity(sendIntent);
+            Log.i("Sergio>>>", "onOptionsItemSelected: "+ primes_string);
         }
 
         if (id == R.id.action_clear_all_history) {
@@ -195,7 +212,6 @@ public class PrimesTableFragment extends Fragment {
         EditText max_edittext = (EditText) view.findViewById(R.id.max);
         String max_string = (String) max_edittext.getText().toString().replaceAll("[^\\d]", "");
 
-        int num_min, num_max;
 
         if (min_string.equals(null) || min_string.equals("") || min_string == null || max_string.equals(null) || max_string.equals("") || max_string == null) {
             Toast thetoast = Toast.makeText(getActivity(), "Preencher os campos do valor mínimo e máximo", Toast.LENGTH_LONG);
@@ -261,7 +277,7 @@ public class PrimesTableFragment extends Fragment {
     public class LongOperation extends AsyncTask<Integer, Float, ArrayList<String>> {
 
         @Override
-        protected void onPreExecute() {
+        public void onPreExecute() {
         }
 
         @Override
@@ -294,9 +310,9 @@ public class PrimesTableFragment extends Fragment {
 
                 }
 
-                NumberFormat number_formatter = new DecimalFormat("#0");
+                NumberFormat number_formatter = new DecimalFormat("#0.00");
 
-                float percent =  (float) ( (float) i / (float) num_max )*100;
+                float percent =  (float) ( (float) i / (float) num_max );
 
                 number_formatter.format(percent);
 
@@ -307,15 +323,41 @@ public class PrimesTableFragment extends Fragment {
 
         @Override
         protected void onProgressUpdate(Float... values) {
-            Log.i("Sergio>>>", "doInBackground: " + values[0]);
+            Log.i("Sergio>>>", "onProgressUpdate: " + getClass().getName().toString());
+            PrimesTableFragment thisFragment = (PrimesTableFragment) getFragmentManager().findFragmentByTag("primes_table");
+            if (thisFragment != null && thisFragment.isVisible()) {
+                ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
+                int cv_width = cardView1.getWidth();
+                int progress_width = (int) Math.round(values[0]*cv_width);
+
+                View progressBar = (View) getActivity().findViewById(R.id.progress);
+                progressBar.setVisibility(View.VISIBLE);
+
+                final float scale = getActivity().getResources().getDisplayMetrics().density;
+                int height_dip = (int) (4 * scale + 0.5f);
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
+                progressBar.setLayoutParams(layoutParams);
+            }
+
+
 
         }
 
         @Override
         protected void onPostExecute(ArrayList<String> result) {
-            GridView history_gridView = (GridView) getActivity().findViewById(R.id.history);
-            ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
-            history_gridView.setAdapter(primes_adapter);
+
+            PrimesTableFragment thisFragment = (PrimesTableFragment) getFragmentManager().findFragmentByTag("primes_table");
+            if (thisFragment != null && thisFragment.isVisible()) {
+                GridView history_gridView = (GridView) getActivity().findViewById(R.id.history);
+
+                ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
+                history_gridView.setAdapter(primes_adapter);
+
+                View progressBar = (View) getActivity().findViewById(R.id.progress);
+                progressBar.setVisibility(View.GONE);
+            }
+
 
         }
 
