@@ -1,6 +1,7 @@
 package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -117,6 +118,16 @@ public class DivisoresFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+//         Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
+//        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

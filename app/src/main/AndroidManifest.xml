@@ -15,7 +15,7 @@
             android:name="com.sergiocruz.Matematica.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            >
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -35,5 +35,4 @@
             android:name="com.sergiocruz.Matematica.activity.PrivacyPolicyActivity"
             android:label="@string/activity_title_privacy_policy"/>
     </application>
-
 </manifest>

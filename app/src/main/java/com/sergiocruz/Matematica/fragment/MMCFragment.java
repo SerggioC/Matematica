@@ -1,6 +1,7 @@
 package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -81,12 +82,12 @@ public class MMCFragment extends Fragment {
     /*****************************************************************
      * MMC: Mínimo múltiplo comum (lcm: least common multiplier)
      *****************************************************************/
-    private static long mmc(long a, long b) {
+    private static Double mmc(Double a, Double b) {
         return (b / mdc(a, b)) * a;
     }
 
-    private static long mmc(ArrayList<Long> input) {
-        long result = input.get(0);
+    private static Double mmc(ArrayList<Double> input) {
+        Double result = input.get(0);
         for (int i = 1; i < input.size(); i++)
             result = mmc(result, input.get(i));
         return result;
@@ -95,17 +96,17 @@ public class MMCFragment extends Fragment {
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
      *****************************************************************/
-    private static long mdc(long a, long b) {
+    private static double mdc(Double a, Double b) {
         while (b > 0) {
-            long temp = b;
+            Double temp = b;
             b = a % b;
             a = temp;
         }
         return a;
     }
 
-    private static long mdc(long[] input) {
-        long result = input[0];
+    private static Double mdc(Double[] input) {
+        Double result = input[0];
         for (int i = 1; i < input.length; i++)
             result = mdc(result, input[i]);
         return result;
@@ -114,7 +115,7 @@ public class MMCFragment extends Fragment {
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
      *****************************************************************/
-    private final static Long mdc2(Long a, Long b) {
+    private final static Double mdc2(Double a, Double b) {
         return b == 0 ? a : mdc(b, a % b);
     }
 
@@ -132,6 +133,17 @@ public class MMCFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
+//        }
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -660,7 +672,7 @@ public class MMCFragment extends Fragment {
 
         long num1, num2, num3, num4, num5, num6, num7, num8;
 
-        ArrayList<Long> numbers = new ArrayList<Long>();
+        ArrayList<Double> numbers = new ArrayList<Double>();
 
         if (!str_num1.equals("")) {
             try {
@@ -670,7 +682,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num1 > 0L) {
-                    numbers.add(num1);
+                    double num1d = ((double) num1);
+                    numbers.add(num1d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 1" + str_num1 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -685,7 +698,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num2 > 0L) {
-                    numbers.add(num2);
+                    double num2d = ((double) num2);
+                    numbers.add(num2d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 2" + str_num2 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -700,7 +714,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num3 > 0L) {
-                    numbers.add(num3);
+                    double num3d = ((double) num3);
+                    numbers.add(num3d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 3" + str_num3 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -715,7 +730,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num4 > 0L) {
-                    numbers.add(num4);
+                    double num4d = ((double) num4);
+                    numbers.add(num4d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 4" + str_num4 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -730,7 +746,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num5 > 0L) {
-                    numbers.add(num5);
+                    double num5d = ((double) num5);
+                    numbers.add(num5d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 5" + str_num5 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -745,7 +762,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num6 > 0L) {
-                    numbers.add(num6);
+                    double num6d = ((double) num6);
+                    numbers.add(num6d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 6" + str_num6 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -761,7 +779,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num7 > 0L) {
-                    numbers.add(num7);
+                    double num7d = ((double) num7);
+                    numbers.add(num7d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 7" + str_num7 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -777,7 +796,8 @@ public class MMCFragment extends Fragment {
                     makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG).show();
                     return;
                 } else if (num8 > 0L) {
-                    numbers.add(num8);
+                    double num8d = ((double) num8);
+                    numbers.add(num8d);
                 }
             } catch (Exception e) {
                 makeText(getActivity(), "Número 8" + str_num8 + " demasiado grande.", Toast.LENGTH_SHORT).show();
@@ -790,7 +810,7 @@ public class MMCFragment extends Fragment {
         }
 
         String mmc_string = "mmc(";
-        Long result_mmc = null;
+        Double result_mmc = null;
 
         if (numbers.size() > 1) {
             for (int i = 0; i < numbers.size() - 1; i++) {
