@@ -152,7 +152,7 @@ public class DivisoresFragment extends Fragment {
         int width = size.x;
         //int height = size.y;
         final float scale = getActivity().getResources().getDisplayMetrics().density;
-        int lr_dip = (int) (4 * scale + 0.5f);
+        int lr_dip = (int) (4 * scale + 0.5f) * 2;
         cv_width = width - lr_dip;
 
         hideKeyboard();
@@ -366,7 +366,6 @@ public class DivisoresFragment extends Fragment {
             progressBar = (View) getActivity().findViewById(R.id.progress);
             float scale = getActivity().getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
-
         }
 
         @Override

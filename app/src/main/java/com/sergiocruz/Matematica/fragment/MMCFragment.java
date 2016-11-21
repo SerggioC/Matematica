@@ -5,11 +5,9 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +21,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
@@ -151,7 +148,7 @@ public class MMCFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.i("Sergio>>>", "onActivityCreated: ");
+/*        Log.i("Sergio>>>", "onActivityCreated: ");
         if (savedInstanceState != null) {
             //Restore the fragment's state here
             int state_size = savedInstanceState.size();
@@ -159,13 +156,14 @@ public class MMCFragment extends Fragment {
                 SpannableStringBuilder ssb = new SpannableStringBuilder(savedInstanceState.getCharSequence("Card" + i));
                 CreateCardView.create(history, ssb, getActivity());
             }
-        }
+        }*/
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.i("Sergio>>>", "onSaveInstanceState: ");
+
+/*        Log.i("Sergio>>>", "onSaveInstanceState: ");
         //Saving the fragment's state
         ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
         int cards = history.getChildCount();
@@ -175,7 +173,7 @@ public class MMCFragment extends Fragment {
             Log.d("Sergio>>>", "onSaveInstanceState: text(i)= " + text);
         }
 
-        Log.i("Sergio>>>", "onSaveInstanceState: cards= " + cards);
+        Log.i("Sergio>>>", "onSaveInstanceState: cards= " + cards);*/
     }
 
     @Override
@@ -188,6 +186,7 @@ public class MMCFragment extends Fragment {
 //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
 //            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
 //        }
+
         hideKeyboard();
 
     }
@@ -685,11 +684,13 @@ public class MMCFragment extends Fragment {
             if (f4_visible) {
                 edittext4.setText("");
                 f_4.setVisibility(View.GONE);
+                f_4.setAlpha(0);
                 return;
             }
             if (f3_visible) {
                 edittext3.setText("");
                 f_3.setVisibility(View.GONE);
+                f_3.setAlpha(0);
                 ll_34.setVisibility(View.GONE);
                 less_one.setVisibility(View.INVISIBLE);
                 return;

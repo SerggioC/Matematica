@@ -3,6 +3,8 @@ package com.sergiocruz.Matematica.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.webkit.WebView;
 
 import com.sergiocruz.Matematica.R;
 
@@ -16,6 +18,8 @@ public class SendMailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_mail);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        WebView webView = (WebView) findViewById(R.id.web_view);
+        webView.loadUrl("file:///android_res/drawable/mail_smiley.gif");
     }
 
     @Override
@@ -33,5 +37,9 @@ public class SendMailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void send_me_mail(View view) {
+
     }
 }

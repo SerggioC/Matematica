@@ -356,7 +356,7 @@ public class PrimesTableFragment extends Fragment {
             int num_columns = (int) Math.round(width / num_length);
             history_gridView.setNumColumns(num_columns);
             final float scale = getActivity().getResources().getDisplayMetrics().density;
-            int lr_dip = (int) (4 * scale + 0.5f);
+            int lr_dip = (int) (4 * scale + 0.5f) * 2;
             cv_width = width - lr_dip;
         }
         hideKeyboard();
