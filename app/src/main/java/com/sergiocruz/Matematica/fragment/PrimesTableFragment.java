@@ -1,13 +1,17 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +34,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import static android.widget.Toast.makeText;
-import static com.sergiocruz.Matematica.R.layout.fragment_primes_table;
+import static com.sergiocruz.Matematica.R.id.card_view_1;
 import static java.lang.Integer.parseInt;
 
 /*****
@@ -40,14 +45,15 @@ import static java.lang.Integer.parseInt;
 
 public class PrimesTableFragment extends Fragment {
 
+    public AsyncTask<Integer, Float, ArrayList<String>> BG_Operation = new LongOperation();
+    public ArrayList<String> tableData = null;
     int num_min, num_max, cv_width, height_dip;
     View progressBar;
     GridView history_gridView;
     NumberFormat number_formatter;
     Fragment thisFragment = this;
     Button button;
-    private AsyncTask<Integer, Float, ArrayList<String>> BG_Operation = new LongOperation();
-    private ArrayList<String> tableData;
+    Activity mActivity = getActivity();
 
     public PrimesTableFragment() {
         // Required empty public constructor
@@ -111,7 +117,7 @@ public class PrimesTableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(fragment_primes_table, container, false);
+        final View view = inflater.inflate(R.layout.fragment_primes_table, container, false);
 
         button = (Button) view.findViewById(R.id.button_gerar_tabela);
         button.setOnClickListener(new View.OnClickListener() {
@@ -231,7 +237,7 @@ public class PrimesTableFragment extends Fragment {
             // Tentar converter o string do valor mínimo para Integer 2^31
             num_min = Integer.parseInt(min_string);
             if (num_min < 2) {
-                Toast thetoast = makeText(getActivity(), "Menor número primo é 2", Toast.LENGTH_SHORT);
+                Toast thetoast = makeText(getActivity(), "Menor número primo = 2", Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
                 min_edittext.setText("2");
@@ -248,7 +254,7 @@ public class PrimesTableFragment extends Fragment {
             // Tentar converter o string do valor mínimo para Integer 2^31
             num_max = Integer.parseInt(max_string);
             if (num_max < 2) {
-                Toast thetoast = makeText(getActivity(), "Menor número primo é 2", Toast.LENGTH_SHORT);
+                Toast thetoast = makeText(getActivity(), "Menor número primo = 2", Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
                 max_edittext.setText("2");
@@ -340,16 +346,37 @@ public class PrimesTableFragment extends Fragment {
 //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
 //            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
 //        }
+        if (tableData != null) {
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int width = size.x;  //int height = size.y;
+            int min_num_length = tableData.get(tableData.size() - 1).toString().length();
+            int num_length = min_num_length * 54 + 8;
+            int num_columns = (int) Math.round(width / num_length);
+            history_gridView.setNumColumns(num_columns);
+            final float scale = getActivity().getResources().getDisplayMetrics().density;
+            int lr_dip = (int) (4 * scale + 0.5f);
+            cv_width = width - lr_dip;
+        }
+        hideKeyboard();
     }
 
+    public void hideKeyboard() {
+        //Hide the keyboard
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    }
 
     public class LongOperation extends AsyncTask<Integer, Float, ArrayList<String>> {
 
         @Override
         public void onPreExecute() {
             button.setClickable(false);
+            button.setText("Working...");
+            hideKeyboard();
             history_gridView = (GridView) getActivity().findViewById(R.id.history);
-            ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
+            ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(card_view_1);
             cv_width = cardView1.getWidth();
             progressBar = (View) getActivity().findViewById(R.id.progress);
             number_formatter = new DecimalFormat("#0.00");
@@ -403,15 +430,19 @@ public class PrimesTableFragment extends Fragment {
         protected void onPostExecute(ArrayList<String> result) {
             tableData = result;
             if (thisFragment != null && thisFragment.isVisible() && result.size() > 0) {
-                int history_width = history_gridView.getWidth();
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;  //int height = size.y;
                 int max_num_length = result.get(result.size() - 1).toString().length();
-                int num_length = max_num_length * 38 + 26;
-                int num_columns = (int) Math.round(history_width / num_length);
+                int num_length = max_num_length * 54 + 8;
+                int num_columns = (int) Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
                 ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
                 history_gridView.setAdapter(primes_adapter);
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
+                button.setText("Gerar");
             } else if (result.size() == 0) {
                 Toast thetoast = Toast.makeText(getActivity(), "Sem números primos no intervalo", Toast.LENGTH_LONG);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
@@ -419,6 +450,7 @@ public class PrimesTableFragment extends Fragment {
                 history_gridView.setAdapter(null);
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
+                button.setText("Gerar");
             }
         }
     }

@@ -4,17 +4,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -39,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
+import static java.lang.Long.parseLong;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,12 +60,18 @@ public class FatorizarFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    public AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> BG_Operation = new BackGroundOperation();
+    Long num1;
+    int cv_width, height_dip;
+    View progressBar;
+    LinearLayout history;
+    Fragment thisFragment = this;
+    Button button;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+    //AsyncTask params <Input datatype, progress update datatype, return datatype>
 
     public FatorizarFragment() {
         // Required empty public constructor
@@ -207,17 +220,49 @@ public class FatorizarFragment extends Fragment {
 //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
 //            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
 //        }
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        //int height = size.y;
+        final float scale = getActivity().getResources().getDisplayMetrics().density;
+        int lr_dip = (int) (4 * scale + 0.5f);
+        cv_width = width - lr_dip;
+
+        hideKeyboard();
+
     }
+
+    public void hideKeyboard() {
+        //Hide the keyboard
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
+            BG_Operation.cancel(true);
+            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_fatorizar, container, false);
+        final EditText num_1 = (EditText) view.findViewById(R.id.editNumFact);
 
-        Button button = (Button) view.findViewById(R.id.button_calc_fatores);
+        button = (Button) view.findViewById(R.id.button_calc_fatores);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calcfatoresPrimos(view);
+                calcfatoresPrimos();
             }
         });
 
@@ -225,17 +270,46 @@ public class FatorizarFragment extends Fragment {
         clearTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed = (EditText) view.findViewById(R.id.editNumFact);
-                ed.setText("");
+                num_1.setText("");
             }
         });
 
+        num_1.addTextChangedListener(new TextWatcher() {
+            String oldnum1;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum1 = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para Long
+                    num1 = parseLong(s.toString());
+                } catch (Exception e) {
+                    num_1.setText(oldnum1);
+                    num_1.setSelection(num_1.getText().length()); //Colocar o cursor no final do texto
+                    Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         return view;
     }
 
-    private void calcfatoresPrimos(View view) {
+    private void calcfatoresPrimos() {
 
-        EditText edittext = (EditText) view.findViewById(R.id.editNumFact);
+        EditText edittext = (EditText) getActivity().findViewById(R.id.editNumFact);
         String editnumText = edittext.getText().toString();
         long num;
 
@@ -261,114 +335,11 @@ public class FatorizarFragment extends Fragment {
             return;
         }
 
-        try {
 
-            //Array de arrays
-            ArrayList<ArrayList<Long>> tabela_fatores = new ArrayList<>();
-
-            tabela_fatores = getTabelaFatoresPrimos2(num);
-
-            // Lista dos fatores primos
-            //ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
-
-            /* resultadosDivisao|fatoresPrimos
-            *                100|2
-            *                 50|2
-            *                 25|5
-            *                  5|5
-            *                  1|1
-            *
-            * */
-
-            ArrayList<Long> resultadosDivisao = tabela_fatores.get(0);
-            ArrayList<Long> fatoresPrimos = tabela_fatores.get(1);
-
-            // Tamanho da lista de números primos
-            int sizeList = fatoresPrimos.size();
-
-            String str_fatores = "";
-            String str_results = "";
-            String str_divisores = "";
-            SpannableStringBuilder ssb_fatores;
-            ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
-
-            if (sizeList == 1) {
-                str_fatores = num + " é um número primo.";
-                ssb_fatores = new SpannableStringBuilder(str_fatores);
-                CreateCardView.create(history, ssb_fatores, getActivity());
-
-            } else {
-                str_fatores = "Fatorização de " + num + " = \n";
-
-                Integer counter = 1;
-                Long lastItem = fatoresPrimos.get(0);
-
-                //TreeMap
-                LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
-
-                //Contar os expoentes
-                for (int i = 0; i < fatoresPrimos.size(); i++) {
-                    str_fatores += fatoresPrimos.get(i) + "×";
-                    if (i == 0) {
-                        dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
-                    } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                        counter++;
-                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-                    } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                        counter = 1;
-                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-                    }
-                    lastItem = fatoresPrimos.get(i);
-                }
-                str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
-                ssb_fatores = new SpannableStringBuilder(str_fatores);
-
-                int value_length;
-
-                Iterator iterator = dataset.entrySet().iterator();
-
-                //Criar os expoentes
-                while (iterator.hasNext()) {
-                    Map.Entry pair = (Map.Entry) iterator.next();
-
-                    if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                        //Expoente 1
-                        ssb_fatores.append(pair.getKey().toString());
-
-                    } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                        //Expoente superior a 1
-                        value_length = pair.getValue().toString().length();
-                        ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
-                        ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    if (iterator.hasNext()) {
-                        ssb_fatores.append("×");
-                    }
-
-                    iterator.remove(); // avoids a ConcurrentModificationException
-                }
+        //tabela_fatores = getTabelaFatoresPrimos2(num);
+        BG_Operation = new BackGroundOperation().execute(num);
 
 
-                for (int i = 0; i < sizeList - 1; i++) {
-                    str_divisores += String.valueOf(fatoresPrimos.get(i)) + "\n";
-                }
-                str_divisores += String.valueOf(fatoresPrimos.get(sizeList - 1));
-
-                for (int i = 0; i < resultadosDivisao.size() - 1; i++) {
-                    str_results += String.valueOf(resultadosDivisao.get(i)) + "\n";
-                }
-                str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
-
-                createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
-
-            }
-
-        } catch (ArrayIndexOutOfBoundsException exception) {
-            Toast.makeText(getActivity(), "Erro: " + exception, Toast.LENGTH_LONG).show();
-        }
     }
 
     void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores) {
@@ -461,7 +432,6 @@ public class FatorizarFragment extends Fragment {
 
         cardview.addView(ll_horizontal);
 
-
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
@@ -516,5 +486,174 @@ public class FatorizarFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public class BackGroundOperation extends AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> {
+
+        @Override
+        public void onPreExecute() {
+            button.setClickable(false);
+            button.setText("Working...");
+            hideKeyboard();
+            history = (LinearLayout) getActivity().findViewById(R.id.history);
+            ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
+            cv_width = cardView1.getWidth();
+            progressBar = (View) getActivity().findViewById(R.id.progress);
+            float scale = getActivity().getResources().getDisplayMetrics().density;
+            height_dip = (int) (4 * scale + 0.5f);
+
+        }
+
+        @Override
+        protected ArrayList<ArrayList<Long>> doInBackground(Long... num) {
+            ArrayList<ArrayList<Long>> factoresPrimos = new ArrayList<ArrayList<Long>>();
+            ArrayList<Long> results = new ArrayList<>();
+            ArrayList<Long> divisores = new ArrayList<>();
+            Long number = num[0];
+
+            results.add(number);
+
+            while (number % 2L == 0) {
+                divisores.add(2L);
+                number /= 2;
+                results.add(number);
+            }
+
+            for (long i = 3; i <= number / i; i += 2) {
+                while (number % i == 0) {
+                    divisores.add(i);
+                    number /= i;
+                    results.add(number);
+                }
+                publishProgress(((float) i / ((float) number/(float) i)));
+            }
+            if (number > 1) {
+                divisores.add(number);
+            }
+
+            if (number != 1) {
+                results.add(1L);
+            }
+
+            factoresPrimos.add(results);
+            factoresPrimos.add(divisores);
+
+            return factoresPrimos;
+        }
+
+        @Override
+        public void onProgressUpdate(Float... values) {
+            if (thisFragment != null && thisFragment.isVisible()) {
+                progressBar.setVisibility(View.VISIBLE);
+                int progress_width = (int) Math.round(values[0] * cv_width);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
+                progressBar.setLayoutParams(layoutParams);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<ArrayList<Long>> result) {
+
+            if (thisFragment != null && thisFragment.isVisible()) {
+
+                /* resultadosDivisao|fatoresPrimos
+                *                100|2
+                *                 50|2
+                *                 25|5
+                *                  5|5
+                *                  1|1
+                *
+                * */
+
+                ArrayList<Long> resultadosDivisao = result.get(0);
+                ArrayList<Long> fatoresPrimos = result.get(1);
+
+                // Tamanho da lista de números primos
+                int sizeList = fatoresPrimos.size();
+
+                String str_fatores = "";
+                String str_results = "";
+                String str_divisores = "";
+                SpannableStringBuilder ssb_fatores;
+
+                if (sizeList == 1) {
+                    str_fatores = resultadosDivisao.get(0) + " é um número primo.";
+                    ssb_fatores = new SpannableStringBuilder(str_fatores);
+                    CreateCardView.create(history, ssb_fatores, getActivity());
+
+                } else {
+                    str_fatores = "Fatorização de " + resultadosDivisao.get(0) + " = \n";
+
+                    Integer counter = 1;
+                    Long lastItem = fatoresPrimos.get(0);
+
+                    //TreeMap
+                    LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
+
+                    //Contar os expoentes
+                    for (int i = 0; i < fatoresPrimos.size(); i++) {
+                        str_fatores += fatoresPrimos.get(i) + "×";
+                        if (i == 0) {
+                            dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
+                        } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            counter++;
+                            dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                        } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            counter = 1;
+                            dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                        }
+                        lastItem = fatoresPrimos.get(i);
+                    }
+                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
+                    ssb_fatores = new SpannableStringBuilder(str_fatores);
+
+                    int value_length;
+
+                    Iterator iterator = dataset.entrySet().iterator();
+
+                    //Criar os expoentes
+                    while (iterator.hasNext()) {
+                        Map.Entry pair = (Map.Entry) iterator.next();
+
+                        if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                            //Expoente 1
+                            ssb_fatores.append(pair.getKey().toString());
+
+                        } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                            //Expoente superior a 1
+                            value_length = pair.getValue().toString().length();
+                            ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                            ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        if (iterator.hasNext()) {
+                            ssb_fatores.append("×");
+                        }
+
+                        iterator.remove(); // avoids a ConcurrentModificationException
+                    }
+
+                    for (int i = 0; i < sizeList - 1; i++) {
+                        str_divisores += String.valueOf(fatoresPrimos.get(i)) + "\n";
+                    }
+                    str_divisores += String.valueOf(fatoresPrimos.get(sizeList - 1));
+
+                    for (int i = 0; i < resultadosDivisao.size() - 1; i++) {
+                        str_results += String.valueOf(resultadosDivisao.get(i)) + "\n";
+                    }
+                    str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
+
+                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
+                }
+
+                progressBar.setVisibility(View.GONE);
+                button.setText("Fatorizar");
+                button.setClickable(true);
+
+            }
+
+        }
     }
 }

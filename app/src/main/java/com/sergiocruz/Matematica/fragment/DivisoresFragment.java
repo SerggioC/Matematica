@@ -2,13 +2,19 @@ package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,8 +22,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +36,8 @@ import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import static java.lang.Long.parseLong;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +52,13 @@ public class DivisoresFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public AsyncTask<Long, Float, ArrayList<Long>> BG_Operation = new BackGroundOperation();
+    int cv_width, height_dip;
+    View progressBar;
+    LinearLayout history;
+    Fragment thisFragment = this;
+    Button button;
+    long num;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -122,20 +139,44 @@ public class DivisoresFragment extends Fragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 //         Checks the orientation of the screen
+
 //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
 //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
 //            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
 //        }
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        //int height = size.y;
+        final float scale = getActivity().getResources().getDisplayMetrics().density;
+        int lr_dip = (int) (4 * scale + 0.5f);
+        cv_width = width - lr_dip;
+
+        hideKeyboard();
+    }
+
+    public void onAfterConfigurationChanged(Configuration config){
+        
+        
+    }
+    
+    public void hideKeyboard() {
+        //Hide the keyboard
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i("Sergio>>>", "onCreateView: ");
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_divisores, container, false);
+        final EditText num_1 = (EditText) view.findViewById(R.id.editNum);
 
-        Button button = (Button) view.findViewById(R.id.button_calc_divisores);
+        button = (Button) view.findViewById(R.id.button_calc_divisores);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,14 +188,57 @@ public class DivisoresFragment extends Fragment {
         clearTextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed = (EditText) view.findViewById(R.id.editNum);
-                ed.setText("");
+                num_1.setText("");
             }
         });
 
+        num_1.addTextChangedListener(new TextWatcher() {
+            Long num1;
+            String oldnum1;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                oldnum1 = s.toString();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().equals("")) {
+                    return;
+                }
+                try {
+                    // Tentar converter o string para Long
+                    num1 = parseLong(s.toString());
+                } catch (Exception e) {
+                    num_1.setText(oldnum1);
+                    num_1.setSelection(num_1.getText().length()); //Colocar o cursor no final do texto
+                    Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER,0,0);
+                    thetoast.show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         return view;
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
+            BG_Operation.cancel(true);
+            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+        }
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -165,9 +249,9 @@ public class DivisoresFragment extends Fragment {
     }
 
     public void calcDivisores(View view) {
+        hideKeyboard();
         EditText edittext = (EditText) view.findViewById(R.id.editNum);
         String editnumText = (String) edittext.getText().toString();
-        long num;
 
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
             Toast thetoast = Toast.makeText(getActivity(), "Introduzir um número inteiro", Toast.LENGTH_LONG);
@@ -192,28 +276,9 @@ public class DivisoresFragment extends Fragment {
             thetoast.show();
             return;
         }
-        try {
-            ArrayList<Long> nums = getAllDivisoresLong(num);
-            String str = "";
-            for (long i : nums) {
-                str = str + ", " + i;
-                if (i == 1L) {
-                    str = num + " tem " + nums.size() + " divisores:\n" + "{" + i;
-                }
-            }
-            String str_divisores = str + "}";
-            //createCardViewLayout(str_divisores);
 
-            SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
-            ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
+        BG_Operation = new BackGroundOperation().execute(num);
 
-            CreateCardView.create(history, ssb, getActivity());
-
-        } catch (NumberFormatException exception) {
-            Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_LONG);
-            thetoast.setGravity(Gravity.CENTER, 0, 0);
-            thetoast.show();
-        }
     }
 
     void createCardViewLayout(String str_divisores) {
@@ -248,7 +313,7 @@ public class DivisoresFragment extends Fragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         textView.setText(str_divisores);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
 
         // add the textview to the cardview
         cardview.addView(textView);
@@ -285,6 +350,84 @@ public class DivisoresFragment extends Fragment {
         Collections.sort(divisores);
         return divisores;
     }
+
+
+
+    public class BackGroundOperation extends AsyncTask<Long, Float, ArrayList<Long>> {
+
+        @Override
+        public void onPreExecute() {
+            button.setClickable(false);
+            button.setText("Working...");
+            hideKeyboard();
+            history = (LinearLayout) getActivity().findViewById(R.id.history);
+            ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
+            cv_width = cardView1.getWidth();
+            progressBar = (View) getActivity().findViewById(R.id.progress);
+            float scale = getActivity().getResources().getDisplayMetrics().density;
+            height_dip = (int) (4 * scale + 0.5f);
+
+        }
+
+        @Override
+        protected ArrayList<Long> doInBackground(Long... num) {
+            Long numero = num[0];
+            long upperlimit = (long) (Math.sqrt(numero));
+            ArrayList<Long> divisores = new ArrayList<Long>();
+            for (int i = 1; i <= upperlimit; i += 1) {
+                if (numero % i == 0) {
+                    divisores.add((long) i);
+                    if (i != numero / i) {
+                        long elem = numero / i;
+                        divisores.add(elem);
+                    }
+                }
+                publishProgress((float) i / (float) upperlimit);
+            }
+            Collections.sort(divisores);
+            return divisores;
+        }
+
+        @Override
+        public void onProgressUpdate(Float... values) {
+            if (thisFragment != null && thisFragment.isVisible()) {
+                progressBar.setVisibility(View.VISIBLE);
+                int progress_width = (int) Math.round(values[0] * cv_width);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
+                progressBar.setLayoutParams(layoutParams);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Long> result) {
+
+            if (thisFragment != null && thisFragment.isVisible()) {
+                ArrayList<Long> nums = result;
+                String str = "";
+                for (long i : nums) {
+                    str = str + ", " + i;
+                    if (i == 1L) {
+                        str = num + " tem " + nums.size() + " divisores:\n" + "{" + i;
+                    }
+                }
+                String str_divisores = str + "}";
+                SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
+                ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+
+                CreateCardView.create(history, ssb, getActivity());
+
+                progressBar.setVisibility(View.GONE);
+                button.setText("Calcular");
+                button.setClickable(true);
+
+            }
+
+        }
+    }
+
+
+
+
 
     @Override
     public void onAttach(Context context) {

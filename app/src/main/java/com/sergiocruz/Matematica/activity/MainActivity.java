@@ -47,10 +47,12 @@ public class MainActivity extends AppCompatActivity {
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
+    Fragment mContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,9 +76,21 @@ public class MainActivity extends AppCompatActivity {
             CURRENT_TAG = TAG_HOME;
             loadFragment();
             navigationView.getMenu().getItem(navItemIndex).setActionView(R.layout.menu_dot);
+        } else if (savedInstanceState != null) {
+            //Restore the fragment's instance
+            mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+
         }
+
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        //Save the fragment's instance
+        //getSupportFragmentManager().putFragment(outState, "mContent", mContent);
+    }
 
     /***
      * Returns respected fragment that user
@@ -93,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         // just close the navigation drawer
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
             drawer.closeDrawers();
-
             return;
         }
 

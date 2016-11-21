@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 
+import static android.widget.Toast.makeText;
+
 /*****
  * Project Matematica
  * Package com.sergiocruz.Matematica.helper
@@ -83,6 +85,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.TOP);
 
+
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
 
@@ -114,11 +117,15 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                     }
 
                     if (hasEqualItem) {
-                        Toast.makeText(mView.getContext(), "Resultado já está na área de transferência.", Toast.LENGTH_SHORT).show();
+                        Toast thetoast = makeText(mView.getContext(), "Resultado já está na área de transferência.", Toast.LENGTH_SHORT);
+                        thetoast.setGravity(Gravity.CENTER,0,0);
+                        thetoast.show();
                     } else {
                         android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard", theClipText);
                         clipboard.setPrimaryClip(clip);
-                        Toast.makeText(mView.getContext(), "Copiado para a área de transferência.", Toast.LENGTH_SHORT).show();
+                        Toast thetoast = Toast.makeText(mView.getContext(), "Copiado para a área de transferência.", Toast.LENGTH_SHORT);
+                        thetoast.setGravity(Gravity.CENTER,0,0);
+                        thetoast.show();
                     }
                 }
 

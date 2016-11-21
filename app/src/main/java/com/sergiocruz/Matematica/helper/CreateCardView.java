@@ -30,7 +30,7 @@ public class CreateCardView {
 
         //int pixels = (int) (dips * scale + 0.5f);
         final float scale = activity.getResources().getDisplayMetrics().density;
-        int lr_dip = (int) (16 * scale + 0.5f);
+        int lr_dip = (int) (6 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
         cardview.setRadius((int) (4 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));

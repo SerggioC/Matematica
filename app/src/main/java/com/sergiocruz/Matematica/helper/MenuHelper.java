@@ -2,6 +2,7 @@ package com.sergiocruz.Matematica.helper;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -39,7 +40,9 @@ public class MenuHelper {
         ViewGroup history = (ViewGroup) activity.findViewById(R.id.history);
         if ((history).getChildCount() > 0)
             (history).removeAllViews();
-        Toast.makeText(activity, "Histórico de resultados apagado", Toast.LENGTH_SHORT).show();
+        Toast thetoast = Toast.makeText(activity, "Histórico de resultados apagado", Toast.LENGTH_SHORT);
+        thetoast.setGravity(Gravity.CENTER,0,0);
+        thetoast.show();
     }
 
     public static void share_history(Activity activity) {
@@ -58,7 +61,9 @@ public class MenuHelper {
             sendIntent.setType("text/plain");
             activity.startActivity(sendIntent);
         } else {
-            Toast.makeText(activity, "Sem resultados para partilhar", Toast.LENGTH_SHORT).show();
+            Toast thetoast = Toast.makeText(activity, "Sem resultados para partilhar", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER,0,0);
+            thetoast.show();
         }
     }
 
