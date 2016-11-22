@@ -1,48 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/activity_send_mail"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_gravity="center_horizontal"
-              android:gravity="center_horizontal"
-              android:orientation="vertical"
-              android:padding="8dp"
-              tools:context="com.sergiocruz.Matematica.activity.SendMailActivity">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Enviar sugestão ou melhoria"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
-    <WebView
-        android:id="@+id/web_view"
-        android:layout_width="108dp"
-        android:layout_height="67dp"
-        android:layout_marginTop="16dp"
+    <LinearLayout
+        android:id="@+id/activity_send_mail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:textAlignment="center"/>
-
-    <android.support.design.widget.TextInputEditText
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_marginTop="16dp"
-        android:textAlignment="viewStart"
-        android:layout_gravity="start|top"
-        android:gravity="start"
+        android:orientation="vertical"
         android:padding="8dp"
-        android:background="@drawable/text_input_style"/>
+        tools:context="com.sergiocruz.Matematica.activity.SendMailActivity">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Enviar"
-        android:onClick="send_me_mail"
-        android:background="@drawable/apptheme_btn_default_holo_light"/>
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Enviar sugestão ou melhoria"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
-</LinearLayout>
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="108dp"
+            android:layout_height="67dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"/>
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/mail_text"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/text_input_style"
+            android:gravity="start"
+            android:padding="8dp"
+            android:textAlignment="viewStart"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/apptheme_btn_default_holo_light"
+            android:onClick="send_me_mail"
+            android:text="Enviar"/>
+
+    </LinearLayout>
+</ScrollView>

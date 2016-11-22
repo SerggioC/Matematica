@@ -31,10 +31,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingTop="4dp"
                     android:paddingBottom="4dp"
                     android:paddingLeft="@dimen/left_right_layout_margin"
-                    android:paddingRight="@dimen/left_right_layout_margin">
+                    android:paddingRight="@dimen/left_right_layout_margin"
+                    android:paddingTop="4dp">
 
                     <TextView
                         android:id="@+id/textView5"
@@ -49,43 +49,60 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:paddingBottom="4dp"
-                        android:paddingTop="8dp"
-                        android:layout_gravity="center_vertical">
+                        android:paddingTop="8dp">
 
                         <EditText
                             android:id="@+id/editNumFact"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
+                            android:background="@drawable/edittextstyle"
                             android:hint=" Introduzir número..."
                             android:inputType="number"
-                            android:textAlignment="center"
                             android:maxLines="1"
-                            android:background="@drawable/edittextstyle"/>
+                            android:textAlignment="center"/>
 
                         <Button
                             android:id="@+id/btn_clear"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
                             android:layout_gravity="center_vertical|right"
-                            android:background="@drawable/ic_clear_text" />
+                            android:background="@drawable/ic_clear_text"/>
 
                     </FrameLayout>
-                    <Button
-                        android:id="@+id/button_calc_fatores"
-                        android:layout_width="wrap_content"
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:textAllCaps="false"
-                        android:text="Fatorizar"
-                        android:background="@drawable/apptheme_btn_default_holo_light"
-                        />
+                        android:animateLayoutChanges="true">
+
+                        <Button
+                            android:id="@+id/button_calc_fatores"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/apptheme_btn_default_holo_light"
+                            android:text="Fatorizar"
+                            android:textAllCaps="false"/>
+                        <ImageView
+                            android:id="@+id/cancelTask"
+                            android:layout_width="29dp"
+                            android:layout_height="29dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/stop_button"
+                            android:visibility="gone"/>
+                    </RelativeLayout>
+
                     <View
                         android:id="@+id/progress"
-                        android:visibility="gone"
                         android:layout_width="0dp"
                         android:layout_height="4dp"
-                        android:background="@color/lightBlue">
+                        android:background="@color/lightBlue"
+                        android:visibility="gone">
                     </View>
                 </LinearLayout>
 

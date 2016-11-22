@@ -220,16 +220,10 @@ public class MainActivity extends AppCompatActivity {
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
                         drawer.closeDrawers();
-
                         return true;
                     case R.id.nav_send:
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, SendMailActivity.class));
-                        drawer.closeDrawers();
-                        return true;
-                    case R.id.nav_share:
-                        // launch new intent instead of loading fragment
-                        startActivity(new Intent(MainActivity.this, ShareActivity.class));
                         drawer.closeDrawers();
                         return true;
                     default:

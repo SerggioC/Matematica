@@ -45,4 +45,9 @@
     <string name="help_text_divisores">Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.</string>
     <string name="mmc_result_prefix">MMC(</string>
     <string name="mdc_result_prefix">MDC(</string>
+    <string name="app_email">mailto:sergiocrz@gmail.com</string>
+    <string name="has_email">Do you have an email APP installed?</string>
+    <string name="send_it">Enviar email?</string>
+    <string name="sim">Sim</string>
+    <string name="nao">Não</string>
 </resources>

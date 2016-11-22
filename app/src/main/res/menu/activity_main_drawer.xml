@@ -10,12 +10,12 @@
     <item
         android:id="@+id/nav_mmc"
         android:icon="@mipmap/ic_mmc"
-        android:title="MMC - Mínimo Múltiplo Comum"
+        android:title="Mínimo Múltiplo Comum"
         android:titleCondensed="MMC"/>
     <item
         android:id="@+id/nav_mdc"
         android:icon="@mipmap/ic_mdc"
-        android:title="MDC - Máximo Divisor Comum"
+        android:title="Máximo Divisor Comum"
         android:titleCondensed="MDC"/>
     <item
         android:id="@+id/nav_fatorizar"
@@ -32,19 +32,16 @@
         android:icon="@mipmap/ic_primes"
         android:title="Tabela de números primos"/>
 
-    <item android:title="Outros">
+    <item android:title="Mais">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Partilhar"/>
-            <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@android:drawable/sym_action_email"
                 android:title="Enviar e-mail"/>
             <item
                 android:id="@+id/nav_about"
-                android:title="@string/nav_about_us" />
+                android:title="@string/nav_about_us"
+                android:icon="@android:drawable/ic_menu_info_details"/>
         </menu>
     </item>
 </group>

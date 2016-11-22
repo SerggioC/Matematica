@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -53,6 +53,7 @@ public class PrimesTableFragment extends Fragment {
     NumberFormat number_formatter;
     Fragment thisFragment = this;
     Button button;
+    ImageView cancelButton;
     Activity mActivity = getActivity();
 
     public PrimesTableFragment() {
@@ -104,11 +105,12 @@ public class PrimesTableFragment extends Fragment {
         if (id == R.id.action_clear_all_history) {
             history_gridView.setAdapter(null);
             tableData = null;
-            num_min = num_max = 0;
+            num_min = 0;
+            num_max = 1000;
             EditText min = (EditText) getActivity().findViewById(R.id.min);
-            min.setText("");
+            min.setText("2");
             EditText max = (EditText) getActivity().findViewById(R.id.max);
-            max.setText("");
+            max.setText("1000");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -118,6 +120,14 @@ public class PrimesTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_primes_table, container, false);
+
+        cancelButton = (ImageView) view.findViewById(R.id.cancelTask);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel_AsyncTask();
+            }
+        });
 
         button = (Button) view.findViewById(R.id.button_gerar_tabela);
         button.setOnClickListener(new View.OnClickListener() {
@@ -275,9 +285,7 @@ public class PrimesTableFragment extends Fragment {
             min_edittext.setText(String.valueOf(num_min));
             max_edittext.setText(String.valueOf(num_max));
         }
-
         BG_Operation = new LongOperation().execute(num_min, num_max);
-
 
     }
 
@@ -305,11 +313,23 @@ public class PrimesTableFragment extends Fragment {
         return primes;
     }
 
+/*
     @Override
     public void onStart() {
         super.onStart();  // Always call the superclass method first
-        Log.d("Sergio>>>", "onStart: Starting " + "PrimesTableFragment" + " BG_Operation.getStatus() " + BG_Operation.getStatus());
+        Log.d("Sergio>>>", "onStart: Starting " + "PrimesTableFragment" +
+                " BG_Operation.getStatus() " + BG_Operation.getStatus() );
+
+        if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
+            BG_Operation.cancel(true);
+            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+        }
+
     }
+
+
 
     @Override
     public void onPause() {
@@ -322,6 +342,7 @@ public class PrimesTableFragment extends Fragment {
         super.onStop();  // Always call the superclass method first
         Log.e("Sergio>>>", "onStop: Stopping " + "PrimesTableFragment");
     }
+*/
 
 
     @Override
@@ -333,6 +354,20 @@ public class PrimesTableFragment extends Fragment {
             Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
+        }
+    }
+
+
+    public void cancel_AsyncTask() {
+        if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
+            BG_Operation.cancel(true);
+            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+            cancelButton.setVisibility(View.GONE);
+            button.setText("Gerar");
+            button.setClickable(true);
+            progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -352,10 +387,10 @@ public class PrimesTableFragment extends Fragment {
             display.getSize(size);
             int width = size.x;  //int height = size.y;
             int min_num_length = tableData.get(tableData.size() - 1).toString().length();
-            int num_length = min_num_length * 54 + 8;
+            final float scale = getActivity().getResources().getDisplayMetrics().density;
+            int num_length = min_num_length * (int) (18 * scale + 0.5f) + 8;
             int num_columns = (int) Math.round(width / num_length);
             history_gridView.setNumColumns(num_columns);
-            final float scale = getActivity().getResources().getDisplayMetrics().density;
             int lr_dip = (int) (4 * scale + 0.5f) * 2;
             cv_width = width - lr_dip;
         }
@@ -374,11 +409,13 @@ public class PrimesTableFragment extends Fragment {
         public void onPreExecute() {
             button.setClickable(false);
             button.setText("Working...");
+            cancelButton.setVisibility(View.VISIBLE);
             hideKeyboard();
             history_gridView = (GridView) getActivity().findViewById(R.id.history);
             ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(card_view_1);
             cv_width = cardView1.getWidth();
             progressBar = (View) getActivity().findViewById(R.id.progress);
+            progressBar.setVisibility(View.VISIBLE);
             number_formatter = new DecimalFormat("#0.00");
             float scale = getActivity().getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
@@ -412,6 +449,7 @@ public class PrimesTableFragment extends Fragment {
                 float percent = (float) ((float) i / (float) num_max);
                 number_formatter.format(percent);
                 publishProgress(percent);
+                if (isCancelled()) break;
             }
             return primes;
         }
@@ -419,7 +457,6 @@ public class PrimesTableFragment extends Fragment {
         @Override
         public void onProgressUpdate(Float... values) {
             if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setVisibility(View.VISIBLE);
                 int progress_width = (int) Math.round(values[0] * cv_width);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
                 progressBar.setLayoutParams(layoutParams);
@@ -435,7 +472,8 @@ public class PrimesTableFragment extends Fragment {
                 display.getSize(size);
                 int width = size.x;  //int height = size.y;
                 int max_num_length = result.get(result.size() - 1).toString().length();
-                int num_length = max_num_length * 54 + 8;
+                final float scale = getActivity().getResources().getDisplayMetrics().density;
+                int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
                 int num_columns = (int) Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
                 ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
@@ -443,6 +481,7 @@ public class PrimesTableFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText("Gerar");
+                cancelButton.setVisibility(View.GONE);
             } else if (result.size() == 0) {
                 Toast thetoast = Toast.makeText(getActivity(), "Sem números primos no intervalo", Toast.LENGTH_LONG);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
@@ -451,7 +490,41 @@ public class PrimesTableFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText("Gerar");
+                cancelButton.setVisibility(View.GONE);
             }
+        }
+
+        @Override
+        protected void onCancelled(ArrayList<String> parcial) { //resultado parcial obtido apos cancelar AsyncTask
+            super.onCancelled(parcial);
+            tableData = parcial;
+            if (thisFragment != null && thisFragment.isVisible() && parcial.size() > 0) {
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int width = size.x;  //int height = size.y;
+                int max_num_length = parcial.get(parcial.size() - 1).toString().length();
+                final float scale = getActivity().getResources().getDisplayMetrics().density;
+                int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
+                int num_columns = (int) Math.round(width / num_length);
+                history_gridView.setNumColumns(num_columns);
+                ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, parcial);
+                history_gridView.setAdapter(primes_adapter);
+                progressBar.setVisibility(View.GONE);
+                button.setClickable(true);
+                button.setText("Gerar");
+                cancelButton.setVisibility(View.GONE);
+            } else if (parcial.size() == 0) {
+                Toast thetoast = Toast.makeText(getActivity(), "Sem números primos no intervalo", Toast.LENGTH_LONG);
+                thetoast.setGravity(Gravity.CENTER, 0, 0);
+                thetoast.show();
+                history_gridView.setAdapter(null);
+                progressBar.setVisibility(View.GONE);
+                button.setClickable(true);
+                button.setText("Gerar");
+                cancelButton.setVisibility(View.GONE);
+            }
+
         }
     }
 }

@@ -2,6 +2,7 @@ package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,7 +13,8 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -25,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +40,7 @@ import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static java.lang.Long.parseLong;
 
 /**
@@ -58,6 +62,7 @@ public class DivisoresFragment extends Fragment {
     LinearLayout history;
     Fragment thisFragment = this;
     Button button;
+    ImageView cancelButton;
     long num;
 
     // TODO: Rename and change types of parameters
@@ -171,10 +176,18 @@ public class DivisoresFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.i("Sergio>>>", "onCreateView: ");
+
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_divisores, container, false);
         final EditText num_1 = (EditText) view.findViewById(R.id.editNum);
+
+        cancelButton = (ImageView) view.findViewById(R.id.cancelTask);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel_AsyncTask();
+            }
+        });
 
         button = (Button) view.findViewById(R.id.button_calc_divisores);
         button.setOnClickListener(new View.OnClickListener() {
@@ -246,6 +259,19 @@ public class DivisoresFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
 
+    }
+
+    public void cancel_AsyncTask() {
+        if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
+            BG_Operation.cancel(true);
+            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+            cancelButton.setVisibility(View.GONE);
+            button.setText("Calcular");
+            button.setClickable(true);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     public void calcDivisores(View view) {
@@ -359,11 +385,13 @@ public class DivisoresFragment extends Fragment {
         public void onPreExecute() {
             button.setClickable(false);
             button.setText("Working...");
+            cancelButton.setVisibility(View.VISIBLE);
             hideKeyboard();
             history = (LinearLayout) getActivity().findViewById(R.id.history);
             ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
             cv_width = cardView1.getWidth();
             progressBar = (View) getActivity().findViewById(R.id.progress);
+            progressBar.setVisibility(View.VISIBLE);
             float scale = getActivity().getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
         }
@@ -382,6 +410,7 @@ public class DivisoresFragment extends Fragment {
                     }
                 }
                 publishProgress((float) i / (float) upperlimit);
+                if (isCancelled()) break;
             }
             Collections.sort(divisores);
             return divisores;
@@ -390,7 +419,6 @@ public class DivisoresFragment extends Fragment {
         @Override
         public void onProgressUpdate(Float... values) {
             if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setVisibility(View.VISIBLE);
                 int progress_width = (int) Math.round(values[0] * cv_width);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
                 progressBar.setLayoutParams(layoutParams);
@@ -418,9 +446,39 @@ public class DivisoresFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 button.setText("Calcular");
                 button.setClickable(true);
+                cancelButton.setVisibility(View.GONE);
 
             }
+        }
 
+        @Override
+        protected void onCancelled(ArrayList<Long> parcial){
+            super.onCancelled(parcial);
+
+            if (thisFragment != null && thisFragment.isVisible()) {
+                ArrayList<Long> nums = parcial;
+                String str = "";
+                for (long i : nums) {
+                    str = str + ", " + i;
+                    if (i == 1L) {
+                        str = "Divisores de " + num + ":\n" + "{" + i;
+                    }
+                }
+                String str_divisores = str + "}";
+                SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
+                ssb.append("\nCálculo incompleto...");
+                ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - 21, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - 21, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+
+                CreateCardView.create(history, ssb, getActivity());
+
+                progressBar.setVisibility(View.GONE);
+                button.setText("Calcular");
+                button.setClickable(true);
+                cancelButton.setVisibility(View.GONE);
+            }
         }
     }
 

@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,8 @@ public class FatorizarFragment extends Fragment {
     LinearLayout history;
     Fragment thisFragment = this;
     Button button;
+    ImageView cancelButton;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -252,12 +255,32 @@ public class FatorizarFragment extends Fragment {
         }
     }
 
+    public void cancel_AsyncTask() {
+        if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
+            BG_Operation.cancel(true);
+            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+            cancelButton.setVisibility(View.GONE);
+            button.setText("Calcular");
+            button.setClickable(true);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_fatorizar, container, false);
         final EditText num_1 = (EditText) view.findViewById(R.id.editNumFact);
 
+        cancelButton = (ImageView) view.findViewById(R.id.cancelTask);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancel_AsyncTask();
+            }
+        });
         button = (Button) view.findViewById(R.id.button_calc_fatores);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,10 +358,7 @@ public class FatorizarFragment extends Fragment {
             return;
         }
 
-
-        //tabela_fatores = getTabelaFatoresPrimos2(num);
         BG_Operation = new BackGroundOperation().execute(num);
-
 
     }
 
@@ -494,6 +514,7 @@ public class FatorizarFragment extends Fragment {
         public void onPreExecute() {
             button.setClickable(false);
             button.setText("Working...");
+            cancelButton.setVisibility(View.VISIBLE);
             hideKeyboard();
             history = (LinearLayout) getActivity().findViewById(R.id.history);
             ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
@@ -525,7 +546,8 @@ public class FatorizarFragment extends Fragment {
                     number /= i;
                     results.add(number);
                 }
-                publishProgress(((float) i / ((float) number/(float) i)));
+                publishProgress(((float) i / ((float) number / (float) i)));
+                if (isCancelled()) break;
             }
             if (number > 1) {
                 divisores.add(number);
@@ -651,9 +673,127 @@ public class FatorizarFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
                 button.setText("Fatorizar");
                 button.setClickable(true);
+                cancelButton.setVisibility(View.GONE);
+            }
+        }
 
+        @Override
+        protected void onCancelled(ArrayList<ArrayList<Long>> parcial) {
+            super.onCancelled(parcial);
+
+
+
+            if (thisFragment != null && thisFragment.isVisible()) {
+
+                /* resultadosDivisao|fatoresPrimos
+                *                100|2
+                *                 50|2
+                *                 25|5
+                *                  5|5
+                *                  1|1
+                *
+                * */
+
+                ArrayList<Long> resultadosDivisao = parcial.get(0);
+                ArrayList<Long> fatoresPrimos = parcial.get(1);
+
+                // Tamanho da lista de números primos
+                int sizeList = fatoresPrimos.size();
+
+                String str_fatores = "";
+                String str_results = "";
+                String str_divisores = "";
+                SpannableStringBuilder ssb_fatores;
+
+                if (sizeList == 1) {
+                    str_fatores = resultadosDivisao.get(0) + " é um número primo.";
+                    ssb_fatores = new SpannableStringBuilder(str_fatores);
+                    CreateCardView.create(history, ssb_fatores, getActivity());
+
+                } else {
+                    str_fatores = "Fatorização de " + resultadosDivisao.get(0) + " = \n";
+
+                    Integer counter = 1;
+                    Long lastItem = fatoresPrimos.get(0);
+
+                    //TreeMap
+                    LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
+
+                    //Contar os expoentes
+                    for (int i = 0; i < fatoresPrimos.size(); i++) {
+                        str_fatores += fatoresPrimos.get(i) + "×";
+                        if (i == 0) {
+                            dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
+                        } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            counter++;
+                            dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                        } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            counter = 1;
+                            dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
+                        }
+                        lastItem = fatoresPrimos.get(i);
+                    }
+                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
+                    ssb_fatores = new SpannableStringBuilder(str_fatores);
+
+                    int value_length;
+
+                    Iterator iterator = dataset.entrySet().iterator();
+
+                    //Criar os expoentes
+                    while (iterator.hasNext()) {
+                        Map.Entry pair = (Map.Entry) iterator.next();
+
+                        if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                            //Expoente 1
+                            ssb_fatores.append(pair.getKey().toString());
+
+                        } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                            //Expoente superior a 1
+                            value_length = pair.getValue().toString().length();
+                            ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                            ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        }
+
+                        if (iterator.hasNext()) {
+                            ssb_fatores.append("×");
+                        }
+
+                        iterator.remove(); // avoids a ConcurrentModificationException
+                    }
+
+                    ssb_fatores.append("\nCálculo incompleto...");
+                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - 21, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - 21, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    for (int i = 0; i < sizeList - 1; i++) {
+                        str_divisores += String.valueOf(fatoresPrimos.get(i)) + "\n";
+                    }
+                    str_divisores += String.valueOf(fatoresPrimos.get(sizeList - 1));
+
+                    for (int i = 0; i < resultadosDivisao.size() - 1; i++) {
+                        str_results += String.valueOf(resultadosDivisao.get(i)) + "\n";
+                    }
+                    str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
+
+                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
+                }
+
+                progressBar.setVisibility(View.GONE);
+                button.setText("Fatorizar");
+                button.setClickable(true);
+                cancelButton.setVisibility(View.GONE);
             }
 
+
+
+
+
+
         }
+
+
     }
 }
