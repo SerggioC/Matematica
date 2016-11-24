@@ -2,12 +2,15 @@ package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +33,8 @@ import com.sergiocruz.Matematica.helper.MenuHelper;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
+import static android.widget.Toast.makeText;
 import static com.sergiocruz.Matematica.R.id.mdc_num_1;
 import static com.sergiocruz.Matematica.R.id.mdc_num_2;
 import static java.lang.Integer.parseInt;
@@ -78,19 +83,19 @@ public class MDCFragment extends Fragment {
     }
 
     public void showToast() {
-        Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_SHORT);
+        Toast thetoast = makeText(getActivity(), R.string.numero_alto, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
     
     private void showToastNum(String field) {
-        Toast thetoast = Toast.makeText(getActivity(), "Número no campo " + field + " demasiado grande", Toast.LENGTH_SHORT);
+        Toast thetoast = makeText(getActivity(), R.string.number_in_field + field + R.string.numero_alto, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
 
     private void showToastMoreThanZero() {
-        Toast thetoast = Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG);
+        Toast thetoast = makeText(getActivity(), R.string.maiores_qzero, Toast.LENGTH_LONG);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
@@ -176,6 +181,30 @@ public class MDCFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_mdc, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_share_history) {
+            MenuHelper.share_history(getActivity());
+        }
+
+        if (id == R.id.action_clear_all_history) {
+            MenuHelper.remove_history(getActivity());
+        }
+
+        if (id == R.id.action_ajuda) {
+            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+            String help_divisores = getString(R.string.help_text_mdc);
+            SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
+            CreateCardView.create(history, ssb, getActivity());
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -829,7 +858,9 @@ public class MDCFragment extends Fragment {
             }
         }
         if (numbers.size() < 2) {
-            Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT).show();
+            Toast thetoast = Toast.makeText(getActivity(), R.string.add_number_pair, Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
             return;
         }
 
@@ -846,27 +877,14 @@ public class MDCFragment extends Fragment {
 
         mdc_string += result_mdc;
         SpannableStringBuilder ssb = new SpannableStringBuilder(mdc_string);
+        if (result_mdc.toString().equals("1")) {
+            ssb.append(getString(R.string.primos_si));
+            ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - 24, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - 24, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
         CreateCardView.create(history, ssb, getActivity());
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_share_history) {
-            MenuHelper.share_history(getActivity());
-        }
-
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(getActivity());
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

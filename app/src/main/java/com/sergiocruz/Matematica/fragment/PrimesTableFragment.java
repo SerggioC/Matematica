@@ -1,13 +1,15 @@
 package com.sergiocruz.Matematica.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Display;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -54,7 +57,8 @@ public class PrimesTableFragment extends Fragment {
     Fragment thisFragment = this;
     Button button;
     ImageView cancelButton;
-    Activity mActivity = getActivity();
+    Boolean checkboxChecked = false;
+    ArrayList<String> full_table = null;
 
     public PrimesTableFragment() {
         // Required empty public constructor
@@ -110,7 +114,7 @@ public class PrimesTableFragment extends Fragment {
             EditText min = (EditText) getActivity().findViewById(R.id.min);
             min.setText("2");
             EditText max = (EditText) getActivity().findViewById(R.id.max);
-            max.setText("1000");
+            max.setText("200");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -120,6 +124,45 @@ public class PrimesTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_primes_table, container, false);
+
+        SwitchCompat showAllNumbers = (SwitchCompat) view.findViewById(R.id.switchPrimos);
+        showAllNumbers.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                checkboxChecked = b;
+                if (tableData != null) {
+                    if (checkboxChecked) {
+                        full_table = new ArrayList<String>();
+                        for (int i = num_min; i <= num_max; i++) {
+                            full_table.add(String.valueOf(i));
+                        }
+
+                        history_gridView
+                                .setAdapter(
+                                        new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, full_table) {
+
+                                            @Override
+                                            public View getView(int position, View convertView, ViewGroup parent) {
+                                                View view = super.getView(position, convertView, parent);
+
+                                                if (tableData.contains(full_table.get(position))) { //Se o número for primo
+                                                    ((CardView) view).setCardBackgroundColor(Color.parseColor("#9769bc4d"));
+                                                } else {
+                                                    ((CardView) view).setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+                                                }
+
+                                                return view;
+                                            }
+                                        }
+                                );
+
+                    } else if (!checkboxChecked) {
+                        ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, tableData);
+                        history_gridView.setAdapter(primes_adapter);
+                    }
+                }
+            }
+        });
 
         cancelButton = (ImageView) view.findViewById(R.id.cancelTask);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -285,6 +328,7 @@ public class PrimesTableFragment extends Fragment {
             min_edittext.setText(String.valueOf(num_min));
             max_edittext.setText(String.valueOf(num_max));
         }
+
         BG_Operation = new LongOperation().execute(num_min, num_max);
 
     }
@@ -423,8 +467,8 @@ public class PrimesTableFragment extends Fragment {
 
         @Override
         public ArrayList<String> doInBackground(Integer... params) {
-            int num_min = params[0];
-            int num_max = params[1];
+            num_min = params[0];
+            num_max = params[1];
             ArrayList<String> primes = new ArrayList<>();
 
             if (num_min == 2) {
@@ -476,8 +520,37 @@ public class PrimesTableFragment extends Fragment {
                 int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
                 int num_columns = (int) Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
-                ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
-                history_gridView.setAdapter(primes_adapter);
+
+                if (checkboxChecked) {
+                    full_table = new ArrayList<String>();
+                    for (int i = num_min; i <= num_max; i++) {
+                        full_table.add(String.valueOf(i));
+                    }
+
+                    history_gridView
+                            .setAdapter(
+                                    new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, full_table) {
+
+                                        @Override
+                                        public View getView(int position, View convertView, ViewGroup parent) {
+                                            View view = super.getView(position, convertView, parent);
+
+                                            if (tableData.contains(full_table.get(position))) { //Se o número for primo
+                                                ((CardView) view).setCardBackgroundColor(Color.parseColor("#9769bc4d"));
+                                            } else {
+                                                ((CardView) view).setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+                                            }
+
+                                            return view;
+                                        }
+                                    }
+                            );
+
+                } else if (!checkboxChecked) {
+                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
+                    history_gridView.setAdapter(primes_adapter);
+                }
+
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText("Gerar");
@@ -528,4 +601,19 @@ public class PrimesTableFragment extends Fragment {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

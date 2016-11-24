@@ -210,6 +210,13 @@ public class FatorizarFragment extends Fragment {
             MenuHelper.remove_history(getActivity());
         }
 
+        if (id == R.id.action_ajuda) {
+            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+            String help_divisores = getString(R.string.help_text_fatores);
+            SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
+            CreateCardView.create(history, ssb, getActivity());
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -601,6 +608,7 @@ public class FatorizarFragment extends Fragment {
                 if (sizeList == 1) {
                     str_fatores = resultadosDivisao.get(0) + " é um número primo.";
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
+                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     CreateCardView.create(history, ssb_fatores, getActivity());
 
                 } else {
@@ -680,7 +688,6 @@ public class FatorizarFragment extends Fragment {
         @Override
         protected void onCancelled(ArrayList<ArrayList<Long>> parcial) {
             super.onCancelled(parcial);
-
 
 
             if (thisFragment != null && thisFragment.isVisible()) {
@@ -786,10 +793,6 @@ public class FatorizarFragment extends Fragment {
                 button.setClickable(true);
                 cancelButton.setVisibility(View.GONE);
             }
-
-
-
-
 
 
         }

@@ -88,19 +88,19 @@ public class MMCFragment extends Fragment {
     }
 
     private void showToast() {
-        Toast thetoast = Toast.makeText(getActivity(), "Número demasiado grande", Toast.LENGTH_SHORT);
+        Toast thetoast = Toast.makeText(getActivity(), R.string.numero_alto, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
 
     private void showToastNum(String field) {
-        Toast thetoast = Toast.makeText(getActivity(), "Número no campo " + field + " demasiado grande", Toast.LENGTH_SHORT);
+        Toast thetoast = Toast.makeText(getActivity(), getString(R.string.number_in_field) + field + getString(R.string.too_high), Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
 
     private void showToastMoreThanZero() {
-        Toast thetoast = Toast.makeText(getActivity(), "Números maiores que zero.", Toast.LENGTH_LONG);
+        Toast thetoast = Toast.makeText(getActivity(), R.string.maiores_qzero, Toast.LENGTH_LONG);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
@@ -199,6 +199,30 @@ public class MMCFragment extends Fragment {
         inflater.inflate(R.menu.menu_history, menu);
         inflater.inflate(R.menu.menu_help_mmc, menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_share_history) {
+            MenuHelper.share_history(getActivity());
+        }
+
+        if (id == R.id.action_clear_all_history) {
+            MenuHelper.remove_history(getActivity());
+        }
+        if (id == R.id.action_ajuda) {
+            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+            String help_divisores = getString(R.string.help_text_mmc);
+            SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
+            CreateCardView.create(history, ssb, getActivity());
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -859,7 +883,7 @@ public class MMCFragment extends Fragment {
             }
         }
         if (numbers.size() < 2) {
-            Toast thetoast = Toast.makeText(getActivity(), "Introduzir pelo menos um par de números inteiros.", Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(getActivity(), R.string.add_number_pair, Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -881,117 +905,9 @@ public class MMCFragment extends Fragment {
         history = (ViewGroup) view.findViewById(R.id.history);
         CreateCardView.create(history, ssb, getActivity());
 
-
-
-/*         if (num == 0L || num == 1L) {
-            Toast.makeText(getActivity(), "O número " + num + " não tem fatores primos!", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        try {
-
-            // Lista dos fatores primos
-            ArrayList<Long> fatoresPrimos = getFatoresPrimos(num);
-
-            // String de todos os fatores {2, 2, 2, ... 3, 3, ...}
-            //String str_fatores = "Fatores primos de " + num + ":\n" + "{";
-
-            // Tamanho da lista de números primos
-            int sizeList = fatoresPrimos.size();
-
-//            for (int i = 0; i < sizeList - 1; i++) {
-//              str_fatores += fatoresPrimos.get(i) + ", ";
-//            }
-//            str_fatores += fatoresPrimos.get(sizeList - 1) + "}\n = ";
-
-            String str_fatores;
-            SpannableStringBuilder ssb;
-
-            if (sizeList == 1) {
-                str_fatores = num + " é um número primo.";
-                ssb = new SpannableStringBuilder(str_fatores);
-
-            } else {
-                str_fatores = "Fatorização de " + num + " = \n";
-                ssb = new SpannableStringBuilder(str_fatores);
-
-                Integer counter = 1;
-                Long lastItem = fatoresPrimos.get(0);
-
-                //TreeMap
-                LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
-
-                for (int i = 0; i < fatoresPrimos.size(); i++) {
-                    if (i == 0) {
-                        dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
-                    } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                        counter++;
-                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-                    } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                        counter = 1;
-                        dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-                    }
-                    lastItem = fatoresPrimos.get(i);
-                }
-
-                int value_length;
-
-                Iterator iterator = dataset.entrySet().iterator();
-
-                while (iterator.hasNext()) {
-                    Map.Entry pair = (Map.Entry) iterator.next();
-
-                    if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                        //Expoente 1
-                        ssb.append(pair.getKey().toString());
-
-                    } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                        //Expoente superior a 1
-                        value_length = pair.getValue().toString().length();
-                        ssb.append(pair.getKey().toString() + pair.getValue().toString());
-                        ssb.setSpan(new SuperscriptSpan(), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - value_length, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    }
-
-                    if (iterator.hasNext()) {
-                        ssb.append("×");
-                    }
-
-                    iterator.remove(); // avoids a ConcurrentModificationException
-                }
-            }
-            ViewGroup history = (ViewGroup) view.findViewById(R.id.history_mmc);
-
-            //Criar o cardview com os resultados
-            CreateCardView.create(history, ssb, getActivity());
-
-
-        } catch (ArrayIndexOutOfBoundsException exception) {
-            Toast.makeText(getActivity(), "Erro: " + exception, Toast.LENGTH_LONG).show();
-        }*/
-
-
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_share_history) {
-            MenuHelper.share_history(getActivity());
-        }
-
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(getActivity());
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

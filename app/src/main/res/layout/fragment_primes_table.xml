@@ -86,6 +86,7 @@
                             android:id="@+id/min"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
                             android:background="@drawable/edittextstyle"
                             android:gravity="center"
                             android:inputType="number"
@@ -113,12 +114,13 @@
                             android:id="@+id/max"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/edittext_margin_left"
                             android:background="@drawable/edittextstyle"
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLines="1"
-                            android:text="1000"
+                            android:text="200"
                             android:textAlignment="center"
                             android:textSize="@dimen/edittextsize"/>
 
@@ -135,9 +137,9 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:animateLayoutChanges="true">
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/button_gerar_tabela"
@@ -149,25 +151,39 @@
                         android:textAllCaps="false"/>
 
                     <CheckBox
-                        android:id="@+id/Eratosthenes_checkBox"
+                        android:id="@+id/showAllCheckBox"
                         style="@style/Widget.AppCompat.CompoundButton.CheckBox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="4dp"
-                        android:text="Mostrar Todos"/>
+                        android:text="Mostrar Todos"
+                        android:visibility="gone"/>
 
                     <ImageView
                         android:id="@+id/cancelTask"
                         android:layout_width="29dp"
                         android:layout_height="29dp"
-                        android:layout_toRightOf="@id/button_gerar_tabela"
-                        android:layout_marginLeft="16dp"
                         android:layout_centerVertical="true"
-                        android:visibility="gone"
-                        android:src="@drawable/stop_button"/>
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/button_gerar_tabela"
+                        android:src="@drawable/stop_button"
+                        android:visibility="gone"/>
+
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:text="Mostrar todos "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/switchPrimos"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="4dp"
+                        android:checked="false"
+                        />
 
                 </RelativeLayout>
 

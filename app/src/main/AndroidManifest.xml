@@ -23,16 +23,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.sergiocruz.Matematica.activity.AboutUsActivity"
+            android:name="com.sergiocruz.Matematica.activity.AboutActivity"
             android:label="@string/activity_title_about_us"/>
         <activity
             android:name="com.sergiocruz.Matematica.activity.SendMailActivity"
             android:label="@string/activity_title_send_mail"/>
-        <activity
-            android:name="com.sergiocruz.Matematica.activity.ShareActivity"
-            android:label="@string/activity_title_share"/>
-        <activity
-            android:name="com.sergiocruz.Matematica.activity.PrivacyPolicyActivity"
-            android:label="@string/activity_title_privacy_policy"/>
+
     </application>
 </manifest>

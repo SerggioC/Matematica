@@ -130,9 +130,7 @@ public class DivisoresFragment extends Fragment {
         }
         if (id == R.id.action_help_divisores) {
             ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
-
             String help_divisores = getString(R.string.help_text_divisores);
-
             SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
             CreateCardView.create(history, ssb, getActivity());
         }
@@ -439,6 +437,11 @@ public class DivisoresFragment extends Fragment {
                 }
                 String str_divisores = str + "}";
                 SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
+                if (nums.size() == 2) {
+                    ssb.append("\nNúmero primo");
+                    ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - 12, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - 12, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
                 ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
 
                 CreateCardView.create(history, ssb, getActivity());

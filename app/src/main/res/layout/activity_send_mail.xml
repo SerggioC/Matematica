@@ -21,8 +21,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Enviar sugestão ou melhoria"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+            android:text="Enviar sugestão, melhoria ou comentário"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textSize="20sp"/>
 
         <WebView
             android:id="@+id/web_view"

@@ -63,6 +63,7 @@
                             android:hint=" Introduzir número..."
                             android:inputType="number"
                             android:maxLines="1"
+                            android:gravity="center"
                             android:textAlignment="center"/>
 
                         <Button

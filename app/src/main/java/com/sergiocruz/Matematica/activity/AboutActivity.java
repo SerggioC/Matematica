@@ -6,15 +6,12 @@ import android.view.MenuItem;
 
 import com.sergiocruz.Matematica.R;
 
-/**
- * Created by sergi on 21/10/2016.
- */
-public class ShareActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_share);
+        setContentView(R.layout.activity_about);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

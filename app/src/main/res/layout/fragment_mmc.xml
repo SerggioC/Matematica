@@ -67,6 +67,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -93,6 +95,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -130,6 +134,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -158,6 +164,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -194,6 +202,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -222,6 +232,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -258,6 +270,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
@@ -286,6 +300,8 @@
                                 android:background="@drawable/edittextstyle"
                                 android:inputType="number"
                                 android:maxLines="1"
+                                android:layout_gravity="center"
+                                android:gravity="center"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize"/>
 
