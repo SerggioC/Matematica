@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<group android:checkableBehavior="single">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/inicio"
+        android:titleCondensed="@string/inicio"/>
+    <item
+        android:id="@+id/nav_mmc"
+        android:icon="@mipmap/ic_mmc"
+        android:title="@string/mmc_description"
+        android:titleCondensed="@string/mmc"/>
+    <item
+        android:id="@+id/nav_mdc"
+        android:icon="@mipmap/ic_mdc"
+        android:title="@string/mdc_description"
+        android:titleCondensed="@string/mdc"/>
+    <item
+        android:id="@+id/nav_fatorizar"
+        android:icon="@mipmap/ic_factor"
+        android:title="@string/fatorizcao"
+        android:titleCondensed="@string/fatorizcao"/>
+    <item
+        android:id="@+id/nav_divisores"
+        android:icon="@mipmap/ic_divisores"
+        android:title="@string/divisores_number"
+        android:titleCondensed="@string/divisors"/>
+    <item
+        android:id="@+id/nav_prime_table"
+        android:icon="@mipmap/ic_primes"
+        android:title="@string/tabela_primos"/>
+
+    <item android:title="@string/mais">
+        <menu>
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@android:drawable/sym_action_email"
+                android:title="@string/send_mail_contact"/>
+            <item
+                android:id="@+id/nav_about"
+                android:title="@string/nav_about_us"
+                android:icon="@android:drawable/ic_menu_info_details"/>
+        </menu>
+    </item>
+</group>
+
+
+</menu>

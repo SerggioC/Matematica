@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:id="@+id/activity_send_mail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="8dp"
+        tools:context="com.sergiocruz.Matematica.activity.SendMailActivity">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="@string/send_comment"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textSize="20sp"/>
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="108dp"
+            android:layout_height="67dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"
+            android:textAlignment="center"/>
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/mail_text"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/text_input_style"
+            android:gravity="start"
+            android:padding="8dp"
+            android:textAlignment="viewStart"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/apptheme_btn_default_holo_light"
+            android:onClick="send_me_mail"
+            android:text="@string/send"/>
+
+    </LinearLayout>
+</ScrollView>

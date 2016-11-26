@@ -1,0 +1,222 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.sergiocruz.Matematica.fragment.MMCFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/left_right_layout_margin"
+            android:layout_marginRight="@dimen/left_right_layout_margin"
+            android:layout_marginTop="4dp"
+            card_view:cardBackgroundColor="@color/bgCardColor"
+            card_view:cardCornerRadius="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="4dp"
+                android:paddingLeft="@dimen/left_right_layout_margin"
+                android:paddingRight="@dimen/left_right_layout_margin"
+                android:paddingTop="4dp">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/primetable_title"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="normal"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="4dp">
+
+                    <TextView
+                        android:id="@+id/low"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:text="@string/valor_minimo"/>
+
+                    <TextView
+                        android:id="@+id/high"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_weight="1"
+                        android:paddingTop="4dp"
+                        android:text="@string/valor_maximo"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingTop="4dp">
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/min"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:background="@drawable/edittextstyle"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:text="2"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize"/>
+
+                        <Button
+                            android:id="@+id/btn_clear_min"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text"/>
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
+
+                        <EditText
+                            android:id="@+id/max"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/edittext_margin_left"
+                            android:background="@drawable/edittextstyle"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:text="200"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize"/>
+
+                        <Button
+                            android:id="@+id/btn_clear_max"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text"/>
+
+                    </FrameLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/button_gerar_tabela"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="@drawable/apptheme_btn_default_holo_light"
+                        android:text="@string/gerar"
+                        android:textAllCaps="false"/>
+
+                    <CheckBox
+                        android:id="@+id/showAllCheckBox"
+                        style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="4dp"
+                        android:text="Mostrar Todos"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/cancelTask"
+                        android:layout_width="29dp"
+                        android:layout_height="29dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_toRightOf="@id/button_gerar_tabela"
+                        android:src="@drawable/stop_button"
+                        android:visibility="gone"/>
+
+
+                    <android.support.v7.widget.SwitchCompat
+                        android:text="@string/mostrar_todos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/switchPrimos"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="4dp"
+                        android:checked="false"
+                        />
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/progress"
+                    android:layout_width="0dp"
+                    android:layout_height="4dp"
+                    android:background="@color/lightBlue"
+                    android:visibility="gone">
+                </View>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <GridView
+            android:id="@+id/history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="center"
+            android:horizontalSpacing="4dp"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:scrollbars="horizontal|vertical"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="4dp">
+
+        </GridView>
+
+    </LinearLayout>
+
+</FrameLayout>

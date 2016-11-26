@@ -1,0 +1,143 @@
+<resources>
+    <string name="app_name" translatable="false">Matemática</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="openDrawer" translatable="false">open_drawer</string>
+    <string name="closeDrawer" translatable="false">close_drawer</string>
+
+    <!-- Navigation Drawer menu labels -->
+    <string name="nav_home">Início</string>
+    <string name="nav_mmc">MMC</string>
+    <string name="nav_mdc">MDC</string>
+    <string name="nav_fatorizar">Fatorizar</string>
+    <string name="nav_divisores">Divisores</string>
+    <string name="nav_primes_table">Tabela de números primos</string>
+    <string name="nav_share">Partilhar</string>
+    <string name="nav_sendmail">Enviar e-mail</string>
+    <string name="nav_about_us">Sobre a Aplicação</string>
+
+    <!-- Toolbar titles when navigation menu item is selected-->
+    <string-array name="nav_item_activity_titles">
+        <item>@string/app_inicio</item>
+        <item>@string/mmc</item>
+        <item>@string/mdc</item>
+        <item>@string/factorize</item>
+        <item>@string/divisors</item>
+        <item>@string/tabela_primos</item>
+    </string-array>
+
+    <string name="activity_title_about_us">Sobre</string>
+    <string name="action_clear_all_history">Apagar o histórico</string>
+    <string name="action_buy">Remover anúncios</string>
+    <string name="action_share_history">Partilhar resultados</string>
+    <string name="activity_title_send_mail">Enviar e-mail</string>
+    <string name="activity_title_share">Partilhar</string>
+    <string name="action_clipboard_result">Copiar</string>
+    <string name="action_clear_result">Apagar</string>
+    <string name="action_share_result">Partilhar…</string>
+    <string name="action_ajuda_fatorizar">Como fatorizar um número?</string>
+    <string name="action_ajuda_divisores">Como obter os divisores?</string>
+    <string name="action_ajuda_mmc">Como calcular o MMC?</string>
+    <string name="action_ajuda_mdc">Como calcular o MDC?</string>
+
+    <string name="help_text_divisores"> Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.\n
+ Por definição, os números primos são números pertencentes ao conjunto dos números naturais não nulos, que possuem exatamente dois divisores naturais distintos, o número 1 e o próprio número cujaa divisão será exata com resto igual a zero.</string>
+
+    <string name="help_text_fatores"> A decomposição de um número natural num produto de fatores primos é chamada de fatorização.\n
+ A fatorização de qualquer número primo resultará no próprio número porque estes não são fatorizaveis. Na fatorização o mesmo fator primo pode ocorrer mais de uma vez. Quando isto acontece representamos o fator na forma de uma potência cujo expoente é o número de ocorrências de tal fator e a base é o próprio fator.\n
+ Para realizarmos a decomposição de um número num produto de fatores primos, devemos procurar pelo menor número primo capaz de dividi-lo muma divisão exata (resto da divisão igual a zero) e realizamos a sua divisão por este número enquanto for possível. Depois devemos procurar pelo próximo número primo capaz de dividi-lo e continuar neste procedimento até que o quociente da divisão resulte em 1. Neste momento teremos todos os fatores primos que compõe tal número.</string>
+
+    <string name="help_text_mdc">Divisor é um número natural não nulo, que ao dividir outro número natural, produz uma divisão com resto igual a zero, isto é, produz uma divisão exata.\n
+
+Nesse sentido, o conjunto dos números formados pelos divisores de um número natural qualquer é um conjunto finito.\n
+ Caso o número 1 seja o único divisor comum a um conjunto de números naturais, dizemos que os números deste conjunto são primos entre si.\n
+ Um método prático para determinar o MDC de um grupo de números naturais é determinar o conjunto dos divisores de cada número e verificar qual o maior valor comum a todos os conjuntos, esse será o Máximo Divisor Comum.\n
+ Outro método para a detereminação do MDC é através da fatorização. O MDC será o produto dos fatores comuns com menor expoente.
+</string>
+
+    <string name="help_text_mmc">Dados dois ou mais números naturais não nulos, denomina-se mínimo múltiplo comum (MMC) ao menor dos seus múltiplos que é comum a todos eles, com exceção do número zero, pois este é o menor dos números naturais e é múltiplo de todos eles.\n
+ Os múltiplos de um número natural são todos aqueles que divididos por este número têm zero como o resto da divisão.\n
+ Os múltiplos de um número natural são o resultado do produto deste número por um outro número natural.\n
+ Já que o conjunto dos números naturais é um conjunto infinito, os múltiplos de um número também são infinitos.\n
+ Um prático método para se determinar o MMC de um conjunto de números naturais é a decomposição em fatores primos.
+ O MMC é o produto dos fatores comuns e não comuns, com os maiores expoentes.</string>
+
+    <string name="mmc_result_prefix">MMC(</string>
+    <string name="mdc_result_prefix">MDC(</string>
+    <string name="app_email" translatable="false">mailto:sergiocrz@gmail.com</string>
+    <string name="has_email">Tens uma aplicação de e-mail instalada?</string>
+    <string name="send_it">Enviar email?</string>
+    <string name="sim">Sim</string>
+    <string name="nao">Não</string>
+    <string name="numero_alto">Número demasiado grande</string>
+    <string name="add_number_pair">Introduzir pelo menos um par de números inteiros.</string>
+    <string name="number_in_field">"Número no campo "</string>
+    <string name="too_high">" demasiado grande"</string>
+    <string name="maiores_qzero">Números maiores que zero.</string>
+    <string name="primos_si">\nNúmeros primos entre si.</string>
+    <string name="gerar">Gerar</string>
+    <string name="canceled_op">Operação cancelada.</string>
+    <string name="add_num_inteiro">Introduzir um número inteiro</string>
+    <string name="zero_no_divisores">Divisores de zero são todos os números naturais maiores que zero.</string>
+    <string name="has">" tem "</string>
+    <string name="divisores_barra_n">" divisores:\n"</string>
+    <string name="barra_n_numero_primo">\nNúmero primo</string>
+    <string name="calculate">Calcular</string>
+    <string name="divisors_of">"Divisores de "</string>
+    <string name="barra_n_incomplete_calc">\nCálculo incompleto…</string>
+    <string name="about_app_description">- Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números\n - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números\n - Fatorização em Números Primos\n - Determinar se um número é primo\n - Determinar se um ou mais números são primos entre si através do MDC\n - Cálculo de todos os divisores de um número inteiro\n - Gerador de tabela de números primos num dado intervalo\n - Total de números primos no intervalo\n</string>
+    <string name="desenvolvido_por">Desenvolvido por Sérgio C.</string>
+    <string name="app_version_description">Versão da Aplicação: 2.1\n Dezembro 2016</string>
+    <string name="send_comment">Enviar sugestão, melhoria ou comentário</string>
+    <string name="send">Enviar</string>
+    <string name="calculate_divisors_title">Calcular os divisores de um número</string>
+    <string name="introduzir_numero">Introduzir número…</string>
+    <string name="fatorize_title">Fatorização em números primos</string>
+    <string name="fatorizar_btn">Fatorizar</string>
+    <string name="home_mmc_description">MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números</string>
+    <string name="home_mdc_description">MDC - Calcular o Máximo Divisor Comum entre dois ou mais números / Determinar se os números são primos entre si</string>
+    <string name="home_factorize_description">Fatorizar - Decompor um número em fatores primos / Verificar se um número é primo</string>
+    <string name="home_divisors_description">Divisores - Calcular todos os divisores de um número inteiro e verificar se um número é primo</string>
+    <string name="home_primetable_description">Tabela de números primos num dado intervalo / Total de números primos no intervalo</string>
+    <string name="app_inicio">Matemática - Início</string>
+    <string name="mmc">MMC</string>
+    <string name="mdc">MDC</string>
+    <string name="factorize">Fatorizar número</string>
+    <string name="divisors">Divisores</string>
+    <string name="tabela_primos">Tabela de números primos</string>
+    <string name="mdc_title">MDC - Máximo Divisor Comum</string>
+    <string name="mmc_title">MMC - Mínimo Multiplo Comum</string>
+    <string name="primetable_title">Gerar Tabela de Números Primos</string>
+    <string name="mostrar_todos">Mostrar todos </string>
+    <string name="valor_minimo">Valor Minimo</string>
+    <string name="valor_maximo">Valor Máximo</string>
+    <string name="history_deleted">Histórico de resultados apagado</string>
+    <string name="nothing_toshare">Sem resultados para partilhar</string>
+    <string name="already_inclipboard">Resultado já está na área de transferência.</string>
+    <string name="copied_toclipboard">Copiado para a área de transferência.</string>
+    <string name="inicio">Início</string>
+    <string name="mmc_description">Mínimo Múltiplo Comum</string>
+    <string name="mdc_description">Máximo Divisor Comum</string>
+    <string name="fatorizcao">Fatorização</string>
+    <string name="divisores_number">Divisores de um Número</string>
+    <string name="mais">Mais</string>
+    <string name="send_mail_contact">Enviar e-mail / Contactar</string>
+    <string name="working">Working…</string>
+    <string name="insert_integer">Introduzir um número inteiro</string>
+    <string name="the_number">"O número "</string>
+    <string name="has_no_factors">" não tem fatores primos!"</string>
+    <string name="its_a_prime">" é um número primo."</string>
+    <string name="factorization_of">"Fatorização de "</string>
+    <string name="table_between">"Tabela de Números Primos entre "</string>
+    <string name="no_data">Sem dados para partilhar</string>
+    <string name="lowest_is_high">Valor mínimo demasiado alto</string>
+    <string name="highest_is_high">Valor máximo demasiado alto</string>
+    <string name="fill_min_max">Preencher os campos do valor mínimo e máximo</string>
+    <string name="lowest_prime">Menor número primo = 2</string>
+    <string name="existem">"Existem "</string>
+    <string name="primes_in_range">" números primos no intervalo."</string>
+    <string name="no_primes_range">Não existem números primos no intervalo.</string>
+    <string name="canceled_noprimes">Operação cancelada. Não foram encontrados números primos no intervalo.</string>
+    <string name="found">"Foram encontrados "</string>
+</resources>
