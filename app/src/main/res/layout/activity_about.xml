@@ -28,7 +28,7 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Matemática: Prime Number Tools v2.0"
+                android:text="Matemática: Prime Number Tools v2.1"
                 android:textStyle="bold"/>
 
             <TextView
@@ -37,13 +37,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="
-- Cálculo do Minimo Múltiplo Comum (MMC) entre até 8 números\n
+- Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números\n
 - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números\n
 - Fatorização em Números Primos\n
 - Determinar se um número é primo\n
 - Determinar se um ou mais números são primos entre si através do MDC\n
 - Cálculo de todos os divisores de um número inteiro\n
 - Gerador de tabela de números primos num dado intervalo\n
+- Total de números primos no intervalo\n
             "/>
 
             <TextView
@@ -63,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Versão da Aplicação: 2.0\n
+                android:text="Versão da Aplicação: 2.1\n
             Dezembro 2016"/>
         </LinearLayout>
     </ScrollView>
