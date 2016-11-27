@@ -2,6 +2,7 @@ package com.sergiocruz.Matematica.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -10,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
@@ -276,6 +278,32 @@ public class FatorizarFragment extends Fragment {
         }
     }
 
+    public void displayCancelDialogBox() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        // set title
+        alertDialogBuilder.setTitle(getString(R.string.fatorize_title));
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(R.string.cancel_it)
+                .setCancelable(true)
+                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        cancel_AsyncTask();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();        // create alert dialog
+        alertDialog.show();                                           // show it
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -286,7 +314,7 @@ public class FatorizarFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancel_AsyncTask();
+                displayCancelDialogBox();
             }
         });
         button = (Button) view.findViewById(R.id.button_calc_fatores);
@@ -771,10 +799,10 @@ public class FatorizarFragment extends Fragment {
 
                         iterator.remove(); // avoids a ConcurrentModificationException
                     }
-
-                    ssb_fatores.append(getString(R.string.barra_n_incomplete_calc));
-                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - 20, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - 20, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    String incomplete_calc = getString(R.string.barra_n_incomplete_calc);
+                    ssb_fatores.append(incomplete_calc);
+                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     for (int i = 0; i < sizeList - 1; i++) {
                         str_divisores += String.valueOf(fatoresPrimos.get(i)) + "\n";

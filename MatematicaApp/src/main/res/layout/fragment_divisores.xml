@@ -40,7 +40,7 @@
                         android:id="@+id/textView4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_horizontal"
                         android:fontFamily="sans-serif"
                         android:text="@string/calculate_divisors_title"
                         android:textAlignment="center"

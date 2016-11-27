@@ -1,5 +1,11 @@
 <resources>
+
     <string name="app_name" translatable="false">Matemática</string>
+    <string name="app_version_name" translatable="false">2.6</string>
+
+    <string name="app_long_description">Matemática: Prime Number Tools v</string>
+    <string name="app_version_description">Versão da Aplicação:</string>
+    <string name="app_version_date">Dezembro 2016</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -41,8 +47,7 @@
     <string name="action_ajuda_mmc">Como calcular o MMC?</string>
     <string name="action_ajuda_mdc">Como calcular o MDC?</string>
 
-    <string name="help_text_divisores"> Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.\n
- Por definição, os números primos são números pertencentes ao conjunto dos números naturais não nulos, que possuem exatamente dois divisores naturais distintos, o número 1 e o próprio número cujaa divisão será exata com resto igual a zero.</string>
+    <string name="help_text_divisores">" Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.\n\n Por definição, os números primos são números pertencentes ao conjunto dos números naturais não nulos, que possuem exatamente dois divisores naturais distintos: o número 1 e o próprio número, cuja divisão será exata com resto igual a zero."</string>
 
     <string name="help_text_fatores"> A decomposição de um número natural num produto de fatores primos é chamada de fatorização.\n
  A fatorização de qualquer número primo resultará no próprio número porque estes não são fatorizaveis. Na fatorização o mesmo fator primo pode ocorrer mais de uma vez. Quando isto acontece representamos o fator na forma de uma potência cujo expoente é o número de ocorrências de tal fator e a base é o próprio fator.\n
@@ -88,7 +93,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="barra_n_incomplete_calc">\nCálculo incompleto…</string>
     <string name="about_app_description">- Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números\n - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números\n - Fatorização em Números Primos\n - Determinar se um número é primo\n - Determinar se um ou mais números são primos entre si através do MDC\n - Cálculo de todos os divisores de um número inteiro\n - Gerador de tabela de números primos num dado intervalo\n - Total de números primos no intervalo\n</string>
     <string name="desenvolvido_por">Desenvolvido por Sérgio C.</string>
-    <string name="app_version_description">Versão da Aplicação: 2.1\n Dezembro 2016</string>
     <string name="send_comment">Enviar sugestão, melhoria ou comentário</string>
     <string name="send">Enviar</string>
     <string name="calculate_divisors_title">Calcular os divisores de um número</string>
@@ -96,10 +100,10 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="fatorize_title">Fatorização em números primos</string>
     <string name="fatorizar_btn">Fatorizar</string>
     <string name="home_mmc_description">MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números</string>
-    <string name="home_mdc_description">MDC - Calcular o Máximo Divisor Comum entre dois ou mais números / Determinar se os números são primos entre si</string>
-    <string name="home_factorize_description">Fatorizar - Decompor um número em fatores primos / Verificar se um número é primo</string>
+    <string name="home_mdc_description">MDC - Calcular o Máximo Divisor Comum entre dois ou mais números\nDeterminar se os números são primos entre si</string>
+    <string name="home_factorize_description">Fatorizar - Decompor um número em fatores primos\nVerificar se um número é primo</string>
     <string name="home_divisors_description">Divisores - Calcular todos os divisores de um número inteiro e verificar se um número é primo</string>
-    <string name="home_primetable_description">Tabela de números primos num dado intervalo / Total de números primos no intervalo</string>
+    <string name="home_primetable_description">Tabela de números primos num dado intervalo\nTotal de números primos no intervalo</string>
     <string name="app_inicio">Matemática - Início</string>
     <string name="mmc">MMC</string>
     <string name="mdc">MDC</string>
@@ -135,9 +139,11 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="highest_is_high">Valor máximo demasiado alto</string>
     <string name="fill_min_max">Preencher os campos do valor mínimo e máximo</string>
     <string name="lowest_prime">Menor número primo = 2</string>
-    <string name="existem">"Existem "</string>
-    <string name="primes_in_range">" números primos no intervalo."</string>
+    <string name="existem">Existem </string>
+    <string name="primes_in_range"> números primos no intervalo.</string>
     <string name="no_primes_range">Não existem números primos no intervalo.</string>
     <string name="canceled_noprimes">Operação cancelada. Não foram encontrados números primos no intervalo.</string>
-    <string name="found">"Foram encontrados "</string>
+    <string name="found">Foram encontrados </string>
+    <string name="cancel_it">Cancelar operação?</string>
+
 </resources>

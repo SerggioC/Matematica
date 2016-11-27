@@ -1,6 +1,7 @@
 package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
@@ -117,6 +119,31 @@ public class PrimesTableFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public void displayCancelDialogBox() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        // set title
+        alertDialogBuilder.setTitle(getString(R.string.primetable_title));
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(R.string.cancel_it)
+                .setCancelable(true)
+                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        cancel_AsyncTask();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();        // create alert dialog
+        alertDialog.show();                                           // show it
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -161,7 +188,9 @@ public class PrimesTableFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancel_AsyncTask();
+
+                displayCancelDialogBox();
+
             }
         });
 

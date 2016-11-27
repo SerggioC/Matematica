@@ -1,6 +1,7 @@
 package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -172,6 +174,32 @@ public class DivisoresFragment extends Fragment {
         imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 
+    public void displayCancelDialogBox() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+        // set title
+        alertDialogBuilder.setTitle(getString(R.string.calculate_divisors_title));
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(R.string.cancel_it)
+                .setCancelable(true)
+                .setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        cancel_AsyncTask();
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();        // create alert dialog
+        alertDialog.show();                                           // show it
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -183,7 +211,7 @@ public class DivisoresFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancel_AsyncTask();
+                displayCancelDialogBox();
             }
         });
 
@@ -295,9 +323,11 @@ public class DivisoresFragment extends Fragment {
         }
 
         if (editnumText.equals("0") || num == 0L) {
-            Toast thetoast = Toast.makeText(getActivity(),  R.string.zero_no_divisores, Toast.LENGTH_LONG);
-            thetoast.setGravity(Gravity.CENTER, 0, 0);
-            thetoast.show();
+
+            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+            SpannableStringBuilder ssb = new SpannableStringBuilder(getString(R.string.zero_no_divisores));
+            CreateCardView.create(history, ssb, getActivity());
+
             return;
         }
 
@@ -438,9 +468,10 @@ public class DivisoresFragment extends Fragment {
                 String str_divisores = str + "}";
                 SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
                 if (nums.size() == 2) {
-                    ssb.append(getString(R.string.barra_n_numero_primo));
-                    ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - 12, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - 12, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    String prime_number = getString(R.string.barra_n_numero_primo);
+                    ssb.append(prime_number);
+                    ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - prime_number.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - prime_number.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
                 ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
 
@@ -469,9 +500,10 @@ public class DivisoresFragment extends Fragment {
                 }
                 String str_divisores = str + "}";
                 SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
-                ssb.append(getString(R.string.barra_n_incomplete_calc));
-                ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - 20, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - 20, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                String incomplete_calc = getString(R.string.barra_n_incomplete_calc);
+                ssb.append(incomplete_calc);
+                ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
 

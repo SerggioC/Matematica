@@ -25,10 +25,10 @@
                 android:src="@mipmap/ic_launcher"/>
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/aboutTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Matemática: Prime Number Tools v2.1"
+                android:text="@string/app_long_description"
                 android:textStyle="bold"/>
 
             <TextView
@@ -52,6 +52,7 @@
                 android:textIsSelectable="true"/>
 
             <TextView
+                android:id="@+id/version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
