@@ -635,7 +635,7 @@ public class FatorizarFragment extends Fragment {
                 SpannableStringBuilder ssb_fatores;
 
                 if (sizeList == 1) {
-                    str_fatores = resultadosDivisao.get(0) + getString(R.string.its_a_prime);
+                    str_fatores = resultadosDivisao.get(0) + " " + getString(R.string.its_a_prime);
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
                     ssb_fatores.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     CreateCardView.create(history, ssb_fatores, getActivity());
@@ -643,6 +643,7 @@ public class FatorizarFragment extends Fragment {
                 } else {
                     str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
 
+                    Boolean hasExpoentes = false;
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
 
@@ -655,6 +656,7 @@ public class FatorizarFragment extends Fragment {
                         if (i == 0) {
                             dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                         } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            hasExpoentes = true;
                             counter++;
                             dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
                         } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -663,35 +665,41 @@ public class FatorizarFragment extends Fragment {
                         }
                         lastItem = fatoresPrimos.get(i);
                     }
-                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
+
+                    String igual = hasExpoentes ? "=\n" : "";
+                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + igual;
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
 
-                    int value_length;
+                    if (hasExpoentes) {
 
-                    Iterator iterator = dataset.entrySet().iterator();
+                        int value_length;
 
-                    //Criar os expoentes
-                    while (iterator.hasNext()) {
-                        Map.Entry pair = (Map.Entry) iterator.next();
+                        Iterator iterator = dataset.entrySet().iterator();
 
-                        if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                            //Expoente 1
-                            ssb_fatores.append(pair.getKey().toString());
+                        //Criar os expoentes
+                        while (iterator.hasNext()) {
+                            Map.Entry pair = (Map.Entry) iterator.next();
 
-                        } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                            //Expoente superior a 1
-                            value_length = pair.getValue().toString().length();
-                            ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
-                            ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                            ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                            ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                                //Expoente 1
+                                ssb_fatores.append(pair.getKey().toString());
+
+                            } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                                //Expoente superior a 1
+                                value_length = pair.getValue().toString().length();
+                                ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                                ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                                ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                                ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            if (iterator.hasNext()) {
+                                ssb_fatores.append("×");
+                            }
+
+                            iterator.remove(); // avoids a ConcurrentModificationException
                         }
 
-                        if (iterator.hasNext()) {
-                            ssb_fatores.append("×");
-                        }
-
-                        iterator.remove(); // avoids a ConcurrentModificationException
                     }
 
                     for (int i = 0; i < sizeList - 1; i++) {
@@ -749,6 +757,7 @@ public class FatorizarFragment extends Fragment {
                 } else {
                     str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
 
+                    Boolean hasExpoentes = false;
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
 
@@ -761,6 +770,7 @@ public class FatorizarFragment extends Fragment {
                         if (i == 0) {
                             dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                         } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            hasExpoentes = true;
                             counter++;
                             dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
                         } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -772,32 +782,34 @@ public class FatorizarFragment extends Fragment {
                     str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
 
-                    int value_length;
+                    if (hasExpoentes) {
+                        int value_length;
 
-                    Iterator iterator = dataset.entrySet().iterator();
+                        Iterator iterator = dataset.entrySet().iterator();
 
-                    //Criar os expoentes
-                    while (iterator.hasNext()) {
-                        Map.Entry pair = (Map.Entry) iterator.next();
+                        //Criar os expoentes
+                        while (iterator.hasNext()) {
+                            Map.Entry pair = (Map.Entry) iterator.next();
 
-                        if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                            //Expoente 1
-                            ssb_fatores.append(pair.getKey().toString());
+                            if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                                //Expoente 1
+                                ssb_fatores.append(pair.getKey().toString());
 
-                        } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                            //Expoente superior a 1
-                            value_length = pair.getValue().toString().length();
-                            ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
-                            ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                            ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                            ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                                //Expoente superior a 1
+                                value_length = pair.getValue().toString().length();
+                                ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                                ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                                ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                                ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            }
+
+                            if (iterator.hasNext()) {
+                                ssb_fatores.append("×");
+                            }
+
+                            iterator.remove(); // avoids a ConcurrentModificationException
                         }
-
-                        if (iterator.hasNext()) {
-                            ssb_fatores.append("×");
-                        }
-
-                        iterator.remove(); // avoids a ConcurrentModificationException
                     }
                     String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
                     ssb_fatores.append(incomplete_calc);

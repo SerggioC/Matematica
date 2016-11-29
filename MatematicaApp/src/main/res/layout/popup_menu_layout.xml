@@ -3,7 +3,7 @@
               android:id="@+id/llPopup"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:background="@drawable/edittextstyle"
+              android:background="@drawable/bg_popup_style"
               android:orientation="vertical"
               android:paddingLeft="8dp"
               android:paddingRight="16dp"
@@ -18,8 +18,8 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_copy"/>
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="11dp"
             android:text="@string/action_clipboard_result"
             android:textColor="@color/cardview_dark_background"
             android:textSize="16sp"/>
@@ -38,14 +38,14 @@
         android:id="@+id/action_clear_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="7dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_delete"/>
 
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="11dp"
             android:text="@string/action_clear_result"
             android:textColor="@color/cardview_dark_background"
             android:textSize="16sp"/>
@@ -64,14 +64,14 @@
         android:id="@+id/action_share_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="7dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_share"/>
 
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="11dp"
             android:text="@string/action_share_result"
             android:textColor="@color/cardview_dark_background"
             android:textSize="16sp"/>

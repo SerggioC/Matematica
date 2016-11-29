@@ -41,6 +41,8 @@ import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static java.lang.Long.parseLong;
@@ -426,14 +428,16 @@ public class DivisoresFragment extends Fragment {
 
         @Override
         protected ArrayList<Long> doInBackground(Long... num) {
+/*
             Long numero = num[0];
             long upperlimit = (long) (Math.sqrt(numero));
+            long elem;
             ArrayList<Long> divisores = new ArrayList<Long>();
             for (int i = 1; i <= upperlimit; i += 1) {
                 if (numero % i == 0) {
                     divisores.add((long) i);
                     if (i != numero / i) {
-                        long elem = numero / i;
+                        elem = numero / i;
                         divisores.add(elem);
                     }
                 }
@@ -442,6 +446,57 @@ public class DivisoresFragment extends Fragment {
             }
             Collections.sort(divisores);
             return divisores;
+
+*/
+
+            /*
+            *
+            * Performance update
+            * Primeiro obtem os fatores primos depois multiplica-os
+            *
+            * */
+
+            ArrayList<Long> AllDivisores = new ArrayList<Long>();
+            ArrayList<Long> divisores = new ArrayList<>();
+            Long number = num[0];
+
+            while (number % 2L == 0) {
+                divisores.add(2L);
+                number /= 2;
+            }
+
+            for (long i = 3; i <= number / i; i += 2) {
+                while (number % i == 0) {
+                    divisores.add(i);
+                    number /= i;
+                }
+                publishProgress(((float) i / ((float) number / (float) i)));
+                if (isCancelled()) break;
+            }
+            if (number > 1) {
+                divisores.add(number);
+            }
+
+            AllDivisores.add(1L);
+            for (int i = 0; i < divisores.size(); i++) {
+
+                int size = AllDivisores.size();
+
+                for (int j = 0; j < size; j++) {
+                    AllDivisores.add(AllDivisores.get(j)*divisores.get(i));
+                }
+            }
+
+            Set<Long> hs = new HashSet<>();
+            hs.addAll(AllDivisores); //remove valores iguais
+            AllDivisores.clear();
+            AllDivisores.addAll(hs);
+
+            Collections.sort(AllDivisores);
+
+            return AllDivisores;
+
+
         }
 
         @Override
