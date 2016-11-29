@@ -388,7 +388,7 @@ public class FatorizarFragment extends Fragment {
             return;
         }
         if (num == 0L || num == 1L) {
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.the_number) + num + getString(R.string.has_no_factors), Toast.LENGTH_LONG);
+            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.the_number) + " " + num + " " + getString(R.string.has_no_factors), Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -641,7 +641,7 @@ public class FatorizarFragment extends Fragment {
                     CreateCardView.create(history, ssb_fatores, getActivity());
 
                 } else {
-                    str_fatores = getString(R.string.factorization_of) + resultadosDivisao.get(0) + " = \n";
+                    str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
 
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
@@ -742,12 +742,12 @@ public class FatorizarFragment extends Fragment {
                 SpannableStringBuilder ssb_fatores;
 
                 if (sizeList == 1) {
-                    str_fatores = resultadosDivisao.get(0) + getString(R.string.its_a_prime);
+                    str_fatores = resultadosDivisao.get(0) + " " + getString(R.string.its_a_prime);
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
                     CreateCardView.create(history, ssb_fatores, getActivity());
 
                 } else {
-                    str_fatores = getString(R.string.factorization_of) + resultadosDivisao.get(0) + " = \n";
+                    str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
 
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
@@ -799,7 +799,7 @@ public class FatorizarFragment extends Fragment {
 
                         iterator.remove(); // avoids a ConcurrentModificationException
                     }
-                    String incomplete_calc = getString(R.string.barra_n_incomplete_calc);
+                    String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
                     ssb_fatores.append(incomplete_calc);
                     ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);

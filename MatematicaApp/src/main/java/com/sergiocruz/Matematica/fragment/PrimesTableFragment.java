@@ -91,8 +91,8 @@ public class PrimesTableFragment extends Fragment {
 
         if (id == R.id.action_share_history) {
             if (tableData != null) {
-                String primes_string = getString(R.string.table_between) +
-                        num_min + " e " + num_max + ":\n" +
+                String primes_string = getString(R.string.table_between) + " " +
+                        num_min + " " + getString(R.string.and) + " " + num_max + ":\n" +
                         tableData;
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
@@ -565,7 +565,7 @@ public class PrimesTableFragment extends Fragment {
                     ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
                     history_gridView.setAdapter(primes_adapter);
                 }
-                Toast.makeText(getActivity(), getString(R.string.existem) + result.size() + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.existem) + " " + result.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText(R.string.gerar);
@@ -621,7 +621,7 @@ public class PrimesTableFragment extends Fragment {
                     ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, parcial);
                     history_gridView.setAdapter(primes_adapter);
                 }
-                Toast.makeText(getActivity(), getString(R.string.found) + parcial.size() + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), getString(R.string.found) + " " + parcial.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText(R.string.gerar);

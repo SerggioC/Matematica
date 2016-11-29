@@ -462,13 +462,13 @@ public class DivisoresFragment extends Fragment {
                 for (long i : nums) {
                     str = str + ", " + i;
                     if (i == 1L) {
-                        str = num + getString(R.string.has) + nums.size() + getString(R.string.divisores_barra_n) + "{" + i;
+                        str = num + " " + getString(R.string.has) + " " + nums.size() + " " + getString(R.string.divisores_) + "\n{" + i;
                     }
                 }
                 String str_divisores = str + "}";
                 SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
                 if (nums.size() == 2) {
-                    String prime_number = getString(R.string.barra_n_numero_primo);
+                    String prime_number = "\n" + getString(R.string._numero_primo);
                     ssb.append(prime_number);
                     ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - prime_number.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - prime_number.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -495,12 +495,12 @@ public class DivisoresFragment extends Fragment {
                 for (long i : nums) {
                     str = str + ", " + i;
                     if (i == 1L) {
-                        str = getString(R.string.divisors_of) + num + ":\n" + "{" + i;
+                        str = getString(R.string.divisors_of) + " " + num + ":\n" + "{" + i;
                     }
                 }
                 String str_divisores = str + "}";
                 SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
-                String incomplete_calc = getString(R.string.barra_n_incomplete_calc);
+                String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
                 ssb.append(incomplete_calc);
                 ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);

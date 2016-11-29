@@ -35,9 +35,6 @@ import java.util.ArrayList;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.widget.Toast.makeText;
-import static com.sergiocruz.Matematica.R.id.mdc_num_1;
-import static com.sergiocruz.Matematica.R.id.mdc_num_2;
-import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 /**
@@ -53,6 +50,7 @@ public class MDCFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    EditText mdc_num_1, mdc_num_2, mdc_num_3, mdc_num_4, mdc_num_5, mdc_num_6, mdc_num_7, mdc_num_8;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -89,7 +87,7 @@ public class MDCFragment extends Fragment {
     }
     
     private void showToastNum(String field) {
-        Toast thetoast = makeText(getActivity(), R.string.number_in_field + field + R.string.numero_alto, Toast.LENGTH_SHORT);
+        Toast thetoast = makeText(getActivity(), R.string.number_in_field + " " + field + " " + R.string.too_high, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
@@ -196,6 +194,14 @@ public class MDCFragment extends Fragment {
 
         if (id == R.id.action_clear_all_history) {
             MenuHelper.remove_history(getActivity());
+            mdc_num_1.setText("");
+            mdc_num_2.setText("");
+            mdc_num_3.setText("");
+            mdc_num_4.setText("");
+            mdc_num_5.setText("");
+            mdc_num_6.setText("");
+            mdc_num_7.setText("");
+            mdc_num_8.setText("");
         }
 
         if (id == R.id.action_ajuda) {
@@ -211,6 +217,14 @@ public class MDCFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_mdc, container, false);
+        mdc_num_1 = (EditText) view.findViewById(R.id.mdc_num_1);
+        mdc_num_2 = (EditText) view.findViewById(R.id.mdc_num_2);
+        mdc_num_3 = (EditText) view.findViewById(R.id.mdc_num_3);
+        mdc_num_4 = (EditText) view.findViewById(R.id.mdc_num_4);
+        mdc_num_5 = (EditText) view.findViewById(R.id.mdc_num_5);
+        mdc_num_6 = (EditText) view.findViewById(R.id.mdc_num_6);
+        mdc_num_7 = (EditText) view.findViewById(R.id.mdc_num_7);
+        mdc_num_8 = (EditText) view.findViewById(R.id.mdc_num_8);
 
         Button button = (Button) view.findViewById(R.id.button_calc_mdc);
         button.setOnClickListener(new View.OnClickListener() {
@@ -224,64 +238,56 @@ public class MDCFragment extends Fragment {
         clearTextBtn_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed1 = (EditText) getActivity().findViewById(R.id.mdc_num_1);
-                ed1.setText("");
+                mdc_num_1.setText("");
             }
         });
         Button clearTextBtn_2 = (Button) view.findViewById(R.id.btn_clear_2);
         clearTextBtn_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed2 = (EditText) getActivity().findViewById(R.id.mdc_num_2);
-                ed2.setText("");
+                mdc_num_2.setText("");
             }
         });
         Button clearTextBtn_3 = (Button) view.findViewById(R.id.btn_clear_3);
         clearTextBtn_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed3 = (EditText) getActivity().findViewById(R.id.mdc_num_3);
-                ed3.setText("");
+                mdc_num_3.setText("");
             }
         });
         Button clearTextBtn_4 = (Button) view.findViewById(R.id.btn_clear_4);
         clearTextBtn_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed4 = (EditText) getActivity().findViewById(R.id.mdc_num_4);
-                ed4.setText("");
+                mdc_num_4.setText("");
             }
         });
         Button clearTextBtn_5 = (Button) view.findViewById(R.id.btn_clear_5);
         clearTextBtn_5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed5 = (EditText) getActivity().findViewById(R.id.mdc_num_5);
-                ed5.setText("");
+                mdc_num_5.setText("");
             }
         });
         Button clearTextBtn_6 = (Button) view.findViewById(R.id.btn_clear_6);
         clearTextBtn_6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed6 = (EditText) getActivity().findViewById(R.id.mdc_num_6);
-                ed6.setText("");
+                mdc_num_6.setText("");
             }
         });
         Button clearTextBtn_7 = (Button) view.findViewById(R.id.btn_clear_7);
         clearTextBtn_7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed7 = (EditText) getActivity().findViewById(R.id.mdc_num_7);
-                ed7.setText("");
+                mdc_num_7.setText("");
             }
         });
         Button clearTextBtn_8 = (Button) view.findViewById(R.id.btn_clear_8);
         clearTextBtn_8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText ed8 = (EditText) getActivity().findViewById(R.id.mdc_num_8);
-                ed8.setText("");
+                mdc_num_8.setText("");
             }
         });
 
@@ -301,10 +307,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-
-        final EditText mdc_num_1 = (EditText) view.findViewById(R.id.mdc_num_1);
         mdc_num_1.addTextChangedListener(new TextWatcher() {
-            Integer num1;
+            Long num1;
             String oldnum1;
 
             @Override
@@ -319,7 +323,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num1 = parseInt(s.toString());
+                    num1 = parseLong(s.toString());
                 } catch (Exception e) {
                     mdc_num_1.setText(oldnum1);
                     mdc_num_1.setSelection(mdc_num_1.getText().length()); //Colocar o cursor no final do texto
@@ -334,9 +338,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_2 = (EditText) view.findViewById(R.id.mdc_num_2);
         mdc_num_2.addTextChangedListener(new TextWatcher() {
-            Integer num2;
+            Long num2;
             String oldnum2;
 
             @Override
@@ -352,7 +355,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num2 = parseInt(s.toString());
+                    num2 = parseLong(s.toString());
                 } catch (Exception e) {
                     mdc_num_2.setText(oldnum2);
                     mdc_num_2.setSelection(mdc_num_2.getText().length());
@@ -366,9 +369,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_3 = (EditText) view.findViewById(R.id.mdc_num_3);
         mdc_num_3.addTextChangedListener(new TextWatcher() {
-            Integer num3;
+            Long num3;
             String oldnum3;
 
             @Override
@@ -383,7 +385,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num3 = parseInt(s.toString());
+                    num3 = parseLong(s.toString());
 
                 } catch (Exception e) {
                     mdc_num_3.setText(oldnum3);
@@ -399,9 +401,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_4 = (EditText) view.findViewById(R.id.mdc_num_4);
         mdc_num_4.addTextChangedListener(new TextWatcher() {
-            Integer num4;
+            Long num4;
             String oldnum4;
 
             @Override
@@ -416,7 +417,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num4 = parseInt(s.toString());
+                    num4 = parseLong(s.toString());
 
                 } catch (Exception e) {
                     mdc_num_4.setText(oldnum4);
@@ -431,9 +432,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_5 = (EditText) view.findViewById(R.id.mdc_num_5);
         mdc_num_5.addTextChangedListener(new TextWatcher() {
-            Integer num5;
+            Long num5;
             String oldnum5;
 
             @Override
@@ -449,7 +449,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num5 = parseInt(s.toString());
+                    num5 = parseLong(s.toString());
 
                 } catch (Exception e) {
                     mdc_num_5.setText(oldnum5);
@@ -464,9 +464,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_6 = (EditText) view.findViewById(R.id.mdc_num_6);
         mdc_num_6.addTextChangedListener(new TextWatcher() {
-            Integer num6;
+            Long num6;
             String oldnum6;
 
             @Override
@@ -481,7 +480,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num6 = parseInt(s.toString());
+                    num6 = parseLong(s.toString());
                 } catch (Exception e) {
                     mdc_num_6.setText(oldnum6);
                     mdc_num_6.setSelection(mdc_num_6.getText().length());
@@ -495,9 +494,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_7 = (EditText) view.findViewById(R.id.mdc_num_7);
         mdc_num_7.addTextChangedListener(new TextWatcher() {
-            Integer num7;
+            Long num7;
             String oldnum7;
 
             @Override
@@ -512,7 +510,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num7 = parseInt(s.toString());
+                    num7 = parseLong(s.toString());
                 } catch (Exception e) {
                     mdc_num_7.setText(oldnum7);
                     mdc_num_7.setSelection(mdc_num_7.getText().length());
@@ -526,9 +524,8 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        final EditText mdc_num_8 = (EditText) view.findViewById(R.id.mdc_num_8);
         mdc_num_8.addTextChangedListener(new TextWatcher() {
-            Integer num8;
+            Long num8;
             String oldnum8;
 
             @Override
@@ -543,7 +540,7 @@ public class MDCFragment extends Fragment {
                 }
                 try {
                     // Tentar converter o string para long
-                    num8 = parseInt(s.toString());
+                    num8 = parseLong(s.toString());
                 } catch (Exception e) {
                     mdc_num_8.setText(oldnum8);
                     mdc_num_8.setSelection(mdc_num_8.getText().length());
@@ -632,18 +629,13 @@ public class MDCFragment extends Fragment {
         LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
         LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
         LinearLayout ll_78 = (LinearLayout) view.findViewById(R.id.linear_layout_78);
+
         FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
         FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
         FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
         FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
         FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
         FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
-        EditText edittext3 = (EditText) view.findViewById(R.id.mdc_num_3);
-        EditText edittext4 = (EditText) view.findViewById(R.id.mdc_num_4);
-        EditText edittext5 = (EditText) view.findViewById(R.id.mdc_num_5);
-        EditText edittext6 = (EditText) view.findViewById(R.id.mdc_num_6);
-        EditText edittext7 = (EditText) view.findViewById(R.id.mdc_num_7);
-        EditText edittext8 = (EditText) view.findViewById(R.id.mdc_num_8);
 
         ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mdc);
         ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mdc);
@@ -660,13 +652,13 @@ public class MDCFragment extends Fragment {
 
         if (ll_78_visibe) {
             if (f8_visible) {
-                edittext8.setText("");
+                mdc_num_8.setText("");
                 f_8.setVisibility(View.GONE);
                 add_one.setVisibility(View.VISIBLE);
                 return;
             }
             if (f7_visible) {
-                edittext7.setText("");
+                mdc_num_7.setText("");
                 f_7.setVisibility(View.GONE);
                 ll_78.setVisibility(View.GONE);
                 return;
@@ -675,12 +667,12 @@ public class MDCFragment extends Fragment {
 
         if (ll_56_visibe) {
             if (f6_visible) {
-                edittext6.setText("");
+                mdc_num_6.setText("");
                 f_6.setVisibility(View.GONE);
                 return;
             }
             if (f5_visible) {
-                edittext5.setText("");
+                mdc_num_5.setText("");
                 f_5.setVisibility(View.GONE);
                 ll_56.setVisibility(View.GONE);
                 return;
@@ -689,12 +681,12 @@ public class MDCFragment extends Fragment {
 
         if (ll_34_visibe) {
             if (f4_visible) {
-                edittext4.setText("");
+                mdc_num_4.setText("");
                 f_4.setVisibility(View.GONE);
                 return;
             }
             if (f3_visible) {
-                edittext3.setText("");
+                mdc_num_3.setText("");
                 f_3.setVisibility(View.GONE);
                 ll_34.setVisibility(View.GONE);
                 less_one.setVisibility(View.INVISIBLE);
@@ -706,22 +698,15 @@ public class MDCFragment extends Fragment {
 
     private void calc_mdc(View view) {
         hideKeyboard();
-        EditText edittext1 = (EditText) view.findViewById(mdc_num_1);
-        String str_num1 = edittext1.getText().toString();
-        EditText edittext2 = (EditText) view.findViewById(mdc_num_2);
-        String str_num2 = edittext2.getText().toString();
-        EditText edittext3 = (EditText) view.findViewById(R.id.mdc_num_3);
-        String str_num3 = edittext3.getText().toString();
-        EditText edittext4 = (EditText) view.findViewById(R.id.mdc_num_4);
-        String str_num4 = edittext4.getText().toString();
-        EditText edittext5 = (EditText) view.findViewById(R.id.mdc_num_5);
-        String str_num5 = edittext5.getText().toString();
-        EditText edittext6 = (EditText) view.findViewById(R.id.mdc_num_6);
-        String str_num6 = edittext6.getText().toString();
-        EditText edittext7 = (EditText) view.findViewById(R.id.mdc_num_7);
-        String str_num7 = edittext7.getText().toString();
-        EditText edittext8 = (EditText) view.findViewById(R.id.mdc_num_8);
-        String str_num8 = edittext8.getText().toString();
+
+        String str_num1 = mdc_num_1.getText().toString();
+        String str_num2 = mdc_num_2.getText().toString();
+        String str_num3 = mdc_num_3.getText().toString();
+        String str_num4 = mdc_num_4.getText().toString();
+        String str_num5 = mdc_num_5.getText().toString();
+        String str_num6 = mdc_num_6.getText().toString();
+        String str_num7 = mdc_num_7.getText().toString();
+        String str_num8 = mdc_num_8.getText().toString();
 
         long num1, num2, num3, num4, num5, num6, num7, num8;
 
@@ -878,7 +863,7 @@ public class MDCFragment extends Fragment {
         mdc_string += result_mdc;
         SpannableStringBuilder ssb = new SpannableStringBuilder(mdc_string);
         if (result_mdc.toString().equals("1")) {
-            ssb.append(getString(R.string.primos_si));
+            ssb.append("\n" + getString(R.string.primos_si));
             ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - 24, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - 24, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         }

@@ -5,15 +5,19 @@
     <item
         android:id="@+id/action_clipboard"
         android:title="@string/action_clipboard_result"
+        android:icon="@android:drawable/presence_online"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_clear_result"
         android:title="@string/action_clear_result"
+        android:icon="@android:drawable/presence_online"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_share_result"
         android:title="@string/action_share_result"
+        android:icon="@android:drawable/presence_online"
+        android:src="@drawable/less_one"
         app:showAsAction="never"/>
 
 </menu>

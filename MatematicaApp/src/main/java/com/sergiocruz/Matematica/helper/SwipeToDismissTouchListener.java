@@ -6,16 +6,20 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +55,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
     private final Runnable runnable = new Runnable() {
         public void run() {
             if (mBooleanIsPressed) {
-                show_popup_options();
+                showCustomPopup();
+                //show_popup_options();
                 mBooleanIsPressed = false;
             }
         }
@@ -79,12 +84,120 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         mCallbacks = callbacks;
     }
 
-    private void show_popup_options() {
 
+    private void showCustomPopup() {
+
+//        Point point = new Point(mDownX, mDownY);
+
+        final CardView theCardView = (CardView) this.mView;
+
+
+        final int[] OFFSET = new int[2];
+
+
+        // Inflate the popup_layout.xml
+        //LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.llPopup); // ???
+        LayoutInflater layoutInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View popup_layout = layoutInflater.inflate(R.layout.popup_menu_layout, null);
+
+        final PopupWindow customPopUp = new PopupWindow(mActivity);
+        // Creating the PopupWindow
+        customPopUp.setContentView(popup_layout);
+        customPopUp.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+        customPopUp.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+        customPopUp.setFocusable(true);
+        customPopUp.setBackgroundDrawable(new BitmapDrawable()); //Clear the default translucent background
+        customPopUp.setAnimationStyle(R.style.popup_animation);
+        customPopUp.showAtLocation(popup_layout, Gravity.NO_GRAVITY, (int) mDownX - 370, (int) mDownY - 350);
+
+//        popup_layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                //At this point the layout is complete and the
+//                //dimensions of mView and any child views are known.
+//
+//                OFFSET[0] = popup_layout.getWidth();
+//                OFFSET[1] = popup_layout.getHeight();
+//
+//                Log.i("Sergio>>>", "showCustomPopup: mDownX= " + mDownX + " mDownY " + mDownY +
+//                        " OFFSET[0] " + OFFSET[0] +
+//                        " OFFSET[1] " + OFFSET[1]);
+//
+//                customPopUp.showAtLocation(popup_layout, Gravity.CENTER, (int) mDownX - OFFSET[0], (int) mDownY - OFFSET[1]);
+//            }
+//        });
+
+        // Displaying the popup at the specified location, + offsets.
+        //customPopUp.showAtLocation(popup_layout, Gravity.CENTER, (int) mDownX - OFFSET[0], (int) mDownY - OFFSET[1]);
+
+
+        popup_layout.findViewById(R.id.action_clipboard).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String theClipText = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
+
+                // aceder ao clipboard manager
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+
+                boolean hasEqualItem = false;
+
+                if (clipboard.hasPrimaryClip()) {
+
+                    int clipItems = clipboard.getPrimaryClip().getItemCount();
+                    for (int i = 0; i < clipItems; i++) {
+                        if (clipboard.getPrimaryClip().getItemAt(i).getText().toString().equals(theClipText)) {
+                            hasEqualItem = true;
+                        }
+                    }
+                }
+
+                if (hasEqualItem) {
+                    Toast thetoast = makeText(mView.getContext(), R.string.already_inclipboard, Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                } else {
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard", theClipText);
+                    clipboard.setPrimaryClip(clip);
+                    Toast thetoast = Toast.makeText(mView.getContext(), R.string.copied_toclipboard, Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                }
+                customPopUp.dismiss();
+            }
+        });
+
+
+        popup_layout.findViewById(R.id.action_clear_result).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ViewGroup history = (ViewGroup) theCardView.getParent();
+                animateRemoving(theCardView, history);
+                customPopUp.dismiss();
+            }
+        });
+
+
+        popup_layout.findViewById(R.id.action_share_result).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text_fromTextView = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "Matemática\n" + text_fromTextView);
+                sendIntent.setType("text/plain");
+                mActivity.startActivity(sendIntent);
+                customPopUp.dismiss();
+            }
+        });
+
+    }
+
+
+    private void show_popup_options() {
 
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(mView.getContext(), this.mView, Gravity.TOP);
-
 
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_menu, popup.getMenu());
@@ -118,13 +231,13 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
                     if (hasEqualItem) {
                         Toast thetoast = makeText(mView.getContext(), R.string.already_inclipboard, Toast.LENGTH_SHORT);
-                        thetoast.setGravity(Gravity.CENTER,0,0);
+                        thetoast.setGravity(Gravity.CENTER, 0, 0);
                         thetoast.show();
                     } else {
                         android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard", theClipText);
                         clipboard.setPrimaryClip(clip);
                         Toast thetoast = Toast.makeText(mView.getContext(), R.string.copied_toclipboard, Toast.LENGTH_SHORT);
-                        thetoast.setGravity(Gravity.CENTER,0,0);
+                        thetoast.setGravity(Gravity.CENTER, 0, 0);
                         thetoast.show();
                     }
                 }
