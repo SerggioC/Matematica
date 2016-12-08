@@ -15,8 +15,8 @@ android {
         applicationId "com.sergiocruz.Matematica"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 6
-        versionName "2.6"
+        versionCode 8
+        versionName "2.7.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }

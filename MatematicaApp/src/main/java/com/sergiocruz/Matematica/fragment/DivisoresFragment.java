@@ -41,8 +41,6 @@ import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static java.lang.Long.parseLong;
@@ -165,11 +163,11 @@ public class DivisoresFragment extends Fragment {
         hideKeyboard();
     }
 
-    public void onAfterConfigurationChanged(Configuration config){
-        
-        
+    public void onAfterConfigurationChanged(Configuration config) {
+
+
     }
-    
+
     public void hideKeyboard() {
         //Hide the keyboard
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -254,7 +252,7 @@ public class DivisoresFragment extends Fragment {
                     num_1.setText(oldnum1);
                     num_1.setSelection(num_1.getText().length()); //Colocar o cursor no final do texto
                     Toast thetoast = Toast.makeText(getActivity(), R.string.numero_alto, Toast.LENGTH_SHORT);
-                    thetoast.setGravity(Gravity.CENTER,0,0);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }
             }
@@ -407,7 +405,37 @@ public class DivisoresFragment extends Fragment {
         return divisores;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
 
     public class BackGroundOperation extends AsyncTask<Long, Float, ArrayList<Long>> {
 
@@ -455,8 +483,6 @@ public class DivisoresFragment extends Fragment {
             * Primeiro obtem os fatores primos depois multiplica-os
             *
             * */
-
-            ArrayList<Long> AllDivisores = new ArrayList<Long>();
             ArrayList<Long> divisores = new ArrayList<>();
             Long number = num[0];
 
@@ -477,25 +503,21 @@ public class DivisoresFragment extends Fragment {
                 divisores.add(number);
             }
 
+            ArrayList<Long> AllDivisores = new ArrayList<Long>();
+            int size;
             AllDivisores.add(1L);
             for (int i = 0; i < divisores.size(); i++) {
-
-                int size = AllDivisores.size();
-
+                size = AllDivisores.size();
                 for (int j = 0; j < size; j++) {
-                    AllDivisores.add(AllDivisores.get(j)*divisores.get(i));
+                    long val = AllDivisores.get(j) * divisores.get(i);
+                    if (!AllDivisores.contains(val)) {
+                        AllDivisores.add(val);
+                    }
                 }
             }
-
-            Set<Long> hs = new HashSet<>();
-            hs.addAll(AllDivisores); //remove valores iguais
-            AllDivisores.clear();
-            AllDivisores.addAll(hs);
-
             Collections.sort(AllDivisores);
 
             return AllDivisores;
-
 
         }
 
@@ -541,7 +563,7 @@ public class DivisoresFragment extends Fragment {
         }
 
         @Override
-        protected void onCancelled(ArrayList<Long> parcial){
+        protected void onCancelled(ArrayList<Long> parcial) {
             super.onCancelled(parcial);
 
             if (thisFragment != null && thisFragment.isVisible()) {
@@ -570,41 +592,5 @@ public class DivisoresFragment extends Fragment {
                 cancelButton.setVisibility(View.GONE);
             }
         }
-    }
-
-
-
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

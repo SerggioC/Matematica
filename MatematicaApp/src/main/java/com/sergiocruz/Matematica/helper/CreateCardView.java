@@ -19,7 +19,7 @@ import com.sergiocruz.Matematica.R;
 
 public class CreateCardView {
 
-    public static void create(final ViewGroup history, SpannableStringBuilder str_result, Activity activity) {
+    public static void create(final ViewGroup history, SpannableStringBuilder str_result, final Activity activity) {
 
         //criar novo cardview
         final CardView cardview = new CardView(activity);
@@ -57,6 +57,32 @@ public class CreateCardView {
         // add the textview to the cardview
         cardview.addView(textView);
 
+        final TextView explainText = new TextView(activity);
+        final Boolean expanded = false;
+        final TextView explainLink = new TextView(activity);
+        explainLink.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,   //largura
+                ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
+        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        explainLink.setTextColor(ContextCompat.getColor(activity, R.color.linkBlue));
+        explainLink.setText(R.string.explain);
+        explainLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!expanded) {
+                    explainLink.setText(R.string.hide_explain);
+                    explainLink.setTextColor(ContextCompat.getColor(activity, R.color.lightBlue));
+                    showExplanation();
+                } else {
+                    explainLink.setTextColor(ContextCompat.getColor(activity, R.color.linkBlue));
+                    explainLink.setText(R.string.explain);
+                    explainText.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
@@ -72,5 +98,14 @@ public class CreateCardView {
                         history.removeView(cardview);
                     }
                 }));
+    }
+
+    private static void showExplanation() {
+
+
+
+
+
+
     }
 }

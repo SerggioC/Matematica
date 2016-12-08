@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.view.Gravity;
@@ -66,6 +66,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
+    private static final int POPUP_WIDTH = 136;
+    private static final int POPUP_HEIGHT = 136;
 
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given view.
@@ -90,18 +92,14 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
     private void showCustomPopup() {
 
-//        Point point = new Point(mDownX, mDownY);
-
-        final CardView theCardView = (CardView) this.mView;
-
         // Inflate the popup_menu_layout.xml
         LayoutInflater layoutInflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View popup_layout = layoutInflater.inflate(R.layout.popup_menu_layout, null);
 
         final float scale = mActivity.getResources().getDisplayMetrics().density;
 
-        final int offset_x = (int) ((136) * scale + 0.5f);
-        final int offset_y = (int) ((136) * scale + 0.5f);
+        final int offset_x = (int) ((POPUP_WIDTH) * scale + 0.5f);
+        final int offset_y = (int) ((POPUP_HEIGHT) * scale + 0.5f);
 
         // Creating the PopupWindow
         final PopupWindow customPopUp = new PopupWindow(mActivity);
@@ -113,12 +111,20 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         customPopUp.setAnimationStyle(R.style.popup_animation);
         customPopUp.showAtLocation(popup_layout, Gravity.NO_GRAVITY, (int) mDownX - offset_x, (int) mDownY - offset_y);
 
+        final CardView theCardView = (CardView) this.mView;
+        int cv_color = ContextCompat.getColor(mActivity, R.color.greener);
+        theCardView.setCardBackgroundColor(cv_color);
+
+        customPopUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                int cv_color = ContextCompat.getColor(mActivity, R.color.lightGreen);
+                theCardView.setCardBackgroundColor(cv_color);
+            }
+        });
         popup_layout.findViewById(R.id.action_clipboard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                view.setBackgroundColor(ResourcesCompat.getColor(mActivity.getResources(), R.color.bgCardColor, null));
-
                 String theClipText = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
 
                 // aceder ao clipboard manager
@@ -155,7 +161,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup_layout.findViewById(R.id.action_clear_result).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setBackgroundColor(ResourcesCompat.getColor(mActivity.getResources(), R.color.bgCardColor, null));
                 final ViewGroup history = (ViewGroup) theCardView.getParent();
                 animateRemoving(theCardView, history);
                 customPopUp.dismiss();
@@ -166,7 +171,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup_layout.findViewById(R.id.action_share_result).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setBackgroundColor(ResourcesCompat.getColor(mActivity.getResources(), R.color.bgCardColor, null));
                 String text_fromTextView = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
@@ -258,7 +262,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                history.removeView(cardview);
+                try {
+                    history.removeView(cardview);
+                } catch (Exception e) {}
+
                 //performDismiss();
             }
 
@@ -335,8 +342,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    final ViewGroup history = (ViewGroup) mView.getParent();
-                                    history.removeView(mView);
+                                    if (mView != null) {
+                                        final ViewGroup history = (ViewGroup) mView.getParent();
+                                        history.removeView(mView);
+                                    }
                                     //performDismiss();
                                 }
                             });

@@ -430,18 +430,19 @@ public class FatorizarFragment extends Fragment {
         LinearLayout ll_vertical_results = new LinearLayout(thisActivity);
         ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_results.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_results.setPadding(0, 0, 16, 0);
+        ll_vertical_results.setPadding(0, 0, (int)(8 * scale + 0.5f), 0);
 
         LinearLayout ll_vertical_separador = new LinearLayout(thisActivity);
         ll_vertical_separador.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
         ll_vertical_separador.setOrientation(LinearLayout.VERTICAL);
         ll_vertical_separador.setBackgroundColor(ContextCompat.getColor(thisActivity, R.color.separatorLineColor));
-        ll_vertical_separador.setPadding(2, 4, 2, 4);
+        int um_dip = (int) (1 * scale + 0.5f);
+        ll_vertical_separador.setPadding(um_dip, 4, 0, 4);
 
         LinearLayout ll_vertical_divisores = new LinearLayout(thisActivity);
         ll_vertical_divisores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_divisores.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_divisores.setPadding(16, 0, 16, 0);
+        ll_vertical_divisores.setPadding((int)(8 * scale + 0.5f), 0, (int)(8 * scale + 0.5f), 0);
 
 
         LinearLayout ll_horizontal_ssb_fatores = new LinearLayout(thisActivity);
@@ -476,7 +477,7 @@ public class FatorizarFragment extends Fragment {
         // criar novo Textview
         final TextView textView = new TextView(thisActivity);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView.setPadding(16, 0, 0, 0);
+        textView.setPadding(0, 0, 0, 0);
 
         //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
         textView.setText(ssb_fatores);

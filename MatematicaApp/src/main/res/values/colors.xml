@@ -8,10 +8,33 @@
     <color name="black">#000000</color>
     <color name="bgCardColor">#9769bc4d</color>
     <color name="lightGreen">#f1f8e9</color>
+    <color name="greener">#dcedc8</color>
     <color name="lightGrey">#FAFAFA</color>
     <color name="lightYellow">#FFFDE7</color>
     <color name="lightgreen100">#CCFF90</color>
     <color name="lightBlue">#4799E8</color>
+    <color name="linkBlue">#2196f3</color>
+    <color name="veryLightBlue">#7b42a5f5</color>
     <color name="separatorLineColor">#757575</color>
 
+    <color name="f_color1">#2196F3</color>
+    <color name="f_color2">#4CAF50</color>
+    <color name="f_color3">#ff1100</color>
+    <color name="f_color4">#fbc02d</color>
+    <color name="f_color5">#9C27B0</color>
+    <color name="f_color6">#ea3e79</color>
+    <color name="f_color7">#4358c7</color>
+    <color name="f_color8">#f57c00</color>
+
+    <array name="f_colors_xml">
+        <item>@color/f_color1</item>
+        <item>@color/f_color2</item>
+        <item>@color/f_color3</item>
+        <item>@color/f_color4</item>
+        <item>@color/f_color5</item>
+        <item>@color/f_color6</item>
+        <item>@color/f_color7</item>
+        <item>@color/f_color8</item>
+
+    </array>
 </resources>

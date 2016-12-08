@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name" translatable="false">Matemática</string>
-    <string name="app_version_name" translatable="false">2.6</string>
+    <string name="app_version_name" translatable="false">2.7</string>
 
     <string name="app_long_description">Matemática: Prime Number Tools v</string>
     <string name="app_version_description">Versão da Aplicação:</string>
@@ -146,5 +146,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="found">Foram encontrados</string>
     <string name="cancel_it">Cancelar operação?</string>
     <string name="and">e</string>
+    <string name="explain">Mostar explicação ▾</string>
+    <string name="hide_explain">Ocultar explicação ◂</string>
 
 </resources>
