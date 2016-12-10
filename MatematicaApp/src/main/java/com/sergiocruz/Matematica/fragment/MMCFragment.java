@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.text.style.SuperscriptSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -82,8 +84,9 @@ public class MMCFragment extends Fragment {
     View progressBar;
     LinearLayout ll_vertical_expl;
     int height_dip, cv_width;
-
     int f_colors[];
+    BigInteger result_mmc = null;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -936,7 +939,6 @@ public class MMCFragment extends Fragment {
         }
 
         String mmc_string = getString(R.string.mmc_result_prefix);
-        BigInteger result_mmc = null;
 
         if (numbers.size() > 1) {
             for (int i = 0; i < numbers.size() - 1; i++) {
@@ -1073,7 +1075,7 @@ public class MMCFragment extends Fragment {
         String explain_text_1 = "1 ▻Decompor os números em " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
         ssb_explain_1.setSpan(new UnderlineSpan(), explain_text_1.length() - fp.length() - 1, explain_text_1.length() - 1, SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         explainTextView_1.setText(ssb_explain_1);
 
         //Ponto 2
@@ -1088,16 +1090,17 @@ public class MMCFragment extends Fragment {
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(ncomuns), explain_text_2.indexOf(ncomuns) + ncomuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(uma_vez), explain_text_2.indexOf(uma_vez) + uma_vez.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(maior_exps), explain_text_2.indexOf(maior_exps) + maior_exps.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         explainTextView_2.setText(ssb_explain_2);
 
         //Ponto 3
         explainTextView_3 = new TextView(mActivity);
         String multipl = "Multiplicar";
-        String explain_text_3 = "3 ▻" + multipl + " os fatores para obter o Mínimo Multiplo Comum:" + "\n";
+        String explain_text_3 = "3 ▻" + multipl + " " +
+                "os fatores para obter o Mínimo Multiplo Comum:" + "\n";
         SpannableStringBuilder ssb_explain_3 = new SpannableStringBuilder(explain_text_3);
         ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl), explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         explainTextView_3.setText(ssb_explain_3);
 
         ll_vertical_expl.setVisibility(View.GONE);
@@ -1222,6 +1225,7 @@ public class MMCFragment extends Fragment {
                     SpannableStringBuilder ssb_fatores;
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
                     ssb_fatores.setSpan(new ForegroundColorSpan(f_colors[k]), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
+                    ssb_fatores.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
 
                     Integer counter = 1;
                     Integer nextfactor = 0;
@@ -1285,10 +1289,10 @@ public class MMCFragment extends Fragment {
                 }
                 Log.i("Sergio>>>", "onPostExecute: datasets" + datasets);
 
-                int f = 0;
                 ArrayList<ArrayList<Long>> mmc_fatores = new ArrayList<>();
                 ArrayList<Long> maiores_bases = new ArrayList<>();
                 ArrayList<Long> maiores_exps = new ArrayList<>();
+                ArrayList<Long> colors = new ArrayList<>();
 
                 for (int i = 0; i < datasets.size(); i += 2) {
 
@@ -1304,14 +1308,15 @@ public class MMCFragment extends Fragment {
                         if (!maiores_bases.contains(current_base)) {
                             maiores_bases.add(current_base);
                             maiores_exps.add(current_exp);
-                            Log.d("Sergio>>>", "!contains indice cb " + cb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
-
+                            colors.add((long) i / 2);
+                            Log.d("Sergio>>>", "não contém indice cb " + cb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
                         }
-//                        if (maiores_bases.contains(current_base)) {
-//                            maiores_exps.set(maiores_exps.indexOf(current_exp), current_exp);
-//                            Log.d("Sergio>>>", "!contains indice cb " + cb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
-//
-//                        }
+
+                        if (maiores_bases.contains(current_base) && current_exp > maiores_exps.get(maiores_bases.indexOf(current_base))) {
+                            maiores_exps.set(maiores_bases.indexOf(current_base), current_exp);
+                            colors.set(maiores_bases.indexOf(current_base), (long) (i / 2));
+                            Log.d("Sergio>>>", "    contém indice cb " + cb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
+                        }
 
                         for (int j = i + 2; j < datasets.size(); j += 2) {
                             ArrayList<Long> next_bases = datasets.get(j);
@@ -1322,9 +1327,16 @@ public class MMCFragment extends Fragment {
                                 Long next_exp = next_exps.get(nb);
 
                                 if (next_base == current_base && next_exp > current_exp && maiores_bases.contains(current_base)) {
+                                    Log.i("Sergio>>>", "onPostExecute: colors " + colors + " jota j= " + j);
+                                    Log.d("Sergio>>>", "onPostExecute: maiores_exps " + maiores_exps);
+                                    maiores_exps.set(maiores_bases.indexOf(current_base), next_exp);
 
-                                    maiores_exps.set(maiores_exps.indexOf(current_exp), next_exp);
-                                    Log.i("Sergio>>>", "!contains indice nb next base " + nb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
+                                    //if (colors.contains((long) (j / 2)))
+                                    colors.set(maiores_bases.indexOf(current_base), (long) (j / 2));
+                                    //colors.set(colors.indexOf((long) (j / 2)), (long) (j / 2));
+
+                                    Log.i("Sergio>>>", "contains indice nb next base " + nb + " maiores_bases " +
+                                            maiores_bases + " maiores_exps " + maiores_exps + " colors " + colors);
                                 }
 
 //                                if (next_base == current_base && next_exp > current_exp && !maiores_bases.contains(current_base)) {
@@ -1338,7 +1350,42 @@ public class MMCFragment extends Fragment {
 
                 mmc_fatores.add(maiores_bases);
                 mmc_fatores.add(maiores_exps);
+                mmc_fatores.add(colors);
+
+                SpannableStringBuilder ssb_mmc = new SpannableStringBuilder();
+
+                //Criar os expoentes do MMC com os maiores fatores em cor e a negrito
+                for (int i = 0; i < maiores_bases.size(); i++) {
+                    int base_length = maiores_bases.get(i).toString().length();
+
+                    if (maiores_exps.get(i) == 1L) {
+                        //Expoente 1
+                        ssb_mmc.append(maiores_bases.get(i).toString());
+                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[Integer.valueOf(colors.get(i).intValue())]),
+                                ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    } else if (maiores_exps.get(i) > 1L) {
+                        //Expoente superior a 1
+                        int exp_length = maiores_exps.get(i).toString().length();
+                        ssb_mmc.append(maiores_bases.get(i).toString() + maiores_exps.get(i).toString());
+                        ssb_mmc.setSpan(new SuperscriptSpan(), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.setSpan(new RelativeSizeSpan(0.8f), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[Integer.valueOf(colors.get(i).intValue())]),
+                                ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    ssb_mmc.append("×");
+                }
+                ssb_mmc.replace(ssb_mmc.length() - 1, ssb_mmc.length(), "");
+
+                explainTextView_2.append(ssb_mmc);
                 Log.e("Sergio>>>", "final dos ciclos, mmc_fatores " + mmc_fatores);
+
+                ssb_mmc.delete(0, ssb_mmc.length());
+                ssb_mmc.append(result_mmc.toString());
+                ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                explainTextView_3.append(ssb_mmc);
 
                 progressBar.setVisibility(View.GONE);
                 ll_vertical_expl.setTag(true); // true - já com explicação
