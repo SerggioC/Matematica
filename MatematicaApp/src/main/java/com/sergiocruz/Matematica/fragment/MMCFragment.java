@@ -22,7 +22,6 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.SuperscriptSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -71,21 +70,15 @@ public class MMCFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    public AsyncTask<ArrayList<Long>, Float, ArrayList<ArrayList<Long>>> BG_Operation_MMC = new BackGroundOperation_MMC();
     public float scale;
-    ViewGroup history;
-    CardView cardview;
-    EditText mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8;
-    TextView explainTextView_1, explainTextView_2, explainTextView_3;
-    Activity mActivity;
-    Fragment thisFragment = this;
-    ArrayList<Long> long_numbers = new ArrayList<Long>();
-    View progressBar;
-    LinearLayout ll_vertical_expl;
+    ArrayList<AsyncTask> asyncTaskQueue = new ArrayList<>();
+    int taskNumber = 0;
     int height_dip, cv_width;
     int f_colors[];
-    BigInteger result_mmc = null;
+    ViewGroup history;
+    EditText mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8;
+    Activity mActivity;
+    Fragment thisFragment = this;
 
 
     // TODO: Rename and change types of parameters
@@ -142,7 +135,7 @@ public class MMCFragment extends Fragment {
     }
 
     private void showToastMoreThanZero() {
-        Toast thetoast = Toast.makeText(mActivity, R.string.maiores_qzero, Toast.LENGTH_LONG);
+        Toast thetoast = Toast.makeText(mActivity, R.string.maiores_qzero, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
@@ -188,6 +181,22 @@ public class MMCFragment extends Fragment {
         mActivity = getActivity();
         scale = mActivity.getResources().getDisplayMetrics().density;
         f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        for (int i = 0; i < asyncTaskQueue.size(); i++) {
+            if (asyncTaskQueue.get(i) != null) {
+                asyncTaskQueue.get(i).cancel(true);
+            }
+            if (i == asyncTaskQueue.size() - 1) {
+                Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+                thetoast.setGravity(Gravity.CENTER, 0, 0);
+                thetoast.show();
+            }
+        }
+
     }
 
     @Override
@@ -792,6 +801,7 @@ public class MMCFragment extends Fragment {
         long num1, num2, num3, num4, num5, num6, num7, num8;
 
         ArrayList<BigInteger> numbers = new ArrayList<BigInteger>();
+        ArrayList<Long> long_numbers = new ArrayList<Long>();
 
         if (!str_num1.equals("")) {
             try {
@@ -939,6 +949,7 @@ public class MMCFragment extends Fragment {
         }
 
         String mmc_string = getString(R.string.mmc_result_prefix);
+        BigInteger result_mmc = null;
 
         if (numbers.size() > 1) {
             for (int i = 0; i < numbers.size() - 1; i++) {
@@ -952,7 +963,7 @@ public class MMCFragment extends Fragment {
         history = (ViewGroup) view.findViewById(R.id.history);
 
         //criar novo cardview
-        cardview = new CardView(mActivity);
+        CardView cardview = new CardView(mActivity);
         cardview.setLayoutParams(new CardView.LayoutParams(
                 CardView.LayoutParams.MATCH_PARENT,   // width
                 CardView.LayoutParams.WRAP_CONTENT)); // height
@@ -981,15 +992,22 @@ public class MMCFragment extends Fragment {
                 mActivity,
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
-                    public boolean canDismiss(Object token) {
+                    public boolean canDismiss(Boolean token) {
                         return true;
                     }
 
                     @Override
                     public void onDismiss(View view) {
-                        history.removeView(cardview);
+                        //history.removeView(cardview);
+                        check_bg_operation(view);
                     }
                 }));
+
+        //Adicionar os números a calcular na tag do cardview
+//        cardview.setTag(long_numbers);
+
+        MyTags tags = new MyTags(cardview, long_numbers, result_mmc, false, false, "", null, 0);
+        cardview.setTag(tags);
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
@@ -999,6 +1017,8 @@ public class MMCFragment extends Fragment {
         ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_root.setOrientation(LinearLayout.VERTICAL);
 
+        //Adicionar o resultado BigInteger na LinearLayout root
+        //ll_vertical_root.setTag(result_mmc);
 
         // criar novo Textview
         final TextView textView = new TextView(mActivity);
@@ -1008,7 +1028,7 @@ public class MMCFragment extends Fragment {
 
         //Adicionar o texto com o resultado
         textView.setText(mmc_string);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         textView.setTag("texto");
 
         // add the textview to the cardview
@@ -1020,10 +1040,6 @@ public class MMCFragment extends Fragment {
         *
         * */
 
-        ll_vertical_expl = new LinearLayout(mActivity);
-        ll_vertical_expl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-        ll_vertical_expl.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_expl.setTag(false);
 
         final Boolean[] isExpanded = {false};
         final TextView explainLink = new TextView(mActivity);
@@ -1040,37 +1056,56 @@ public class MMCFragment extends Fragment {
         explainLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                MyTags thisCardTags = (MyTags) ((CardView) view.getParent().getParent()).getTag();
+                Boolean hasExplanation = thisCardTags.getHasExplanation();
+                Boolean hasBGOperation = thisCardTags.getHasBGOperation();
+
                 if (!isExpanded[0]) {
-                    Boolean hasExplanation = (Boolean) ll_vertical_expl.getTag();
-                    if (BG_Operation_MMC.getStatus() == AsyncTask.Status.PENDING && !hasExplanation ||
-                            BG_Operation_MMC.getStatus() == AsyncTask.Status.FINISHED && !hasExplanation) {
-                        BG_Operation_MMC = new BackGroundOperation_MMC().execute(long_numbers);
+
+                    if (!hasBGOperation && !hasExplanation) {
+                        thisCardTags.setTaskNumber(taskNumber);
+                        AsyncTask<Void, Float, Void> BG_Operation_MMC = new BackGroundOperation_MMC(thisCardTags)
+                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        asyncTaskQueue.add(BG_Operation_MMC);
+                        taskNumber++;
                     }
+
+
                     SpannableStringBuilder ssb_hide_expl = new SpannableStringBuilder(getString(R.string.hide_explain));
                     ssb_hide_expl.setSpan(new UnderlineSpan(), 0, ssb_hide_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
-                    explainLink.setText(ssb_hide_expl);
+                    ((TextView) view).setText(ssb_hide_expl);
                     ((LinearLayout) view.getParent()).getChildAt(2).setVisibility(View.VISIBLE);
                     isExpanded[0] = true;
+
                 } else if (isExpanded[0]) {
                     SpannableStringBuilder ssb_show_expl = new SpannableStringBuilder(getString(R.string.explain));
                     ssb_show_expl.setSpan(new UnderlineSpan(), 0, ssb_show_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
-                    explainLink.setText(ssb_show_expl);
+                    ((TextView) view).setText(ssb_show_expl);
                     ((LinearLayout) view.getParent()).getChildAt(2).setVisibility(View.GONE);
                     isExpanded[0] = false;
+
                 }
             }
         });
 
+        //LL vertical das explicações
+        LinearLayout ll_vertical_expl = new LinearLayout(mActivity);
+        ll_vertical_expl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_expl.setOrientation(LinearLayout.VERTICAL);
+        //ll_vertical_expl.setTag(false); //has explanation
+
         //ProgressBar
         cv_width = mActivity.findViewById(R.id.card_view_1).getWidth();
         height_dip = (int) (3 * scale + 0.5f);
-        progressBar = new View(mActivity);
+        View progressBar = new View(mActivity);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(1, height_dip); //Largura, Altura
         progressBar.setLayoutParams(layoutParams);
         progressBar.setVisibility(View.GONE);
+        //progressBar.setTag(false); //No BG operation
 
         //Ponto 1
-        explainTextView_1 = new TextView(mActivity);
+        TextView explainTextView_1 = new TextView(mActivity);
         String fp = "fatores primos:";
         String explain_text_1 = "1 ▻Decompor os números em " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
@@ -1079,7 +1114,7 @@ public class MMCFragment extends Fragment {
         explainTextView_1.setText(ssb_explain_1);
 
         //Ponto 2
-        explainTextView_2 = new TextView(mActivity);
+        TextView explainTextView_2 = new TextView(mActivity);
         String comuns = "comuns";
         String ncomuns = "não comuns";
         String uma_vez = "apenas uma vez";
@@ -1094,7 +1129,7 @@ public class MMCFragment extends Fragment {
         explainTextView_2.setText(ssb_explain_2);
 
         //Ponto 3
-        explainTextView_3 = new TextView(mActivity);
+        TextView explainTextView_3 = new TextView(mActivity);
         String multipl = "Multiplicar";
         String explain_text_3 = "3 ▻" + multipl + " " +
                 "os fatores para obter o Mínimo Multiplo Comum:" + "\n";
@@ -1113,6 +1148,30 @@ public class MMCFragment extends Fragment {
         ll_vertical_root.addView(ll_vertical_expl);
         cardview.addView(ll_vertical_root);
 
+
+    }
+
+    public void check_bg_operation(View view) {
+
+        MyTags theTags = (MyTags) view.getTag();
+
+        if (theTags.getHasBGOperation()) {
+
+            if (asyncTaskQueue.get(theTags.getTaskNumber()).getStatus() == AsyncTask.Status.RUNNING) {
+
+                asyncTaskQueue.get(theTags.getTaskNumber()).cancel(true);
+                asyncTaskQueue.set(theTags.getTaskNumber(), null);
+                theTags.setHasBGOperation(false);
+                Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+                thetoast.setGravity(Gravity.CENTER, 0, 0);
+                thetoast.show();
+
+            }
+        }
+
+//        if (BG_Operation_MMC.getStatus() == AsyncTask.Status.RUNNING) {
+//            BG_Operation_MMC.cancel(true);
+//        }
 
     }
 
@@ -1155,23 +1214,130 @@ public class MMCFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class BackGroundOperation_MMC extends AsyncTask<ArrayList<Long>, Float, ArrayList<ArrayList<Long>>> {
+    public class MyTags {
+        CardView theCardView;
+        ArrayList<Long> long_numbers;
+        BigInteger result_mmc;
+        Boolean hasExplanation;
+        Boolean hasBGOperation;
+        String texto;
+        ArrayList<ArrayList<Long>> bgfatores;
+        int taskNumber;
+
+        MyTags(CardView theCardView, ArrayList<Long> long_numbers, BigInteger result_mmc,
+               Boolean hasExplanation, Boolean hasBGOperation, String texto, ArrayList<ArrayList<Long>> bgfatores, int taskNumber) {
+            this.theCardView = theCardView;
+            this.long_numbers = long_numbers;
+            this.result_mmc = result_mmc;
+            this.hasExplanation = hasExplanation;
+            this.hasBGOperation = hasBGOperation;
+            this.texto = texto;
+            this.bgfatores = bgfatores;
+            this.taskNumber = taskNumber;
+        }
+
+        //Methods
+        CardView getCardView() {
+            return theCardView;
+        }
+
+        void setCardView(CardView theCardView) {
+            this.theCardView = theCardView;
+        }
+
+        ArrayList<Long> getLongNumbers() {
+            return long_numbers;
+        }
+
+        void setLongNumbers(ArrayList<Long> long_numbers) {
+            this.long_numbers = long_numbers;
+        }
+
+        BigInteger getResultMMC() {
+            return result_mmc;
+        }
+
+        void setResultMMC(BigInteger result_mmc) {
+            this.result_mmc = result_mmc;
+        }
+
+        Boolean getHasExplanation() {
+            return hasExplanation;
+        }
+
+        void setHasExplanation(Boolean hasExplanation) {
+            this.hasExplanation = hasExplanation;
+        }
+
+        Boolean getHasBGOperation() {
+            return hasBGOperation;
+        }
+
+        void setHasBGOperation(Boolean hasBGOperation) {
+            this.hasBGOperation = hasBGOperation;
+        }
+
+        String getTexto() {
+            return texto;
+        }
+
+        void setTexto(String texto) {
+            this.texto = texto;
+        }
+
+        ArrayList<ArrayList<Long>> getBGfatores() {
+            return bgfatores;
+        }
+
+        void setBGfatores(ArrayList<ArrayList<Long>> bgfatores) {
+            this.bgfatores = bgfatores;
+        }
+
+        int getTaskNumber() {
+            return taskNumber;
+        }
+
+        void setTaskNumber(int taskNumber) {
+            this.taskNumber = taskNumber;
+        }
+
+
+    }
+
+    // Asynctask <Params, Progress, Result>
+    public class BackGroundOperation_MMC extends AsyncTask<Void, Float, Void> {
+        MyTags cardTags;
+        CardView theCardViewBG;
+        ArrayList<Long> mmc_numbers;
+        BigInteger result_mmc;
+        ArrayList<ArrayList<Long>> bgfatores;
+
+        View progressBar;
+
+        BackGroundOperation_MMC(MyTags cardTags) {
+            this.cardTags = cardTags;
+        }
+
 
         @Override
         public void onPreExecute() {
-
+            theCardViewBG = cardTags.getCardView();
+            progressBar = ((LinearLayout) ((LinearLayout) ((CardView) theCardViewBG).getChildAt(0)).getChildAt(2)).getChildAt(0);
+            progressBar.setVisibility(View.VISIBLE);
+            cardTags.setHasBGOperation(true);
         }
 
         @Override
-        protected ArrayList<ArrayList<Long>> doInBackground(ArrayList<Long>... numbers) {
+        protected Void doInBackground(Void... voids) {
             ArrayList<ArrayList<Long>> fatores = new ArrayList<>();
+            mmc_numbers = cardTags.getLongNumbers();
 
-            int numbersSize = numbers[0].size();
+            int numbersSize = mmc_numbers.size();
             for (int i = 0; i < numbersSize; i++) { // fatorizar todos os números inseridos em MMC
 
                 ArrayList<Long> fatores_ix = new ArrayList<>();
 
-                Long number_i = numbers[0].get(i);
+                Long number_i = mmc_numbers.get(i);
                 if (number_i == 1L) {
                     fatores_ix.add(1L);
                 }
@@ -1185,7 +1351,7 @@ public class MMCFragment extends Fragment {
                         fatores_ix.add(j);
                         number_i /= j;
                     }
-                    publishProgress(((float) j / ((float) number_i / (float) j)), (float) i);
+                    publishProgress(((float) j + 10) / ((float) number_i / (float) j + 10), (float) i); //+10 para dar visibilidade inicial à barra de progresso
                     if (isCancelled()) break;
                 }
                 if (number_i > 1) {
@@ -1195,33 +1361,35 @@ public class MMCFragment extends Fragment {
                 fatores.add(fatores_ix);
 
             }
-            Log.d("Sergio>>>", "doInBackground: fatores" + fatores);
-            return fatores;
+            cardTags.setBGfatores(fatores);
+            return null;
         }
 
         @Override
         public void onProgressUpdate(Float... values) {
+            //hasBGOperation = cardTags.getHasBGOperation();
+
             if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setVisibility(View.VISIBLE);
                 progressBar.setBackgroundColor(f_colors[Math.round(values[1])]);
-                int progress_width = (int) Math.round(values[0] * cv_width);
+                int progress_width = Math.round(values[0] * cv_width);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
                 progressBar.setLayoutParams(layoutParams);
             }
         }
 
         @Override
-        protected void onPostExecute(ArrayList<ArrayList<Long>> result) {
+        protected void onPostExecute(Void result) {
             if (thisFragment != null && thisFragment.isVisible()) {
 
-                ArrayList<ArrayList<Long>> fatoresPrimos = result;
+                bgfatores = cardTags.getBGfatores();
+
                 ArrayList<ArrayList<Long>> datasets = new ArrayList<>();
 
-                for (int k = 0; k < fatoresPrimos.size(); k++) {
+                for (int k = 0; k < bgfatores.size(); k++) {
                     ArrayList<Long> bases = new ArrayList<>();
                     ArrayList<Long> exps = new ArrayList<>();
 
-                    String str_fatores = long_numbers.get(k) + "=";
+                    String str_fatores = mmc_numbers.get(k) + "=";
                     SpannableStringBuilder ssb_fatores;
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
                     ssb_fatores.setSpan(new ForegroundColorSpan(f_colors[k]), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
@@ -1229,30 +1397,30 @@ public class MMCFragment extends Fragment {
 
                     Integer counter = 1;
                     Integer nextfactor = 0;
-                    Long lastItem = fatoresPrimos.get(k).get(0);
+                    Long lastItem = bgfatores.get(k).get(0);
 
                     //TreeMap
                     LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
 
                     //Contar os expoentes  (sem comentários....)
-                    for (int i = 0; i < fatoresPrimos.get(k).size(); i++) {
+                    for (int i = 0; i < bgfatores.get(k).size(); i++) {
                         if (i == 0) {
-                            dataset.put(String.valueOf(fatoresPrimos.get(k).get(0)), 1);
-                            bases.add(fatoresPrimos.get(k).get(0));
+                            dataset.put(String.valueOf(bgfatores.get(k).get(0)), 1);
+                            bases.add(bgfatores.get(k).get(0));
                             exps.add(1L);
-                        } else if (fatoresPrimos.get(k).get(i).equals(lastItem) && i > 0) {
+                        } else if (bgfatores.get(k).get(i).equals(lastItem) && i > 0) {
                             counter++;
-                            dataset.put(String.valueOf(fatoresPrimos.get(k).get(i)), counter);
-                            bases.set(nextfactor, fatoresPrimos.get(k).get(i));
+                            dataset.put(String.valueOf(bgfatores.get(k).get(i)), counter);
+                            bases.set(nextfactor, bgfatores.get(k).get(i));
                             exps.set(nextfactor, (long) counter);
-                        } else if (!fatoresPrimos.get(k).get(i).equals(lastItem) && i > 0) {
+                        } else if (!bgfatores.get(k).get(i).equals(lastItem) && i > 0) {
                             counter = 1;
                             nextfactor++;
-                            dataset.put(String.valueOf(fatoresPrimos.get(k).get(i)), counter);
-                            bases.add(fatoresPrimos.get(k).get(i));
+                            dataset.put(String.valueOf(bgfatores.get(k).get(i)), counter);
+                            bases.add(bgfatores.get(k).get(i));
                             exps.add((long) counter);
                         }
-                        lastItem = fatoresPrimos.get(k).get(i);
+                        lastItem = bgfatores.get(k).get(i);
                     }
 
                     datasets.add(bases);
@@ -1282,40 +1450,34 @@ public class MMCFragment extends Fragment {
 
                         iterator.remove(); // avoids a ConcurrentModificationException
                     }
-                    if (k < fatoresPrimos.size() - 1) ssb_fatores.append("\n");
-                    explainTextView_1.append(ssb_fatores);
+                    if (k < bgfatores.size() - 1) ssb_fatores.append("\n");
 
+                    //explainTextView_1;
+                    ((TextView) ((LinearLayout) ((LinearLayout) ((CardView) theCardViewBG).getChildAt(0)).getChildAt(2)).getChildAt(1)).append(ssb_fatores);
 
                 }
-                Log.i("Sergio>>>", "onPostExecute: datasets" + datasets);
 
-                ArrayList<ArrayList<Long>> mmc_fatores = new ArrayList<>();
                 ArrayList<Long> maiores_bases = new ArrayList<>();
                 ArrayList<Long> maiores_exps = new ArrayList<>();
                 ArrayList<Long> colors = new ArrayList<>();
 
                 for (int i = 0; i < datasets.size(); i += 2) {
-
                     ArrayList<Long> bases = datasets.get(i);
                     ArrayList<Long> exps = datasets.get(i + 1);
-                    Log.w("Sergio>>>", "indice " + i + " bases " + bases + " exps " + exps);
 
                     for (int cb = 0; cb < bases.size(); cb++) {
                         Long current_base = bases.get(cb);
                         Long current_exp = exps.get(cb);
-                        Log.d("Sergio>>>", "indice cb " + cb + " current_base " + current_base + " current_exp " + current_exp);
 
                         if (!maiores_bases.contains(current_base)) {
                             maiores_bases.add(current_base);
                             maiores_exps.add(current_exp);
                             colors.add((long) i / 2);
-                            Log.d("Sergio>>>", "não contém indice cb " + cb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
                         }
 
                         if (maiores_bases.contains(current_base) && current_exp > maiores_exps.get(maiores_bases.indexOf(current_base))) {
                             maiores_exps.set(maiores_bases.indexOf(current_base), current_exp);
                             colors.set(maiores_bases.indexOf(current_base), (long) (i / 2));
-                            Log.d("Sergio>>>", "    contém indice cb " + cb + " maiores_bases " + maiores_bases + " maiores_exps " + maiores_exps);
                         }
 
                         for (int j = i + 2; j < datasets.size(); j += 2) {
@@ -1326,42 +1488,27 @@ public class MMCFragment extends Fragment {
                                 Long next_base = next_bases.get(nb);
                                 Long next_exp = next_exps.get(nb);
 
-                                if (next_base == current_base && next_exp > current_exp && maiores_bases.contains(current_base)) {
-                                    Log.i("Sergio>>>", "onPostExecute: colors " + colors + " jota j= " + j);
-                                    Log.d("Sergio>>>", "onPostExecute: maiores_exps " + maiores_exps);
-                                    maiores_exps.set(maiores_bases.indexOf(current_base), next_exp);
-
-                                    //if (colors.contains((long) (j / 2)))
+                                if (next_base == current_base && next_exp > maiores_exps.get(maiores_bases.indexOf(current_base)) && maiores_bases.contains(next_base)) {
+                                    maiores_exps.set(maiores_bases.indexOf(next_base), next_exp);
                                     colors.set(maiores_bases.indexOf(current_base), (long) (j / 2));
-                                    //colors.set(colors.indexOf((long) (j / 2)), (long) (j / 2));
-
-                                    Log.i("Sergio>>>", "contains indice nb next base " + nb + " maiores_bases " +
-                                            maiores_bases + " maiores_exps " + maiores_exps + " colors " + colors);
                                 }
 
-//                                if (next_base == current_base && next_exp > current_exp && !maiores_bases.contains(current_base)) {
-//                                    maiores_bases.add(next_base);
-//                                    maiores_exps.add(next_exp);
-//                                }
                             }
                         }
                     }
                 }
 
-                mmc_fatores.add(maiores_bases);
-                mmc_fatores.add(maiores_exps);
-                mmc_fatores.add(colors);
 
                 SpannableStringBuilder ssb_mmc = new SpannableStringBuilder();
 
-                //Criar os expoentes do MMC com os maiores fatores em cor e a negrito
+                //Criar os expoentes do MMC com os maiores fatores com cores e a negrito
                 for (int i = 0; i < maiores_bases.size(); i++) {
                     int base_length = maiores_bases.get(i).toString().length();
 
                     if (maiores_exps.get(i) == 1L) {
                         //Expoente 1
                         ssb_mmc.append(maiores_bases.get(i).toString());
-                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[Integer.valueOf(colors.get(i).intValue())]),
+                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[colors.get(i).intValue()]),
                                 ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -1371,7 +1518,7 @@ public class MMCFragment extends Fragment {
                         ssb_mmc.append(maiores_bases.get(i).toString() + maiores_exps.get(i).toString());
                         ssb_mmc.setSpan(new SuperscriptSpan(), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new RelativeSizeSpan(0.8f), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[Integer.valueOf(colors.get(i).intValue())]),
+                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[colors.get(i).intValue()]),
                                 ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
@@ -1379,18 +1526,22 @@ public class MMCFragment extends Fragment {
                 }
                 ssb_mmc.replace(ssb_mmc.length() - 1, ssb_mmc.length(), "");
 
-                explainTextView_2.append(ssb_mmc);
-                Log.e("Sergio>>>", "final dos ciclos, mmc_fatores " + mmc_fatores);
+                //explainTextView_2
+                ((TextView) ((LinearLayout) ((LinearLayout) ((CardView) theCardViewBG).getChildAt(0)).getChildAt(2)).getChildAt(2)).append(ssb_mmc);
 
                 ssb_mmc.delete(0, ssb_mmc.length());
+                result_mmc = cardTags.getResultMMC();
                 ssb_mmc.append(result_mmc.toString());
                 ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                explainTextView_3.append(ssb_mmc);
+
+                //explainTextView_3
+                ((TextView) ((LinearLayout) ((LinearLayout) ((CardView) theCardViewBG).getChildAt(0)).getChildAt(2)).getChildAt(3))
+                        .append(ssb_mmc);
 
                 progressBar.setVisibility(View.GONE);
-                ll_vertical_expl.setTag(true); // true - já com explicação
-                long_numbers.clear();
-
+                cardTags.setHasBGOperation(false);
+                cardTags.setHasExplanation(true);
+                asyncTaskQueue.set(cardTags.getTaskNumber(), null);
 
                 datasets.clear();
             }
