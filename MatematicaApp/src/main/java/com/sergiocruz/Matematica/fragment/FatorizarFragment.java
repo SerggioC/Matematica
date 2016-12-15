@@ -3,6 +3,7 @@ package com.sergiocruz.Matematica.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -38,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.activity.AboutActivity;
 import com.sergiocruz.Matematica.helper.CreateCardView;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
@@ -64,6 +66,8 @@ public class FatorizarFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    //AsyncTask params <Input datatype, progress update datatype, return datatype>
     public AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> BG_Operation = new BackGroundOperation();
     Long num1;
     int cv_width, height_dip;
@@ -72,12 +76,12 @@ public class FatorizarFragment extends Fragment {
     Fragment thisFragment = this;
     Button button;
     ImageView cancelButton;
+    Activity mActivity;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
-    //AsyncTask params <Input datatype, progress update datatype, return datatype>
 
     public FatorizarFragment() {
         // Required empty public constructor
@@ -186,6 +190,7 @@ public class FatorizarFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mActivity = getActivity();
     }
 
     @Override
@@ -206,20 +211,22 @@ public class FatorizarFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(getActivity());
+            MenuHelper.share_history(mActivity);
         }
 
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(getActivity());
+            MenuHelper.remove_history(mActivity);
         }
 
         if (id == R.id.action_ajuda) {
-            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
+            ViewGroup history = (ViewGroup) mActivity.findViewById(R.id.history);
             String help_divisores = getString(R.string.help_text_fatores);
             SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
-            CreateCardView.create(history, ssb, getActivity());
+            CreateCardView.create(history, ssb, mActivity);
         }
-
+        if (id == R.id.action_about) {
+            startActivity(new Intent(mActivity, AboutActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -229,17 +236,17 @@ public class FatorizarFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
 //         Checks the orientation of the screen
 //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, "landscape", Toast.LENGTH_SHORT).show();
 //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, "portrait", Toast.LENGTH_SHORT).show();
 //        }
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
         //int height = size.y;
-        final float scale = getActivity().getResources().getDisplayMetrics().density;
+        final float scale = mActivity.getResources().getDisplayMetrics().density;
         int lr_dip = (int) (4 * scale + 0.5f) * 2;
         cv_width = width - lr_dip;
 
@@ -249,8 +256,8 @@ public class FatorizarFragment extends Fragment {
 
     public void hideKeyboard() {
         //Hide the keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
     }
 
     @Override
@@ -259,7 +266,7 @@ public class FatorizarFragment extends Fragment {
 
         if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
             BG_Operation.cancel(true);
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
         }
@@ -268,7 +275,7 @@ public class FatorizarFragment extends Fragment {
     public void cancel_AsyncTask() {
         if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
             BG_Operation.cancel(true);
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             cancelButton.setVisibility(View.GONE);
@@ -280,7 +287,7 @@ public class FatorizarFragment extends Fragment {
 
     public void displayCancelDialogBox() {
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
 
         // set title
         alertDialogBuilder.setTitle(getString(R.string.fatorize_title));
@@ -352,7 +359,7 @@ public class FatorizarFragment extends Fragment {
                 } catch (Exception e) {
                     num_1.setText(oldnum1);
                     num_1.setSelection(num_1.getText().length()); //Colocar o cursor no final do texto
-                    Toast thetoast = Toast.makeText(getActivity(), getString(R.string.numero_alto), Toast.LENGTH_SHORT);
+                    Toast thetoast = Toast.makeText(mActivity, getString(R.string.numero_alto), Toast.LENGTH_SHORT);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }
@@ -368,12 +375,12 @@ public class FatorizarFragment extends Fragment {
 
     private void calcfatoresPrimos() {
 
-        EditText edittext = (EditText) getActivity().findViewById(R.id.editNumFact);
+        EditText edittext = (EditText) mActivity.findViewById(R.id.editNumFact);
         String editnumText = edittext.getText().toString();
         long num;
 
         if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
-            Toast thetoast = Toast.makeText(getActivity(), R.string.insert_integer, Toast.LENGTH_LONG);
+            Toast thetoast = Toast.makeText(mActivity, R.string.insert_integer, Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -382,13 +389,13 @@ public class FatorizarFragment extends Fragment {
             // Tentar converter o string para long
             num = Long.parseLong(editnumText);
         } catch (Exception e) {
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.numero_alto), Toast.LENGTH_LONG);
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.numero_alto), Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
         }
         if (num == 0L || num == 1L) {
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.the_number) + " " + num + " " + getString(R.string.has_no_factors), Toast.LENGTH_LONG);
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.the_number) + " " + num + " " + getString(R.string.has_no_factors), Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -400,7 +407,7 @@ public class FatorizarFragment extends Fragment {
 
     void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores) {
 
-        Activity thisActivity = getActivity();
+        Activity thisActivity = mActivity;
         //criar novo cardview
         final CardView cardview = new CardView(thisActivity);
         cardview.setLayoutParams(new CardView.LayoutParams(
@@ -495,7 +502,7 @@ public class FatorizarFragment extends Fragment {
                 thisActivity,
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
-                    public boolean canDismiss(Object token) {
+                    public boolean canDismiss(Boolean token) {
                         return true;
                     }
 
@@ -553,11 +560,11 @@ public class FatorizarFragment extends Fragment {
             button.setText(getString(R.string.working));
             cancelButton.setVisibility(View.VISIBLE);
             hideKeyboard();
-            history = (LinearLayout) getActivity().findViewById(R.id.history);
-            ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(R.id.card_view_1);
+            history = (LinearLayout) mActivity.findViewById(R.id.history);
+            ViewGroup cardView1 = (ViewGroup) mActivity.findViewById(R.id.card_view_1);
             cv_width = cardView1.getWidth();
-            progressBar = (View) getActivity().findViewById(R.id.progress);
-            float scale = getActivity().getResources().getDisplayMetrics().density;
+            progressBar = (View) mActivity.findViewById(R.id.progress);
+            float scale = mActivity.getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
 
         }
@@ -639,7 +646,7 @@ public class FatorizarFragment extends Fragment {
                     str_fatores = resultadosDivisao.get(0) + " " + getString(R.string.its_a_prime);
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
                     ssb_fatores.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    CreateCardView.create(history, ssb_fatores, getActivity());
+                    CreateCardView.create(history, ssb_fatores, mActivity);
 
                 } else {
                     str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
@@ -753,7 +760,7 @@ public class FatorizarFragment extends Fragment {
                 if (sizeList == 1) {
                     str_fatores = resultadosDivisao.get(0) + " " + getString(R.string.its_a_prime);
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
-                    CreateCardView.create(history, ssb_fatores, getActivity());
+                    CreateCardView.create(history, ssb_fatores, mActivity);
 
                 } else {
                     str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";

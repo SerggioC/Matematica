@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.activity.AboutActivity;
 
 import java.util.ArrayList;
 
@@ -115,6 +116,9 @@ public class PrimesTableFragment extends Fragment {
             min.setText("2");
             EditText max = (EditText) getActivity().findViewById(R.id.max);
             max.setText("200");
+        }
+        if (id == R.id.action_about) {
+            startActivity(new Intent(getActivity(), AboutActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

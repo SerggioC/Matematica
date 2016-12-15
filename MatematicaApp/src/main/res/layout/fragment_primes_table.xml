@@ -150,18 +150,6 @@
                         android:text="@string/gerar"
                         android:textAllCaps="false"/>
 
-                    <CheckBox
-                        android:id="@+id/showAllCheckBox"
-                        style="@style/Widget.AppCompat.CompoundButton.CheckBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="4dp"
-                        android:text="Mostrar Todos"
-                        android:visibility="gone"/>
-
                     <ImageView
                         android:id="@+id/cancelTask"
                         android:layout_width="29dp"

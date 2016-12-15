@@ -2,6 +2,7 @@ package com.sergiocruz.Matematica.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -35,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.activity.AboutActivity;
 import com.sergiocruz.Matematica.helper.CreateCardView;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
@@ -136,7 +138,9 @@ public class DivisoresFragment extends Fragment {
             SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
             CreateCardView.create(history, ssb, getActivity());
         }
-
+        if (id == R.id.action_about) {
+            startActivity(new Intent(getActivity(), AboutActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -378,7 +382,7 @@ public class DivisoresFragment extends Fragment {
                 getActivity(),
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
-                    public boolean canDismiss(Object token) {
+                    public boolean canDismiss(Boolean token) {
                         return true;
                     }
 

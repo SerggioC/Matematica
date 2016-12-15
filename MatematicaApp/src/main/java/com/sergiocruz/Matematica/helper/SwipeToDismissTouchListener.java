@@ -264,6 +264,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
             public void onAnimationEnd(Animator animation) {
                 try {
                     history.removeView(cardview);
+                    mCallbacks.onDismiss(mView);
                 } catch (Exception e) {}
 
                 //performDismiss();
@@ -345,6 +346,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                                     if (mView != null) {
                                         final ViewGroup history = (ViewGroup) mView.getParent();
                                         history.removeView(mView);
+                                        mCallbacks.onDismiss(mView);
                                     }
                                     //performDismiss();
                                 }
@@ -492,7 +494,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         /**
          * Called to determine whether the view can be dismissed.
          */
-        boolean canDismiss(Object token);
+        boolean canDismiss(Boolean token);
 
         /**
          * Called when the user has indicated they she would like to dismiss the view.

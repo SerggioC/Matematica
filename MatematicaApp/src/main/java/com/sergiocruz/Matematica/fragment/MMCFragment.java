@@ -3,6 +3,7 @@ package com.sergiocruz.Matematica.fragment;
 import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -41,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.activity.AboutActivity;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
@@ -75,7 +77,6 @@ public class MMCFragment extends Fragment {
     int taskNumber = 0;
     int height_dip, cv_width;
     int f_colors[];
-    ViewGroup history;
     EditText mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8;
     Activity mActivity;
     Fragment thisFragment = this;
@@ -186,17 +187,20 @@ public class MMCFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        Boolean hasCanceled = false;
         for (int i = 0; i < asyncTaskQueue.size(); i++) {
             if (asyncTaskQueue.get(i) != null) {
                 asyncTaskQueue.get(i).cancel(true);
-            }
-            if (i == asyncTaskQueue.size() - 1) {
-                Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
-                thetoast.setGravity(Gravity.CENTER, 0, 0);
-                thetoast.show();
+            hasCanceled = true;
             }
         }
 
+        if (hasCanceled) {
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+        }
     }
 
     @Override
@@ -274,7 +278,6 @@ public class MMCFragment extends Fragment {
 
         if (id == R.id.action_clear_all_history) {
             MenuHelper.remove_history(mActivity);
-
             mmc_num_1.setText("");
             mmc_num_2.setText("");
             mmc_num_3.setText("");
@@ -289,6 +292,9 @@ public class MMCFragment extends Fragment {
             String help_divisores = getString(R.string.help_text_mmc);
             SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
             create(history, ssb, mActivity);
+        }
+        if (id == R.id.action_about) {
+            startActivity(new Intent(mActivity, AboutActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -960,7 +966,7 @@ public class MMCFragment extends Fragment {
         }
 
         mmc_string += result_mmc;
-        history = (ViewGroup) view.findViewById(R.id.history);
+        ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
 
         //criar novo cardview
         CardView cardview = new CardView(mActivity);
@@ -1006,7 +1012,7 @@ public class MMCFragment extends Fragment {
         //Adicionar os números a calcular na tag do cardview
 //        cardview.setTag(long_numbers);
 
-        MyTags tags = new MyTags(cardview, long_numbers, result_mmc, false, false, "", null, 0);
+        MyTags tags = new MyTags(cardview, long_numbers, result_mmc, false, false, "", null, taskNumber);
         cardview.setTag(tags);
 
         // Add cardview to history layout at the top (index 0)
@@ -1107,7 +1113,7 @@ public class MMCFragment extends Fragment {
         //Ponto 1
         TextView explainTextView_1 = new TextView(mActivity);
         String fp = "fatores primos:";
-        String explain_text_1 = "1 ▻Decompor os números em " + fp + "\n";
+        String explain_text_1 = "▻Decompor os números em " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
         ssb_explain_1.setSpan(new UnderlineSpan(), explain_text_1.length() - fp.length() - 1, explain_text_1.length() - 1, SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
@@ -1119,7 +1125,7 @@ public class MMCFragment extends Fragment {
         String ncomuns = "não comuns";
         String uma_vez = "apenas uma vez";
         String maior_exps = "maiores expoentes";
-        String explain_text_2 = "2 ▻Escolher os fatores" + " " + comuns + " " + "e" + " " + ncomuns + ", " + uma_vez + ", " + "com os" + " " + maior_exps + ":\n";
+        String explain_text_2 = "▻Escolher os fatores" + " " + comuns + " " + "e" + " " + ncomuns + ", " + uma_vez + ", " + "com os" + " " + maior_exps + ":\n";
         SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(comuns), explain_text_2.indexOf(comuns) + comuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(ncomuns), explain_text_2.indexOf(ncomuns) + ncomuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1130,11 +1136,11 @@ public class MMCFragment extends Fragment {
 
         //Ponto 3
         TextView explainTextView_3 = new TextView(mActivity);
-        String multipl = "Multiplicar";
-        String explain_text_3 = "3 ▻" + multipl + " " +
+        String multipl = "▻Multiplicar";
+        String explain_text_3 = multipl + " " +
                 "os fatores para obter o Mínimo Multiplo Comum:" + "\n";
         SpannableStringBuilder ssb_explain_3 = new SpannableStringBuilder(explain_text_3);
-        ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl), explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl) + 1, explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         explainTextView_3.setText(ssb_explain_3);
 
@@ -1152,27 +1158,19 @@ public class MMCFragment extends Fragment {
     }
 
     public void check_bg_operation(View view) {
-
         MyTags theTags = (MyTags) view.getTag();
-
         if (theTags.getHasBGOperation()) {
-
-            if (asyncTaskQueue.get(theTags.getTaskNumber()).getStatus() == AsyncTask.Status.RUNNING) {
-
-                asyncTaskQueue.get(theTags.getTaskNumber()).cancel(true);
-                asyncTaskQueue.set(theTags.getTaskNumber(), null);
+            int taskNumber = theTags.getTaskNumber();
+            AsyncTask task = asyncTaskQueue.get(taskNumber);
+            if (task.getStatus() == AsyncTask.Status.RUNNING) {
+                task.cancel(true);
+                asyncTaskQueue.set(taskNumber, null);
                 theTags.setHasBGOperation(false);
                 Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
-
             }
         }
-
-//        if (BG_Operation_MMC.getStatus() == AsyncTask.Status.RUNNING) {
-//            BG_Operation_MMC.cancel(true);
-//        }
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event

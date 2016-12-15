@@ -89,7 +89,7 @@ public class CreateCardView {
                 activity,
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
-                    public boolean canDismiss(Object token) {
+                    public boolean canDismiss(Boolean token) {
                         return true;
                     }
 
