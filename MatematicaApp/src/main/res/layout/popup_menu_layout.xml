@@ -35,6 +35,31 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/action_save_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:gravity="center_vertical"
+            android:src="@mipmap/menu_save"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="11dp"
+            android:text="@string/action_save_image"
+            android:textColor="@color/cardview_dark_background"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/action_clear_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

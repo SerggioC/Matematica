@@ -32,12 +32,12 @@ public class CreateCardView {
         final float scale = activity.getResources().getDisplayMetrics().density;
         int lr_dip = (int) (6 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
-        cardview.setRadius((int) (4 * scale + 0.5f));
+        cardview.setRadius((int) (2 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
 
-        int cv_color = ContextCompat.getColor(activity, R.color.lightGreen);
+        int cv_color = ContextCompat.getColor(activity, R.color.white);
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history layout at the top (index 0)
@@ -57,32 +57,6 @@ public class CreateCardView {
         // add the textview to the cardview
         cardview.addView(textView);
 
-        final TextView explainText = new TextView(activity);
-        final Boolean expanded = false;
-        final TextView explainLink = new TextView(activity);
-        explainLink.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,   //largura
-                ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
-        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        explainLink.setTextColor(ContextCompat.getColor(activity, R.color.linkBlue));
-        explainLink.setText(R.string.explain);
-        explainLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!expanded) {
-                    explainLink.setText(R.string.hide_explain);
-                    explainLink.setTextColor(ContextCompat.getColor(activity, R.color.lightBlue));
-                    showExplanation();
-                } else {
-                    explainLink.setTextColor(ContextCompat.getColor(activity, R.color.linkBlue));
-                    explainLink.setText(R.string.explain);
-                    explainText.setVisibility(View.GONE);
-                }
-            }
-        });
-
-
-
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
@@ -100,12 +74,4 @@ public class CreateCardView {
                 }));
     }
 
-    private static void showExplanation() {
-
-
-
-
-
-
-    }
 }

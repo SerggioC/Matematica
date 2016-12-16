@@ -7,6 +7,11 @@
         android:title="@string/action_clipboard_result"
         android:icon="@android:drawable/presence_online"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_save_as_image"
+        android:title="@string/action_clipboard_result"
+        android:icon="@android:drawable/presence_online"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_clear_result"

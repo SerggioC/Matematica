@@ -198,7 +198,7 @@ public class FatorizarFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        inflater.inflate(R.menu.menu_history, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         inflater.inflate(R.menu.menu_help_fatorizar, menu);
     }
 
@@ -419,12 +419,12 @@ public class FatorizarFragment extends Fragment {
         final float scale = thisActivity.getResources().getDisplayMetrics().density;
         int lr_dip = (int) (4 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
-        cardview.setRadius((int) (4 * scale + 0.5f));
+        cardview.setRadius((int) (2 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
 
-        int cv_color = ContextCompat.getColor(thisActivity, R.color.lightGreen);
+        int cv_color = ContextCompat.getColor(thisActivity, R.color.cardsColor);
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history layout at the top (index 0)
@@ -437,19 +437,19 @@ public class FatorizarFragment extends Fragment {
         LinearLayout ll_vertical_results = new LinearLayout(thisActivity);
         ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_results.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_results.setPadding(0, 0, (int)(8 * scale + 0.5f), 0);
+        ll_vertical_results.setPadding(0, 0, (int)(4 * scale + 0.5f), 0);
 
         LinearLayout ll_vertical_separador = new LinearLayout(thisActivity);
         ll_vertical_separador.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
         ll_vertical_separador.setOrientation(LinearLayout.VERTICAL);
         ll_vertical_separador.setBackgroundColor(ContextCompat.getColor(thisActivity, R.color.separatorLineColor));
-        int um_dip = (int) (1 * scale + 0.5f);
-        ll_vertical_separador.setPadding(um_dip, 4, 0, 4);
+        int um_dip = (int) (1.2 * scale + 0.5f);
+        ll_vertical_separador.setPadding(um_dip, 4, 0, um_dip);
 
         LinearLayout ll_vertical_divisores = new LinearLayout(thisActivity);
         ll_vertical_divisores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_divisores.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_divisores.setPadding((int)(8 * scale + 0.5f), 0, (int)(8 * scale + 0.5f), 0);
+        ll_vertical_divisores.setPadding((int)(4 * scale + 0.5f), 0, (int)(8 * scale + 0.5f), 0);
 
 
         LinearLayout ll_horizontal_ssb_fatores = new LinearLayout(thisActivity);

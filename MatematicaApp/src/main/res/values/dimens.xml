@@ -12,7 +12,7 @@
     <dimen name="clickable_view_height">90dp</dimen>
     <dimen name="left_right_layout_margin">4dp</dimen>
     <dimen name="edittext_height">36dp</dimen>
-    <dimen name="edittextsize">20sp</dimen>
+    <dimen name="edittextsize">18sp</dimen>
     <dimen name="edittext_margin_left">4dp</dimen>
     <dimen name="edittext_margin_right">4dp</dimen>
 </resources>

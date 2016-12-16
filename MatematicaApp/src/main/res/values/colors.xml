@@ -6,10 +6,11 @@
     <color name="white">#FFFFFF</color>
     <color name="transparente">#00ffffff</color>
     <color name="black">#000000</color>
-    <color name="bgCardColor">#9769bc4d</color>
+    <color name="bgCardColor">#a969bc4d</color>
     <color name="lightGreen">#f1f8e9</color>
+    <color name="cardsColor">#FFFFFF</color>
     <color name="greener">#dcedc8</color>
-    <color name="lightGrey">#FAFAFA</color>
+    <color name="lightGrey">#f5f5f5</color>
     <color name="lightYellow">#FFFDE7</color>
     <color name="lightgreen100">#CCFF90</color>
     <color name="lightBlue">#4799E8</color>
@@ -20,11 +21,11 @@
     <color name="f_color1">#2196F3</color>
     <color name="f_color2">#4CAF50</color>
     <color name="f_color3">#ff1100</color>
-    <color name="f_color4">#fbc02d</color>
+    <color name="f_color4">#ffc400</color>
     <color name="f_color5">#9C27B0</color>
-    <color name="f_color6">#ec407a</color>
+    <color name="f_color6">#f06292</color>
     <color name="f_color7">#4358c7</color>
-    <color name="f_color8">#f57c00</color>
+    <color name="f_color8">#ff6f00</color>
 
     <array name="f_colors_xml">
         <item>@color/f_color1</item>

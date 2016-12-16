@@ -79,7 +79,7 @@ public class MDCFragment extends Fragment {
 
     int taskNumber = 0;
     int height_dip, cv_width;
-    int f_colors[];
+    ArrayList<Integer> fColors;
 
     Activity mActivity;
     Fragment thisFragment = this;
@@ -203,7 +203,11 @@ public class MDCFragment extends Fragment {
         }
         mActivity = getActivity();
         scale = mActivity.getResources().getDisplayMetrics().density;
-        f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
+        int[] f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
+        fColors = new ArrayList<>();
+        for (int i = 0; i < f_colors.length; i++) {
+            fColors.add(f_colors[i]);
+        }
     }
 
 
@@ -231,7 +235,7 @@ public class MDCFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        inflater.inflate(R.menu.menu_history, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         inflater.inflate(R.menu.menu_help_mdc, menu);
     }
 
@@ -946,7 +950,7 @@ public class MDCFragment extends Fragment {
         //int pixels = (int) (dips * scale + 0.5f);
         int lr_dip = (int) (6 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
-        cardview.setRadius((int) (4 * scale + 0.5f));
+        cardview.setRadius((int) (2 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
@@ -957,7 +961,7 @@ public class MDCFragment extends Fragment {
             lt.enableTransitionType(CHANGE_DISAPPEARING);
         }
 
-        int cv_color = ContextCompat.getColor(mActivity, R.color.lightGreen);
+        int cv_color = ContextCompat.getColor(mActivity, R.color.cardsColor);
         cardview.setCardBackgroundColor(cv_color);
 
         // Create a generic swipe-to-dismiss touch listener.
@@ -1281,18 +1285,16 @@ public class MDCFragment extends Fragment {
             progressBar = ((LinearLayout) ((LinearLayout) ((CardView) theCardViewBG).getChildAt(0)).getChildAt(2)).getChildAt(0);
             progressBar.setVisibility(View.VISIBLE);
             cardTags.setHasBGOperation(true);
+            Collections.shuffle(fColors); //randomizar as cores
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
             ArrayList<ArrayList<Long>> fatores = new ArrayList<>();
             mdc_numbers = cardTags.getLongNumbers();
-
             int numbersSize = mdc_numbers.size();
             for (int i = 0; i < numbersSize; i++) { // fatorizar todos os números inseridos em MMC
-
                 ArrayList<Long> fatores_ix = new ArrayList<>();
-
                 Long number_i = mdc_numbers.get(i);
                 //if (number_i == 1L) { //adicionar o fator 1 para calibrar em baixo a contagem....
                 fatores_ix.add(1L);
@@ -1301,21 +1303,18 @@ public class MDCFragment extends Fragment {
                     fatores_ix.add(2L);
                     number_i /= 2L;
                 }
-
                 for (long j = 3; j <= number_i / j; j += 2) {
                     while (number_i % j == 0) {
                         fatores_ix.add(j);
                         number_i /= j;
                     }
-                    publishProgress(((float) j + 10) / ((float) number_i / (float) j + 10), (float) i); //+10 para dar visibilidade inicial à barra de progresso
+                    publishProgress(((float) j) / ((float) number_i / (float) j), (float) i); //+10 para dar visibilidade inicial à barra de progresso
                     if (isCancelled()) break;
                 }
                 if (number_i > 1) {
                     fatores_ix.add(number_i);
                 }
-
                 fatores.add(fatores_ix);
-
             }
             cardTags.setBGfatores(fatores);
             return null;
@@ -1323,10 +1322,8 @@ public class MDCFragment extends Fragment {
 
         @Override
         public void onProgressUpdate(Float... values) {
-            //hasBGOperation = cardTags.getHasBGOperation();
-
             if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setBackgroundColor(f_colors[Math.round(values[1])]);
+                progressBar.setBackgroundColor(fColors.get(Math.round(values[1])));
                 int progress_width = Math.round(values[0] * cv_width);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
                 progressBar.setLayoutParams(layoutParams);
@@ -1345,7 +1342,7 @@ public class MDCFragment extends Fragment {
 
                     String str_fatores = mdc_numbers.get(k) + "=";
                     SpannableStringBuilder ssb_fatores = new SpannableStringBuilder(str_fatores);
-                    ssb_fatores.setSpan(new ForegroundColorSpan(f_colors[k]), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
+                    ssb_fatores.setSpan(new ForegroundColorSpan(fColors.get(k)), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
                     ssb_fatores.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
 
                     Integer counter = 1;
@@ -1453,7 +1450,6 @@ public class MDCFragment extends Fragment {
                         }
                         bases_comuns.add(temp_bases.get(lowerIndex));
                         exps_comuns.add(lower_exp);
-                        //colors.add(temp_colors.get(temp_exps.indexOf(lower_exp)));
                         colors.add(temp_colors.get(lowerIndex));
                     }
                 }
@@ -1467,7 +1463,7 @@ public class MDCFragment extends Fragment {
                     if (exps_comuns.get(i) == 1L) {
                         //Expoente 1
                         ssb_mdc.append(bases_comuns.get(i).toString());
-                        ssb_mdc.setSpan(new ForegroundColorSpan(f_colors[colors.get(i)]),
+                        ssb_mdc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i))),
                                 ssb_mdc.length() - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mdc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mdc.length() - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -1477,7 +1473,7 @@ public class MDCFragment extends Fragment {
                         ssb_mdc.append(bases_comuns.get(i).toString() + exps_comuns.get(i).toString());
                         ssb_mdc.setSpan(new SuperscriptSpan(), ssb_mdc.length() - exp_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mdc.setSpan(new RelativeSizeSpan(0.8f), ssb_mdc.length() - exp_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mdc.setSpan(new ForegroundColorSpan(f_colors[colors.get(i)]),
+                        ssb_mdc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i))),
                                 ssb_mdc.length() - exp_length - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mdc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mdc.length() - exp_length - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
@@ -1503,6 +1499,7 @@ public class MDCFragment extends Fragment {
                 asyncTaskQueue.set(cardTags.getTaskNumber(), null);
 
                 datasets.clear();
+                bgfatores.clear();
             }
         }
     }

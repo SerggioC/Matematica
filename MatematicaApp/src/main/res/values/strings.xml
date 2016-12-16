@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name" translatable="false">Matemática</string>
-    <string name="app_version_name" translatable="false">2.7</string>
+    <string name="app_version_name" translatable="false">3.0</string>
 
     <string name="app_long_description">Matemática: Prime Number Tools v</string>
     <string name="app_version_description">Versão da Aplicação:</string>
@@ -41,13 +41,13 @@
     <string name="activity_title_share">Partilhar</string>
     <string name="action_clipboard_result">Copiar</string>
     <string name="action_clear_result">Apagar</string>
-    <string name="action_share_result">Partilhar</string>
+    <string name="action_share_result">Partilhar...</string>
     <string name="action_ajuda_fatorizar">Como fatorizar um número?</string>
     <string name="action_ajuda_divisores">Como obter os divisores?</string>
     <string name="action_ajuda_mmc">Como calcular o MMC?</string>
     <string name="action_ajuda_mdc">Como calcular o MDC?</string>
 
-    <string name="help_text_divisores">" Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.\n\n Por definição, os números primos são números pertencentes ao conjunto dos números naturais não nulos, que possuem exatamente dois divisores naturais distintos: o número 1 e o próprio número, cuja divisão será exata com resto igual a zero."</string>
+    <string name="help_text_divisores"> Divisores de um número natural são todos os números naturais que ao dividirem tal número, resultarão numa divisão exata, isto é, com resto igual a zero. O conjunto dos divisores de um número é um conjunto finito.\nPara que possamos encontrar tais divisores, recorremos à factorização ou decomposição em fatores primos. Multiplicamos cada um dos fatores da decomposição pelo número 1 e pelos seus sucessivos resultados, não repetindo os resultados iguais.\n Para obtermos a quantidade de divisores de um número natural multiplicamos todos os expoentes do resultado da fatorização depois de adicionar uma unidade a cada expoente.\n Por definição, os números primos são números pertencentes ao conjunto dos números naturais não nulos, que possuem exatamente dois divisores naturais distintos: o número 1 e o próprio número, cuja divisão será exata com resto igual a zero.</string>
 
     <string name="help_text_fatores"> A decomposição de um número natural num produto de fatores primos é chamada de fatorização.\n
  A fatorização de qualquer número primo resultará no próprio número porque estes não são fatorizaveis. Na fatorização o mesmo fator primo pode ocorrer mais de uma vez. Quando isto acontece representamos o fator na forma de uma potência cujo expoente é o número de ocorrências de tal fator e a base é o próprio fator.\n
@@ -99,11 +99,11 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="introduzir_numero">Introduzir número…</string>
     <string name="fatorize_title">Fatorização em números primos</string>
     <string name="fatorizar_btn">Fatorizar</string>
-    <string name="home_mmc_description">MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números</string>
-    <string name="home_mdc_description">MDC - Calcular o Máximo Divisor Comum entre dois ou mais números\nDeterminar se os números são primos entre si</string>
-    <string name="home_factorize_description">Fatorizar - Decompor um número em fatores primos\nVerificar se um número é primo</string>
-    <string name="home_divisors_description">Divisores - Calcular todos os divisores de um número inteiro e verificar se um número é primo</string>
-    <string name="home_primetable_description">Tabela de números primos num dado intervalo\nTotal de números primos no intervalo</string>
+    <string name="home_mmc_description">▸MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números</string>
+    <string name="home_mdc_description">▸MDC - Calcular o Máximo Divisor Comum entre dois ou mais números\n▸Determinar se os números são primos entre si</string>
+    <string name="home_factorize_description">▸Fatorizar - Decompor um número em fatores primos\n▸Verificar se um número é primo</string>
+    <string name="home_divisors_description">▸Divisores - Calcular todos os divisores de um número inteiro\n▸Verificar se um número é primo</string>
+    <string name="home_primetable_description">▸Tabela de números primos num dado intervalo\n▸Total de números primos no intervalo</string>
     <string name="app_inicio">Matemática - Início</string>
     <string name="mmc">MMC</string>
     <string name="mdc">MDC</string>
@@ -148,5 +148,78 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="and">e</string>
     <string name="explain">Mostar explicação ▾</string>
     <string name="hide_explain">Ocultar explicação ◂</string>
+    <string name="action_save_image">Guardar como</string>
+    <string name="action_options">Definições</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_explanation">Selecionar quando apresentar explicação do cálculo: Sempre, quando pedida ou nunca.</string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_explanation">Mostrar Explicações</string>
+    <string-array name="pref_example_list_titles">
+        <item>Sempre</item>
+        <item>Quando pedida</item>
+        <item>Nunca</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value"/>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
 
 </resources>

@@ -79,7 +79,7 @@ public class PrimesTableFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_history, menu);
+        inflater.inflate(R.menu.menu_main, menu);
 
     }
 

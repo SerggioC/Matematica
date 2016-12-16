@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 /*
         // if fragment is fatorizar, load the menu
         if (navItemIndex == 3 || navItemIndex == 4) {
-            getMenuInflater().inflate(R.menu.menu_history, menu);
+            getMenuInflater().inflate(R.menu.menu_main, menu);
         }*/
         return true;
     }

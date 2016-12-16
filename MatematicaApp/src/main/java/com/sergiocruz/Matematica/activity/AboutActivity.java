@@ -2,13 +2,10 @@ package com.sergiocruz.Matematica.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.sergiocruz.Matematica.R;
-
-import java.util.Locale;
 
 public class AboutActivity extends AppCompatActivity {
 
@@ -24,9 +21,6 @@ public class AboutActivity extends AppCompatActivity {
         TextView versionTV = (TextView) this.findViewById(R.id.version);
         versionTV.setText(getString(R.string.app_version_description) + " " + getString(R.string.app_version_name) + "\n"
                 + getString(R.string.app_version_date));
-
-        Locale local = this.getResources().getConfiguration().locale;
-        Log.i("Sergio>>>", "onCreate: local= " + local);
     }
 
     @Override

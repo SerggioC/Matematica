@@ -10,7 +10,7 @@
     <string name="action_clear_result">Delete</string>
     <string name="action_clipboard_result">Copy</string>
     <string name="action_share_history">Share results</string>
-    <string name="action_share_result">Share</string>
+    <string name="action_share_result">Share...</string>
     <string name="activity_title_about_us">About</string>
     <string name="activity_title_send_mail">Send e-mail</string>
     <string name="activity_title_share">Share</string>
@@ -25,7 +25,7 @@
     <string name="gerar">Generate</string>
     <string name="has">has</string>
 
-    <string name="help_text_divisores">Divisors of a natural number are all natural numbers which, when dividing such number, will result in an exact division, that is, with a remainder equal to zero.\n The set of divisors of a number is a finite set. In order to find such divisors, we use factorization or decomposition in prime factors.\n  We multiply each of the factors of the decomposition by the number 1 and its successive results, not repeating the same results.\n By definition, prime numbers are numbers belonging to the set of nonzero natural numbers, which have exactly two distinct natural divisors: the number 1 and the number itself, whose division will be exact with remainder equal to zero.</string>
+    <string name="help_text_divisores">Divisors of a natural number are all natural numbers which, when dividing such number, will result in an exact division, that is, with a remainder equal to zero.\n The set of divisors of a number is a finite set. In order to find such divisors, we use factorization or decomposition in prime factors.\n  We multiply each of the factors of the decomposition by the number 1 and its successive results, not repeating the same results.\n To obtain the number of divisors of a natural number we multiply all the exponents of the resulting factorization after adding one unit to each exponent.\nBy definition, prime numbers are numbers belonging to the set of nonzero natural numbers, which have exactly two distinct natural divisors: the number 1 and the number itself, whose division will be exact with remainder equal to zero.</string>
     <string name="help_text_fatores"> The decomposition of a natural number into a product of prime factors is called factorization.\n\n The factorization of any prime number will result in the number itself because these are not factorizable. In factorization the same prime factor can occur more than once. When this happens we represent the factor in the form of a power whose exponent is the number of occurrences of such factor and the basis is the factor itself.\n \n To perform the decomposition of a number into a product of prime factors, we must look for the smallest prime number able to divide it into an exact division (remainder of the division equal to zero) and divide it by this number as long as possible. \n Then we must look for the next prime number able to divide it and continue in this procedure until the quotient of the division results in 1. At this moment we will have all the prime factors that compose such number.</string>
     <string name="help_text_mdc">Divisor is a nonzero natural number, which, when dividing another natural number, produces a division with remainder equal to zero, that is, produces an exact division.In this sense, the set of numbers formed by the divisors of any natural number is a finite set.\n\n If the number 1 is the only divisor common to a set of natural numbers, we say that the numbers of this set are relatively prime or also called coprimes.\n\n  A practical method for determining the GCD of a group of natural numbers is to determine the set of divisors of each number and to check which is the largest value common to all sets, this will be the Greates Common Divisor.\n\n  Another method for GCD determination is through factorization. The GCD will be the product of common factors with lower exponent.</string>
     <string name="help_text_mmc">\"  Given two or more non-zero natural numbers, the least common multiplier (LCM) is the smallest of its multiples which is common to all of them, except for zero which is the smallest of the natural numbers and is a multiple of all of them. \n  The multiples of a natural number are all those that divide by this number have zero as the rest of the division.\n  The multiples of a natural number are the result of the product of this number by another natural number.\n  Since the set of natural numbers is an infinite set, the multiples of a number are also infinite. \n  A practical method for determining the LCM of a set of natural numbers is the decomposition into prime factors.\n  LCM is the product of common and uncommon factors, with the greatest exponents. \"</string>
@@ -50,7 +50,7 @@
     <string name="nav_sendmail">Send e-mail</string>
     <string name="nav_share">Share</string>
     <string name="desenvolvido_por">Developed by Sérgio C.</string>
-    <string name="about_app_description">\"- Calculation of the Least Common Multiple (LCM) between up to 8 numbers\n - Calculation of the Greatest Common Divisor (GCD) between up to 8 numbers\n - Factorization in Prime Numbers\n - Determine if a number is prime or also called Primality test\n - Determine whether one or more numbers are relatively prime through GCD\n - Calculate all divisors of an integer\n - Prime number table generator in a given range\n - Total prime numbers in range\"</string>
+    <string name="about_app_description">- Calculation of the Least Common Multiple (LCM) between up to 8 numbers\n - Calculation of the Greatest Common Divisor (GCD) between up to 8 numbers\n - Factorization in Prime Numbers\n - Determine if a number is prime or also called Primality test\n - Determine whether one or more numbers are relatively prime through GCD\n - Calculate all divisors of an integer\n - Prime number table generator in a given range\n - Total prime numbers in range</string>
     <string name="app_version_description">App version:</string>
     <string name="send_comment">Send suggestion, improvement or comment</string>
     <string name="send">Send</string>
@@ -58,11 +58,11 @@
     <string name="introduzir_numero">Insert number…</string>
     <string name="fatorize_title">Prime number factorization</string>
     <string name="fatorizar_btn">Factorize</string>
-    <string name="home_mmc_description">LCM - Calculate the Least Common Multiple between two or more numbers</string>
-    <string name="home_mdc_description">GCD - Calculate the Greatest Common Divisor between two or more numbers\nDetermine if the numbers are relatively primes</string>
-    <string name="home_factorize_description">Factorize - Decompose a number into prime factors\nCheck if a number is prime/Primality test</string>
-    <string name="home_divisors_description">Divisors - Calculate all divisors of an integer also checks if a number is prime</string>
-    <string name="home_primetable_description">Prime numbers table generator for a given range\nTotal of prime numbers in the range</string>
+    <string name="home_mmc_description">▸LCM - Calculate the Least Common Multiple between two or more numbers</string>
+    <string name="home_mdc_description">▸GCD - Calculate the Greatest Common Divisor between two or more numbers\n▸Determine if the numbers are relatively primes</string>
+    <string name="home_factorize_description">▸Factorize - Decompose a number into prime factors\n▸Check if a number is prime/Primality test</string>
+    <string name="home_divisors_description">▸Divisors - Calculate all divisors of an integer\n▸Check if a number is prime</string>
+    <string name="home_primetable_description">▸Prime numbers table generator for a given range\n▸Total of prime numbers in the range</string>
     <string name="app_inicio">Matemática - Home</string>
     <string name="divisors">Divisors</string>
     <string name="factorize">Factorize number</string>
@@ -107,4 +107,7 @@
     <string name="app_long_description">Matemática: Prime Number Tools v</string>
     <string name="cancel_it">Cancel operation?</string>
     <string name="and">and</string>
+    <string name="action_save_image">Save as...</string>
+    <string name="explain">"Show Explanation "</string>
+    <string name="hide_explain">Hide Explanation</string>
 </resources>

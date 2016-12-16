@@ -48,6 +48,7 @@ import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class MMCFragment extends Fragment {
     ArrayList<AsyncTask> asyncTaskQueue = new ArrayList<>();
     int taskNumber = 0;
     int height_dip, cv_width;
-    int f_colors[];
+    ArrayList<Integer> fColors;
     EditText mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8;
     Activity mActivity;
     Fragment thisFragment = this;
@@ -169,10 +170,9 @@ public class MMCFragment extends Fragment {
 //    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
-        // havea menu in this fragment
+        // have a menu in this fragment
         setHasOptionsMenu(true);
 
         if (getArguments() != null) {
@@ -181,7 +181,11 @@ public class MMCFragment extends Fragment {
         }
         mActivity = getActivity();
         scale = mActivity.getResources().getDisplayMetrics().density;
-        f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
+        int[] f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
+        fColors = new ArrayList<>();
+        for (int i = 0; i < f_colors.length; i++) {
+            fColors.add(f_colors[i]);
+        }
     }
 
     @Override
@@ -261,7 +265,7 @@ public class MMCFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        inflater.inflate(R.menu.menu_history, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         inflater.inflate(R.menu.menu_help_mmc, menu);
     }
 
@@ -978,7 +982,7 @@ public class MMCFragment extends Fragment {
         //int pixels = (int) (dips * scale + 0.5f);
         int lr_dip = (int) (6 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
-        cardview.setRadius((int) (4 * scale + 0.5f));
+        cardview.setRadius((int) (2 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
@@ -989,7 +993,7 @@ public class MMCFragment extends Fragment {
             lt.enableTransitionType(CHANGE_DISAPPEARING);
         }
 
-        int cv_color = ContextCompat.getColor(mActivity, R.color.lightGreen);
+        int cv_color = ContextCompat.getColor(mActivity, R.color.cardsColor);
         cardview.setCardBackgroundColor(cv_color);
 
         // Create a generic swipe-to-dismiss touch listener.
@@ -1323,6 +1327,7 @@ public class MMCFragment extends Fragment {
             progressBar = ((LinearLayout) ((LinearLayout) ((CardView) theCardViewBG).getChildAt(0)).getChildAt(2)).getChildAt(0);
             progressBar.setVisibility(View.VISIBLE);
             cardTags.setHasBGOperation(true);
+            Collections.shuffle(fColors); //randomizar as cores
         }
 
         @Override
@@ -1368,7 +1373,7 @@ public class MMCFragment extends Fragment {
             //hasBGOperation = cardTags.getHasBGOperation();
 
             if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setBackgroundColor(f_colors[Math.round(values[1])]);
+                progressBar.setBackgroundColor(fColors.get(Math.round(values[1])));
                 int progress_width = Math.round(values[0] * cv_width);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
                 progressBar.setLayoutParams(layoutParams);
@@ -1390,7 +1395,7 @@ public class MMCFragment extends Fragment {
                     String str_fatores = mmc_numbers.get(k) + "=";
                     SpannableStringBuilder ssb_fatores;
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
-                    ssb_fatores.setSpan(new ForegroundColorSpan(f_colors[k]), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
+                    ssb_fatores.setSpan(new ForegroundColorSpan(fColors.get(k)), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
                     ssb_fatores.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
 
                     Integer counter = 1;
@@ -1506,7 +1511,7 @@ public class MMCFragment extends Fragment {
                     if (maiores_exps.get(i) == 1L) {
                         //Expoente 1
                         ssb_mmc.append(maiores_bases.get(i).toString());
-                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[colors.get(i).intValue()]),
+                        ssb_mmc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i).intValue())),
                                 ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -1516,7 +1521,7 @@ public class MMCFragment extends Fragment {
                         ssb_mmc.append(maiores_bases.get(i).toString() + maiores_exps.get(i).toString());
                         ssb_mmc.setSpan(new SuperscriptSpan(), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new RelativeSizeSpan(0.8f), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[colors.get(i).intValue()]),
+                        ssb_mmc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i).intValue())),
                                 ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }

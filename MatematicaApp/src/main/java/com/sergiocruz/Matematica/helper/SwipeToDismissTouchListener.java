@@ -6,12 +6,14 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -27,6 +29,9 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import static android.widget.Toast.makeText;
 
 /*****
@@ -37,6 +42,8 @@ import static android.widget.Toast.makeText;
 
 public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
+    private static final int POPUP_WIDTH = 136;
+    private static final int POPUP_HEIGHT = 136;
     private final Handler handler = new Handler();
     boolean mBooleanIsPressed = false;
     // Cached ViewConfiguration and system-wide constant values
@@ -63,11 +70,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
             }
         }
     };
-
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
-    private static final int POPUP_WIDTH = 136;
-    private static final int POPUP_HEIGHT = 136;
 
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given view.
@@ -118,7 +122,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         customPopUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                int cv_color = ContextCompat.getColor(mActivity, R.color.lightGreen);
+                int cv_color = ContextCompat.getColor(mActivity, R.color.cardsColor);
                 theCardView.setCardBackgroundColor(cv_color);
             }
         });
@@ -178,6 +182,35 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 sendIntent.setType("text/plain");
                 mActivity.startActivity(sendIntent);
                 customPopUp.dismiss();
+            }
+        });
+
+        popup_layout.findViewById(R.id.action_save_image).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //theCardView.save();
+
+                try {
+                    theCardView.setDrawingCacheEnabled(true);
+                    Bitmap bitmap = theCardView.getDrawingCache();
+                    File file, f = null;
+                    if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+                        file = new File(android.os.Environment.getExternalStorageDirectory(), "Android");
+                        if (!file.exists()) {
+                            file.mkdirs();
+                        }
+                        f = new File(file.getAbsolutePath() + "/filename" + ".png");
+                    }
+                    FileOutputStream fostream = new FileOutputStream(f);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fostream);
+                    fostream.close();
+                } catch (Exception e) {
+                    Log.d("Sergio>>>", "onClick: error? " + e);
+                    e.printStackTrace();
+                }
+
+                customPopUp.dismiss();
+
             }
         });
 
@@ -265,7 +298,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 try {
                     history.removeView(cardview);
                     mCallbacks.onDismiss(mView);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
 
                 //performDismiss();
             }

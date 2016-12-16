@@ -10,6 +10,10 @@
         android:title="@string/action_clear_all_history"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_options"
+        android:title="@string/action_options"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_about"
         android:orderInCategory="100"
         android:title="@string/nav_about_us"
