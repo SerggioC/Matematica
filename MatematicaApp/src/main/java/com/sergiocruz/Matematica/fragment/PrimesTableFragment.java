@@ -1,5 +1,6 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.activity.AboutActivity;
+import com.sergiocruz.Matematica.activity.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -60,7 +62,8 @@ public class PrimesTableFragment extends Fragment {
     ImageView cancelButton;
     Boolean checkboxChecked = false;
     ArrayList<String> full_table = null;
-
+    Activity mActivity;
+    
     public PrimesTableFragment() {
         // Required empty public constructor
     }
@@ -71,6 +74,8 @@ public class PrimesTableFragment extends Fragment {
 
         // have a menu in this fragment
         setHasOptionsMenu(true);
+        
+        mActivity = getActivity();
     }
 
 
@@ -80,6 +85,7 @@ public class PrimesTableFragment extends Fragment {
 
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_sub_main, menu);
 
     }
 
@@ -99,9 +105,9 @@ public class PrimesTableFragment extends Fragment {
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, "Matemática\n" + primes_string);
                 sendIntent.setType("text/plain");
-                getActivity().startActivity(sendIntent);
+                mActivity.startActivity(sendIntent);
             } else {
-                Toast thetoast = makeText(getActivity(), R.string.no_data, Toast.LENGTH_SHORT);
+                Toast thetoast = makeText(mActivity, R.string.no_data, Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
             }
@@ -112,20 +118,23 @@ public class PrimesTableFragment extends Fragment {
             tableData = null;
             num_min = 0L;
             num_max = 200L;
-            EditText min = (EditText) getActivity().findViewById(R.id.min);
+            EditText min = (EditText) mActivity.findViewById(R.id.min);
             min.setText("2");
-            EditText max = (EditText) getActivity().findViewById(R.id.max);
+            EditText max = (EditText) mActivity.findViewById(R.id.max);
             max.setText("200");
         }
         if (id == R.id.action_about) {
-            startActivity(new Intent(getActivity(), AboutActivity.class));
+            startActivity(new Intent(mActivity, AboutActivity.class));
+        }
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(mActivity, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void displayCancelDialogBox() {
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
 
         // set title
         alertDialogBuilder.setTitle(getString(R.string.primetable_title));
@@ -167,7 +176,7 @@ public class PrimesTableFragment extends Fragment {
                         }
                         history_gridView
                                 .setAdapter(
-                                        new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, full_table) {
+                                        new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, full_table) {
                                             @Override
                                             public View getView(int position, View convertView, ViewGroup parent) {
                                                 View view = super.getView(position, convertView, parent);
@@ -181,7 +190,7 @@ public class PrimesTableFragment extends Fragment {
                                         }
                                 );
                     } else {
-                        ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, tableData);
+                        ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, tableData);
                         history_gridView.setAdapter(primes_adapter);
                     }
                 }
@@ -210,7 +219,7 @@ public class PrimesTableFragment extends Fragment {
         btn_clear_min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText min = (EditText) getActivity().findViewById(R.id.min);
+                EditText min = (EditText) mActivity.findViewById(R.id.min);
                 min.setText("");
             }
         });
@@ -219,7 +228,7 @@ public class PrimesTableFragment extends Fragment {
         btn_clear_max.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText max = (EditText) getActivity().findViewById(R.id.max);
+                EditText max = (EditText) mActivity.findViewById(R.id.max);
                 max.setText("");
             }
         });
@@ -247,7 +256,7 @@ public class PrimesTableFragment extends Fragment {
                     min_edittext.setText(oldnum1);
                     min_edittext.setSelection(min_edittext.getText().length()); //Colocar o cursor no final do texto
 
-                    Toast thetoast = makeText(getActivity(), R.string.lowest_is_high, Toast.LENGTH_LONG);
+                    Toast thetoast = makeText(mActivity, R.string.lowest_is_high, Toast.LENGTH_LONG);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }
@@ -282,7 +291,7 @@ public class PrimesTableFragment extends Fragment {
                     max_edittext.setText(oldnum2);
                     max_edittext.setSelection(max_edittext.getText().length()); //Colocar o cursor no final do texto
 
-                    Toast thetoast = makeText(getActivity(), R.string.highest_is_high, Toast.LENGTH_LONG);
+                    Toast thetoast = makeText(mActivity, R.string.highest_is_high, Toast.LENGTH_LONG);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }
@@ -306,7 +315,7 @@ public class PrimesTableFragment extends Fragment {
         String max_string = (String) max_edittext.getText().toString().replaceAll("[^\\d]", "");
 
         if (min_string.equals(null) || min_string.equals("") || max_string.equals(null) || max_string.equals("")) {
-            Toast thetoast = makeText(getActivity(), R.string.fill_min_max, Toast.LENGTH_LONG);
+            Toast thetoast = makeText(mActivity, R.string.fill_min_max, Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -316,14 +325,14 @@ public class PrimesTableFragment extends Fragment {
             // Tentar converter o string do valor mínimo para Long 2^63-1
             num_min = parseLong(min_string);
             if (num_min < 2) {
-                Toast thetoast = makeText(getActivity(), R.string.lowest_prime, Toast.LENGTH_SHORT);
+                Toast thetoast = makeText(mActivity, R.string.lowest_prime, Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
                 min_edittext.setText("2");
                 num_min = 2L;
             }
         } catch (Exception e) {
-            Toast thetoast = makeText(getActivity(), R.string.lowest_is_high, Toast.LENGTH_LONG);
+            Toast thetoast = makeText(mActivity, R.string.lowest_is_high, Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -333,14 +342,14 @@ public class PrimesTableFragment extends Fragment {
             // Tentar converter o string do valor mínimo para Long 2^63-1
             num_max = parseLong(max_string);
             if (num_max < 2) {
-                Toast thetoast = makeText(getActivity(), R.string.lowest_prime, Toast.LENGTH_SHORT);
+                Toast thetoast = makeText(mActivity, R.string.lowest_prime, Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
                 max_edittext.setText("2");
                 num_max = 2L;
             }
         } catch (Exception e) {
-            Toast thetoast = makeText(getActivity(), R.string.highest_is_high, Toast.LENGTH_LONG);
+            Toast thetoast = makeText(mActivity, R.string.highest_is_high, Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
@@ -392,7 +401,7 @@ public class PrimesTableFragment extends Fragment {
 
         if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
             BG_Operation.cancel(true);
-            Toast thetoast = Toast.makeText(getActivity(), "Operação cancelada", Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(mActivity, "Operação cancelada", Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
         }
@@ -421,7 +430,7 @@ public class PrimesTableFragment extends Fragment {
 
         if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
             BG_Operation.cancel(true);
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
         }
@@ -431,7 +440,7 @@ public class PrimesTableFragment extends Fragment {
     public void cancel_AsyncTask() {
         if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
             BG_Operation.cancel(true);
-            Toast thetoast = Toast.makeText(getActivity(), getString(R.string.canceled_op), Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(mActivity, getString(R.string.canceled_op), Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             cancelButton.setVisibility(View.GONE);
@@ -447,17 +456,17 @@ public class PrimesTableFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
 //         Checks the orientation of the screen
 //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, "landscape", Toast.LENGTH_SHORT).show();
 //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, "portrait", Toast.LENGTH_SHORT).show();
 //        }
         if (tableData != null) {
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Display display = mActivity.getWindowManager().getDefaultDisplay();
             Point size = new Point();
             display.getSize(size);
             int width = size.x;  //int height = size.y;
             int min_num_length = tableData.get(tableData.size() - 1).length();
-            final float scale = getActivity().getResources().getDisplayMetrics().density;
+            final float scale = mActivity.getResources().getDisplayMetrics().density;
             int num_length = min_num_length * (int) (18 * scale + 0.5f) + 8;
             int num_columns = Math.round(width / num_length);
             history_gridView.setNumColumns(num_columns);
@@ -469,8 +478,8 @@ public class PrimesTableFragment extends Fragment {
 
     public void hideKeyboard() {
         //Hide the keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
     }
 
     public class LongOperation extends AsyncTask<Long, Float, ArrayList<String>> {
@@ -481,12 +490,12 @@ public class PrimesTableFragment extends Fragment {
             button.setText(getString(R.string.working));
             cancelButton.setVisibility(View.VISIBLE);
             hideKeyboard();
-            history_gridView = (GridView) getActivity().findViewById(R.id.history);
-            ViewGroup cardView1 = (ViewGroup) getActivity().findViewById(card_view_1);
+            history_gridView = (GridView) mActivity.findViewById(R.id.history);
+            ViewGroup cardView1 = (ViewGroup) mActivity.findViewById(card_view_1);
             cv_width = cardView1.getWidth();
-            progressBar = (View) getActivity().findViewById(R.id.progress);
+            progressBar = (View) mActivity.findViewById(R.id.progress);
             progressBar.setVisibility(View.VISIBLE);
-            float scale = getActivity().getResources().getDisplayMetrics().density;
+            float scale = mActivity.getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
         }
 
@@ -535,12 +544,12 @@ public class PrimesTableFragment extends Fragment {
         protected void onPostExecute(ArrayList<String> result) {
             tableData = result;
             if (thisFragment != null && thisFragment.isVisible() && result.size() > 0) {
-                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Display display = mActivity.getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size);
                 int width = size.x;  //int height = size.y;
                 int max_num_length = result.get(result.size() - 1).length();
-                final float scale = getActivity().getResources().getDisplayMetrics().density;
+                final float scale = mActivity.getResources().getDisplayMetrics().density;
                 int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
                 int num_columns = (int) Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
@@ -552,7 +561,7 @@ public class PrimesTableFragment extends Fragment {
                     }
                     history_gridView
                             .setAdapter(
-                                    new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, full_table) {
+                                    new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, full_table) {
                                         @Override
                                         public View getView(int position, View convertView, ViewGroup parent) {
                                             View view = super.getView(position, convertView, parent);
@@ -566,16 +575,16 @@ public class PrimesTableFragment extends Fragment {
                                     }
                             );
                 } else {
-                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, result);
+                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, result);
                     history_gridView.setAdapter(primes_adapter);
                 }
-                Toast.makeText(getActivity(), getString(R.string.existem) + " " + result.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, getString(R.string.existem) + " " + result.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText(R.string.gerar);
                 cancelButton.setVisibility(View.GONE);
             } else if (result.size() == 0) {
-                Toast thetoast = Toast.makeText(getActivity(), R.string.no_primes_range, Toast.LENGTH_LONG);
+                Toast thetoast = Toast.makeText(mActivity, R.string.no_primes_range, Toast.LENGTH_LONG);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
                 history_gridView.setAdapter(null);
@@ -591,12 +600,12 @@ public class PrimesTableFragment extends Fragment {
             super.onCancelled(parcial);
             tableData = parcial;
             if (thisFragment != null && thisFragment.isVisible() && parcial.size() > 0) {
-                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Display display = mActivity.getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size);
                 int width = size.x;  //int height = size.y;
                 int max_num_length = parcial.get(parcial.size() - 1).length();
-                final float scale = getActivity().getResources().getDisplayMetrics().density;
+                final float scale = mActivity.getResources().getDisplayMetrics().density;
                 int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
                 int num_columns = (int) Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
@@ -608,7 +617,7 @@ public class PrimesTableFragment extends Fragment {
                     }
                     history_gridView
                             .setAdapter(
-                                    new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, full_table) {
+                                    new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, full_table) {
                                         @Override
                                         public View getView(int position, View convertView, ViewGroup parent) {
                                             View view = super.getView(position, convertView, parent);
@@ -622,16 +631,16 @@ public class PrimesTableFragment extends Fragment {
                                     }
                             );
                 } else {
-                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(getActivity(), R.layout.table_item, R.id.tableItem, parcial);
+                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, parcial);
                     history_gridView.setAdapter(primes_adapter);
                 }
-                Toast.makeText(getActivity(), getString(R.string.found) + " " + parcial.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, getString(R.string.found) + " " + parcial.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
                 button.setClickable(true);
                 button.setText(R.string.gerar);
                 cancelButton.setVisibility(View.GONE);
             } else if (parcial.size() == 0) {
-                Toast thetoast = Toast.makeText(getActivity(), R.string.canceled_noprimes, Toast.LENGTH_LONG);
+                Toast thetoast = Toast.makeText(mActivity, R.string.canceled_noprimes, Toast.LENGTH_LONG);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
                 history_gridView.setAdapter(null);

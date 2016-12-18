@@ -1,14 +1,21 @@
 package com.sergiocruz.Matematica.fragment;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sergiocruz.Matematica.R;
+import com.sergiocruz.Matematica.activity.AboutActivity;
+import com.sergiocruz.Matematica.activity.SettingsActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,8 +66,14 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        //MainActivity.logMe(this, "debug", "savedInstanceState == null oncreate HomeFragment" );
+        setHasOptionsMenu(true);
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_sub_main, menu);
     }
 
     @Override
@@ -69,6 +82,24 @@ public class HomeFragment extends Fragment {
         //MainActivity.logMe(this, "debug", "onCreateView HomeFragment" );
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        Activity mActivity = getActivity();
+        if (id == R.id.action_about) {
+            startActivity(new Intent(mActivity, AboutActivity.class));
+        }
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(mActivity, SettingsActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

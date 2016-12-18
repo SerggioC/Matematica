@@ -18,8 +18,8 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_copy"/>
 
@@ -38,13 +38,13 @@
         android:id="@+id/action_save_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_save"/>
 
@@ -63,14 +63,14 @@
         android:id="@+id/action_clear_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_delete"/>
 
@@ -89,14 +89,14 @@
         android:id="@+id/action_share_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:gravity="center_vertical"
             android:src="@mipmap/menu_share"/>
 

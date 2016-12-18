@@ -4,11 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -110,6 +113,9 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         customPopUp.setContentView(popup_layout);
         customPopUp.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
         customPopUp.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            customPopUp.setElevation(scale * 10.0f);
+//        }
         customPopUp.setFocusable(true);
         customPopUp.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT)); //Clear the default translucent background
         customPopUp.setAnimationStyle(R.style.popup_animation);
@@ -132,7 +138,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 String theClipText = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
 
                 // aceder ao clipboard manager
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
 
                 boolean hasEqualItem = false;
 
@@ -151,7 +157,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 } else {
-                    android.content.ClipData clip = android.content.ClipData.newPlainText("Clipboard", theClipText);
+                    ClipData clip = ClipData.newPlainText("Clipboard", theClipText);
                     clipboard.setPrimaryClip(clip);
                     Toast thetoast = Toast.makeText(mView.getContext(), R.string.copied_toclipboard, Toast.LENGTH_SHORT);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
@@ -194,8 +200,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                     theCardView.setDrawingCacheEnabled(true);
                     Bitmap bitmap = theCardView.getDrawingCache();
                     File file, f = null;
-                    if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
-                        file = new File(android.os.Environment.getExternalStorageDirectory(), "Android");
+                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                        file = new File(Environment.getExternalStorageDirectory(), "Android");
                         if (!file.exists()) {
                             file.mkdirs();
                         }

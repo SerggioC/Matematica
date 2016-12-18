@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -23,6 +25,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.SuperscriptSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -43,6 +46,7 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.activity.AboutActivity;
+import com.sergiocruz.Matematica.activity.SettingsActivity;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
@@ -266,6 +270,7 @@ public class MMCFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_sub_main, menu);
         inflater.inflate(R.menu.menu_help_mmc, menu);
     }
 
@@ -299,6 +304,9 @@ public class MMCFragment extends Fragment {
         }
         if (id == R.id.action_about) {
             startActivity(new Intent(mActivity, AboutActivity.class));
+        }
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(mActivity, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -978,7 +986,6 @@ public class MMCFragment extends Fragment {
                 CardView.LayoutParams.MATCH_PARENT,   // width
                 CardView.LayoutParams.WRAP_CONTENT)); // height
         cardview.setPreventCornerOverlap(true);
-
         //int pixels = (int) (dips * scale + 0.5f);
         int lr_dip = (int) (6 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
@@ -1022,13 +1029,9 @@ public class MMCFragment extends Fragment {
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
-
         LinearLayout ll_vertical_root = new LinearLayout(mActivity);
         ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_root.setOrientation(LinearLayout.VERTICAL);
-
-        //Adicionar o resultado BigInteger na LinearLayout root
-        //ll_vertical_root.setTag(result_mmc);
 
         // criar novo Textview
         final TextView textView = new TextView(mActivity);
@@ -1044,11 +1047,25 @@ public class MMCFragment extends Fragment {
         // add the textview to the cardview
         ll_vertical_root.addView(textView);
 
-        /*
-        *
-        * Parte das Explicações
-        *
-        * */
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        String shouldShowExplanation = sharedPrefs.getString("pref_show_explanation", "0");
+        Log.i("Sergio>>>", "calc_mmc: shouldShowExplanation " + shouldShowExplanation);
+        // -1 = sempre  0 = quando pedidas   1 = nunca
+        if (shouldShowExplanation.equals("-1") || shouldShowExplanation.equals("0")) {
+            createExplanations(cardview, ll_vertical_root, shouldShowExplanation);
+        } else {
+            cardview.addView(ll_vertical_root);
+        }
+
+
+    }
+
+    private void createExplanations(CardView cardview, LinearLayout ll_vertical_root, String shouldShowExplanation) {
+    /*
+    *
+    * Parte das Explicações
+    *
+    * */
 
 
         final Boolean[] isExpanded = {false};
@@ -1148,8 +1165,6 @@ public class MMCFragment extends Fragment {
         explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
         explainTextView_3.setText(ssb_explain_3);
 
-        ll_vertical_expl.setVisibility(View.GONE);
-
         ll_vertical_expl.addView(progressBar);
         ll_vertical_expl.addView(explainTextView_1);
         ll_vertical_expl.addView(explainTextView_2);
@@ -1157,6 +1172,14 @@ public class MMCFragment extends Fragment {
         ll_vertical_root.addView(explainLink);
         ll_vertical_root.addView(ll_vertical_expl);
         cardview.addView(ll_vertical_root);
+
+
+        if (shouldShowExplanation.equals("0")) { // Show Explanation on demand on click
+            ll_vertical_expl.setVisibility(View.GONE);
+        } else if (shouldShowExplanation.equals("-1")) {  //Always show Explanation
+            ll_vertical_expl.setVisibility(View.VISIBLE);
+            explainLink.performClick();
+        }
 
 
     }

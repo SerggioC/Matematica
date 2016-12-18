@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 import com.sergiocruz.Matematica.activity.AboutActivity;
+import com.sergiocruz.Matematica.activity.SettingsActivity;
 import com.sergiocruz.Matematica.helper.CreateCardView;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
@@ -236,6 +237,7 @@ public class MDCFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_sub_main, menu);
         inflater.inflate(R.menu.menu_help_mdc, menu);
     }
 
@@ -271,6 +273,9 @@ public class MDCFragment extends Fragment {
 
         if (id == R.id.action_about) {
             startActivity(new Intent(mActivity, AboutActivity.class));
+        }
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(mActivity, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

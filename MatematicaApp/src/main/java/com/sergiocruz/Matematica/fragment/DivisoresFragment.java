@@ -119,6 +119,7 @@ public class DivisoresFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_sub_main, menu);
         inflater.inflate(R.menu.menu_help_divisores, menu);
     }
 
@@ -145,7 +146,7 @@ public class DivisoresFragment extends Fragment {
         if (id == R.id.action_about) {
             startActivity(new Intent(mActivity, AboutActivity.class));
         }
-        if (id == R.id.action_options) {
+        if (id == R.id.action_settings) {
             startActivity(new Intent(mActivity, SettingsActivity.class));
         }
 
@@ -362,7 +363,7 @@ public class DivisoresFragment extends Fragment {
         final float scale = mActivity.getResources().getDisplayMetrics().density;
         int lr_dip = (int) (16 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
-        cardview.setRadius((int) (1 * scale + 0.5f));
+        cardview.setRadius((int) (2 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
