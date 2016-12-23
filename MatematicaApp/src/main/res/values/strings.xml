@@ -149,18 +149,23 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="explain">Mostar explicação ▾</string>
     <string name="hide_explain">Ocultar explicação ◂</string>
     <string name="action_save_image">Guardar como</string>
-    <string name="action_settings">Definições</string>
+    <string name="action_settings">Preferências</string>
 
 
     <!-- Strings related to Settings -->
     <!-- General settings -->
-    <string name="title_activity_settings">Definições</string>
-    <string name="pref_title_explanation">Mostrar Explicações</string>
+    <string name="title_activity_settings">Preferências</string>
+    <string name="pref_description_title">Preferências da aplicação</string>
     <string name="pref_description_explanation">Selecionar quando apresentar explicação do cálculo: Sempre, quando pedida ou nunca.</string>
+    <string name="pref_title_explanation">Mostrar Explicações</string>
+    <string name="pref_description_colors">Apresentar cores distintas para facilitar a explicação</string>
+    <string name="pref_description_performance">Apresentar tempo de execução de CPU após o cálculo</string>
+    <string name="pref_colors_title">Mostrar cores</string>
+    <string name="pref_perform_title">Mostrar performance</string>
     <string-array name="pref_list_titles">
-        <item>Sempre</item>
-        <item>Quando pedidas</item>
-        <item>Nunca</item>
+        <item>Mostar sempre</item>
+        <item>Mostar quando pedidas</item>
+        <item>Nunca mostrar</item>
     </string-array>
     <string-array name="pref_list_values">
         <item>-1</item>

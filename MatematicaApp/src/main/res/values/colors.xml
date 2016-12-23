@@ -13,7 +13,7 @@
     <color name="lightGrey">#f5f5f5</color>
     <color name="lightYellow">#FFFDE7</color>
     <color name="lightgreen100">#CCFF90</color>
-    <color name="lightBlue">#4799E8</color>
+    <color name="lightBlue">#64b5f6</color>
     <color name="linkBlue">#2196f3</color>
     <color name="veryLightBlue">#7b42a5f5</color>
     <color name="separatorLineColor">#757575</color>
@@ -23,9 +23,10 @@
     <color name="f_color3">#ff1100</color>
     <color name="f_color4">#ffc400</color>
     <color name="f_color5">#9C27B0</color>
-    <color name="f_color6">#f06292</color>
+    <color name="f_color6">#ff80ab</color>
     <color name="f_color7">#4358c7</color>
     <color name="f_color8">#ff6f00</color>
+    <color name="f_color9">@color/separatorLineColor</color>
 
     <array name="f_colors_xml">
         <item>@color/f_color1</item>
@@ -36,6 +37,7 @@
         <item>@color/f_color6</item>
         <item>@color/f_color7</item>
         <item>@color/f_color8</item>
+        <item>@color/f_color9</item>
     </array>
 
 </resources>

@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="sergiocrz@gmail.com"
-                android:textColor="@color/lightBlue"
+                android:textColor="@color/linkBlue"
                 android:textIsSelectable="true"/>
 
             <TextView
