@@ -192,9 +192,7 @@ public class MMCFragment extends Fragment {
         scale = mActivity.getResources().getDisplayMetrics().density;
         int[] f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
         fColors = new ArrayList<>();
-        for (int i = 0; i < f_colors.length; i++) {
-            fColors.add(f_colors[i]);
-        }
+        for (int f_color : f_colors) fColors.add(f_color);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
     }
 
@@ -1054,7 +1052,7 @@ public class MMCFragment extends Fragment {
             if (shouldShowPerformance) {
                 TextView gradient_separator = getGradientSeparator();
                 NumberFormat decimalFormatter = new DecimalFormat("#.###");
-                String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                String elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                 gradient_separator.setText(elapsed);
                 ll_vertical_root.addView(gradient_separator, 0);
             }
@@ -1117,17 +1115,11 @@ public class MMCFragment extends Fragment {
 
                 if (!isExpanded[0]) {
                     ((TextView) view).setText(ssb_hide_expl);
-                    view.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
-                            LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
                     ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.VISIBLE);
                     isExpanded[0] = true;
 
                 } else if (isExpanded[0]) {
                     ((TextView) view).setText(ssb_show_expl);
-                    view.setLayoutParams(new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
-                            LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
                     ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.GONE);
                     isExpanded[0] = false;
                 }
@@ -1156,8 +1148,8 @@ public class MMCFragment extends Fragment {
         //Ponto 1
         TextView explainTextView_1 = new TextView(mActivity);
         explainTextView_1.setTag("explainTextView_1");
-        String fp = "fatores primos:";
-        String explain_text_1 = "▻Decompor os números em " + fp + "\n";
+        String fp = getString(R.string.fatores_primos);
+        String explain_text_1 = getString(R.string.decompor_num) + " " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
         ssb_explain_1.setSpan(new UnderlineSpan(), explain_text_1.length() - fp.length() - 1, explain_text_1.length() - 1, SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1168,11 +1160,11 @@ public class MMCFragment extends Fragment {
         //Ponto 2
         TextView explainTextView_2 = new TextView(mActivity);
         explainTextView_2.setTag("explainTextView_2");
-        String comuns = "comuns";
-        String ncomuns = "não comuns";
-        String uma_vez = "apenas uma vez";
-        String maior_exps = "maiores expoentes";
-        String explain_text_2 = "▻Escolher os fatores" + " " + comuns + " " + "e" + " " + ncomuns + ", " + uma_vez + ", " + "com os" + " " + maior_exps + ":\n";
+        String comuns = getString(R.string.comuns);
+        String ncomuns = getString(R.string.nao_comuns);
+        String uma_vez = getString(R.string.uma_vez);
+        String maior_exps = getString(R.string.maior_exps);
+        String explain_text_2 = getString(R.string.escolher_fatores) + " " + comuns + " " + getString(R.string.and) + " " + ncomuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n";
         SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(comuns), explain_text_2.indexOf(comuns) + comuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(ncomuns), explain_text_2.indexOf(ncomuns) + ncomuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1186,9 +1178,9 @@ public class MMCFragment extends Fragment {
         //Ponto 3
         TextView explainTextView_3 = new TextView(mActivity);
         explainTextView_3.setTag("explainTextView_3");
-        String multipl = "▻Multiplicar";
+        String multipl = getString(R.string.multiply);
         String explain_text_3 = multipl + " " +
-                "os fatores para obter o Mínimo Multiplo Comum:" + "\n";
+                getString(R.string.to_obtain_mmc) + "\n";
         SpannableStringBuilder ssb_explain_3 = new SpannableStringBuilder(explain_text_3);
         ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl) + 1, explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -1409,7 +1401,7 @@ public class MMCFragment extends Fragment {
                 for (int i = 0; i < f_colors_length; i++) fColors.add(f_colors[f_colors_length - 1]);
             }
 
-            String text = " " + "A fatorizar... 0%";
+            String text = " " + getString(R.string.factorizing) + " 0%";
             SpannableStringBuilder ssb = new SpannableStringBuilder(text);
             ssb.setSpan(new ForegroundColorSpan(fColors.get(0)), 0, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             gradient_separator.setText(ssb);
@@ -1467,7 +1459,7 @@ public class MMCFragment extends Fragment {
                 if (value0 > 1f) value0 = 1f;
                 progressBar.setLayoutParams(
                         new LinearLayout.LayoutParams((int) Math.round(value0 * cv_width), height_dip));
-                String text = " " + "A fatorizar..." + " " + percent_formatter.format(value0);
+                String text = " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(text);
                 ssb.setSpan(new ForegroundColorSpan(color), 0, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 gradient_separator.setText(ssb);
@@ -1636,7 +1628,7 @@ public class MMCFragment extends Fragment {
                 Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
                 if (shouldShowPerformance) {
                     NumberFormat decimalFormatter = new DecimalFormat("#.###");
-                    String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                    String elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                     gradient_separator.setText(elapsed);
                 } else {
                     gradient_separator.setText("");

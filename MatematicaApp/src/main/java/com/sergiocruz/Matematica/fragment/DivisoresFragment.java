@@ -553,7 +553,6 @@ public class DivisoresFragment extends Fragment {
                 ssb.append(incomplete_calc);
                 ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-
                 createCardView(ssb);
                 resetButtons();
             }

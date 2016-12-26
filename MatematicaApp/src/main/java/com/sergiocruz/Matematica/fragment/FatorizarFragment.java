@@ -471,12 +471,6 @@ public class FatorizarFragment extends Fragment {
             ll_horizontal.setOrientation(LinearLayout.HORIZONTAL);
             ll_horizontal.setTag("ll_horizontal_expl");
 
-//            if (shouldShowExplanation.equals("-1")) {
-//                ll_horizontal.setVisibility(View.VISIBLE);
-//            } else {
-//                ll_horizontal.setVisibility(View.GONE);
-//            }
-
             LinearLayout ll_vertical_results = new LinearLayout(mActivity);
             ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             ll_vertical_results.setOrientation(LinearLayout.VERTICAL);

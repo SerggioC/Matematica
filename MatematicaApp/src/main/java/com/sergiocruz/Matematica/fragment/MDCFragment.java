@@ -986,7 +986,6 @@ public class MDCFragment extends Fragment {
                     public boolean canDismiss(Boolean token) {
                         return true;
                     }
-
                     @Override
                     public void onDismiss(View view) {
                         //history.removeView(cardview);

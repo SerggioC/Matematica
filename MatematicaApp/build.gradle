@@ -15,8 +15,8 @@ android {
         applicationId "com.sergiocruz.Matematica"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 8
-        versionName "2.7.1"
+        versionCode 9
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
         vectorDrawables.useSupportLibrary = true

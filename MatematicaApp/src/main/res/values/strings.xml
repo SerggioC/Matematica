@@ -53,7 +53,7 @@
  A fatorização de qualquer número primo resultará no próprio número porque estes não são fatorizaveis. Na fatorização o mesmo fator primo pode ocorrer mais de uma vez. Quando isto acontece representamos o fator na forma de uma potência cujo expoente é o número de ocorrências de tal fator e a base é o próprio fator.\n
  Para realizarmos a decomposição de um número num produto de fatores primos, devemos procurar pelo menor número primo capaz de dividi-lo muma divisão exata (resto da divisão igual a zero) e realizamos a sua divisão por este número enquanto for possível. Depois devemos procurar pelo próximo número primo capaz de dividi-lo e continuar neste procedimento até que o quociente da divisão resulte em 1. Neste momento teremos todos os fatores primos que compõe tal número.</string>
 
-    <string name="help_text_mdc">Divisor é um número natural não nulo, que ao dividir outro número natural, produz uma divisão com resto igual a zero, isto é, produz uma divisão exata.\n
+    <string name="help_text_mdc"> Divisor é um número natural não nulo, que ao dividir outro número natural, produz uma divisão com resto igual a zero, isto é, produz uma divisão exata.\n
 
 Nesse sentido, o conjunto dos números formados pelos divisores de um número natural qualquer é um conjunto finito.\n
  Caso o número 1 seja o único divisor comum a um conjunto de números naturais, dizemos que os números deste conjunto são primos entre si.\n
@@ -61,7 +61,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
  Outro método para a detereminação do MDC é através da fatorização. O MDC será o produto dos fatores comuns com menor expoente.
 </string>
 
-    <string name="help_text_mmc">Dados dois ou mais números naturais não nulos, denomina-se mínimo múltiplo comum (MMC) ao menor dos seus múltiplos que é comum a todos eles, com exceção do número zero, pois este é o menor dos números naturais e é múltiplo de todos eles.\n
+    <string name="help_text_mmc"> Dados dois ou mais números naturais não nulos, denomina-se mínimo múltiplo comum (MMC) ao menor dos seus múltiplos que é comum a todos eles, com exceção do número zero, pois este é o menor dos números naturais e é múltiplo de todos eles.\n
  Os múltiplos de um número natural são todos aqueles que divididos por este número têm zero como o resto da divisão.\n
  Os múltiplos de um número natural são o resultado do produto deste número por um outro número natural.\n
  Já que o conjunto dos números naturais é um conjunto infinito, os múltiplos de um número também são infinitos.\n
@@ -162,6 +162,18 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="pref_description_performance">Apresentar tempo de execução de CPU após o cálculo</string>
     <string name="pref_colors_title">Mostrar cores</string>
     <string name="pref_perform_title">Mostrar performance</string>
+    <string name="performance">Performance:</string>
+    <string name="fatores_primos">fatores primos:</string>
+    <string name="decompor_num">▻Decompor os números em</string>
+    <string name="comuns">comuns</string>
+    <string name="nao_comuns">não comuns</string>
+    <string name="uma_vez">apenas uma vez</string>
+    <string name="maior_exps">maiores expoentes</string>
+    <string name="escolher_fatores">▻Escolher os fatores</string>
+    <string name="with_the">com os</string>
+    <string name="multiply">▻Multiplicar</string>
+    <string name="to_obtain_mmc">os fatores para obter o Mínimo Multiplo Comum:</string>
+    <string name="factorizing">A fatorizar...</string>
     <string-array name="pref_list_titles">
         <item>Mostar sempre</item>
         <item>Mostar quando pedidas</item>
