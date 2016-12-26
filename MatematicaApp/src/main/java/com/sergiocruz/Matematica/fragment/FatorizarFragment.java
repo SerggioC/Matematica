@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +25,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
+import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -45,12 +50,15 @@ import com.sergiocruz.Matematica.helper.CreateCardView;
 import com.sergiocruz.Matematica.helper.MenuHelper;
 import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
+import static android.widget.LinearLayout.HORIZONTAL;
 import static com.sergiocruz.Matematica.R.string.fatorizar_btn;
 import static java.lang.Long.parseLong;
 
@@ -68,16 +76,19 @@ public class FatorizarFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    //AsyncTask params <Input datatype, progress update datatype, return datatype>
-    public AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> BG_Operation = new BackGroundOperation();
-    Long num1;
-    int cv_width, height_dip;
-    View progressBar;
-    LinearLayout history;
-    Fragment thisFragment = this;
-    Button button;
-    ImageView cancelButton;
     Activity mActivity;
+    //AsyncTask params <Input datatype, progress update datatype, return datatype>
+    AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> BG_Operation = new BackGroundOperation();
+    Button button;
+    float scale;
+    Fragment thisFragment = this;
+    ImageView cancelButton;
+    int cv_width, height_dip;
+    LinearLayout history;
+    Long num1, startTime;
+    SharedPreferences sharedPrefs;
+    View progressBar;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -192,6 +203,8 @@ public class FatorizarFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mActivity = getActivity();
+        scale = mActivity.getResources().getDisplayMetrics().density;
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
     }
 
     @Override
@@ -251,7 +264,6 @@ public class FatorizarFragment extends Fragment {
         display.getSize(size);
         int width = size.x;
         //int height = size.y;
-        final float scale = mActivity.getResources().getDisplayMetrics().density;
         int lr_dip = (int) (4 * scale + 0.5f) * 2;
         cv_width = width - lr_dip;
 
@@ -379,7 +391,7 @@ public class FatorizarFragment extends Fragment {
     }
 
     private void calcfatoresPrimos() {
-
+        startTime = System.nanoTime();
         EditText edittext = (EditText) mActivity.findViewById(R.id.editNumFact);
         String editnumText = edittext.getText().toString();
         long num;
@@ -412,99 +424,183 @@ public class FatorizarFragment extends Fragment {
 
     void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores) {
 
-        Activity thisActivity = mActivity;
         //criar novo cardview
-        final CardView cardview = new CardView(thisActivity);
+        final CardView cardview = new CardView(mActivity);
         cardview.setLayoutParams(new CardView.LayoutParams(
                 CardView.LayoutParams.MATCH_PARENT,   // width
                 CardView.LayoutParams.WRAP_CONTENT)); // height
         cardview.setPreventCornerOverlap(true);
 
         //int pixels = (int) (dips * scale + 0.5f);
-        final float scale = thisActivity.getResources().getDisplayMetrics().density;
-        int lr_dip = (int) (4 * scale + 0.5f);
+        int lr_dip = (int) (6 * scale + 0.5f);
         int tb_dip = (int) (8 * scale + 0.5f);
         cardview.setRadius((int) (2 * scale + 0.5f));
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
 
-        int cv_color = ContextCompat.getColor(thisActivity, R.color.cardsColor);
+        int cv_color = ContextCompat.getColor(mActivity, R.color.cardsColor);
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
-        LinearLayout ll_horizontal = new LinearLayout(thisActivity);
-        ll_horizontal.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-        ll_horizontal.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout ll_vertical_root = new LinearLayout(mActivity);
+        ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_root.setOrientation(LinearLayout.VERTICAL);
 
-        LinearLayout ll_vertical_results = new LinearLayout(thisActivity);
-        ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-        ll_vertical_results.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_results.setPadding(0, 0, (int)(4 * scale + 0.5f), 0);
-
-        LinearLayout ll_vertical_separador = new LinearLayout(thisActivity);
-        ll_vertical_separador.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
-        ll_vertical_separador.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_separador.setBackgroundColor(ContextCompat.getColor(thisActivity, R.color.separatorLineColor));
-        int um_dip = (int) (1.2 * scale + 0.5f);
-        ll_vertical_separador.setPadding(um_dip, 4, 0, um_dip);
-
-        LinearLayout ll_vertical_divisores = new LinearLayout(thisActivity);
-        ll_vertical_divisores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-        ll_vertical_divisores.setOrientation(LinearLayout.VERTICAL);
-        ll_vertical_divisores.setPadding((int)(4 * scale + 0.5f), 0, (int)(8 * scale + 0.5f), 0);
-
-
-        LinearLayout ll_horizontal_ssb_fatores = new LinearLayout(thisActivity);
-        ll_horizontal_ssb_fatores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-        ll_horizontal_ssb_fatores.setOrientation(LinearLayout.HORIZONTAL);
-
-
-        TextView textView_results = new TextView(thisActivity);
-        textView_results.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView_results.setText(str_results);
-        textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        textView_results.setGravity(Gravity.RIGHT);
-
-        ll_vertical_results.addView(textView_results);
-
-        TextView textView_divisores = new TextView(thisActivity);
-        textView_divisores.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        textView_divisores.setText(str_divisores);
-        textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-        textView_divisores.setGravity(Gravity.LEFT);
-
-        ll_vertical_divisores.addView(textView_divisores);
-
-        //Adicionar os LL Verticais ao Horizontal
-        ll_horizontal.addView(ll_vertical_results);
-
-        ll_horizontal.addView(ll_vertical_separador);
-
-        //LinearLayout divisores
-        ll_horizontal.addView(ll_vertical_divisores);
-
-        // criar novo Textview
-        final TextView textView = new TextView(thisActivity);
+        // criar novo Textview para o resultado da fatorização
+        final TextView textView = new TextView(mActivity);
         textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textView.setPadding(0, 0, 0, 0);
 
         //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
         textView.setText(ssb_fatores);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         textView.setTag("texto");
 
-        // add the textview to the Linear layout horizontal
-        ll_horizontal.addView(textView);
+        // add the textview com os fatores multiplicados to the Linear layout vertical root
+        ll_vertical_root.addView(textView);
 
-        cardview.addView(ll_horizontal);
+        String shouldShowExplanation = sharedPrefs.getString("pref_show_explanation", "0");
+        // -1 = sempre  0 = quando pedidas   1 = nunca
+        if (shouldShowExplanation.equals("-1") || shouldShowExplanation.equals("0")) {
+
+            LinearLayout ll_horizontal = new LinearLayout(mActivity);
+            ll_horizontal.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            ll_horizontal.setOrientation(LinearLayout.HORIZONTAL);
+            ll_horizontal.setTag("ll_horizontal_expl");
+
+//            if (shouldShowExplanation.equals("-1")) {
+//                ll_horizontal.setVisibility(View.VISIBLE);
+//            } else {
+//                ll_horizontal.setVisibility(View.GONE);
+//            }
+
+            LinearLayout ll_vertical_results = new LinearLayout(mActivity);
+            ll_vertical_results.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            ll_vertical_results.setOrientation(LinearLayout.VERTICAL);
+            ll_vertical_results.setPadding(0, 0, (int) (4 * scale + 0.5f), 0);
+
+            LinearLayout ll_vertical_separador = new LinearLayout(mActivity);
+            ll_vertical_separador.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
+            ll_vertical_separador.setOrientation(LinearLayout.VERTICAL);
+            ll_vertical_separador.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.separatorLineColor));
+            int um_dip = (int) (1.2 * scale + 0.5f);
+            ll_vertical_separador.setPadding(um_dip, 4, 0, um_dip);
+
+            LinearLayout ll_vertical_divisores = new LinearLayout(mActivity);
+            ll_vertical_divisores.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            ll_vertical_divisores.setOrientation(LinearLayout.VERTICAL);
+            ll_vertical_divisores.setPadding((int) (4 * scale + 0.5f), 0, (int) (8 * scale + 0.5f), 0);
+
+            TextView textView_results = new TextView(mActivity);
+            textView_results.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView_results.setText(str_results);
+            textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            textView_results.setGravity(Gravity.RIGHT);
+
+            ll_vertical_results.addView(textView_results);
+
+            TextView textView_divisores = new TextView(mActivity);
+            textView_divisores.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView_divisores.setText(str_divisores);
+            textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            textView_divisores.setGravity(Gravity.LEFT);
+
+            ll_vertical_divisores.addView(textView_divisores);
+
+            //Adicionar os LL Verticais ao Horizontal
+            ll_horizontal.addView(ll_vertical_results);
+
+            ll_horizontal.addView(ll_vertical_separador);
+
+            //LinearLayout divisores
+            ll_horizontal.addView(ll_vertical_divisores);
+
+            final SpannableStringBuilder ssb_hide_expl = new SpannableStringBuilder(getString(R.string.hide_explain));
+            ssb_hide_expl.setSpan(new UnderlineSpan(), 0, ssb_hide_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
+            final SpannableStringBuilder ssb_show_expl = new SpannableStringBuilder(getString(R.string.explain));
+            ssb_show_expl.setSpan(new UnderlineSpan(), 0, ssb_show_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            final TextView explainLink = new TextView(mActivity);
+            explainLink.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
+                    LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
+            explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            explainLink.setTextColor(ContextCompat.getColor(mActivity, R.color.linkBlue));
+
+            final Boolean[] isExpanded = {false};
+
+            if (shouldShowExplanation.equals("-1")) {  //Always show Explanation
+                ll_horizontal.setVisibility(View.VISIBLE);
+                explainLink.setText(ssb_hide_expl);
+                isExpanded[0] = true;
+            } else if (shouldShowExplanation.equals("0")) { // Show Explanation on demand on click
+                ll_horizontal.setVisibility(View.GONE);
+                explainLink.setText(ssb_show_expl);
+                isExpanded[0] = false;
+            }
+
+
+            explainLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (!isExpanded[0]) {
+                        ((TextView) view).setText(ssb_hide_expl);
+                        ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_horizontal_expl").setVisibility(View.VISIBLE);
+                        isExpanded[0] = true;
+
+                    } else if (isExpanded[0]) {
+                        ((TextView) view).setText(ssb_show_expl);
+                        ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_horizontal_expl").setVisibility(View.GONE);
+                        isExpanded[0] = false;
+                    }
+                }
+            });
+            TextView gradient_separator = getGradientSeparator();
+
+            Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
+            if (shouldShowPerformance) {
+                NumberFormat decimalFormatter = new DecimalFormat("#.###");
+                String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                gradient_separator.setText(elapsed);
+            } else {
+                gradient_separator.setText("");
+            }
+
+            //Linearlayout horizontal com o explainlink e gradiente
+            LinearLayout ll_horizontal_link = new LinearLayout(mActivity);
+            ll_horizontal_link.setOrientation(HORIZONTAL);
+            ll_horizontal_link.setLayoutParams(new LinearLayoutCompat.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            ll_horizontal_link.addView(explainLink);
+            ll_horizontal_link.addView(gradient_separator);
+
+            ll_vertical_root.addView(ll_horizontal_link);
+
+            ll_vertical_root.addView(ll_horizontal);
+
+        } else if (shouldShowExplanation.equals("1")) { //nunca mostrar explicações
+
+            Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
+            if (shouldShowPerformance) {
+                //View separator with gradient
+                TextView gradient_separator = getGradientSeparator();
+                NumberFormat decimalFormatter = new DecimalFormat("#.###");
+                String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                gradient_separator.setText(elapsed);
+                ll_vertical_root.addView(gradient_separator, 0);
+            }
+        }
+
+        cardview.addView(ll_vertical_root);
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
                 cardview,
-                thisActivity,
+                mActivity,
                 new SwipeToDismissTouchListener.DismissCallbacks() {
                     @Override
                     public boolean canDismiss(Boolean token) {
@@ -516,6 +612,26 @@ public class FatorizarFragment extends Fragment {
                         history.removeView(cardview);
                     }
                 }));
+
+    }
+
+    @NonNull
+    private TextView getGradientSeparator() {
+        //View separator with gradient
+        TextView gradient_separator = new TextView(mActivity);
+        gradient_separator.setTag("gradient_separator");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            gradient_separator.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
+        } else {
+            gradient_separator.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
+        }
+        gradient_separator.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,   //largura
+                LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
+        gradient_separator.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
+        gradient_separator.setTextColor(ContextCompat.getColor(mActivity, R.color.lightBlue));
+        gradient_separator.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        return gradient_separator;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -569,9 +685,9 @@ public class FatorizarFragment extends Fragment {
             ViewGroup cardView1 = (ViewGroup) mActivity.findViewById(R.id.card_view_1);
             cv_width = cardView1.getWidth();
             progressBar = (View) mActivity.findViewById(R.id.progress);
-            float scale = mActivity.getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
-
+            progressBar.setLayoutParams(new LinearLayout.LayoutParams(1, height_dip));
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -580,6 +696,8 @@ public class FatorizarFragment extends Fragment {
             ArrayList<Long> results = new ArrayList<>();
             ArrayList<Long> divisores = new ArrayList<>();
             Long number = num[0];
+            Float progress;
+            Float oldProgress = 0f;
 
             results.add(number);
 
@@ -595,7 +713,11 @@ public class FatorizarFragment extends Fragment {
                     number /= i;
                     results.add(number);
                 }
-                publishProgress(((float) i / ((float) number / (float) i)));
+                progress = (float) i / (number / i);
+                if (progress - oldProgress > 0.1f) {
+                    publishProgress(progress, (float) i);
+                    oldProgress = progress;
+                }
                 if (isCancelled()) break;
             }
             if (number > 1) {
@@ -615,10 +737,7 @@ public class FatorizarFragment extends Fragment {
         @Override
         public void onProgressUpdate(Float... values) {
             if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setVisibility(View.VISIBLE);
-                int progress_width = (int) Math.round(values[0] * cv_width);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(progress_width, height_dip);
-                progressBar.setLayoutParams(layoutParams);
+                progressBar.setLayoutParams(new LinearLayout.LayoutParams(Math.round(values[0] * cv_width), height_dip));
             }
         }
 

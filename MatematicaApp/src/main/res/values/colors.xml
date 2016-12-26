@@ -17,10 +17,11 @@
     <color name="linkBlue">#2196f3</color>
     <color name="veryLightBlue">#7b42a5f5</color>
     <color name="separatorLineColor">#757575</color>
+    <color name="boldColor">#9e9e9e</color>
 
     <color name="f_color1">#2196F3</color>
     <color name="f_color2">#4CAF50</color>
-    <color name="f_color3">#ff1100</color>
+    <color name="f_color3">#ff1744</color>
     <color name="f_color4">#ffc400</color>
     <color name="f_color5">#9C27B0</color>
     <color name="f_color6">#ff80ab</color>

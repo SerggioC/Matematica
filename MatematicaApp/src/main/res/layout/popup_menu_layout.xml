@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/llPopup"
-              android:layout_width="wrap_content"
+              android:layout_width="200dp"
               android:layout_height="wrap_content"
               android:background="@drawable/bg_popup_style"
               android:orientation="vertical"
@@ -12,9 +12,10 @@
 
     <LinearLayout
         android:id="@+id/action_clipboard"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:paddingBottom="4dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -24,7 +25,7 @@
             android:src="@mipmap/menu_copy"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="11dp"
@@ -36,9 +37,10 @@
 
     <LinearLayout
         android:id="@+id/action_save_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:clickable="true"
         android:orientation="horizontal">
 
@@ -49,7 +51,7 @@
             android:src="@mipmap/menu_save"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="11dp"
@@ -61,9 +63,10 @@
 
     <LinearLayout
         android:id="@+id/action_clear_result"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal">
@@ -75,7 +78,7 @@
             android:src="@mipmap/menu_delete"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="11dp"
@@ -87,9 +90,10 @@
 
     <LinearLayout
         android:id="@+id/action_share_result"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal">
@@ -101,7 +105,7 @@
             android:src="@mipmap/menu_share"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="11dp"

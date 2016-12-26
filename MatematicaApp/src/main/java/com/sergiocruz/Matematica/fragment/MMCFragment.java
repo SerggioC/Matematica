@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -79,14 +80,16 @@ public class MMCFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public float scale;
+
+    Activity mActivity;
     ArrayList<AsyncTask> asyncTaskQueue = new ArrayList<>();
-    int taskNumber = 0;
-    int height_dip, cv_width;
     ArrayList<Integer> fColors;
     EditText mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8;
-    Activity mActivity;
+    float scale;
     Fragment thisFragment = this;
+    int height_dip, cv_width;
+    int taskNumber = 0;
+    long startTime;
     SharedPreferences sharedPrefs;
 
     // TODO: Rename and change types of parameters
@@ -193,7 +196,6 @@ public class MMCFragment extends Fragment {
             fColors.add(f_colors[i]);
         }
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
-
     }
 
     @Override
@@ -218,15 +220,14 @@ public class MMCFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-/*        Log.i("Sergio>>>", "onActivityCreated: ");
-        if (savedInstanceState != null) {
-            //Restore the fragment's state here
-            int state_size = savedInstanceState.size();
-            for (int i = 0; i < state_size; i++) {
-                SpannableStringBuilder ssb = new SpannableStringBuilder(savedInstanceState.getCharSequence("Card" + i));
-                CreateCardView.create(history, ssb, mActivity);
-            }
-        }*/
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -301,7 +302,7 @@ public class MMCFragment extends Fragment {
             mmc_num_8.setText("");
         }
         if (id == R.id.action_ajuda) {
-            ViewGroup history = (ViewGroup) mActivity.findViewById(R.id.history);
+            LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
             String help_divisores = getString(R.string.help_text_mmc);
             SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
             create(history, ssb, mActivity);
@@ -334,7 +335,7 @@ public class MMCFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calc_mmc(view);
+                calc_mmc();
             }
         });
 
@@ -653,7 +654,6 @@ public class MMCFragment extends Fragment {
         return view;
     }
 
-
     public void add_mmc(View view) {
 
         LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
@@ -801,7 +801,8 @@ public class MMCFragment extends Fragment {
         imm.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
     }
 
-    private void calc_mmc(View view) {
+    private void calc_mmc() {
+        startTime = System.nanoTime();
         hideKeyboard();
 
         String str_num1 = mmc_num_1.getText().toString().replaceAll("[^\\d]", "");
@@ -975,7 +976,6 @@ public class MMCFragment extends Fragment {
         }
 
         mmc_string += result_mmc;
-        ViewGroup history = (ViewGroup) view.findViewById(R.id.history);
 
         //criar novo cardview
         CardView cardview = new CardView(mActivity);
@@ -1017,17 +1017,18 @@ public class MMCFragment extends Fragment {
                     }
                 }));
 
-        //Adicionar os números a calcular na tag do cardview
-//        cardview.setTag(long_numbers);
-
+        //Adicionar os números a fatorizar na tag do cardview
         MyTags tags = new MyTags(cardview, long_numbers, result_mmc, false, false, "", null, taskNumber);
         cardview.setTag(tags);
 
+        LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
         LinearLayout ll_vertical_root = new LinearLayout(mActivity);
-        ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
         ll_vertical_root.setOrientation(LinearLayout.VERTICAL);
 
         // criar novo Textview
@@ -1038,7 +1039,7 @@ public class MMCFragment extends Fragment {
 
         //Adicionar o texto com o resultado
         textView.setText(mmc_string);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         textView.setTag("texto");
 
         // add the textview to the cardview
@@ -1049,94 +1050,84 @@ public class MMCFragment extends Fragment {
         if (shouldShowExplanation.equals("-1") || shouldShowExplanation.equals("0")) {
             createExplanations(cardview, ll_vertical_root, shouldShowExplanation);
         } else {
+            Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
+            if (shouldShowPerformance) {
+                TextView gradient_separator = getGradientSeparator();
+                NumberFormat decimalFormatter = new DecimalFormat("#.###");
+                String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                gradient_separator.setText(elapsed);
+                ll_vertical_root.addView(gradient_separator, 0);
+            }
             cardview.addView(ll_vertical_root);
         }
 
     }
 
+    @NonNull
+    private TextView getGradientSeparator() {
+        //View separator with gradient
+        TextView gradient_separator = new TextView(mActivity);
+        gradient_separator.setTag("gradient_separator");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            gradient_separator.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
+        } else {
+            gradient_separator.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
+        }
+        gradient_separator.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,   //largura
+                LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
+        gradient_separator.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
+        gradient_separator.setTextColor(ContextCompat.getColor(mActivity, R.color.lightBlue));
+        gradient_separator.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        return gradient_separator;
+    }
+
+
     private void createExplanations(CardView cardview, LinearLayout ll_vertical_root, String shouldShowExplanation) {
 
-    /*
-    *
-    * Parte das Explicações
-    *
-    * */
+        final SpannableStringBuilder ssb_hide_expl = new SpannableStringBuilder(getString(R.string.hide_explain));
+        ssb_hide_expl.setSpan(new UnderlineSpan(), 0, ssb_hide_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
+        final SpannableStringBuilder ssb_show_expl = new SpannableStringBuilder(getString(R.string.explain));
+        ssb_show_expl.setSpan(new UnderlineSpan(), 0, ssb_show_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        final Boolean[] isExpanded = {false};
-
-        //Linearlayout
+        //Linearlayout horizontal com o explainlink e gradiente
         LinearLayout ll_horizontal = new LinearLayout(mActivity);
         ll_horizontal.setOrientation(HORIZONTAL);
         ll_horizontal.setLayoutParams(new LinearLayoutCompat.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
-
         final TextView explainLink = new TextView(mActivity);
         explainLink.setTag("explainLink");
         explainLink.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
-                (int) scale * 30)); //altura
+                LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
         explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         explainLink.setTextColor(ContextCompat.getColor(mActivity, R.color.linkBlue));
-        SpannableStringBuilder ssb_show_expl = new SpannableStringBuilder(getString(R.string.explain));
-        ssb_show_expl.setSpan(new UnderlineSpan(), 0, ssb_show_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainLink.setText(ssb_show_expl);
         explainLink.setGravity(Gravity.CENTER_VERTICAL);
-        explainLink.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.lightGreen));
 
         //View separator with gradient
-        TextView gradient_separator = new TextView(mActivity);
-        gradient_separator.setTag("gradient_separator");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            gradient_separator.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.separator_gradient));
-        } else {
-            gradient_separator.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.separator_gradient));
-        }
-        gradient_separator.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,   //largura
-                //(int) (scale * 200 ),   //largura
-                (int) (scale * 14 + 0.5f))); //altura
+        TextView gradient_separator = getGradientSeparator();
+
         ll_horizontal.setGravity(Gravity.CENTER_VERTICAL);
 
+        final Boolean[] isExpanded = {false};
         explainLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                MyTags thisCardTags = (MyTags) ((CardView) view.getParent().getParent().getParent()).getTag();
-                Boolean hasExplanation = thisCardTags.getHasExplanation();
-                Boolean hasBGOperation = thisCardTags.getHasBGOperation();
-
                 if (!isExpanded[0]) {
-
-                    if (!hasBGOperation && !hasExplanation) {
-                        thisCardTags.setTaskNumber(taskNumber);
-                        AsyncTask<Void, Float, Void> BG_Operation_MMC = new BackGroundOperation_MMC(thisCardTags)
-                                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        asyncTaskQueue.add(BG_Operation_MMC);
-                        taskNumber++;
-                        TextView gradientSeparator = (TextView) ((LinearLayout) view.getParent()).findViewWithTag("gradient_separator");
-                        //gradientSeparator.setText("A fatorizar... 0%");
-                        gradientSeparator.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-                    }
-
-                    SpannableStringBuilder ssb_hide_expl = new SpannableStringBuilder(getString(R.string.hide_explain));
-                    ssb_hide_expl.setSpan(new UnderlineSpan(), 0, ssb_hide_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
                     ((TextView) view).setText(ssb_hide_expl);
-                    ((TextView) view).setBackgroundColor(ContextCompat.getColor(mActivity, R.color.transparente));
-                    ((TextView) view).setLayoutParams(new LinearLayout.LayoutParams(
+                    view.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
-                            (int) scale * 30)); //altura
+                            LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
                     ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.VISIBLE);
                     isExpanded[0] = true;
 
                 } else if (isExpanded[0]) {
-                    SpannableStringBuilder ssb_show_expl = new SpannableStringBuilder(getString(R.string.explain));
-                    ssb_show_expl.setSpan(new UnderlineSpan(), 0, ssb_show_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
                     ((TextView) view).setText(ssb_show_expl);
-                    ((TextView) view).setBackgroundColor(ContextCompat.getColor(mActivity, R.color.lightGreen));
-                    ((TextView) view).setLayoutParams(new LinearLayout.LayoutParams(
+                    view.setLayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
-                            (int) scale * 30)); //altura
+                            LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
                     ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.GONE);
                     isExpanded[0] = false;
                 }
@@ -1144,16 +1135,15 @@ public class MMCFragment extends Fragment {
         });
 
         ll_horizontal.addView(explainLink);
-
         ll_horizontal.addView(gradient_separator);
-
 
         //LL vertical das explicações
         LinearLayout ll_vertical_expl = new LinearLayout(mActivity);
         ll_vertical_expl.setTag("ll_vertical_expl");
-        ll_vertical_expl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_expl.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
         ll_vertical_expl.setOrientation(LinearLayout.VERTICAL);
-        //ll_vertical_expl.setTag(false); //has explanation
 
         //ProgressBar
         cv_width = mActivity.findViewById(R.id.card_view_1).getWidth();
@@ -1162,8 +1152,6 @@ public class MMCFragment extends Fragment {
         progressBar.setTag("progressBar");
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(1, height_dip); //Largura, Altura
         progressBar.setLayoutParams(layoutParams);
-        progressBar.setVisibility(View.GONE);
-        //progressBar.setTag(false); //No BG operation
 
         //Ponto 1
         TextView explainTextView_1 = new TextView(mActivity);
@@ -1172,7 +1160,9 @@ public class MMCFragment extends Fragment {
         String explain_text_1 = "▻Decompor os números em " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
         ssb_explain_1.setSpan(new UnderlineSpan(), explain_text_1.length() - fp.length() - 1, explain_text_1.length() - 1, SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb_explain_1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         explainTextView_1.setText(ssb_explain_1);
 
         //Ponto 2
@@ -1188,7 +1178,9 @@ public class MMCFragment extends Fragment {
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(ncomuns), explain_text_2.indexOf(ncomuns) + ncomuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(uma_vez), explain_text_2.indexOf(uma_vez) + uma_vez.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(maior_exps), explain_text_2.indexOf(maior_exps) + maior_exps.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         explainTextView_2.setText(ssb_explain_2);
 
         //Ponto 3
@@ -1199,27 +1191,40 @@ public class MMCFragment extends Fragment {
                 "os fatores para obter o Mínimo Multiplo Comum:" + "\n";
         SpannableStringBuilder ssb_explain_3 = new SpannableStringBuilder(explain_text_3);
         ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl) + 1, explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb_explain_3.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         explainTextView_3.setText(ssb_explain_3);
 
-        //ll_vertical_expl.addView(ll_horizontal);
-        ll_vertical_expl.addView(progressBar);
         ll_vertical_expl.addView(explainTextView_1);
         ll_vertical_expl.addView(explainTextView_2);
         ll_vertical_expl.addView(explainTextView_3);
         ll_vertical_root.addView(ll_horizontal);
+        ll_vertical_root.addView(progressBar);
         ll_vertical_root.addView(ll_vertical_expl);
+
+        if (shouldShowExplanation.equals("-1")) {  //Always show Explanation
+            ll_vertical_expl.setVisibility(View.VISIBLE);
+            explainLink.setText(ssb_hide_expl);
+            isExpanded[0] = true;
+        } else if (shouldShowExplanation.equals("0")) { // Show Explanation on demand on click
+            ll_vertical_expl.setVisibility(View.GONE);
+            explainLink.setText(ssb_show_expl);
+            isExpanded[0] = false;
+        }
         cardview.addView(ll_vertical_root);
 
+        MyTags thisCardTags = (MyTags) cardview.getTag();
+//        Boolean hasExplanation = thisCardTags.getHasExplanation();
+//        Boolean hasBGOperation = thisCardTags.getHasBGOperation();
 
-        if (shouldShowExplanation.equals("0")) { // Show Explanation on demand on click
-            ll_vertical_expl.setVisibility(View.GONE);
-        } else if (shouldShowExplanation.equals("-1")) {  //Always show Explanation
-            ll_vertical_expl.setVisibility(View.VISIBLE);
-            explainLink.performClick();
-        }
-
-
+//        if (!hasBGOperation && !hasExplanation) {
+        thisCardTags.setTaskNumber(taskNumber);
+        AsyncTask<Void, Double, Void> BG_Operation_MMC = new BackGroundOperation_MMC(thisCardTags)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        asyncTaskQueue.add(BG_Operation_MMC);
+        taskNumber++;
+//        }
     }
 
     public void check_bg_operation(View view) {
@@ -1368,8 +1373,7 @@ public class MMCFragment extends Fragment {
     }
 
     // Asynctask <Params, Progress, Result>
-    public class BackGroundOperation_MMC extends AsyncTask<Void, Float, Void> {
-        long startTime = System.nanoTime();
+    public class BackGroundOperation_MMC extends AsyncTask<Void, Double, Void> {
         MyTags cardTags;
         CardView theCardViewBG;
         ArrayList<Long> mmc_numbers;
@@ -1378,7 +1382,7 @@ public class MMCFragment extends Fragment {
 
         TextView gradient_separator;
         View progressBar;
-        NumberFormat formatter;
+        NumberFormat percent_formatter;
 
         BackGroundOperation_MMC(MyTags cardTags) {
             this.cardTags = cardTags;
@@ -1387,7 +1391,7 @@ public class MMCFragment extends Fragment {
 
         @Override
         public void onPreExecute() {
-            formatter = new DecimalFormat("#.###%");
+            percent_formatter = new DecimalFormat("#.###%");
             theCardViewBG = cardTags.getCardView();
             progressBar = theCardViewBG.findViewWithTag("progressBar");
             progressBar.setVisibility(View.VISIBLE);
@@ -1418,8 +1422,8 @@ public class MMCFragment extends Fragment {
 
             int numbersSize = mmc_numbers.size();
             for (int i = 0; i < numbersSize; i++) { // fatorizar todos os números inseridos em MMC
-                float oldProgress = 0;
-                float progress = 0;
+                double oldProgress = 0;
+                double progress;
                 ArrayList<Long> fatores_ix = new ArrayList<>();
 
                 Long number_i = mmc_numbers.get(i);
@@ -1437,9 +1441,9 @@ public class MMCFragment extends Fragment {
                         fatores_ix.add(j);
                         number_i /= j;
                     }
-                    progress = (float) j / (number_i / j);
-                    if (progress - oldProgress > 0.1f) {
-                        publishProgress(progress, (float) i);
+                    progress = (double) j / ((double) number_i / (double) j);
+                    if (progress - oldProgress > 0.1d) {
+                        publishProgress(progress, (double) i);
                         oldProgress = progress;
                     }
                 }
@@ -1454,15 +1458,16 @@ public class MMCFragment extends Fragment {
         }
 
         @Override
-        public void onProgressUpdate(Float... values) {
+        public void onProgressUpdate(Double... values) {
 
             if (thisFragment != null && thisFragment.isVisible()) {
-                Integer color = fColors.get(Math.round(values[1]));
+                Integer color = fColors.get((int) Math.round(values[1]));
                 progressBar.setBackgroundColor(color);
-                Float value0 = values[0];
+                double value0 = values[0];
                 if (value0 > 1f) value0 = 1f;
-                progressBar.setLayoutParams(new LinearLayout.LayoutParams(Math.round(value0 * cv_width), height_dip));
-                String text = " " + "A fatorizar..." + " " + formatter.format(value0);
+                progressBar.setLayoutParams(
+                        new LinearLayout.LayoutParams((int) Math.round(value0 * cv_width), height_dip));
+                String text = " " + "A fatorizar..." + " " + percent_formatter.format(value0);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(text);
                 ssb.setSpan(new ForegroundColorSpan(color), 0, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 gradient_separator.setText(ssb);
@@ -1485,7 +1490,6 @@ public class MMCFragment extends Fragment {
                     SpannableStringBuilder ssb_fatores;
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
                     ssb_fatores.setSpan(new ForegroundColorSpan(fColors.get(k)), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
-                    ssb_fatores.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
 
                     Integer counter = 1;
                     Integer nextfactor = 0;
@@ -1602,7 +1606,6 @@ public class MMCFragment extends Fragment {
                         ssb_mmc.append(maiores_bases.get(i).toString());
                         ssb_mmc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i).intValue())),
                                 ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     } else if (maiores_exps.get(i) > 1L) {
                         //Expoente superior a 1
@@ -1612,7 +1615,6 @@ public class MMCFragment extends Fragment {
                         ssb_mmc.setSpan(new RelativeSizeSpan(0.8f), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mmc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i).intValue())),
                                 ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     ssb_mmc.append("×");
                 }
@@ -1625,7 +1627,6 @@ public class MMCFragment extends Fragment {
                 ssb_mmc.delete(0, ssb_mmc.length());
                 result_mmc = cardTags.getResultMMC();
                 ssb_mmc.append(result_mmc.toString());
-                ssb_mmc.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 //explainTextView_3
                 ((TextView) theCardViewBG.findViewWithTag("explainTextView_3")).append(ssb_mmc);
@@ -1634,8 +1635,8 @@ public class MMCFragment extends Fragment {
 
                 Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
                 if (shouldShowPerformance) {
-                    NumberFormat formatter1 = new DecimalFormat("#.###");
-                    String elapsed = " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                    NumberFormat decimalFormatter = new DecimalFormat("#.###");
+                    String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                     gradient_separator.setText(elapsed);
                 } else {
                     gradient_separator.setText("");
@@ -1647,123 +1648,6 @@ public class MMCFragment extends Fragment {
 
                 datasets.clear();
             }
-//
-//        @Override
-//        protected void onCancelled(ArrayList<Long> parcial) {
-//            super.onCancelled(parcial);
-//
-//
-//            if (thisFragment != null && thisFragment.isVisible()) {
-//
-//                /* resultadosDivisao|fatoresPrimos
-//                *                100|2
-//                *                 50|2
-//                *                 25|5
-//                *                  5|5
-//                *                  1|1
-//                *
-//                * */
-//
-//                ArrayList<Long> resultadosDivisao = parcial.get(0);
-//                ArrayList<Long> fatoresPrimos = parcial.get(1);
-//
-//                // Tamanho da lista de números primos
-//                int sizeList = fatoresPrimos.size();
-//
-//                String str_fatores = "";
-//                String str_results = "";
-//                String str_divisores = "";
-//                SpannableStringBuilder ssb_fatores;
-//
-//                if (sizeList == 1) {
-//                    str_fatores = resultadosDivisao.get(0) + " " + getString(R.string.its_a_prime);
-//                    ssb_fatores = new SpannableStringBuilder(str_fatores);
-//                    CreateCardView.create(history, ssb_fatores, getActivity());
-//
-//                } else {
-//                    str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
-//
-//                    Boolean hasExpoentes = false;
-//                    Integer counter = 1;
-//                    Long lastItem = fatoresPrimos.get(0);
-//
-//                    //TreeMap
-//                    LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
-//
-//                    //Contar os expoentes
-//                    for (int i = 0; i < fatoresPrimos.size(); i++) {
-//                        str_fatores += fatoresPrimos.get(i) + "×";
-//                        if (i == 0) {
-//                            dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
-//                        } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-//                            hasExpoentes = true;
-//                            counter++;
-//                            dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-//                        } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-//                            counter = 1;
-//                            dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
-//                        }
-//                        lastItem = fatoresPrimos.get(i);
-//                    }
-//                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
-//                    ssb_fatores = new SpannableStringBuilder(str_fatores);
-//
-//                    if (hasExpoentes) {
-//                        int value_length;
-//
-//                        Iterator iterator = dataset.entrySet().iterator();
-//
-//                        //Criar os expoentes
-//                        while (iterator.hasNext()) {
-//                            Map.Entry pair = (Map.Entry) iterator.next();
-//
-//                            if (Integer.parseInt(pair.getValue().toString()) == 1) {
-//                                //Expoente 1
-//                                ssb_fatores.append(pair.getKey().toString());
-//
-//                            } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-//                                //Expoente superior a 1
-//                                value_length = pair.getValue().toString().length();
-//                                ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
-//                                ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-//                                ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-//                                ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-//                            }
-//
-//                            if (iterator.hasNext()) {
-//                                ssb_fatores.append("×");
-//                            }
-//
-//                            iterator.remove(); // avoids a ConcurrentModificationException
-//                        }
-//                    }
-//                    String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
-//                    ssb_fatores.append(incomplete_calc);
-//                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//                    for (int i = 0; i < sizeList - 1; i++) {
-//                        str_divisores += String.valueOf(fatoresPrimos.get(i)) + "\n";
-//                    }
-//                    str_divisores += String.valueOf(fatoresPrimos.get(sizeList - 1));
-//
-//                    for (int i = 0; i < resultadosDivisao.size() - 1; i++) {
-//                        str_results += String.valueOf(resultadosDivisao.get(i)) + "\n";
-//                    }
-//                    str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
-//
-//                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
-//                }
-//
-//                progressBar.setVisibility(View.GONE);
-//                button.setText(getString(R.string.fatorizar_btn));
-//                button.setClickable(true);
-//                hasExplanation[0] = true;
-//            }
-//
-//
-//        }
-//
 
         }
     }

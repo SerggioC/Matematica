@@ -65,7 +65,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
  Os múltiplos de um número natural são todos aqueles que divididos por este número têm zero como o resto da divisão.\n
  Os múltiplos de um número natural são o resultado do produto deste número por um outro número natural.\n
  Já que o conjunto dos números naturais é um conjunto infinito, os múltiplos de um número também são infinitos.\n
- Um prático método para se determinar o MMC de um conjunto de números naturais é a decomposição em fatores primos.
+ Um método prático para se determinar o MMC de um conjunto de números naturais é a decomposição em fatores primos.
  O MMC é o produto dos fatores comuns e não comuns, com os maiores expoentes.</string>
 
     <string name="mmc_result_prefix">MMC(</string>

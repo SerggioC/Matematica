@@ -19,7 +19,7 @@ import com.sergiocruz.Matematica.R;
 
 public class CreateCardView {
 
-    public static void create(final ViewGroup history, SpannableStringBuilder str_result, final Activity activity) {
+    public static void create(final ViewGroup history, SpannableStringBuilder ssb_result, final Activity activity) {
 
         //criar novo cardview
         final CardView cardview = new CardView(activity);
@@ -37,7 +37,7 @@ public class CreateCardView {
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
 
-        int cv_color = ContextCompat.getColor(activity, R.color.white);
+        int cv_color = ContextCompat.getColor(activity, R.color.cardsColor);
         cardview.setCardBackgroundColor(cv_color);
 
         // Add cardview to history layout at the top (index 0)
@@ -50,8 +50,8 @@ public class CreateCardView {
                 ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
 
         //Adicionar o texto com o resultado
-        textView.setText(str_result);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+        textView.setText(ssb_result);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         textView.setTag("texto");
 
         // add the textview to the cardview

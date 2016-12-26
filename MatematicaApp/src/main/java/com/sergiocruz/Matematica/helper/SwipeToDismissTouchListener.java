@@ -399,7 +399,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                             .setDuration(mAnimationTime)
                             .setListener(null);
                 }
-                mVelocityTracker.recycle();
+                try {
+                    mVelocityTracker.recycle();
+                } catch (Exception e) {
+                }
                 mVelocityTracker = null;
                 mTranslationX = 0;
                 mDownX = 0;
@@ -429,7 +432,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                         .alpha(1)
                         .setDuration(mAnimationTime)
                         .setListener(null);
-                mVelocityTracker.recycle();
+                try {
+                    mVelocityTracker.recycle();
+                } catch (Exception e) {
+                }
                 mVelocityTracker = null;
                 mTranslationX = 0;
                 mDownX = 0;
@@ -469,7 +475,10 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                     cancelEvent.setAction(MotionEvent.ACTION_CANCEL |
                             (motionEvent.getActionIndex() << MotionEvent.ACTION_POINTER_INDEX_SHIFT));
                     mView.onTouchEvent(cancelEvent);
-                    cancelEvent.recycle();
+                    try {
+                        cancelEvent.recycle();
+                    } catch (Exception e) {
+                    }
                 }
 
                 if (mSwiping) {
