@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -61,10 +60,12 @@ import java.util.Map;
 
 import static android.animation.LayoutTransition.CHANGE_APPEARING;
 import static android.animation.LayoutTransition.CHANGE_DISAPPEARING;
+import static android.graphics.Typeface.BOLD;
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.Toast.makeText;
+import static com.sergiocruz.Matematica.fragment.MMCFragment.CARD_TEXT_SIZE;
 import static java.lang.Long.parseLong;
 
 /**
@@ -1014,7 +1015,7 @@ public class MDCFragment extends Fragment {
 
         //Adicionar o texto com o resultado ao TextView
         textView.setText(ssb);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         textView.setTag("texto");
 
         // add the textview to the cardview
@@ -1074,7 +1075,7 @@ public class MDCFragment extends Fragment {
         explainLink.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,   //largura
                 ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
-        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainLink.setTextColor(ContextCompat.getColor(mActivity, R.color.linkBlue));
         //explainLink.setGravity(Gravity.CENTER_VERTICAL);
 
@@ -1123,9 +1124,10 @@ public class MDCFragment extends Fragment {
         String fp = "fatores primos:";
         String explain_text_1 = "▻Decompor os números em" + " " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
-        ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        //ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_1.setSpan(new UnderlineSpan(), explain_text_1.length() - fp.length() - 1, explain_text_1.length() - 1, SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        ssb_explain_1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_1.setText(ssb_explain_1);
 
         //Ponto 2
@@ -1136,11 +1138,12 @@ public class MDCFragment extends Fragment {
         String menor_exps = "menores expoentes";
         String explain_text_2 = "▻Escolher os fatores" + " " + comuns + ", " + uma_vez + ", " + "com os" + " " + menor_exps + ":\n";
         SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
-        ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        //ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(comuns), explain_text_2.indexOf(comuns) + comuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(uma_vez), explain_text_2.indexOf(uma_vez) + uma_vez.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(menor_exps), explain_text_2.indexOf(menor_exps) + menor_exps.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_2.setText(ssb_explain_2);
 
         //Ponto 3
@@ -1151,8 +1154,9 @@ public class MDCFragment extends Fragment {
                 "os fatores para obter o Máximo Divisor Comum:" + "\n";
         SpannableStringBuilder ssb_explain_3 = new SpannableStringBuilder(explain_text_3);
         ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl) + 1, explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        ssb_explain_3.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        //ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_3.setText(ssb_explain_3);
 
         ll_vertical_expl.addView(explainTextView_1);
@@ -1340,6 +1344,8 @@ public class MDCFragment extends Fragment {
         TextView gradient_separator;
         View progressBar;
         NumberFormat percent_formatter;
+        int[] f_colors;
+        int f_colors_length;
 
         BackGroundOperation_MDC(MyTags cardTags) {
             this.cardTags = cardTags;
@@ -1356,8 +1362,8 @@ public class MDCFragment extends Fragment {
             cardTags.setHasBGOperation(true);
 
             Boolean shouldShowColors = sharedPrefs.getBoolean("pref_show_colors", true);
-            int[] f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
-            int f_colors_length = f_colors.length;
+            f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
+            f_colors_length = f_colors.length;
             fColors = new ArrayList<>();
             if (shouldShowColors) {
                 for (int i = 0; i < f_colors_length; i++) fColors.add(f_colors[i]);
@@ -1497,6 +1503,8 @@ public class MDCFragment extends Fragment {
                     }
                     if (k < bgfatores.size() - 1) ssb_fatores.append("\n");
 
+                    ssb_fatores.setSpan(new StyleSpan(BOLD), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ssb_fatores.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     //explainTextView_1;
                     ((TextView) theCardViewBG.findViewWithTag("explainTextView_1")).append(ssb_fatores);
                 }
@@ -1570,18 +1578,23 @@ public class MDCFragment extends Fragment {
                         ssb_mdc.setSpan(new RelativeSizeSpan(0.8f), ssb_mdc.length() - exp_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         ssb_mdc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i))),
                                 ssb_mdc.length() - exp_length - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        //ssb_mdc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mdc.length() - exp_length - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     ssb_mdc.append("×");
                 }
                 ssb_mdc.replace(ssb_mdc.length() - 1, ssb_mdc.length(), "");
 
+                ssb_mdc.setSpan(new StyleSpan(BOLD), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mdc.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 //explainTextView_2
                 ((TextView) theCardViewBG.findViewWithTag("explainTextView_2")).append(ssb_mdc);
 
                 ssb_mdc.delete(0, ssb_mdc.length());
                 result_mdc = cardTags.getResultMDC();
                 ssb_mdc.append(result_mdc.toString());
+
+                ssb_mdc.setSpan(new StyleSpan(BOLD), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mdc.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mdc.setSpan(new ForegroundColorSpan(f_colors[f_colors.length - 1]), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 //explainTextView_3
                 ((TextView) theCardViewBG.findViewWithTag("explainTextView_3")).append(ssb_mdc);

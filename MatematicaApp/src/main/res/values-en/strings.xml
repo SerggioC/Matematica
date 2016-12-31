@@ -97,7 +97,7 @@
     <string name="insert_integer">Insert an integer number</string>
     <string name="its_a_prime">is a prime number.</string>
     <string name="lowest_is_high">Lowest value is too high.</string>
-    <string name="lowest_prime">The lowest prime is 2!</string>
+    <string name="lowest_prime">Lowest minimum value = 1</string>
     <string name="no_data">No data to share</string>
     <string name="no_primes_range">There are no prime numbers in the range.</string>
     <string name="primes_in_range">prime numbers in the range.</string>

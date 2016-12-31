@@ -66,7 +66,7 @@ public class PrimesTableFragment extends Fragment {
     Fragment thisFragment = this;
     Button button;
     ImageView cancelButton;
-    Boolean checkboxChecked = false;
+    Boolean checkboxChecked = true;
     ArrayList<String> full_table = null;
     Activity mActivity;
     SharedPreferences sharedPrefs;
@@ -125,9 +125,9 @@ public class PrimesTableFragment extends Fragment {
             ((GridView) mActivity.findViewById(R.id.history)).setAdapter(null);
             tableData = null;
             num_min = 0L;
-            num_max = 200L;
-            ((EditText) mActivity.findViewById(min)).setText("2");
-            ((EditText) mActivity.findViewById(R.id.max)).setText("200");
+            num_max = 100L;
+            ((EditText) mActivity.findViewById(min)).setText("1");
+            ((EditText) mActivity.findViewById(R.id.max)).setText("100");
             mActivity.findViewById(R.id.numPrimesTextView).setVisibility(View.GONE);
             mActivity.findViewById(R.id.performanceTextView).setVisibility(View.GONE);
         }
@@ -332,12 +332,12 @@ public class PrimesTableFragment extends Fragment {
         try {
             // Tentar converter o string do valor mínimo para Long 2^63-1
             num_min = parseLong(min_string);
-            if (num_min < 2) {
+            if (num_min < 1L) {
                 Toast thetoast = makeText(mActivity, R.string.lowest_prime, Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
-                min_edittext.setText("2");
-                num_min = 2L;
+                min_edittext.setText("1");
+                num_min = 1L;
             }
         } catch (Exception e) {
             Toast thetoast = makeText(mActivity, R.string.lowest_is_high, Toast.LENGTH_LONG);
@@ -349,11 +349,11 @@ public class PrimesTableFragment extends Fragment {
         try {
             // Tentar converter o string do valor mínimo para Long 2^63-1
             num_max = parseLong(max_string);
-            if (num_max < 2) {
+            if (num_max < 1L) {
                 Toast thetoast = makeText(mActivity, R.string.lowest_prime, Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
-                max_edittext.setText("2");
+                max_edittext.setText("1");
                 num_max = 2L;
             }
         } catch (Exception e) {
@@ -482,14 +482,15 @@ public class PrimesTableFragment extends Fragment {
             ArrayList<String> primes = new ArrayList<>();
             double progress;
             double oldProgress = 0d;
-            if (num_min == 2) {
-                primes.add(Integer.toString(2));
+            long min = num_min;
+            if (min == 1L) min = 2L;
+            if (min == 2L) {
+                primes.add("2");
+                min = 3L;
             }
-            for (long i = num_min; i <= num_max; i++) {
+            for (long i = min; i <= num_max; i++) {
                 boolean isPrime = true;
-                if (i % 2 == 0) {
-                    isPrime = false;
-                }
+                if (i % 2 == 0) isPrime = false;
                 if (isPrime) {
                     for (long j = 3; j < i; j = j + 2) {
                         if (i % j == 0) {
@@ -521,15 +522,16 @@ public class PrimesTableFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<String> result) {
             tableData = result;
-            if (thisFragment != null && thisFragment.isVisible() && result.size() > 0) {
+            if (thisFragment != null && thisFragment.isVisible()) {
                 Display display = mActivity.getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size);
                 int width = size.x;  //int height = size.y;
-                int max_num_length = result.get(result.size() - 1).length();
+                //int max_num_length = result.get(result.size() - 1).length();
+                int max_num_length = num_max.toString().length();
                 final float scale = mActivity.getResources().getDisplayMetrics().density;
                 int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
-                int num_columns = (int) Math.round(width / num_length);
+                int num_columns = Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
 
                 if (checkboxChecked) {
@@ -556,21 +558,19 @@ public class PrimesTableFragment extends Fragment {
                     ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, result);
                     history_gridView.setAdapter(primes_adapter);
                 }
-                Toast.makeText(mActivity, getString(R.string.existem) + " " + result.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
                 numPrimesTV.setVisibility(View.VISIBLE);
                 numPrimesTV.setText("# de Primos:" + " " + result.size());
+                if (result.size() == 0) {
+                    Toast thetoast = Toast.makeText(mActivity, R.string.no_primes_range, Toast.LENGTH_LONG);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                } else {
+                    Toast.makeText(mActivity, getString(R.string.existem) + " " + result.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
+                }
                 showPerformance();
-                resetButtons();
-            } else if (result.size() == 0) {
-                Toast thetoast = Toast.makeText(mActivity, R.string.no_primes_range, Toast.LENGTH_LONG);
-                thetoast.setGravity(Gravity.CENTER, 0, 0);
-                thetoast.show();
-                numPrimesTV.setVisibility(View.VISIBLE);
-                numPrimesTV.setText("# de Primos:" + " 0");
-                showPerformance();
-                history_gridView.setAdapter(null);
                 resetButtons();
             }
+
         }
 
         private void showPerformance() {

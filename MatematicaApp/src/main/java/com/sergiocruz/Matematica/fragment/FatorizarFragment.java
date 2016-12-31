@@ -60,6 +60,7 @@ import java.util.Map;
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static com.sergiocruz.Matematica.R.string.fatorizar_btn;
+import static com.sergiocruz.Matematica.fragment.MMCFragment.CARD_TEXT_SIZE;
 import static java.lang.Long.parseLong;
 
 /**
@@ -422,7 +423,7 @@ public class FatorizarFragment extends Fragment {
 
     }
 
-    void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores) {
+    void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores, String str_fact_exp) {
 
         //criar novo cardview
         final CardView cardview = new CardView(mActivity);
@@ -451,12 +452,12 @@ public class FatorizarFragment extends Fragment {
 
         // criar novo Textview para o resultado da fatorização
         final TextView textView = new TextView(mActivity);
-        textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         textView.setPadding(0, 0, 0, 0);
 
         //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
         textView.setText(ssb_fatores);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         textView.setTag("texto");
 
         // add the textview com os fatores multiplicados to the Linear layout vertical root
@@ -465,6 +466,20 @@ public class FatorizarFragment extends Fragment {
         String shouldShowExplanation = sharedPrefs.getString("pref_show_explanation", "0");
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation.equals("-1") || shouldShowExplanation.equals("0")) {
+
+            LinearLayout ll_vertical_expl = new LinearLayout(mActivity);
+            ll_vertical_expl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            ll_vertical_expl.setOrientation(LinearLayout.VERTICAL);
+            ll_vertical_expl.setTag("ll_vertical_expl");
+
+            TextView textView_expl1 = new TextView(mActivity);
+            textView_expl1.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            String explain_text_1 = "▻Dividir o número sucessivamente pelo menor número primo até obter 1:";
+            SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
+            ssb_explain_1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView_expl1.setText(ssb_explain_1);
+            textView_expl1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            ll_vertical_expl.addView(textView_expl1);
 
             LinearLayout ll_horizontal = new LinearLayout(mActivity);
             ll_horizontal.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
@@ -489,17 +504,17 @@ public class FatorizarFragment extends Fragment {
             ll_vertical_divisores.setPadding((int) (4 * scale + 0.5f), 0, (int) (8 * scale + 0.5f), 0);
 
             TextView textView_results = new TextView(mActivity);
-            textView_results.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView_results.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             textView_results.setText(str_results);
-            textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
             textView_results.setGravity(Gravity.RIGHT);
 
             ll_vertical_results.addView(textView_results);
 
             TextView textView_divisores = new TextView(mActivity);
-            textView_divisores.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            textView_divisores.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             textView_divisores.setText(str_divisores);
-            textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
             textView_divisores.setGravity(Gravity.LEFT);
 
             ll_vertical_divisores.addView(textView_divisores);
@@ -521,17 +536,17 @@ public class FatorizarFragment extends Fragment {
             explainLink.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
                     LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
-            explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
             explainLink.setTextColor(ContextCompat.getColor(mActivity, R.color.linkBlue));
 
             final Boolean[] isExpanded = {false};
 
             if (shouldShowExplanation.equals("-1")) {  //Always show Explanation
-                ll_horizontal.setVisibility(View.VISIBLE);
+                ll_vertical_expl.setVisibility(View.VISIBLE);
                 explainLink.setText(ssb_hide_expl);
                 isExpanded[0] = true;
             } else if (shouldShowExplanation.equals("0")) { // Show Explanation on demand on click
-                ll_horizontal.setVisibility(View.GONE);
+                ll_vertical_expl.setVisibility(View.GONE);
                 explainLink.setText(ssb_show_expl);
                 isExpanded[0] = false;
             }
@@ -543,12 +558,12 @@ public class FatorizarFragment extends Fragment {
 
                     if (!isExpanded[0]) {
                         ((TextView) view).setText(ssb_hide_expl);
-                        ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_horizontal_expl").setVisibility(View.VISIBLE);
+                        ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.VISIBLE);
                         isExpanded[0] = true;
 
                     } else if (isExpanded[0]) {
                         ((TextView) view).setText(ssb_show_expl);
-                        ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_horizontal_expl").setVisibility(View.GONE);
+                        ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.GONE);
                         isExpanded[0] = false;
                     }
                 }
@@ -574,7 +589,22 @@ public class FatorizarFragment extends Fragment {
 
             ll_vertical_root.addView(ll_horizontal_link);
 
-            ll_vertical_root.addView(ll_horizontal);
+            ll_vertical_expl.addView(ll_horizontal);
+
+            TextView textView_fact_expanded = new TextView(mActivity);
+            textView_fact_expanded.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            String explain_text_2 = "▻O número é igual ao produto dos fatores primos obtidos:" + "\n";
+            SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
+            ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssb_explain_2.append(str_fact_exp);
+            textView_fact_expanded.setText(ssb_explain_2);
+            textView_fact_expanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            textView_fact_expanded.setGravity(Gravity.LEFT);
+
+            ll_vertical_expl.addView(textView_fact_expanded);
+
+            ll_vertical_root.addView(ll_vertical_expl);
+
 
         } else if (shouldShowExplanation.equals("1")) { //nunca mostrar explicações
 
@@ -745,7 +775,7 @@ public class FatorizarFragment extends Fragment {
                 *                 50|2
                 *                 25|5
                 *                  5|5
-                *                  1|1
+                *                  1|
                 *
                 * */
 
@@ -763,26 +793,25 @@ public class FatorizarFragment extends Fragment {
                 if (sizeList == 1) {
                     str_fatores = resultadosDivisao.get(0) + " " + getString(R.string.its_a_prime);
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
-                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ssb_fatores.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE); //verde
                     CreateCardView.create(history, ssb_fatores, mActivity);
 
                 } else {
                     str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
 
-                    Boolean hasExpoentes = false;
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
+                    String str_fact_expanded = "";
 
                     //TreeMap
                     LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
 
                     //Contar os expoentes
                     for (int i = 0; i < fatoresPrimos.size(); i++) {
-                        str_fatores += fatoresPrimos.get(i) + "×";
+                        str_fact_expanded += fatoresPrimos.get(i) + "×";
                         if (i == 0) {
                             dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                         } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                            hasExpoentes = true;
                             counter++;
                             dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
                         } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -792,40 +821,35 @@ public class FatorizarFragment extends Fragment {
                         lastItem = fatoresPrimos.get(i);
                     }
 
-                    String igual = hasExpoentes ? "=\n" : "";
-                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + igual;
+                    str_fact_expanded = str_fact_expanded.substring(0, str_fact_expanded.length() - 1);
+
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
 
-                    if (hasExpoentes) {
+                    int value_length;
 
-                        int value_length;
+                    Iterator iterator = dataset.entrySet().iterator();
 
-                        Iterator iterator = dataset.entrySet().iterator();
+                    //Criar os expoentes
+                    while (iterator.hasNext()) {
+                        Map.Entry pair = (Map.Entry) iterator.next();
 
-                        //Criar os expoentes
-                        while (iterator.hasNext()) {
-                            Map.Entry pair = (Map.Entry) iterator.next();
+                        if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                            //Expoente 1
+                            ssb_fatores.append(pair.getKey().toString());
 
-                            if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                                //Expoente 1
-                                ssb_fatores.append(pair.getKey().toString());
-
-                            } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                                //Expoente superior a 1
-                                value_length = pair.getValue().toString().length();
-                                ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
-                                ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                                ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                                ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                            }
-
-                            if (iterator.hasNext()) {
-                                ssb_fatores.append("×");
-                            }
-
-                            iterator.remove(); // avoids a ConcurrentModificationException
+                        } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                            //Expoente superior a 1
+                            value_length = pair.getValue().toString().length();
+                            ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                            ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
 
+                        if (iterator.hasNext()) {
+                            ssb_fatores.append("×");
+                        }
+
+                        iterator.remove(); // avoids a ConcurrentModificationException
                     }
 
                     for (int i = 0; i < sizeList - 1; i++) {
@@ -838,7 +862,7 @@ public class FatorizarFragment extends Fragment {
                     }
                     str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
 
-                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
+                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores, str_fact_expanded);
                 }
 
                 progressBar.setVisibility(View.GONE);
@@ -883,20 +907,19 @@ public class FatorizarFragment extends Fragment {
                 } else {
                     str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
 
-                    Boolean hasExpoentes = false;
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
+                    String str_fact_expanded = "";
 
                     //TreeMap
                     LinkedHashMap<String, Integer> dataset = new LinkedHashMap<>();
 
                     //Contar os expoentes
                     for (int i = 0; i < fatoresPrimos.size(); i++) {
-                        str_fatores += fatoresPrimos.get(i) + "×";
+                        str_fact_expanded += fatoresPrimos.get(i) + "×";
                         if (i == 0) {
                             dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                         } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
-                            hasExpoentes = true;
                             counter++;
                             dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
                         } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -905,38 +928,38 @@ public class FatorizarFragment extends Fragment {
                         }
                         lastItem = fatoresPrimos.get(i);
                     }
-                    str_fatores = str_fatores.substring(0, str_fatores.length() - 1) + "=\n";
+
+                    str_fact_expanded = str_fact_expanded.substring(0, str_fact_expanded.length() - 1);
+
                     ssb_fatores = new SpannableStringBuilder(str_fatores);
 
-                    if (hasExpoentes) {
-                        int value_length;
+                    int value_length;
 
-                        Iterator iterator = dataset.entrySet().iterator();
+                    Iterator iterator = dataset.entrySet().iterator();
 
-                        //Criar os expoentes
-                        while (iterator.hasNext()) {
-                            Map.Entry pair = (Map.Entry) iterator.next();
+                    //Criar os expoentes
+                    while (iterator.hasNext()) {
+                        Map.Entry pair = (Map.Entry) iterator.next();
 
-                            if (Integer.parseInt(pair.getValue().toString()) == 1) {
-                                //Expoente 1
-                                ssb_fatores.append(pair.getKey().toString());
+                        if (Integer.parseInt(pair.getValue().toString()) == 1) {
+                            //Expoente 1
+                            ssb_fatores.append(pair.getKey().toString());
 
-                            } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
-                                //Expoente superior a 1
-                                value_length = pair.getValue().toString().length();
-                                ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
-                                ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                                ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                                ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                            }
-
-                            if (iterator.hasNext()) {
-                                ssb_fatores.append("×");
-                            }
-
-                            iterator.remove(); // avoids a ConcurrentModificationException
+                        } else if (Integer.parseInt(pair.getValue().toString()) > 1) {
+                            //Expoente superior a 1
+                            value_length = pair.getValue().toString().length();
+                            ssb_fatores.append(pair.getKey().toString() + pair.getValue().toString());
+                            ssb_fatores.setSpan(new SuperscriptSpan(), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ssb_fatores.setSpan(new RelativeSizeSpan(0.8f), ssb_fatores.length() - value_length, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                         }
+
+                        if (iterator.hasNext()) {
+                            ssb_fatores.append("×");
+                        }
+
+                        iterator.remove(); // avoids a ConcurrentModificationException
                     }
+
                     String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
                     ssb_fatores.append(incomplete_calc);
                     ssb_fatores.setSpan(new ForegroundColorSpan(Color.RED), ssb_fatores.length() - incomplete_calc.length(), ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -952,7 +975,7 @@ public class FatorizarFragment extends Fragment {
                     }
                     str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
 
-                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores);
+                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores, str_fact_expanded);
                 }
 
                 progressBar.setVisibility(View.GONE);

@@ -138,7 +138,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="lowest_is_high">Valor mínimo demasiado alto</string>
     <string name="highest_is_high">Valor máximo demasiado alto</string>
     <string name="fill_min_max">Preencher os campos do valor mínimo e máximo</string>
-    <string name="lowest_prime">Menor número primo = 2</string>
+    <string name="lowest_prime">Menor valor mínimo = 1</string>
     <string name="existem">Existem</string>
     <string name="primes_in_range">números primos no intervalo.</string>
     <string name="no_primes_range">Não existem números primos no intervalo.</string>

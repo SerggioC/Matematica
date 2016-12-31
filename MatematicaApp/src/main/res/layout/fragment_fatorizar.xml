@@ -51,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:paddingBottom="4dp"
-                        android:paddingTop="8dp">
+                        android:paddingTop="4dp">
 
                         <EditText
                             android:id="@+id/editNumFact"

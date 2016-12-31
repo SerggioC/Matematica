@@ -17,7 +17,7 @@
     <color name="linkBlue">#2196f3</color>
     <color name="veryLightBlue">#7b42a5f5</color>
     <color name="separatorLineColor">#757575</color>
-    <color name="boldColor">#9e9e9e</color>
+    <color name="boldColor">#424242</color>
 
     <color name="f_color1">#2196F3</color>
     <color name="f_color2">#4CAF50</color>
@@ -27,7 +27,7 @@
     <color name="f_color6">#ff80ab</color>
     <color name="f_color7">#4358c7</color>
     <color name="f_color8">#ff6f00</color>
-    <color name="f_color9">@color/separatorLineColor</color>
+    <color name="f_color9">#263238</color>
 
     <array name="f_colors_xml">
         <item>@color/f_color1</item>
