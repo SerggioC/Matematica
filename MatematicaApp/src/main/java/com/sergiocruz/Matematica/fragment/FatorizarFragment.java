@@ -423,7 +423,7 @@ public class FatorizarFragment extends Fragment {
 
     }
 
-    void createCardViewLayout(final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores, String str_fact_exp) {
+    void createCardViewLayout(Long number, final ViewGroup history, String str_results, String str_divisores, SpannableStringBuilder ssb_fatores, String str_fact_exp, Boolean hasExpoentes) {
 
         //criar novo cardview
         final CardView cardview = new CardView(mActivity);
@@ -456,9 +456,12 @@ public class FatorizarFragment extends Fragment {
         textView.setPadding(0, 0, 0, 0);
 
         //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
-        textView.setText(ssb_fatores);
+        String str_num = getString(R.string.factorization_of) + " " + number + " = \n";
+        SpannableStringBuilder ssb_num = new SpannableStringBuilder(str_num);
+        ssb_num.append(ssb_fatores);
+        textView.setText(ssb_num);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
-        textView.setTag("texto");
+        textView.setTag(R.id.texto, "texto");
 
         // add the textview com os fatores multiplicados to the Linear layout vertical root
         ll_vertical_root.addView(textView);
@@ -474,11 +477,13 @@ public class FatorizarFragment extends Fragment {
 
             TextView textView_expl1 = new TextView(mActivity);
             textView_expl1.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            String explain_text_1 = "▻Dividir o número sucessivamente pelo menor número primo até obter 1:";
-            SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
-            ssb_explain_1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-            textView_expl1.setText(ssb_explain_1);
             textView_expl1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            String explain_text_1 = "▻Dividir o número sucessivamente pelo menor número primo, de maneira a obter uma divisão exata, até obter 1:";
+            SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
+            ForegroundColorSpan boldColorSpan = new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor));
+            ssb_explain_1.setSpan(boldColorSpan, 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView_expl1.setText(ssb_explain_1);
+            textView_expl1.setTag(R.id.texto, "texto");
             ll_vertical_expl.addView(textView_expl1);
 
             LinearLayout ll_horizontal = new LinearLayout(mActivity);
@@ -504,18 +509,24 @@ public class FatorizarFragment extends Fragment {
             ll_vertical_divisores.setPadding((int) (4 * scale + 0.5f), 0, (int) (8 * scale + 0.5f), 0);
 
             TextView textView_results = new TextView(mActivity);
-            textView_results.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            textView_results.setText(str_results);
+            textView_results.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
             textView_results.setGravity(Gravity.RIGHT);
+            SpannableStringBuilder ssb_str_results = new SpannableStringBuilder(str_results);
+            ssb_str_results.setSpan(new RelativeSizeSpan(0.9f), ssb_str_results.length() - str_results.length(), ssb_str_results.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView_results.setText(ssb_str_results);
+            textView_results.setTag(R.id.texto, "texto");
 
             ll_vertical_results.addView(textView_results);
 
             TextView textView_divisores = new TextView(mActivity);
-            textView_divisores.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            textView_divisores.setText(str_divisores);
+            textView_divisores.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
             textView_divisores.setGravity(Gravity.LEFT);
+            SpannableStringBuilder ssb_str_divisores = new SpannableStringBuilder(str_divisores);
+            ssb_str_divisores.setSpan(new RelativeSizeSpan(0.9f), ssb_str_divisores.length() - str_divisores.length(), ssb_str_divisores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView_divisores.setText(ssb_str_divisores);
+            textView_divisores.setTag(R.id.texto, "texto");
 
             ll_vertical_divisores.addView(textView_divisores);
 
@@ -593,13 +604,23 @@ public class FatorizarFragment extends Fragment {
 
             TextView textView_fact_expanded = new TextView(mActivity);
             textView_fact_expanded.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+            textView_fact_expanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            textView_fact_expanded.setGravity(Gravity.LEFT);
             String explain_text_2 = "▻O número é igual ao produto dos fatores primos obtidos:" + "\n";
             SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
             ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             ssb_explain_2.append(str_fact_exp);
+            ssb_explain_2.setSpan(new RelativeSizeSpan(0.9f), ssb_explain_2.length() - str_fact_exp.length(), ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (hasExpoentes) {
+                String text_fact_repetidos = "\n" + "▻Os fatores repetidos são contados e coloca-se esse valor em expoente:" + "\n";
+                ssb_explain_2.append(text_fact_repetidos);
+                ssb_explain_2.setSpan(boldColorSpan, ssb_explain_2.length() - text_fact_repetidos.length(), ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_explain_2.append(ssb_fatores);
+                ssb_explain_2.setSpan(new RelativeSizeSpan(0.9f), ssb_explain_2.length() - ssb_fatores.length(), ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+
             textView_fact_expanded.setText(ssb_explain_2);
-            textView_fact_expanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
-            textView_fact_expanded.setGravity(Gravity.LEFT);
+            textView_fact_expanded.setTag(R.id.texto, "texto");
 
             ll_vertical_expl.addView(textView_fact_expanded);
 
@@ -797,8 +818,8 @@ public class FatorizarFragment extends Fragment {
                     CreateCardView.create(history, ssb_fatores, mActivity);
 
                 } else {
-                    str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
-
+                    str_fatores = "";
+                    Boolean hasExpoentes = false;
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
                     String str_fact_expanded = "";
@@ -812,6 +833,7 @@ public class FatorizarFragment extends Fragment {
                         if (i == 0) {
                             dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                         } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            hasExpoentes = true;
                             counter++;
                             dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
                         } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -862,7 +884,7 @@ public class FatorizarFragment extends Fragment {
                     }
                     str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
 
-                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores, str_fact_expanded);
+                    createCardViewLayout(resultadosDivisao.get(0), history, str_results, str_divisores, ssb_fatores, str_fact_expanded, hasExpoentes);
                 }
 
                 progressBar.setVisibility(View.GONE);
@@ -884,7 +906,7 @@ public class FatorizarFragment extends Fragment {
                 *                 50|2
                 *                 25|5
                 *                  5|5
-                *                  1|1
+                *                  1|
                 *
                 * */
 
@@ -905,8 +927,8 @@ public class FatorizarFragment extends Fragment {
                     CreateCardView.create(history, ssb_fatores, mActivity);
 
                 } else {
-                    str_fatores = getString(R.string.factorization_of) + " " + resultadosDivisao.get(0) + " = \n";
-
+                    str_fatores = "";
+                    Boolean hasExpoentes = false;
                     Integer counter = 1;
                     Long lastItem = fatoresPrimos.get(0);
                     String str_fact_expanded = "";
@@ -920,6 +942,7 @@ public class FatorizarFragment extends Fragment {
                         if (i == 0) {
                             dataset.put(String.valueOf(fatoresPrimos.get(0)), 1);
                         } else if (fatoresPrimos.get(i).equals(lastItem) && i > 0) {
+                            hasExpoentes = true;
                             counter++;
                             dataset.put(String.valueOf(fatoresPrimos.get(i)), counter);
                         } else if (!fatoresPrimos.get(i).equals(lastItem) && i > 0) {
@@ -975,7 +998,7 @@ public class FatorizarFragment extends Fragment {
                     }
                     str_results += String.valueOf(resultadosDivisao.get(resultadosDivisao.size() - 1));
 
-                    createCardViewLayout(history, str_results, str_divisores, ssb_fatores, str_fact_expanded);
+                    createCardViewLayout(resultadosDivisao.get(0), history, str_results, str_divisores, ssb_fatores, str_fact_expanded, hasExpoentes);
                 }
 
                 progressBar.setVisibility(View.GONE);

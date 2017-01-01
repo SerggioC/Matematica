@@ -1016,7 +1016,7 @@ public class MDCFragment extends Fragment {
         //Adicionar o texto com o resultado ao TextView
         textView.setText(ssb);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
-        textView.setTag("texto");
+        textView.setTag(R.id.texto, "texto");
 
         // add the textview to the cardview
         ll_vertical_root.addView(textView);
@@ -1129,6 +1129,7 @@ public class MDCFragment extends Fragment {
         ssb_explain_1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_1.setText(ssb_explain_1);
+        explainTextView_1.setTag(R.id.texto, "texto");
 
         //Ponto 2
         TextView explainTextView_2 = new TextView(mActivity);
@@ -1145,6 +1146,7 @@ public class MDCFragment extends Fragment {
         ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_2.setText(ssb_explain_2);
+        explainTextView_2.setTag(R.id.texto, "texto");
 
         //Ponto 3
         TextView explainTextView_3 = new TextView(mActivity);
@@ -1158,6 +1160,7 @@ public class MDCFragment extends Fragment {
         //ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_3.setText(ssb_explain_3);
+        explainTextView_3.setTag(R.id.texto, "texto");
 
         ll_vertical_expl.addView(explainTextView_1);
         ll_vertical_expl.addView(explainTextView_2);

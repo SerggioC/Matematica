@@ -598,7 +598,7 @@ public class DivisoresFragment extends Fragment {
         //Adicionar o texto com o resultado
         textView.setText(ssb);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        textView.setTag("texto");
+        textView.setTag(R.id.texto, "texto");
 
         LinearLayout ll_vertical_root = new LinearLayout(mActivity);
         ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));

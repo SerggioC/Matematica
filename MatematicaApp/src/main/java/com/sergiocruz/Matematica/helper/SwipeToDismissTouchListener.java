@@ -1,5 +1,6 @@
 package com.sergiocruz.Matematica.helper;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -8,14 +9,20 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
+import android.text.SpannableString;
+import android.text.style.SuperscriptSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,8 +39,13 @@ import android.widget.Toast;
 
 import com.sergiocruz.Matematica.R;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 import static android.widget.Toast.makeText;
 
@@ -47,6 +59,12 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
     private static final int POPUP_WIDTH = 136;
     private static final int POPUP_HEIGHT = 136;
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     private final Handler handler = new Handler();
     boolean mBooleanIsPressed = false;
     // Cached ViewConfiguration and system-wide constant values
@@ -96,6 +114,40 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         mCallbacks = callbacks;
     }
 
+    private static ArrayList<View> getViewsByTag(ViewGroup root, String tag) {
+        ArrayList<View> views = new ArrayList<View>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                views.addAll(getViewsByTag((ViewGroup) child, tag));
+            }
+            final Object tagObj = child.getTag(R.id.texto);
+            if (tagObj != null && tagObj.equals(tag)) {
+                views.add(child);
+            }
+        }
+        return views;
+    }
+
+    /**
+     * Checks if the app has permission to write to device storage
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user to give permission
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 
     private void showCustomPopup() {
 
@@ -135,29 +187,24 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup_layout.findViewById(R.id.action_clipboard).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String theClipText = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
-
+                String text_fromTextViews_final = getFormatedTextFromTextView();
                 // aceder ao clipboard manager
                 ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-
                 boolean hasEqualItem = false;
-
                 if (clipboard.hasPrimaryClip()) {
-
                     int clipItems = clipboard.getPrimaryClip().getItemCount();
                     for (int i = 0; i < clipItems; i++) {
-                        if (clipboard.getPrimaryClip().getItemAt(i).getText().toString().equals(theClipText)) {
+                        if (clipboard.getPrimaryClip().getItemAt(i).getText().toString().equals(text_fromTextViews_final)) {
                             hasEqualItem = true;
                         }
                     }
                 }
-
                 if (hasEqualItem) {
                     Toast thetoast = makeText(mView.getContext(), R.string.already_inclipboard, Toast.LENGTH_SHORT);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 } else {
-                    ClipData clip = ClipData.newPlainText("Clipboard", theClipText);
+                    ClipData clip = ClipData.newPlainText("Clipboard", text_fromTextViews_final);
                     clipboard.setPrimaryClip(clip);
                     Toast thetoast = Toast.makeText(mView.getContext(), R.string.copied_toclipboard, Toast.LENGTH_SHORT);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
@@ -166,7 +213,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 customPopUp.dismiss();
             }
         });
-
 
         popup_layout.findViewById(R.id.action_clear_result).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,14 +223,14 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
             }
         });
 
-
         popup_layout.findViewById(R.id.action_share_result).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String text_fromTextView = ((TextView) theCardView.findViewWithTag("texto")).getText().toString();
+                String text_fromTextViews_final = getFormatedTextFromTextView();
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Matemática\n" + text_fromTextView);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
+                        mActivity.getResources().getString(R.string.app_version_name) + "\n" + text_fromTextViews_final);
                 sendIntent.setType("text/plain");
                 mActivity.startActivity(sendIntent);
                 customPopUp.dismiss();
@@ -194,32 +240,80 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup_layout.findViewById(R.id.action_save_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //theCardView.save();
+                theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor));
+                verifyStoragePermissions(mActivity);
+                theCardView.setDrawingCacheEnabled(true);
+                Bitmap bitmap = Bitmap.createBitmap(theCardView.getWidth(), theCardView.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                theCardView.draw(canvas);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
 
+                File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + "Matematica Images");
                 try {
-                    theCardView.setDrawingCacheEnabled(true);
-                    Bitmap bitmap = theCardView.getDrawingCache();
-                    File file, f = null;
-                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                        file = new File(Environment.getExternalStorageDirectory(), "Android");
-                        if (!file.exists()) {
-                            file.mkdirs();
-                        }
-                        f = new File(file.getAbsolutePath() + "/filename" + ".png");
+                    if (!image_file.exists()) {
+                        image_file.mkdirs();
                     }
-                    FileOutputStream fostream = new FileOutputStream(f);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fostream);
-                    fostream.close();
-                } catch (Exception e) {
-                    Log.d("Sergio>>>", "onClick: error? " + e);
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                    image_file = new File(Environment.getExternalStorageDirectory() + File.separator + "Matematica Images" + File.separator + "img_" + timeStamp + ".jpg");
+                    image_file.createNewFile();
+                    FileOutputStream fileOutputStream = new FileOutputStream(image_file);
+                    fileOutputStream.write(byteArrayOutputStream.toByteArray());
+                    Toast thetoast = Toast.makeText(mView.getContext(), "Imagem guardada na pasta Matematica Images", Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                } catch (IOException e) {
                     e.printStackTrace();
+                    Log.e("Sergio>>>", "onClick: error ", e);
+                    Toast thetoast = Toast.makeText(mView.getContext(), "Error while saving file. Contact developer.", Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
                 }
 
+//
+//                try {
+//                    theCardView.setDrawingCacheEnabled(true);
+//                    Bitmap bitmap2 = theCardView.getDrawingCache();
+//                    File file, f = null;
+//                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+//                        file = new File(Environment.getExternalStorageDirectory(), "Android");
+//                        if (!file.exists()) {
+//                            file.mkdirs();
+//                            Log.i("Sergio>>>", "mkdirs");
+//                        }
+//                        f = new File(file.getAbsolutePath() + "/filename" + ".png");
+//                    }
+//                    FileOutputStream fostream = new FileOutputStream(f);
+//                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fostream);
+//                    fostream.close();
+//                } catch (Exception e) {
+//                    Log.d("Sergio>>>", "onClick: error? " + e);
+//                    e.printStackTrace();
+//                }
                 customPopUp.dismiss();
-
             }
         });
 
+    }
+
+    @NonNull
+    public String getFormatedTextFromTextView() {
+        ArrayList<View> textViews_withTAG_texto = getViewsByTag((ViewGroup) mView, "texto");
+        String text_fromTextViews_final = "";
+        for (int i = 0; i < textViews_withTAG_texto.size(); i++) {
+            String text_fromTextView = (((TextView) textViews_withTAG_texto.get(i)).getText().toString()) + "\n";
+            SpannableString ss = new SpannableString(((TextView) textViews_withTAG_texto.get(i)).getText());
+            SuperscriptSpan[] spans = ss.getSpans(0, ((TextView) textViews_withTAG_texto.get(i)).getText().length(), SuperscriptSpan.class);
+            int corr = 0;
+            for (SuperscriptSpan span : spans) {
+                int start = ss.getSpanStart(span) + corr;
+                text_fromTextView = text_fromTextView.substring(0, start) + "^" + text_fromTextView.substring(start);
+                corr++;
+            }
+            text_fromTextViews_final += text_fromTextView;
+        }
+        return text_fromTextViews_final;
     }
 
 

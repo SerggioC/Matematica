@@ -125,9 +125,9 @@ public class PrimesTableFragment extends Fragment {
             ((GridView) mActivity.findViewById(R.id.history)).setAdapter(null);
             tableData = null;
             num_min = 0L;
-            num_max = 100L;
+            num_max = 50L;
             ((EditText) mActivity.findViewById(min)).setText("1");
-            ((EditText) mActivity.findViewById(R.id.max)).setText("100");
+            ((EditText) mActivity.findViewById(R.id.max)).setText("50");
             mActivity.findViewById(R.id.numPrimesTextView).setVisibility(View.GONE);
             mActivity.findViewById(R.id.performanceTextView).setVisibility(View.GONE);
         }

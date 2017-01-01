@@ -12,7 +12,7 @@
     <string name="action_clear_all_history">Eliminar historial</string>
     <string name="action_clear_result">Borrar</string>
     <string name="action_clipboard_result">Copia</string>
-    <string name="action_save_image">Guardar como...</string>
+    <string name="action_save_image">Guardar Imagen</string>
     <string name="action_settings">Preferencias</string>
     <string name="action_share_history">Compartir resultados</string>
     <string name="action_share_result">Compartir...</string>

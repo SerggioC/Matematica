@@ -107,7 +107,7 @@
     <string name="app_long_description">Matemática: Prime Number Tools v</string>
     <string name="cancel_it">Cancel operation?</string>
     <string name="and">and</string>
-    <string name="action_save_image">Save as...</string>
+    <string name="action_save_image">Save Image</string>
     <string name="explain">Show Explanation ▾</string>
     <string name="hide_explain">Hide Explanation ◂</string>
     <string name="pref_description_title">Application Preferences</string>
