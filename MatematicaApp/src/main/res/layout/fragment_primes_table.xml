@@ -2,7 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.sergiocruz.Matematica.fragment.MMCFragment">
+             tools:context="com.sergiocruz.MatematicaPro.fragment.MMCFragment">
 
 
     <LinearLayout
@@ -183,7 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    android:text="# de primos:"
+                    android:text="@string/cardinal_primos"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"

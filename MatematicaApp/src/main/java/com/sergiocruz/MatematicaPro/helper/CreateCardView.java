@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.helper;
+package com.sergiocruz.MatematicaPro.helper;
 
 import android.app.Activity;
 import android.support.v4.content.ContextCompat;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.sergiocruz.Matematica.R;
+import com.sergiocruz.MatematicaPro.R;
 
 /*****
  * Project Matematica

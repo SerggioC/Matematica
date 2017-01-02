@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.helper;
+package com.sergiocruz.MatematicaPro.helper;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
+import com.sergiocruz.MatematicaPro.R;
 
 import java.util.ArrayList;
 
-import static com.sergiocruz.Matematica.R.id.history;
+import static com.sergiocruz.MatematicaPro.R.id.history;
 
 /*****
  * Project Matematica

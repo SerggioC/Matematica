@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.activity;
+package com.sergiocruz.MatematicaPro.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,13 +15,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.fragment.DivisoresFragment;
-import com.sergiocruz.Matematica.fragment.FatorizarFragment;
-import com.sergiocruz.Matematica.fragment.HomeFragment;
-import com.sergiocruz.Matematica.fragment.MDCFragment;
-import com.sergiocruz.Matematica.fragment.MMCFragment;
-import com.sergiocruz.Matematica.fragment.PrimesTableFragment;
+import com.sergiocruz.MatematicaPro.R;
+import com.sergiocruz.MatematicaPro.fragment.DivisoresFragment;
+import com.sergiocruz.MatematicaPro.fragment.FatorizarFragment;
+import com.sergiocruz.MatematicaPro.fragment.HomeFragment;
+import com.sergiocruz.MatematicaPro.fragment.MDCFragment;
+import com.sergiocruz.MatematicaPro.fragment.MMCFragment;
+import com.sergiocruz.MatematicaPro.fragment.PrimesTableFragment;
 
 public class MainActivity extends AppCompatActivity {
 

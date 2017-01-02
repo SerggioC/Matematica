@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.helper;
+package com.sergiocruz.MatematicaPro.helper;
 
 import android.content.Context;
 import android.view.GestureDetector;

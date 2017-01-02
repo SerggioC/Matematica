@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.fragment;
+package com.sergiocruz.MatematicaPro.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,9 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.activity.AboutActivity;
-import com.sergiocruz.Matematica.activity.SettingsActivity;
+import com.sergiocruz.MatematicaPro.R;
+import com.sergiocruz.MatematicaPro.activity.AboutActivity;
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
 
 /**
  * A simple {@link Fragment} subclass.

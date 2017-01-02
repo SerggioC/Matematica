@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.fragment;
+package com.sergiocruz.MatematicaPro.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -41,12 +41,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.activity.AboutActivity;
-import com.sergiocruz.Matematica.activity.SettingsActivity;
-import com.sergiocruz.Matematica.helper.CreateCardView;
-import com.sergiocruz.Matematica.helper.MenuHelper;
-import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
+import com.sergiocruz.MatematicaPro.R;
+import com.sergiocruz.MatematicaPro.activity.AboutActivity;
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
+import com.sergiocruz.MatematicaPro.helper.CreateCardView;
+import com.sergiocruz.MatematicaPro.helper.MenuHelper;
+import com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -197,7 +197,7 @@ public class DivisoresFragment extends Fragment {
             InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
         } catch (Exception e) {
-            Log.e("Sergio>>>", "hideKeyboard: ", e);
+            Log.e("Sergio>>>", "hideKeyboard error: ", e);
         }
     }
 

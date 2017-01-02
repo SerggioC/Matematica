@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.fragment;
+package com.sergiocruz.MatematicaPro.fragment;
 
 import android.animation.LayoutTransition;
 import android.app.Activity;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -26,6 +26,7 @@ import android.text.style.StyleSpan;
 import android.text.style.SuperscriptSpan;
 import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,12 +43,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.activity.AboutActivity;
-import com.sergiocruz.Matematica.activity.SettingsActivity;
-import com.sergiocruz.Matematica.helper.CreateCardView;
-import com.sergiocruz.Matematica.helper.MenuHelper;
-import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
+import com.sergiocruz.MatematicaPro.R;
+import com.sergiocruz.MatematicaPro.activity.AboutActivity;
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
+import com.sergiocruz.MatematicaPro.helper.MenuHelper;
+import com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -64,43 +64,41 @@ import static android.graphics.Typeface.BOLD;
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
 import static android.widget.LinearLayout.HORIZONTAL;
-import static android.widget.Toast.makeText;
-import static com.sergiocruz.Matematica.fragment.MMCFragment.CARD_TEXT_SIZE;
+import static com.sergiocruz.MatematicaPro.helper.CreateCardView.create;
 import static java.lang.Long.parseLong;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MDCFragment.OnFragmentInteractionListener} interface
+ * {@link MMCFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MDCFragment#newInstance} factory method to
+ * Use the {@link MMCFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MDCFragment extends Fragment {
+public class MMCFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final int CARD_TEXT_SIZE = 15;
 
     Activity mActivity;
     ArrayList<AsyncTask> asyncTaskQueue = new ArrayList<>();
     ArrayList<Integer> fColors;
-    EditText mdc_num_1, mdc_num_2, mdc_num_3, mdc_num_4, mdc_num_5, mdc_num_6, mdc_num_7, mdc_num_8;
+    EditText mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8;
     float scale;
     Fragment thisFragment = this;
     int height_dip, cv_width;
     int taskNumber = 0;
     long startTime;
-
     SharedPreferences sharedPrefs;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
-    public MDCFragment() {
+    public MMCFragment() {
         // Required empty public constructor
     }
 
@@ -110,11 +108,11 @@ public class MDCFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MDCFragment.
+     * @return A new instance of fragment MMCFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MDCFragment newInstance(String param1, String param2) {
-        MDCFragment fragment = new MDCFragment();
+    public static MMCFragment newInstance(String param1, String param2) {
+        MMCFragment fragment = new MMCFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -123,83 +121,63 @@ public class MDCFragment extends Fragment {
     }
 
     /*****************************************************************
-     * MMC: Mínimo múltiplo comum (lcm: least common multiplier)
+     * MMC: Mínimo múltiplo Comum (LCM: Least Common Multiplier)
      *****************************************************************/
-//    private static long mmc(long a, long b) {
-//        return (b / mdc(a, b)) * a;
-//    }
-//    private static BigInteger mmc(BigInteger a, BigInteger b) {
-//        return b.divide(a.gcd(b)).multiply(a);
-//    }
-//
-//    private static BigInteger mmc(ArrayList<BigInteger> input) {
-//        BigInteger result = input.get(0);
-//        for (int i = 1; i < input.size(); i++)
-//            result = mmc(result, input.get(i));
-//        return result;
-//    }
-//
-//    /****************************************************************
-//     * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
-//     *****************************************************************/
-//    private static BigInteger mdc(BigInteger a, BigInteger b) {
-//        while (b.compareTo(ZERO) == 1) {
-//            BigInteger temp = b;
-//            b = a.remainder(b);
-//            a = temp;
-//        }
-//        return a;
-//    }
-    private static BigInteger mdc(ArrayList<BigInteger> input) {
+    private static BigInteger mmc(BigInteger a, BigInteger b) {
+        return b.divide(a.gcd(b)).multiply(a);
+    }
+
+    private static BigInteger mmc(ArrayList<BigInteger> input) {
         BigInteger result = input.get(0);
         for (int i = 1; i < input.size(); i++)
-            result = result.gcd(input.get(i));
+            result = mmc(result, input.get(i));
         return result;
     }
 
-    public void showToast() {
-        Toast thetoast = makeText(getActivity(), R.string.numero_alto, Toast.LENGTH_SHORT);
+    private void showToast() {
+        Toast thetoast = Toast.makeText(mActivity, R.string.numero_alto, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
 
     private void showToastNum(String field) {
-        Toast thetoast = makeText(getActivity(), R.string.number_in_field + " " + field + " " + R.string.too_high, Toast.LENGTH_SHORT);
+        Toast thetoast = Toast.makeText(mActivity, getString(R.string.number_in_field) + " " + field + " " + getString(R.string.too_high), Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
 
     private void showToastMoreThanZero() {
-        Toast thetoast = makeText(getActivity(), R.string.maiores_qzero, Toast.LENGTH_LONG);
+        Toast thetoast = Toast.makeText(mActivity, R.string.maiores_qzero, Toast.LENGTH_SHORT);
         thetoast.setGravity(Gravity.CENTER, 0, 0);
         thetoast.show();
     }
+    /****************************************************************
+     * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
+     *****************************************************************/
+//    private static BigInteger mdc(BigInteger a, BigInteger b) {
+////        while (b > 0) {
+//        while (b.compareTo(ZERO) == 1) {
+//            BigInteger temp = b;
+////            b = a % b;
+//            b = a.remainder(b);
+//            a = temp;
+//        }
+//        return a;
+//    }
+
+//    private static BigInteger mdc(BigInteger[] input) {
+//        BigInteger result = input[0];
+//        for (int i = 1; i < input.length; i++)
+//            result = mdc(result, input[i]);
+//        return result;
+//    }
 
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
      *****************************************************************/
-    //private final static BigInteger mdc2(BigInteger a, BigInteger b) {
-    //    return b.compareTo(ZERO) == 1 ? a : mdc(b, a.remainder(b));
-    //}
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-//         Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Toast.makeText(getActivity(), "landscape", Toast.LENGTH_SHORT).show();
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            Toast.makeText(getActivity(), "portrait", Toast.LENGTH_SHORT).show();
-//        }
-
-        hideKeyboard();
-    }
-
-    public void hideKeyboard() {
-        //Hide the keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
-    }
-
+//    private final static BigInteger mdc2(BigInteger a, BigInteger b) {
+//        return b == 0 ? a : mdc(b, a % b);
+//    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,12 +193,9 @@ public class MDCFragment extends Fragment {
         scale = mActivity.getResources().getDisplayMetrics().density;
         int[] f_colors = mActivity.getResources().getIntArray(R.array.f_colors_xml);
         fColors = new ArrayList<>();
-        for (int i = 0; i < f_colors.length; i++) {
-            fColors.add(f_colors[i]);
-        }
+        for (int f_color : f_colors) fColors.add(f_color);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
     }
-
 
     @Override
     public void onDestroy() {
@@ -242,13 +217,65 @@ public class MDCFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+/*        Log.i("Sergio>>>", "onSaveInstanceState: ");
+        //Saving the fragment's state
+        ViewGroup history = (ViewGroup) mActivity.findViewById(R.id.history);
+        int cards = history.getChildCount();
+        for (int i = 0; i < cards; i++) {
+            CharSequence text = ((TextView) ((CardView) history.getChildAt(i)).getChildAt(0)).getText();
+            outState.putCharSequence("Card" + i, text);
+            Log.d("Sergio>>>", "onSaveInstanceState: text(i)= " + text);
+        }
+
+        Log.i("Sergio>>>", "onSaveInstanceState: cards= " + cards);*/
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen and keeps the view contents and state
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            Toast.makeText(mActivity, "landscape", Toast.LENGTH_SHORT).show();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+//            Toast.makeText(mActivity, "portrait", Toast.LENGTH_SHORT).show();
+//        }
+
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;  //int height = size.y;
+        int lr_dip = (int) (4 * scale + 0.5f) * 2;
+        cv_width = width - lr_dip;
+
+        hideKeyboard();
+
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
 
         inflater.inflate(R.menu.menu_main, menu);
         inflater.inflate(R.menu.menu_sub_main, menu);
-        inflater.inflate(R.menu.menu_help_mdc, menu);
+        inflater.inflate(R.menu.menu_help_mmc, menu);
     }
 
     @Override
@@ -259,28 +286,26 @@ public class MDCFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(getActivity());
+            MenuHelper.share_history(mActivity);
         }
 
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(getActivity());
-            mdc_num_1.setText("");
-            mdc_num_2.setText("");
-            mdc_num_3.setText("");
-            mdc_num_4.setText("");
-            mdc_num_5.setText("");
-            mdc_num_6.setText("");
-            mdc_num_7.setText("");
-            mdc_num_8.setText("");
+            MenuHelper.remove_history(mActivity);
+            mmc_num_1.setText("");
+            mmc_num_2.setText("");
+            mmc_num_3.setText("");
+            mmc_num_4.setText("");
+            mmc_num_5.setText("");
+            mmc_num_6.setText("");
+            mmc_num_7.setText("");
+            mmc_num_8.setText("");
         }
-
         if (id == R.id.action_ajuda) {
-            ViewGroup history = (ViewGroup) getActivity().findViewById(R.id.history);
-            String help_divisores = getString(R.string.help_text_mdc);
+            LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
+            String help_divisores = getString(R.string.help_text_mmc);
             SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
-            CreateCardView.create(history, ssb, getActivity());
+            create(history, ssb, mActivity);
         }
-
         if (id == R.id.action_about) {
             startActivity(new Intent(mActivity, AboutActivity.class));
         }
@@ -290,24 +315,26 @@ public class MDCFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_mdc, container, false);
-        mdc_num_1 = (EditText) view.findViewById(R.id.mdc_num_1);
-        mdc_num_2 = (EditText) view.findViewById(R.id.mdc_num_2);
-        mdc_num_3 = (EditText) view.findViewById(R.id.mdc_num_3);
-        mdc_num_4 = (EditText) view.findViewById(R.id.mdc_num_4);
-        mdc_num_5 = (EditText) view.findViewById(R.id.mdc_num_5);
-        mdc_num_6 = (EditText) view.findViewById(R.id.mdc_num_6);
-        mdc_num_7 = (EditText) view.findViewById(R.id.mdc_num_7);
-        mdc_num_8 = (EditText) view.findViewById(R.id.mdc_num_8);
+        final View view = inflater.inflate(R.layout.fragment_mmc, container, false);
 
-        Button button = (Button) view.findViewById(R.id.button_calc_mdc);
+        mmc_num_1 = (EditText) view.findViewById(R.id.mmc_num_1);
+        mmc_num_2 = (EditText) view.findViewById(R.id.mmc_num_2);
+        mmc_num_3 = (EditText) view.findViewById(R.id.mmc_num_3);
+        mmc_num_4 = (EditText) view.findViewById(R.id.mmc_num_4);
+        mmc_num_5 = (EditText) view.findViewById(R.id.mmc_num_5);
+        mmc_num_6 = (EditText) view.findViewById(R.id.mmc_num_6);
+        mmc_num_7 = (EditText) view.findViewById(R.id.mmc_num_7);
+        mmc_num_8 = (EditText) view.findViewById(R.id.mmc_num_8);
+
+        Button button = (Button) view.findViewById(R.id.button_calc_mmc);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calc_mdc(view);
+                calc_mmc();
             }
         });
 
@@ -315,76 +342,76 @@ public class MDCFragment extends Fragment {
         clearTextBtn_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_1.setText("");
+                mmc_num_1.setText("");
             }
         });
         Button clearTextBtn_2 = (Button) view.findViewById(R.id.btn_clear_2);
         clearTextBtn_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_2.setText("");
+                mmc_num_2.setText("");
             }
         });
         Button clearTextBtn_3 = (Button) view.findViewById(R.id.btn_clear_3);
         clearTextBtn_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_3.setText("");
+                mmc_num_3.setText("");
             }
         });
         Button clearTextBtn_4 = (Button) view.findViewById(R.id.btn_clear_4);
         clearTextBtn_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_4.setText("");
+                mmc_num_4.setText("");
             }
         });
         Button clearTextBtn_5 = (Button) view.findViewById(R.id.btn_clear_5);
         clearTextBtn_5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_5.setText("");
+                mmc_num_5.setText("");
             }
         });
         Button clearTextBtn_6 = (Button) view.findViewById(R.id.btn_clear_6);
         clearTextBtn_6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_6.setText("");
+                mmc_num_6.setText("");
             }
         });
         Button clearTextBtn_7 = (Button) view.findViewById(R.id.btn_clear_7);
         clearTextBtn_7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_7.setText("");
+                mmc_num_7.setText("");
             }
         });
         Button clearTextBtn_8 = (Button) view.findViewById(R.id.btn_clear_8);
         clearTextBtn_8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mdc_num_8.setText("");
+                mmc_num_8.setText("");
             }
         });
 
-        ImageButton add_mdc = (ImageButton) view.findViewById(R.id.button_add_mdc);
-        add_mdc.setOnClickListener(new View.OnClickListener() {
+        ImageButton add_mmc = (ImageButton) view.findViewById(R.id.button_add_mmc);
+        add_mmc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                add_mdc(view);
+                add_mmc(view);
             }
         });
 
-        ImageButton remove_mdc = (ImageButton) view.findViewById(R.id.button_remove_mdc);
-        remove_mdc.setOnClickListener(new View.OnClickListener() {
+        ImageButton remove_mmc = (ImageButton) view.findViewById(R.id.button_remove_mmc);
+        remove_mmc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                remove_mdc(view);
+                remove_mmc(view);
             }
         });
 
-        mdc_num_1.addTextChangedListener(new TextWatcher() {
+        mmc_num_1.addTextChangedListener(new TextWatcher() {
             Long num1;
             String oldnum1;
 
@@ -399,13 +426,12 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num1 = parseLong(s.toString());
                 } catch (Exception e) {
-                    mdc_num_1.setText(oldnum1);
-                    mdc_num_1.setSelection(mdc_num_1.getText().length()); //Colocar o cursor no final do texto
+                    mmc_num_1.setText(oldnum1);
+                    mmc_num_1.setSelection(mmc_num_1.getText().length()); //Colocar o cursor no final do texto
                     showToast();
-                    return;
                 }
             }
 
@@ -415,7 +441,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_2.addTextChangedListener(new TextWatcher() {
+        mmc_num_2.addTextChangedListener(new TextWatcher() {
             Long num2;
             String oldnum2;
 
@@ -431,13 +457,12 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num2 = parseLong(s.toString());
                 } catch (Exception e) {
-                    mdc_num_2.setText(oldnum2);
-                    mdc_num_2.setSelection(mdc_num_2.getText().length());
+                    mmc_num_2.setText(oldnum2);
+                    mmc_num_2.setSelection(mmc_num_2.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -446,7 +471,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_3.addTextChangedListener(new TextWatcher() {
+        mmc_num_3.addTextChangedListener(new TextWatcher() {
             Long num3;
             String oldnum3;
 
@@ -461,14 +486,13 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num3 = parseLong(s.toString());
 
                 } catch (Exception e) {
-                    mdc_num_3.setText(oldnum3);
-                    mdc_num_3.setSelection(mdc_num_3.getText().length());
+                    mmc_num_3.setText(oldnum3);
+                    mmc_num_3.setSelection(mmc_num_3.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -478,7 +502,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_4.addTextChangedListener(new TextWatcher() {
+        mmc_num_4.addTextChangedListener(new TextWatcher() {
             Long num4;
             String oldnum4;
 
@@ -493,14 +517,13 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num4 = parseLong(s.toString());
 
                 } catch (Exception e) {
-                    mdc_num_4.setText(oldnum4);
-                    mdc_num_4.setSelection(mdc_num_4.getText().length());
+                    mmc_num_4.setText(oldnum4);
+                    mmc_num_4.setSelection(mmc_num_4.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -509,7 +532,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_5.addTextChangedListener(new TextWatcher() {
+        mmc_num_5.addTextChangedListener(new TextWatcher() {
             Long num5;
             String oldnum5;
 
@@ -525,14 +548,13 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num5 = parseLong(s.toString());
 
                 } catch (Exception e) {
-                    mdc_num_5.setText(oldnum5);
-                    mdc_num_5.setSelection(mdc_num_5.getText().length());
+                    mmc_num_5.setText(oldnum5);
+                    mmc_num_5.setSelection(mmc_num_5.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -541,7 +563,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_6.addTextChangedListener(new TextWatcher() {
+        mmc_num_6.addTextChangedListener(new TextWatcher() {
             Long num6;
             String oldnum6;
 
@@ -556,13 +578,12 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num6 = parseLong(s.toString());
                 } catch (Exception e) {
-                    mdc_num_6.setText(oldnum6);
-                    mdc_num_6.setSelection(mdc_num_6.getText().length());
+                    mmc_num_6.setText(oldnum6);
+                    mmc_num_6.setSelection(mmc_num_6.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -571,7 +592,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_7.addTextChangedListener(new TextWatcher() {
+        mmc_num_7.addTextChangedListener(new TextWatcher() {
             Long num7;
             String oldnum7;
 
@@ -586,13 +607,12 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num7 = parseLong(s.toString());
                 } catch (Exception e) {
-                    mdc_num_7.setText(oldnum7);
-                    mdc_num_7.setSelection(mdc_num_7.getText().length());
+                    mmc_num_7.setText(oldnum7);
+                    mmc_num_7.setSelection(mmc_num_7.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -601,7 +621,7 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        mdc_num_8.addTextChangedListener(new TextWatcher() {
+        mmc_num_8.addTextChangedListener(new TextWatcher() {
             Long num8;
             String oldnum8;
 
@@ -616,13 +636,12 @@ public class MDCFragment extends Fragment {
                     return;
                 }
                 try {
-                    // Tentar converter o string para long
+                    // Tentar converter o string para Long
                     num8 = parseLong(s.toString());
                 } catch (Exception e) {
-                    mdc_num_8.setText(oldnum8);
-                    mdc_num_8.setSelection(mdc_num_8.getText().length());
+                    mmc_num_8.setText(oldnum8);
+                    mmc_num_8.setSelection(mmc_num_8.getText().length());
                     showToast();
-                    return;
                 }
             }
 
@@ -634,7 +653,7 @@ public class MDCFragment extends Fragment {
         return view;
     }
 
-    public void add_mdc(View view) {
+    public void add_mmc(View view) {
 
         LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
         LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
@@ -645,8 +664,8 @@ public class MDCFragment extends Fragment {
         FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
         FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
         FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
-        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mdc);
-        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mdc);
+        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mmc);
+        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mmc);
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -701,7 +720,7 @@ public class MDCFragment extends Fragment {
 
     }
 
-    public void remove_mdc(View view) {
+    public void remove_mmc(View view) {
 
         LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
         LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
@@ -714,8 +733,8 @@ public class MDCFragment extends Fragment {
         FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
         FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
 
-        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mdc);
-        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mdc);
+        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mmc);
+        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mmc);
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -729,13 +748,13 @@ public class MDCFragment extends Fragment {
 
         if (ll_78_visibe) {
             if (f8_visible) {
-                mdc_num_8.setText("");
+                mmc_num_8.setText("");
                 f_8.setVisibility(View.GONE);
                 add_one.setVisibility(View.VISIBLE);
                 return;
             }
             if (f7_visible) {
-                mdc_num_7.setText("");
+                mmc_num_7.setText("");
                 f_7.setVisibility(View.GONE);
                 ll_78.setVisibility(View.GONE);
                 return;
@@ -744,12 +763,12 @@ public class MDCFragment extends Fragment {
 
         if (ll_56_visibe) {
             if (f6_visible) {
-                mdc_num_6.setText("");
+                mmc_num_6.setText("");
                 f_6.setVisibility(View.GONE);
                 return;
             }
             if (f5_visible) {
-                mdc_num_5.setText("");
+                mmc_num_5.setText("");
                 f_5.setVisibility(View.GONE);
                 ll_56.setVisibility(View.GONE);
                 return;
@@ -758,13 +777,15 @@ public class MDCFragment extends Fragment {
 
         if (ll_34_visibe) {
             if (f4_visible) {
-                mdc_num_4.setText("");
+                mmc_num_4.setText("");
                 f_4.setVisibility(View.GONE);
+                f_4.setAlpha(0);
                 return;
             }
             if (f3_visible) {
-                mdc_num_3.setText("");
+                mmc_num_3.setText("");
                 f_3.setVisibility(View.GONE);
+                f_3.setAlpha(0);
                 ll_34.setVisibility(View.GONE);
                 less_one.setVisibility(View.INVISIBLE);
                 return;
@@ -773,18 +794,24 @@ public class MDCFragment extends Fragment {
 
     }
 
-    private void calc_mdc(View view) {
+    public void hideKeyboard() {
+        //Hide the keyboard
+        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mActivity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    private void calc_mmc() {
         startTime = System.nanoTime();
         hideKeyboard();
 
-        String str_num1 = mdc_num_1.getText().toString();
-        String str_num2 = mdc_num_2.getText().toString();
-        String str_num3 = mdc_num_3.getText().toString();
-        String str_num4 = mdc_num_4.getText().toString();
-        String str_num5 = mdc_num_5.getText().toString();
-        String str_num6 = mdc_num_6.getText().toString();
-        String str_num7 = mdc_num_7.getText().toString();
-        String str_num8 = mdc_num_8.getText().toString();
+        String str_num1 = mmc_num_1.getText().toString().replaceAll("[^\\d]", "");
+        String str_num2 = mmc_num_2.getText().toString().replaceAll("[^\\d]", "");
+        String str_num3 = mmc_num_3.getText().toString().replaceAll("[^\\d]", "");
+        String str_num4 = mmc_num_4.getText().toString().replaceAll("[^\\d]", "");
+        String str_num5 = mmc_num_5.getText().toString().replaceAll("[^\\d]", "");
+        String str_num6 = mmc_num_6.getText().toString().replaceAll("[^\\d]", "");
+        String str_num7 = mmc_num_7.getText().toString().replaceAll("[^\\d]", "");
+        String str_num8 = mmc_num_8.getText().toString().replaceAll("[^\\d]", "");
 
         long num1, num2, num3, num4, num5, num6, num7, num8;
 
@@ -793,7 +820,7 @@ public class MDCFragment extends Fragment {
 
         if (!str_num1.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num1 = parseLong(str_num1);
                 if (num1 == 0L) {
                     showToastMoreThanZero();
@@ -810,7 +837,7 @@ public class MDCFragment extends Fragment {
         }
         if (!str_num2.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num2 = parseLong(str_num2);
                 if (num2 == 0L) {
                     showToastMoreThanZero();
@@ -827,7 +854,7 @@ public class MDCFragment extends Fragment {
         }
         if (!str_num3.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num3 = parseLong(str_num3);
                 if (num3 == 0L) {
                     showToastMoreThanZero();
@@ -844,7 +871,7 @@ public class MDCFragment extends Fragment {
         }
         if (!str_num4.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num4 = parseLong(str_num4);
                 if (num4 == 0L) {
                     showToastMoreThanZero();
@@ -861,7 +888,7 @@ public class MDCFragment extends Fragment {
         }
         if (!str_num5.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num5 = parseLong(str_num5);
                 if (num5 == 0L) {
                     showToastMoreThanZero();
@@ -878,7 +905,7 @@ public class MDCFragment extends Fragment {
         }
         if (!str_num6.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num6 = parseLong(str_num6);
                 if (num6 == 0L) {
                     showToastMoreThanZero();
@@ -896,7 +923,7 @@ public class MDCFragment extends Fragment {
 
         if (!str_num7.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num7 = parseLong(str_num7);
                 if (num7 == 0L) {
                     showToastMoreThanZero();
@@ -914,7 +941,7 @@ public class MDCFragment extends Fragment {
 
         if (!str_num8.equals("")) {
             try {
-                // Tentar converter o string para long
+                // Tentar converter o string para Long
                 num8 = parseLong(str_num8);
                 if (num8 == 0L) {
                     showToastMoreThanZero();
@@ -930,30 +957,24 @@ public class MDCFragment extends Fragment {
             }
         }
         if (numbers.size() < 2) {
-            Toast thetoast = Toast.makeText(getActivity(), R.string.add_number_pair, Toast.LENGTH_SHORT);
+            Toast thetoast = Toast.makeText(mActivity, R.string.add_number_pair, Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
             return;
         }
 
-        String mdc_string = getString(R.string.mdc_result_prefix);
-        BigInteger result_mdc = null;
+        String mmc_string = getString(R.string.mmc_result_prefix);
+        BigInteger result_mmc = null;
 
         if (numbers.size() > 1) {
             for (int i = 0; i < numbers.size() - 1; i++) {
-                mdc_string += numbers.get(i) + ", ";
+                mmc_string += numbers.get(i) + ", ";
             }
-            mdc_string += numbers.get(numbers.size() - 1) + ")= ";
-            result_mdc = mdc(numbers);
+            mmc_string += numbers.get(numbers.size() - 1) + ")= ";
+            result_mmc = mmc(numbers);
         }
 
-        mdc_string += result_mdc;
-        SpannableStringBuilder ssb = new SpannableStringBuilder(mdc_string);
-        if (result_mdc.toString().equals("1")) {
-            ssb.append("\n" + getString(R.string.primos_si));
-            ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - 24, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-            ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - 24, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
+        mmc_string += result_mmc;
 
         //criar novo cardview
         CardView cardview = new CardView(mActivity);
@@ -968,11 +989,12 @@ public class MDCFragment extends Fragment {
         cardview.setCardElevation((int) (2 * scale + 0.5f));
         cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip);
         cardview.setUseCompatPadding(true);
-        cardview.setLayoutTransition(new LayoutTransition());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             LayoutTransition lt = new LayoutTransition();
             lt.enableTransitionType(CHANGE_APPEARING);
             lt.enableTransitionType(CHANGE_DISAPPEARING);
+            cardview.setLayoutTransition(lt);
         }
 
         int cv_color = ContextCompat.getColor(mActivity, R.color.cardsColor);
@@ -987,6 +1009,7 @@ public class MDCFragment extends Fragment {
                     public boolean canDismiss(Boolean token) {
                         return true;
                     }
+
                     @Override
                     public void onDismiss(View view) {
                         //history.removeView(cardview);
@@ -994,10 +1017,11 @@ public class MDCFragment extends Fragment {
                     }
                 }));
 
-        MyTags tags = new MyTags(cardview, long_numbers, result_mdc, false, false, "", null, taskNumber);
+        //Adicionar os números a fatorizar na tag do cardview
+        MyTags tags = new MyTags(cardview, long_numbers, result_mmc, false, false, "", null, taskNumber);
         cardview.setTag(tags);
 
-        LinearLayout history = (LinearLayout) view.findViewById(R.id.history);
+        LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
@@ -1009,12 +1033,12 @@ public class MDCFragment extends Fragment {
 
         // criar novo Textview
         final TextView textView = new TextView(mActivity);
-        textView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,   //largura
-                ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,   //largura
+                LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
 
-        //Adicionar o texto com o resultado ao TextView
-        textView.setText(ssb);
+        //Adicionar o texto com o resultado
+        textView.setText(mmc_string);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         textView.setTag(R.id.texto, "texto");
 
@@ -1030,12 +1054,13 @@ public class MDCFragment extends Fragment {
             if (shouldShowPerformance) {
                 TextView gradient_separator = getGradientSeparator();
                 NumberFormat decimalFormatter = new DecimalFormat("#.###");
-                String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                String elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                 gradient_separator.setText(elapsed);
                 ll_vertical_root.addView(gradient_separator, 0);
             }
-            cardview.addView(ll_vertical_root); //Só o resultado sem explicações
+            cardview.addView(ll_vertical_root);
         }
+
     }
 
     @NonNull
@@ -1057,35 +1082,39 @@ public class MDCFragment extends Fragment {
         return gradient_separator;
     }
 
+
     private void createExplanations(CardView cardview, LinearLayout ll_vertical_root, String shouldShowExplanation) {
+
         final SpannableStringBuilder ssb_hide_expl = new SpannableStringBuilder(getString(R.string.hide_explain));
         ssb_hide_expl.setSpan(new UnderlineSpan(), 0, ssb_hide_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
         final SpannableStringBuilder ssb_show_expl = new SpannableStringBuilder(getString(R.string.explain));
         ssb_show_expl.setSpan(new UnderlineSpan(), 0, ssb_show_expl.length() - 2, SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        //Linearlayout
+        //Linearlayout horizontal com o explainlink e gradiente
         LinearLayout ll_horizontal = new LinearLayout(mActivity);
         ll_horizontal.setOrientation(HORIZONTAL);
         ll_horizontal.setLayoutParams(new LinearLayoutCompat.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
-
         final TextView explainLink = new TextView(mActivity);
         explainLink.setTag("explainLink");
-        explainLink.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,   //largura
-                ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
+        explainLink.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
+                LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
         explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainLink.setTextColor(ContextCompat.getColor(mActivity, R.color.linkBlue));
-        //explainLink.setGravity(Gravity.CENTER_VERTICAL);
+        explainLink.setGravity(Gravity.CENTER_VERTICAL);
 
         //View separator with gradient
         TextView gradient_separator = getGradientSeparator();
+
+        ll_horizontal.setGravity(Gravity.CENTER_VERTICAL);
 
         final Boolean[] isExpanded = {false};
         explainLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (!isExpanded[0]) {
                     ((TextView) view).setText(ssb_hide_expl);
                     ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.VISIBLE);
@@ -1109,7 +1138,13 @@ public class MDCFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT));
         ll_vertical_expl.setOrientation(LinearLayout.VERTICAL);
-
+        ll_vertical_expl.setLayoutTransition(new LayoutTransition());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            LayoutTransition lt = new LayoutTransition();
+            lt.enableTransitionType(CHANGE_APPEARING);
+            lt.enableTransitionType(CHANGE_DISAPPEARING);
+            ll_vertical_expl.setLayoutTransition(lt);
+        }
         //ProgressBar
         cv_width = mActivity.findViewById(R.id.card_view_1).getWidth();
         height_dip = (int) (3 * scale + 0.5f);
@@ -1121,10 +1156,9 @@ public class MDCFragment extends Fragment {
         //Ponto 1
         TextView explainTextView_1 = new TextView(mActivity);
         explainTextView_1.setTag("explainTextView_1");
-        String fp = "fatores primos:";
-        String explain_text_1 = "▻Decompor os números em" + " " + fp + "\n";
+        String fp = getString(R.string.fatores_primos);
+        String explain_text_1 = getString(R.string.decompor_num) + " " + fp + "\n";
         SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
-        //ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_1.setSpan(new UnderlineSpan(), explain_text_1.length() - fp.length() - 1, explain_text_1.length() - 1, SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_1.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
@@ -1134,15 +1168,17 @@ public class MDCFragment extends Fragment {
         //Ponto 2
         TextView explainTextView_2 = new TextView(mActivity);
         explainTextView_2.setTag("explainTextView_2");
-        String comuns = "comuns";
-        String uma_vez = "apenas uma vez";
-        String menor_exps = "menores expoentes";
-        String explain_text_2 = "▻Escolher os fatores" + " " + comuns + ", " + uma_vez + ", " + "com os" + " " + menor_exps + ":\n";
+        String comuns = getString(R.string.comuns);
+        String ncomuns = getString(R.string.nao_comuns);
+        String uma_vez = getString(R.string.uma_vez);
+        String maior_exps = getString(R.string.maior_exps);
+        String explain_text_2 = getString(R.string.escolher_fatores) + " " + comuns + " " + getString(R.string.and) + " " + ncomuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n";
         SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
-        //ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(comuns), explain_text_2.indexOf(comuns) + comuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(ncomuns), explain_text_2.indexOf(ncomuns) + ncomuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(uma_vez), explain_text_2.indexOf(uma_vez) + uma_vez.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(menor_exps), explain_text_2.indexOf(menor_exps) + menor_exps.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(maior_exps), explain_text_2.indexOf(maior_exps) + maior_exps.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        //ssb_explain_2.setSpan(new StyleSpan(BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_2.setText(ssb_explain_2);
@@ -1151,13 +1187,13 @@ public class MDCFragment extends Fragment {
         //Ponto 3
         TextView explainTextView_3 = new TextView(mActivity);
         explainTextView_3.setTag("explainTextView_3");
-        String multipl = "▻Multiplicar";
+        String multipl = getString(R.string.multiply);
         String explain_text_3 = multipl + " " +
-                "os fatores para obter o Máximo Divisor Comum:" + "\n";
+                getString(R.string.to_obtain_mmc) + "\n";
         SpannableStringBuilder ssb_explain_3 = new SpannableStringBuilder(explain_text_3);
         ssb_explain_3.setSpan(new UnderlineSpan(), explain_text_3.indexOf(multipl) + 1, explain_text_3.indexOf(multipl) + multipl.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        //ssb_explain_3.setSpan(new StyleSpan(BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_3.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        //ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
         explainTextView_3.setText(ssb_explain_3);
         explainTextView_3.setTag(R.id.texto, "texto");
@@ -1178,17 +1214,19 @@ public class MDCFragment extends Fragment {
             explainLink.setText(ssb_show_expl);
             isExpanded[0] = false;
         }
-
         cardview.addView(ll_vertical_root);
 
         MyTags thisCardTags = (MyTags) cardview.getTag();
+//        Boolean hasExplanation = thisCardTags.getHasExplanation();
+//        Boolean hasBGOperation = thisCardTags.getHasBGOperation();
 
+//        if (!hasBGOperation && !hasExplanation) {
         thisCardTags.setTaskNumber(taskNumber);
-        AsyncTask<Void, Double, Void> BG_Operation_MDC = new BackGroundOperation_MDC(thisCardTags)
+        AsyncTask<Void, Double, Void> BG_Operation_MMC = new BackGroundOperation_MMC(thisCardTags)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        asyncTaskQueue.add(BG_Operation_MDC);
+        asyncTaskQueue.add(BG_Operation_MMC);
         taskNumber++;
-
+//        }
     }
 
     public void check_bg_operation(View view) {
@@ -1249,18 +1287,18 @@ public class MDCFragment extends Fragment {
     public class MyTags {
         CardView theCardView;
         ArrayList<Long> long_numbers;
-        BigInteger result_mdc;
+        BigInteger result_mmc;
         Boolean hasExplanation;
         Boolean hasBGOperation;
         String texto;
         ArrayList<ArrayList<Long>> bgfatores;
         int taskNumber;
 
-        MyTags(CardView theCardView, ArrayList<Long> long_numbers, BigInteger result_mdc,
+        MyTags(CardView theCardView, ArrayList<Long> long_numbers, BigInteger result_mmc,
                Boolean hasExplanation, Boolean hasBGOperation, String texto, ArrayList<ArrayList<Long>> bgfatores, int taskNumber) {
             this.theCardView = theCardView;
             this.long_numbers = long_numbers;
-            this.result_mdc = result_mdc;
+            this.result_mmc = result_mmc;
             this.hasExplanation = hasExplanation;
             this.hasBGOperation = hasBGOperation;
             this.texto = texto;
@@ -1285,12 +1323,12 @@ public class MDCFragment extends Fragment {
             this.long_numbers = long_numbers;
         }
 
-        BigInteger getResultMDC() {
-            return result_mdc;
+        BigInteger getResultMMC() {
+            return result_mmc;
         }
 
-        void setResultMDC(BigInteger result_mdc) {
-            this.result_mdc = result_mdc;
+        void setResultMMC(BigInteger result_mmc) {
+            this.result_mmc = result_mmc;
         }
 
         Boolean getHasExplanation() {
@@ -1337,11 +1375,11 @@ public class MDCFragment extends Fragment {
     }
 
     // Asynctask <Params, Progress, Result>
-    public class BackGroundOperation_MDC extends AsyncTask<Void, Double, Void> {
+    public class BackGroundOperation_MMC extends AsyncTask<Void, Double, Void> {
         MyTags cardTags;
         CardView theCardViewBG;
-        ArrayList<Long> mdc_numbers;
-        BigInteger result_mdc;
+        ArrayList<Long> mmc_numbers;
+        BigInteger result_mmc;
         ArrayList<ArrayList<Long>> bgfatores;
 
         TextView gradient_separator;
@@ -1350,7 +1388,7 @@ public class MDCFragment extends Fragment {
         int[] f_colors;
         int f_colors_length;
 
-        BackGroundOperation_MDC(MyTags cardTags) {
+        BackGroundOperation_MMC(MyTags cardTags) {
             this.cardTags = cardTags;
         }
 
@@ -1375,7 +1413,7 @@ public class MDCFragment extends Fragment {
                 for (int i = 0; i < f_colors_length; i++) fColors.add(f_colors[f_colors_length - 1]);
             }
 
-            String text = " " + "A fatorizar... 0%";
+            String text = " " + getString(R.string.factorizing) + " 0%";
             SpannableStringBuilder ssb = new SpannableStringBuilder(text);
             ssb.setSpan(new ForegroundColorSpan(fColors.get(0)), 0, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             gradient_separator.setText(ssb);
@@ -1384,21 +1422,25 @@ public class MDCFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             ArrayList<ArrayList<Long>> fatores = new ArrayList<>();
-            mdc_numbers = cardTags.getLongNumbers();
-            int numbersSize = mdc_numbers.size();
+            mmc_numbers = cardTags.getLongNumbers();
+
+            int numbersSize = mmc_numbers.size();
             for (int i = 0; i < numbersSize; i++) { // fatorizar todos os números inseridos em MMC
                 double oldProgress = 0;
                 double progress;
                 ArrayList<Long> fatores_ix = new ArrayList<>();
-                Long number_i = mdc_numbers.get(i);
-                //if (number_i == 1L) { //adicionar o fator 1 para calibrar em baixo a contagem....
-                fatores_ix.add(1L);
-                //}
+
+                Long number_i = mmc_numbers.get(i);
+                if (number_i == 1L) {
+                    fatores_ix.add(1L);
+                }
                 while (number_i % 2L == 0) {
                     fatores_ix.add(2L);
                     number_i /= 2L;
                 }
+
                 for (long j = 3; j <= number_i / j; j += 2) {
+                    if (isCancelled()) break;
                     while (number_i % j == 0) {
                         fatores_ix.add(j);
                         number_i /= j;
@@ -1408,11 +1450,11 @@ public class MDCFragment extends Fragment {
                         publishProgress(progress, (double) i);
                         oldProgress = progress;
                     }
-                    if (isCancelled()) break;
                 }
                 if (number_i > 1) {
                     fatores_ix.add(number_i);
                 }
+
                 fatores.add(fatores_ix);
             }
             cardTags.setBGfatores(fatores);
@@ -1421,6 +1463,7 @@ public class MDCFragment extends Fragment {
 
         @Override
         public void onProgressUpdate(Double... values) {
+
             if (thisFragment != null && thisFragment.isVisible()) {
                 Integer color = fColors.get((int) Math.round(values[1]));
                 progressBar.setBackgroundColor(color);
@@ -1428,7 +1471,7 @@ public class MDCFragment extends Fragment {
                 if (value0 > 1f) value0 = 1f;
                 progressBar.setLayoutParams(
                         new LinearLayout.LayoutParams((int) Math.round(value0 * cv_width), height_dip));
-                String text = " " + "A fatorizar..." + " " + percent_formatter.format(value0);
+                String text = " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0);
                 SpannableStringBuilder ssb = new SpannableStringBuilder(text);
                 ssb.setSpan(new ForegroundColorSpan(color), 0, ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 gradient_separator.setText(ssb);
@@ -1438,15 +1481,18 @@ public class MDCFragment extends Fragment {
         @Override
         protected void onPostExecute(Void result) {
             if (thisFragment != null && thisFragment.isVisible()) {
+
                 bgfatores = cardTags.getBGfatores();
+
                 ArrayList<ArrayList<Long>> datasets = new ArrayList<>();
 
                 for (int k = 0; k < bgfatores.size(); k++) {
                     ArrayList<Long> bases = new ArrayList<>();
                     ArrayList<Long> exps = new ArrayList<>();
 
-                    String str_fatores = mdc_numbers.get(k) + "=";
-                    SpannableStringBuilder ssb_fatores = new SpannableStringBuilder(str_fatores);
+                    String str_fatores = mmc_numbers.get(k) + "=";
+                    SpannableStringBuilder ssb_fatores;
+                    ssb_fatores = new SpannableStringBuilder(str_fatores);
                     ssb_fatores.setSpan(new ForegroundColorSpan(fColors.get(k)), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_INCLUSIVE);
 
                     Integer counter = 1;
@@ -1508,106 +1554,102 @@ public class MDCFragment extends Fragment {
 
                     ssb_fatores.setSpan(new StyleSpan(BOLD), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     ssb_fatores.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_fatores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+
                     //explainTextView_1;
                     ((TextView) theCardViewBG.findViewWithTag("explainTextView_1")).append(ssb_fatores);
+
                 }
 
-                ArrayList<Long> bases_comuns = new ArrayList<>();
-                ArrayList<Long> exps_comuns = new ArrayList<>();
-                ArrayList<Integer> colors = new ArrayList<>();
-                ArrayList<Long> bases = datasets.get(0);
-                ArrayList<Long> exps = datasets.get(1);
-                currentBaseLoop:
-                for (int cb = 0; cb < bases.size(); cb++) {
-                    Long current_base = bases.get(cb);
-                    Long current_exp = exps.get(cb);
-                    ArrayList<Long> temp_bases = new ArrayList();
-                    ArrayList<Long> temp_exps = new ArrayList();
-                    ArrayList<Integer> temp_colors = new ArrayList();
-                    temp_bases.add(current_base);
-                    temp_exps.add(current_exp);
-                    temp_colors.add(0);
-                    nextBasesLoop:
-                    for (int j = 2; j < datasets.size(); j += 2) {
-                        ArrayList<Long> next_bases = datasets.get(j);
-                        if (!next_bases.contains(current_base)) {
-                            break nextBasesLoop;
+                ArrayList<Long> maiores_bases = new ArrayList<>();
+                ArrayList<Long> maiores_exps = new ArrayList<>();
+                ArrayList<Long> colors = new ArrayList<>();
+
+                for (int i = 0; i < datasets.size(); i += 2) {
+                    ArrayList<Long> bases = datasets.get(i);
+                    ArrayList<Long> exps = datasets.get(i + 1);
+
+                    for (int cb = 0; cb < bases.size(); cb++) {
+                        Long current_base = bases.get(cb);
+                        Long current_exp = exps.get(cb);
+
+                        if (!maiores_bases.contains(current_base)) {
+                            maiores_bases.add(current_base);
+                            maiores_exps.add(current_exp);
+                            colors.add((long) i / 2);
                         }
-                        ArrayList<Long> next_exps = datasets.get(j + 1);
-                        innerLoop:
-                        for (int nb = 0; nb < next_bases.size(); nb++) {
-                            Long next_base = next_bases.get(nb);
-                            Long next_exp = next_exps.get(nb);
-                            if (next_base == current_base) {
-                                temp_bases.add(next_base);
-                                temp_exps.add(next_exp);
-                                temp_colors.add(j / 2);
+
+                        if (maiores_bases.contains(current_base) && current_exp > maiores_exps.get(maiores_bases.indexOf(current_base))) {
+                            maiores_exps.set(maiores_bases.indexOf(current_base), current_exp);
+                            colors.set(maiores_bases.indexOf(current_base), (long) (i / 2));
+                        }
+
+                        for (int j = i + 2; j < datasets.size(); j += 2) {
+                            ArrayList<Long> next_bases = datasets.get(j);
+                            ArrayList<Long> next_exps = datasets.get(j + 1);
+
+                            for (int nb = 0; nb < next_bases.size(); nb++) {
+                                Long next_base = next_bases.get(nb);
+                                Long next_exp = next_exps.get(nb);
+
+                                if (next_base == current_base && next_exp > maiores_exps.get(maiores_bases.indexOf(current_base)) && maiores_bases.contains(next_base)) {
+                                    maiores_exps.set(maiores_bases.indexOf(next_base), next_exp);
+                                    colors.set(maiores_bases.indexOf(current_base), (long) (j / 2));
+                                }
+
                             }
                         }
                     }
-                    Long lower_exp = temp_exps.get(0);
-                    int lowerIndex = 0;
-                    if (Collections.frequency(temp_bases, current_base) == datasets.size() / 2) {
-                        for (int i = 0; i < temp_exps.size(); i++) {
-                            if (temp_exps.get(i) < lower_exp) {
-                                lower_exp = temp_exps.get(i);
-                                lowerIndex = i;
-                            }
-                        }
-                        bases_comuns.add(temp_bases.get(lowerIndex));
-                        exps_comuns.add(lower_exp);
-                        colors.add(temp_colors.get(lowerIndex));
-                    }
                 }
 
-                SpannableStringBuilder ssb_mdc = new SpannableStringBuilder();
 
-                //Criar os expoentes do MDC com os maiores fatores com cores e a negrito
-                for (int i = 0; i < bases_comuns.size(); i++) {
-                    int base_length = bases_comuns.get(i).toString().length();
+                SpannableStringBuilder ssb_mmc = new SpannableStringBuilder();
 
-                    if (exps_comuns.get(i) == 1L) {
+                //Criar os expoentes do MMC com os maiores fatores com cores e a negrito
+                for (int i = 0; i < maiores_bases.size(); i++) {
+                    int base_length = maiores_bases.get(i).toString().length();
+
+                    if (maiores_exps.get(i) == 1L) {
                         //Expoente 1
-                        ssb_mdc.append(bases_comuns.get(i).toString());
-                        ssb_mdc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i))),
-                                ssb_mdc.length() - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        //ssb_mdc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mdc.length() - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.append(maiores_bases.get(i).toString());
+                        ssb_mmc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i).intValue())),
+                                ssb_mmc.length() - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                    } else if (exps_comuns.get(i) > 1L) {
+                    } else if (maiores_exps.get(i) > 1L) {
                         //Expoente superior a 1
-                        int exp_length = exps_comuns.get(i).toString().length();
-                        ssb_mdc.append(bases_comuns.get(i).toString() + exps_comuns.get(i).toString());
-                        ssb_mdc.setSpan(new SuperscriptSpan(), ssb_mdc.length() - exp_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mdc.setSpan(new RelativeSizeSpan(0.8f), ssb_mdc.length() - exp_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                        ssb_mdc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i))),
-                                ssb_mdc.length() - exp_length - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        int exp_length = maiores_exps.get(i).toString().length();
+                        ssb_mmc.append(maiores_bases.get(i).toString() + maiores_exps.get(i).toString());
+                        ssb_mmc.setSpan(new SuperscriptSpan(), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.setSpan(new RelativeSizeSpan(0.8f), ssb_mmc.length() - exp_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                        ssb_mmc.setSpan(new ForegroundColorSpan(fColors.get(colors.get(i).intValue())),
+                                ssb_mmc.length() - exp_length - base_length, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
-                    ssb_mdc.append("×");
+                    ssb_mmc.append("×");
                 }
-                ssb_mdc.replace(ssb_mdc.length() - 1, ssb_mdc.length(), "");
+                ssb_mmc.replace(ssb_mmc.length() - 1, ssb_mmc.length(), "");
 
-                ssb_mdc.setSpan(new StyleSpan(BOLD), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb_mdc.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mmc.setSpan(new StyleSpan(BOLD), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mmc.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 //explainTextView_2
-                ((TextView) theCardViewBG.findViewWithTag("explainTextView_2")).append(ssb_mdc);
+                ((TextView) theCardViewBG.findViewWithTag("explainTextView_2")).append(ssb_mmc);
 
-                ssb_mdc.delete(0, ssb_mdc.length());
-                result_mdc = cardTags.getResultMDC();
-                ssb_mdc.append(result_mdc.toString());
 
-                ssb_mdc.setSpan(new StyleSpan(BOLD), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb_mdc.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb_mdc.setSpan(new ForegroundColorSpan(f_colors[f_colors.length - 1]), 0, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mmc.delete(0, ssb_mmc.length());
+                result_mmc = cardTags.getResultMMC();
+                ssb_mmc.append(result_mmc.toString());
+
+                ssb_mmc.setSpan(new StyleSpan(BOLD), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mmc.setSpan(new RelativeSizeSpan(0.9f), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssb_mmc.setSpan(new ForegroundColorSpan(f_colors[f_colors.length - 1]), 0, ssb_mmc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 //explainTextView_3
-                ((TextView) theCardViewBG.findViewWithTag("explainTextView_3")).append(ssb_mdc);
+                ((TextView) theCardViewBG.findViewWithTag("explainTextView_3")).append(ssb_mmc);
 
                 progressBar.setVisibility(View.GONE);
 
                 Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
                 if (shouldShowPerformance) {
                     NumberFormat decimalFormatter = new DecimalFormat("#.###");
-                    String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                    String elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                     gradient_separator.setText(elapsed);
                 } else {
                     gradient_separator.setText("");
@@ -1618,8 +1660,8 @@ public class MDCFragment extends Fragment {
                 asyncTaskQueue.set(cardTags.getTaskNumber(), null);
 
                 datasets.clear();
-                bgfatores.clear();
             }
+
         }
     }
 }

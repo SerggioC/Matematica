@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.activity;
+package com.sergiocruz.MatematicaPro.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

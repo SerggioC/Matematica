@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica;
+package com.sergiocruz.MatematicaPro;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,11 +1,11 @@
-package com.sergiocruz.Matematica.activity;
+package com.sergiocruz.MatematicaPro.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.sergiocruz.Matematica.R;
+import com.sergiocruz.MatematicaPro.R;
 
 public class AboutActivity extends AppCompatActivity {
 

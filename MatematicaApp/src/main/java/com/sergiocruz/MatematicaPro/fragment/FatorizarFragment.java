@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.fragment;
+package com.sergiocruz.MatematicaPro.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -43,12 +43,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.activity.AboutActivity;
-import com.sergiocruz.Matematica.activity.SettingsActivity;
-import com.sergiocruz.Matematica.helper.CreateCardView;
-import com.sergiocruz.Matematica.helper.MenuHelper;
-import com.sergiocruz.Matematica.helper.SwipeToDismissTouchListener;
+import com.sergiocruz.MatematicaPro.R;
+import com.sergiocruz.MatematicaPro.activity.AboutActivity;
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
+import com.sergiocruz.MatematicaPro.helper.CreateCardView;
+import com.sergiocruz.MatematicaPro.helper.MenuHelper;
+import com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -59,8 +59,8 @@ import java.util.Map;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.widget.LinearLayout.HORIZONTAL;
-import static com.sergiocruz.Matematica.R.string.fatorizar_btn;
-import static com.sergiocruz.Matematica.fragment.MMCFragment.CARD_TEXT_SIZE;
+import static com.sergiocruz.MatematicaPro.R.string.fatorizar_btn;
+import static com.sergiocruz.MatematicaPro.fragment.MMCFragment.CARD_TEXT_SIZE;
 import static java.lang.Long.parseLong;
 
 /**
@@ -478,7 +478,7 @@ public class FatorizarFragment extends Fragment {
             TextView textView_expl1 = new TextView(mActivity);
             textView_expl1.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             textView_expl1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
-            String explain_text_1 = "▻Dividir o número sucessivamente pelo menor número primo, de maneira a obter uma divisão exata, até obter 1:";
+            String explain_text_1 = getString(R.string.expl_text_divisores_1);
             SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
             ForegroundColorSpan boldColorSpan = new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor));
             ssb_explain_1.setSpan(boldColorSpan, 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -606,13 +606,13 @@ public class FatorizarFragment extends Fragment {
             textView_fact_expanded.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
             textView_fact_expanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
             textView_fact_expanded.setGravity(Gravity.LEFT);
-            String explain_text_2 = "▻O número é igual ao produto dos fatores primos obtidos:" + "\n";
+            String explain_text_2 = getString(R.string.explain_divisores2) + "\n";
             SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
             ssb_explain_2.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor)), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             ssb_explain_2.append(str_fact_exp);
             ssb_explain_2.setSpan(new RelativeSizeSpan(0.9f), ssb_explain_2.length() - str_fact_exp.length(), ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             if (hasExpoentes) {
-                String text_fact_repetidos = "\n" + "▻Os fatores repetidos são contados e coloca-se esse valor em expoente:" + "\n";
+                String text_fact_repetidos = "\n" + getString(R.string.explain_divisores3) + "\n";
                 ssb_explain_2.append(text_fact_repetidos);
                 ssb_explain_2.setSpan(boldColorSpan, ssb_explain_2.length() - text_fact_repetidos.length(), ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 ssb_explain_2.append(ssb_fatores);
@@ -634,7 +634,7 @@ public class FatorizarFragment extends Fragment {
                 //View separator with gradient
                 TextView gradient_separator = getGradientSeparator();
                 NumberFormat decimalFormatter = new DecimalFormat("#.###");
-                String elapsed = "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+                String elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                 gradient_separator.setText(elapsed);
                 ll_vertical_root.addView(gradient_separator, 0);
             }

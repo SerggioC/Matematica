@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.sergiocruz.Matematica">
+          package="com.sergiocruz.MatematicaPro">
 
     <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -41,7 +41,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.sergiocruz.MatematicaPro.activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -52,13 +52,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AboutActivity"
+            android:name="com.sergiocruz.MatematicaPro.activity.AboutActivity"
             android:label="@string/activity_title_about_us"/>
         <activity
-            android:name=".activity.SendMailActivity"
+            android:name="com.sergiocruz.MatematicaPro.activity.SendMailActivity"
             android:label="@string/activity_title_send_mail"/>
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="com.sergiocruz.MatematicaPro.activity.SettingsActivity"
             android:label="@string/title_activity_settings">
         </activity>
     </application>

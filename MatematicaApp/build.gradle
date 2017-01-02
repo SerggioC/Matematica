@@ -12,10 +12,10 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.sergiocruz.Matematica"
+        applicationId 'com.sergiocruz.MatematicaPro'
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 9
+        versionCode 10
         versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
@@ -28,7 +28,8 @@ android {
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
-            proguardFile 'C:/Users/sergi/AndroidStudioProjects/Matematica/build/intermediates/proguard-files/proguard-android-optimize.txt-2.2.2'
+            proguardFile 'C:/Users/sergi/AndroidStudioProjects/Matematica/build/intermediates/proguard-files/proguard-android-optimize.txt-2.2.3'
+
         }
         debug {
             minifyEnabled false

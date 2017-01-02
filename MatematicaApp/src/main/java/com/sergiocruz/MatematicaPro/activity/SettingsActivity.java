@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.activity;
+package com.sergiocruz.MatematicaPro.activity;
 
 
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
-import com.sergiocruz.Matematica.R;
+import com.sergiocruz.MatematicaPro.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

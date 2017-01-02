@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.activity;
+package com.sergiocruz.MatematicaPro.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
+import com.sergiocruz.MatematicaPro.R;
 
 /**
  * Created by sergi on 21/10/2016.
@@ -50,7 +50,8 @@ public class SendMailActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setType("text/plain");
         intent.setData(Uri.parse(getString(R.string.app_email))); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Matemática APP e-mail");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getApplication().getResources().getString(R.string.app_long_description) +
+                getApplication().getResources().getString(R.string.app_version_name) + "e-mail");
         intent.putExtra(Intent.EXTRA_TEXT, ((android.support.design.widget.TextInputEditText) this.findViewById(R.id.mail_text)).getText().toString());
         if (intent.resolveActivity(getPackageManager()) != null) {
             displayDialogBox(intent);

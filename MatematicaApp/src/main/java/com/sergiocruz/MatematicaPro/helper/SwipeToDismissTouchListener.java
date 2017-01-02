@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.helper;
+package com.sergiocruz.MatematicaPro.helper;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -37,7 +37,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
+import com.sergiocruz.MatematicaPro.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,8 +57,8 @@ import static android.widget.Toast.makeText;
 
 public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
-    private static final int POPUP_WIDTH = 136;
-    private static final int POPUP_HEIGHT = 136;
+    private static final int POPUP_WIDTH = 188;
+    private static final int POPUP_HEIGHT = 190;
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -107,7 +107,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity() * 16;
         mMaxFlingVelocity = vc.getScaledMaximumFlingVelocity();
-        //mAnimationTime = view.getContext().getResources().getInteger(android.R.integer.config_shortAnimTime);
         mAnimationTime = 200;
         mView = view;
         mActivity = activity;
@@ -140,7 +139,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user to give permission
+            // if we don't have permission prompt the user to give permission
             ActivityCompat.requestPermissions(
                     activity,
                     PERMISSIONS_STORAGE,
@@ -250,23 +249,24 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
 
-                File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + "Matematica Images");
+                String folder = "Matematica Images";
+                File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + folder);
                 try {
                     if (!image_file.exists()) {
                         image_file.mkdirs();
                     }
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                    image_file = new File(Environment.getExternalStorageDirectory() + File.separator + "Matematica Images" + File.separator + "img_" + timeStamp + ".jpg");
+                    image_file = new File(Environment.getExternalStorageDirectory() + File.separator + folder + File.separator + "img" + timeStamp + ".jpg");
                     image_file.createNewFile();
                     FileOutputStream fileOutputStream = new FileOutputStream(image_file);
                     fileOutputStream.write(byteArrayOutputStream.toByteArray());
-                    Toast thetoast = Toast.makeText(mView.getContext(), "Imagem guardada na pasta Matematica Images", Toast.LENGTH_SHORT);
+                    Toast thetoast = Toast.makeText(mView.getContext(), mActivity.getString(R.string.image_saved) + " " + folder, Toast.LENGTH_SHORT);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e("Sergio>>>", "onClick: error ", e);
-                    Toast thetoast = Toast.makeText(mView.getContext(), "Error while saving file. Contact developer.", Toast.LENGTH_SHORT);
+                    Toast thetoast = Toast.makeText(mView.getContext(), mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
                     thetoast.show();
                 }

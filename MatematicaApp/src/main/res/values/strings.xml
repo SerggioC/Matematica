@@ -1,11 +1,11 @@
 <resources>
 
-    <string name="app_name" translatable="false">Matemática</string>
+    <string name="app_name" translatable="false">Matemática PRO</string>
     <string name="app_version_name" translatable="false">3.0</string>
 
-    <string name="app_long_description">Matemática: Prime Number Tools v</string>
+    <string name="app_long_description">Matemática: Prime Number Tools PRO v</string>
     <string name="app_version_description">Versão da Aplicação:</string>
-    <string name="app_version_date">Dezembro 2016</string>
+    <string name="app_version_date">Janeiro 2017</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -35,11 +35,10 @@
 
     <string name="activity_title_about_us">Sobre</string>
     <string name="action_clear_all_history">Apagar o histórico</string>
-    <string name="action_buy">Remover anúncios</string>
     <string name="action_share_history">Partilhar resultados</string>
     <string name="activity_title_send_mail">Enviar e-mail</string>
     <string name="activity_title_share">Partilhar</string>
-    <string name="action_clipboard_result">Copiar</string>
+    <string name="action_clipboard_result">Copiar texto</string>
     <string name="action_clear_result">Apagar</string>
     <string name="action_share_result">Partilhar...</string>
     <string name="action_ajuda_fatorizar">Como fatorizar um número?</string>
@@ -91,7 +90,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="calculate">Calcular</string>
     <string name="divisors_of">Divisores de</string>
     <string name="_incomplete_calc">Cálculo incompleto…</string>
-    <string name="about_app_description">- Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números\n - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números\n - Fatorização em Números Primos\n - Determinar se um número é primo\n - Determinar se um ou mais números são primos entre si através do MDC\n - Cálculo de todos os divisores de um número inteiro\n - Gerador de tabela de números primos num dado intervalo\n - Total de números primos no intervalo\n</string>
+    <string name="about_app_description">- Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números com explicação detalhada a cores\n - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números com explicação detalhada a cores\n - Fatorização em Números Primos com explicação detalhada\n - Determinar se um número é primo\n - Determinar se um ou mais números são primos entre si através do MDC\n - Cálculo de todos os divisores de um número inteiro\n - Gerador de tabela de números primos num dado intervalo\n - Total de números primos no intervalo\n</string>
     <string name="desenvolvido_por">Desenvolvido por Sérgio C.</string>
     <string name="send_comment">Enviar sugestão, melhoria ou comentário</string>
     <string name="send">Enviar</string>
@@ -148,7 +147,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="and">e</string>
     <string name="explain">Mostar explicação ▾</string>
     <string name="hide_explain">Ocultar explicação ◂</string>
-    <string name="action_save_image">Guardar Imagem</string>
+    <string name="action_save_image">Guardar imagem</string>
     <string name="action_settings">Preferências</string>
 
 
@@ -169,11 +168,19 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="nao_comuns">não comuns</string>
     <string name="uma_vez">apenas uma vez</string>
     <string name="maior_exps">maiores expoentes</string>
+    <string name="menor_exps">menores expoentes</string>
     <string name="escolher_fatores">▻Escolher os fatores</string>
     <string name="with_the">com os</string>
     <string name="multiply">▻Multiplicar</string>
     <string name="to_obtain_mmc">os fatores para obter o Mínimo Multiplo Comum:</string>
+    <string name="to_obtain_mdc">os fatores para obter o Máximo Divisor Comum:</string>
     <string name="factorizing">A fatorizar...</string>
+    <string name="expl_text_divisores_1">▻Dividir o número sucessivamente pelo menor número primo, de maneira a obter uma divisão exata, até obter 1:</string>
+    <string name="explain_divisores2">▻O número é igual ao produto dos fatores primos obtidos:</string>
+    <string name="explain_divisores3">▻Os fatores repetidos são contados e coloca-se esse valor em expoente:</string>
+    <string name="cardinal_primos"># de primos:</string>
+    <string name="image_saved">Imagem guardada na pasta</string>
+    <string name="errorsavingimg">Erro ao guardar imagem.</string>
     <string-array name="pref_list_titles">
         <item>Mostar sempre</item>
         <item>Mostar quando pedidas</item>

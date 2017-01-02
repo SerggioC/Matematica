@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica.fragment;
+package com.sergiocruz.MatematicaPro.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,17 +36,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sergiocruz.Matematica.R;
-import com.sergiocruz.Matematica.activity.AboutActivity;
-import com.sergiocruz.Matematica.activity.SettingsActivity;
+import com.sergiocruz.MatematicaPro.R;
+import com.sergiocruz.MatematicaPro.activity.AboutActivity;
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import static android.widget.Toast.makeText;
-import static com.sergiocruz.Matematica.R.id.card_view_1;
-import static com.sergiocruz.Matematica.R.id.min;
+import static com.sergiocruz.MatematicaPro.R.id.card_view_1;
+import static com.sergiocruz.MatematicaPro.R.id.min;
 import static java.lang.Long.parseLong;
 
 /*****
@@ -94,7 +94,6 @@ public class PrimesTableFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_main, menu);
         inflater.inflate(R.menu.menu_sub_main, menu);
-
     }
 
     @Override
@@ -111,7 +110,8 @@ public class PrimesTableFragment extends Fragment {
                         tableData;
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "Matemática\n" + primes_string);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
+                        mActivity.getResources().getString(R.string.app_version_name) + "\n" + primes_string);
                 sendIntent.setType("text/plain");
                 mActivity.startActivity(sendIntent);
             } else {
@@ -559,7 +559,7 @@ public class PrimesTableFragment extends Fragment {
                     history_gridView.setAdapter(primes_adapter);
                 }
                 numPrimesTV.setVisibility(View.VISIBLE);
-                numPrimesTV.setText("# de Primos:" + " " + result.size());
+                numPrimesTV.setText(getString(R.string.cardinal_primos) + " " + result.size());
                 if (result.size() == 0) {
                     Toast thetoast = Toast.makeText(mActivity, R.string.no_primes_range, Toast.LENGTH_LONG);
                     thetoast.setGravity(Gravity.CENTER, 0, 0);
@@ -579,7 +579,7 @@ public class PrimesTableFragment extends Fragment {
                 NumberFormat decimalFormatter = new DecimalFormat("#.###");
                 String elapsed = " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
                 elapsedTV.setVisibility(View.VISIBLE);
-                elapsedTV.setText("Performance:" + " " + elapsed);
+                elapsedTV.setText(getString(R.string.performance) + " " + elapsed);
             } else {
                 elapsedTV.setVisibility(View.GONE);
             }
@@ -633,7 +633,7 @@ public class PrimesTableFragment extends Fragment {
                 }
                 Toast.makeText(mActivity, getString(R.string.found) + " " + parcial.size() + " " + getString(R.string.primes_in_range), Toast.LENGTH_LONG).show();
                 numPrimesTV.setVisibility(View.VISIBLE);
-                numPrimesTV.setText("# de primos:" + " (" + parcial.size() + ")");
+                numPrimesTV.setText(getString(R.string.cardinal_primos) + " (" + parcial.size() + ")");
                 showPerformance();
                 resetButtons();
             } else if (parcial.size() == 0) {

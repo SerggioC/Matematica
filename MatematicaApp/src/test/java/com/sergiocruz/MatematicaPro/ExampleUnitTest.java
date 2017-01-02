@@ -1,4 +1,4 @@
-package com.sergiocruz.Matematica;
+package com.sergiocruz.MatematicaPro;
 
 import org.junit.Test;
 
