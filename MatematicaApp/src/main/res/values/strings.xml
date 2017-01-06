@@ -1,7 +1,7 @@
 <resources>
 
     <string name="app_name" translatable="false">Matemática PRO</string>
-    <string name="app_version_name" translatable="false">3.0</string>
+    <string name="app_version_name" translatable="false">3.0.1</string>
 
     <string name="app_long_description">Matemática: Prime Number Tools Pro v</string>
     <string name="app_version_description">App version:</string>
