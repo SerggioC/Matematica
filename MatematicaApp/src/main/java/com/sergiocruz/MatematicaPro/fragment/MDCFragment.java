@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.animation.LayoutTransition.CHANGE_APPEARING;
@@ -91,6 +92,7 @@ public class MDCFragment extends Fragment {
     int height_dip, cv_width;
     int taskNumber = 0;
     long startTime;
+    String language;
 
     SharedPreferences sharedPrefs;
 
@@ -219,6 +221,7 @@ public class MDCFragment extends Fragment {
             fColors.add(f_colors[i]);
         }
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        language = Locale.getDefault().getDisplayLanguage();
     }
 
 
@@ -987,6 +990,7 @@ public class MDCFragment extends Fragment {
                     public boolean canDismiss(Boolean token) {
                         return true;
                     }
+
                     @Override
                     public void onDismiss(View view) {
                         //history.removeView(cardview);
@@ -1137,7 +1141,12 @@ public class MDCFragment extends Fragment {
         String comuns = getString(R.string.comuns);
         String uma_vez = getString(R.string.uma_vez);
         String menor_exps = getString(R.string.menor_exps);
-        String explain_text_2 = getString(R.string.escolher_fatores) + " " + comuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + menor_exps + ":\n";
+        String explain_text_2;
+        if (language.equals("português") || language.equals("español") || language.equals("français")) {
+            explain_text_2 = getString(R.string.escolher) + " " + getString(R.string.os_fatores) + " " + comuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + menor_exps + ":\n";
+        } else {
+            explain_text_2 = getString(R.string.escolher) + " " + comuns + " " + getString(R.string.os_fatores) + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + menor_exps + ":\n";
+        }
         SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
         //ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(comuns), explain_text_2.indexOf(comuns) + comuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);

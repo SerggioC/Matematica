@@ -2,7 +2,7 @@
 <resources>
     <string name="_incomplete_calc">Cálculo incompleto...</string>
     <string name="_numero_primo">Número primo</string>
-    <string name="about_app_description"> - Cálculo del mínimo común múltiplo (MCM) entre un máximo de 8 números con explicación detallada en color\n - Cálculo del máximo común divisor (MCD) entre un máximo de 8 números con explicación detallada en color  - Factorización en números primos con explicación detallada\n - Determinar si un número es primo o también llamado de Prueba de Primalidad\n - Determinar si uno o más números son relativamente primos a través de MCD\n - Calcular todos los divisores de un número entero\n - Generador de tabla de números primos en un rango dado\n - Números primos totales en el rango</string>
+    <string name="about_app_description"> - Cálculo del mínimo común múltiplo (MCM) entre un máximo de 8 números con explicación detallada en color\n - Cálculo del máximo común divisor (MCD) entre un máximo de 8 números con explicación detallada en color\n  - Factorización en números primos con explicación detallada\n - Determinar si un número es primo o también llamado de Prueba de Primalidad\n - Determinar si uno o más números son relativamente primos a través de MCD\n - Calcular todos los divisores de un número entero\n - Generador de tabla de números primos en un rango dado\n - Números primos totales en el rango</string>
     <string name="action_ajuda_divisores">¿Cómo obtener divisores?</string>
     <string name="action_ajuda_fatorizar">¿Cómo factorizar un número?</string>
     <string name="action_ajuda_mdc">¿Cómo calcular MCD?</string>
@@ -38,7 +38,7 @@
     <string name="divisores_number">Divisores de un número</string>
     <string name="divisors">Divisores</string>
     <string name="divisors_of">Divisores de</string>
-    <string name="escolher_fatores">▻Elegir los factores</string>
+    <string name="escolher">▻Elegir</string>
     <string name="existem">Existen</string>
     <string name="explain">Mostrar explicación ▾</string>
     <string name="factorization_of">Factorización de</string>
@@ -121,7 +121,7 @@
     <string name="pref_title_explanation">Mostrar explicaciones</string>
     <string name="primes_in_range">números primos en el rango.</string>
     <string name="primetable_title">Generador de tabla de números primos</string>
-    <string name="primos_si">Números primos relativos</string>
+    <string name="primos_si">Números primos relativos.</string>
     <string name="send">Enviar</string>
     <string name="send_comment">Enviar sugerencia, mejora o comentario</string>
     <string name="send_it">¿Enviar correo electrónico?</string>
@@ -155,6 +155,7 @@
     <string name="explain_divisores2">▻ El número es igual al producto de los factores primos obtenidos:</string>
     <string name="explain_divisores3">▻ Los factores repetidos se cuentan y este valor se coloca como un exponente:</string>
     <string name="image_saved">Imagen guardada en la carpeta</string>
-    <string name="menor_exps">Exponentes más pequeños</string>
-    <string name="to_obtain_mdc">Factores para obtener el máximo común divisor:</string>
+    <string name="menor_exps">exponentes más pequeños</string>
+    <string name="to_obtain_mdc">Factores para obtener el Máximo Común Divisor:</string>
+    <string name="os_fatores">los factores</string>
 </resources>

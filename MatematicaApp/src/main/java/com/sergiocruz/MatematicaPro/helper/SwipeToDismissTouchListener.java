@@ -94,6 +94,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
     private VelocityTracker mVelocityTracker;
     private float mTranslationX;
 
+
     /**
      * Constructs a new swipe-to-dismiss touch listener for the given view.
      *
@@ -173,8 +174,8 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         customPopUp.showAtLocation(popup_layout, Gravity.NO_GRAVITY, (int) mDownX - offset_x, (int) mDownY - offset_y);
 
         final CardView theCardView = (CardView) this.mView;
-        int cv_color = ContextCompat.getColor(mActivity, R.color.greener);
-        theCardView.setCardBackgroundColor(cv_color);
+        int selected_cv_color = ContextCompat.getColor(mActivity, R.color.selected_color);
+        theCardView.setCardBackgroundColor(selected_cv_color);
 
         customPopUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override

@@ -25,6 +25,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.SuperscriptSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.animation.LayoutTransition.CHANGE_APPEARING;
@@ -92,6 +94,7 @@ public class MMCFragment extends Fragment {
     int taskNumber = 0;
     long startTime;
     SharedPreferences sharedPrefs;
+    String language;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -195,6 +198,8 @@ public class MMCFragment extends Fragment {
         fColors = new ArrayList<>();
         for (int f_color : f_colors) fColors.add(f_color);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        language = Locale.getDefault().getDisplayLanguage();
+        Log.i("Sergio>>>", "onCreate: language " + language);
     }
 
     @Override
@@ -1082,7 +1087,6 @@ public class MMCFragment extends Fragment {
         return gradient_separator;
     }
 
-
     private void createExplanations(CardView cardview, LinearLayout ll_vertical_root, String shouldShowExplanation) {
 
         final SpannableStringBuilder ssb_hide_expl = new SpannableStringBuilder(getString(R.string.hide_explain));
@@ -1172,7 +1176,12 @@ public class MMCFragment extends Fragment {
         String ncomuns = getString(R.string.nao_comuns);
         String uma_vez = getString(R.string.uma_vez);
         String maior_exps = getString(R.string.maior_exps);
-        String explain_text_2 = getString(R.string.escolher_fatores) + " " + comuns + " " + getString(R.string.and) + " " + ncomuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n";
+        String explain_text_2;
+        if(language.equals("português") || language.equals("español") || language.equals("français")) {
+            explain_text_2 = getString(R.string.escolher) + " " + getString(R.string.os_fatores) + " " + comuns + " " + getString(R.string.and) + " " + ncomuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n";
+        } else {
+            explain_text_2 = getString(R.string.escolher) + " " + comuns + " " + getString(R.string.and) + " " + ncomuns + " " + getString(R.string.os_fatores) + ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n";
+        }
         SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(comuns), explain_text_2.indexOf(comuns) + comuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         ssb_explain_2.setSpan(new UnderlineSpan(), explain_text_2.indexOf(ncomuns), explain_text_2.indexOf(ncomuns) + ncomuns.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
