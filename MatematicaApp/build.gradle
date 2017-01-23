@@ -5,8 +5,8 @@ android {
         config {
             storeFile file('C:/Users/sergi/AndroidStudioProjects/keystore.jks')
             keyAlias 'androidappskeystore'
-            keyPassword 'Bacanal_46!+1!'
-            storePassword 'Bacanal_46!+1!'
+            keyPassword 'yourpassword'
+            storePassword 'yourpassword'
         }
     }
     compileSdkVersion 25
