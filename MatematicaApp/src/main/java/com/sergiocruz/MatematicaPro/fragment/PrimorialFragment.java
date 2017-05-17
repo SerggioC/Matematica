@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,28 +49,23 @@ import com.sergiocruz.MatematicaPro.helper.CreateCardView;
 import com.sergiocruz.MatematicaPro.helper.MenuHelper;
 import com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener;
 
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static java.lang.Long.parseLong;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DivisoresFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DivisoresFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class DivisoresFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    public AsyncTask<Long, Double, ArrayList<Long>> BG_Operation = new BackGroundOperation();
+/*****
+ * Project MatematicaFree
+ * Package com.sergiocruz.Matematica.fragment
+ * Created by Sergio on 05/02/2017 12:47
+ ******/
+
+public class PrimorialFragment extends Fragment {
+
+    public AsyncTask<Long, Double, BigInteger> BG_Operation = new BackGroundOperation();
     int cv_width, height_dip;
     View progressBar;
     Fragment thisFragment = this;
@@ -83,42 +77,15 @@ public class DivisoresFragment extends Fragment {
     long startTime;
     float scale;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    public DivisoresFragment() {
+    public PrimorialFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DivisoresFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DivisoresFragment newInstance(String param1, String param2) {
-        DivisoresFragment fragment = new DivisoresFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         mActivity = getActivity();
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
@@ -132,7 +99,7 @@ public class DivisoresFragment extends Fragment {
 
         inflater.inflate(R.menu.menu_main, menu);
         inflater.inflate(R.menu.menu_sub_main, menu);
-        inflater.inflate(R.menu.menu_help_divisores, menu);
+        inflater.inflate(R.menu.menu_help_primorial, menu);
     }
 
     @Override
@@ -144,18 +111,18 @@ public class DivisoresFragment extends Fragment {
         if (id == R.id.action_save_history_images) {
             MenuHelper.save_history_images(mActivity);
         }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(mActivity);
-        }
         if (id == R.id.action_share_history) {
             MenuHelper.share_history(mActivity);
+        }
+        if (id == R.id.action_share_history_images) {
+            MenuHelper.share_history_images(mActivity);
         }
         if (id == R.id.action_clear_all_history) {
             MenuHelper.remove_history(mActivity);
         }
-        if (id == R.id.action_help_divisores) {
-            String help_divisores = getString(R.string.help_text_divisores);
-            SpannableStringBuilder ssb = new SpannableStringBuilder(help_divisores);
+        if (id == R.id.action_help_primorial) {
+            String help_primorial = getString(R.string.help_text_primorial);
+            SpannableStringBuilder ssb = new SpannableStringBuilder(help_primorial);
             LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
             CreateCardView.create(history, ssb, mActivity);
         }
@@ -171,14 +138,6 @@ public class DivisoresFragment extends Fragment {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//         Checks the orientation of the screen
-
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            Toast.makeText(mActivity, "landscape", Toast.LENGTH_SHORT).show();
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-//            Toast.makeText(mActivity, "portrait", Toast.LENGTH_SHORT).show();
-//        }
-
         Display display = mActivity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -187,9 +146,6 @@ public class DivisoresFragment extends Fragment {
         int lr_dip = (int) (4 * scale + 0.5f) * 2;
         cv_width = width - lr_dip;
         hideKeyboard();
-    }
-
-    public void onAfterConfigurationChanged(Configuration config) {
     }
 
     public void hideKeyboard() {
@@ -206,7 +162,7 @@ public class DivisoresFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
 
         // set title
-        alertDialogBuilder.setTitle(getString(R.string.calculate_divisors_title));
+        alertDialogBuilder.setTitle(getString(R.string.calculate_primorial_title));
 
         // set dialog message
         alertDialogBuilder
@@ -231,7 +187,7 @@ public class DivisoresFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_divisores, container, false);
+        final View view = inflater.inflate(R.layout.fragment_primorial, container, false);
         final EditText num_1 = (EditText) view.findViewById(R.id.editNum);
 
         cancelButton = (ImageView) view.findViewById(R.id.cancelTask);
@@ -242,11 +198,11 @@ public class DivisoresFragment extends Fragment {
             }
         });
 
-        button = (Button) view.findViewById(R.id.button_calc_divisores);
+        button = (Button) view.findViewById(R.id.button_calc_primorial);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calcDivisores(view);
+                calcPrimorial(view);
             }
         });
 
@@ -294,7 +250,7 @@ public class DivisoresFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    calcDivisores(view);
+                    calcPrimorial(view);
                 }
                 return true;
             }
@@ -315,13 +271,6 @@ public class DivisoresFragment extends Fragment {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     public void cancel_AsyncTask() {
         if (BG_Operation.getStatus() == AsyncTask.Status.RUNNING) {
             BG_Operation.cancel(true);
@@ -335,12 +284,12 @@ public class DivisoresFragment extends Fragment {
         }
     }
 
-    public void calcDivisores(View view) {
+    public void calcPrimorial(View view) {
         startTime = System.nanoTime();
         hideKeyboard();
         EditText edittext = (EditText) view.findViewById(R.id.editNum);
         String editnumText = edittext.getText().toString();
-        if (editnumText.equals(null) || editnumText.equals("") || editnumText == null) {
+        if (editnumText.equals("") || editnumText == null) {
             Toast thetoast = Toast.makeText(mActivity, R.string.add_num_inteiro, Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
@@ -350,6 +299,12 @@ public class DivisoresFragment extends Fragment {
         try {
             // Tentar converter o string para long
             num = Long.parseLong(editnumText);
+            if (num == 0L) {
+                Toast thetoast = Toast.makeText(mActivity, R.string.zeroPrimorial, Toast.LENGTH_LONG);
+                thetoast.setGravity(Gravity.CENTER, 0, 0);
+                thetoast.show();
+                return;
+            }
         } catch (Exception e) {
             Toast thetoast = Toast.makeText(mActivity, R.string.numero_alto, Toast.LENGTH_LONG);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
@@ -357,205 +312,12 @@ public class DivisoresFragment extends Fragment {
             return;
         }
 
-        if (editnumText.equals("0") || num == 0L) {
-            SpannableStringBuilder ssb = new SpannableStringBuilder(getString(R.string.zero_no_divisores));
-            LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
-            CreateCardView.create(history, ssb, mActivity);
-            return;
-        }
         BG_Operation = new BackGroundOperation().execute(num);
-    }
-
-    public ArrayList<Long> getAllDivisoresLong(Long numero) {
-        long upperlimit = (long) (Math.sqrt(numero));
-        ArrayList<Long> divisores = new ArrayList<Long>();
-        for (int i = 1; i <= upperlimit; i += 1) {
-            if (numero % i == 0) {
-                divisores.add((long) i);
-                if (i != numero / i) {
-                    long elem = numero / i;
-                    divisores.add(elem);
-                }
-            }
-        }
-        Collections.sort(divisores);
-        return divisores;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public class BackGroundOperation extends AsyncTask<Long, Double, ArrayList<Long>> {
-
-        @Override
-        public void onPreExecute() {
-            button.setClickable(false);
-            button.setText(R.string.working);
-            cancelButton.setVisibility(View.VISIBLE);
-            hideKeyboard();
-            CardView cardView1 = (CardView) mActivity.findViewById(R.id.card_view_1);
-            cv_width = cardView1.getWidth();
-            height_dip = (int) (4 * scale + 0.5f);
-            progressBar = mActivity.findViewById(R.id.progress);
-            progressBar.setLayoutParams(new LinearLayout.LayoutParams(10, height_dip));
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArrayList<Long> doInBackground(Long... num) {
-/*
-            Long numero = num[0];
-            long upperlimit = (long) (Math.sqrt(numero));
-            long elem;
-            ArrayList<Long> divisores = new ArrayList<Long>();
-            for (int i = 1; i <= upperlimit; i += 1) {
-                if (numero % i == 0) {
-                    divisores.add((long) i);
-                    if (i != numero / i) {
-                        elem = numero / i;
-                        divisores.add(elem);
-                    }
-                }
-                publishProgress((float) i / (float) upperlimit);
-                if (isCancelled()) break;
-            }
-            Collections.sort(divisores);
-            return divisores;
-
-*/
-
-            /*
-            *
-            * Performance update
-            * Primeiro obtem os fatores primos depois multiplica-os
-            *
-            * */
-            ArrayList<Long> divisores = new ArrayList<>();
-            Long number = num[0];
-            double progress;
-            double oldProgress = 0f;
-
-            while (number % 2L == 0) {
-                divisores.add(2L);
-                number /= 2;
-            }
-
-            for (long i = 3; i <= number / i; i += 2) {
-                while (number % i == 0) {
-                    divisores.add(i);
-                    number /= i;
-                }
-                progress = (double) i / (((double)number / (double)i));
-                if (progress - oldProgress > 0.1d) {
-                    publishProgress(progress, (double) i);
-                    oldProgress = progress;
-                }
-                if (isCancelled()) break;
-            }
-            if (number > 1) {
-                divisores.add(number);
-            }
-
-            ArrayList<Long> AllDivisores = new ArrayList<Long>();
-            int size;
-            AllDivisores.add(1L);
-            for (int i = 0; i < divisores.size(); i++) {
-                size = AllDivisores.size();
-                for (int j = 0; j < size; j++) {
-                    long val = AllDivisores.get(j) * divisores.get(i);
-                    if (!AllDivisores.contains(val)) {
-                        AllDivisores.add(val);
-                    }
-                }
-            }
-            Collections.sort(AllDivisores);
-
-            return AllDivisores;
-
-        }
-
-        @Override
-        public void onProgressUpdate(Double... values) {
-            if (thisFragment != null && thisFragment.isVisible()) {
-                progressBar.setLayoutParams(new LinearLayout.LayoutParams((int) Math.round(values[0] * cv_width), height_dip));
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Long> result) {
-            if (thisFragment != null && thisFragment.isVisible()) {
-                ArrayList<Long> nums = result;
-                String str = "";
-                for (long i : nums) {
-                    str = str + ", " + i;
-                    if (i == 1L) {
-                        str = num + " " + getString(R.string.has) + " " + nums.size() + " " + getString(R.string.divisores_) + "\n{" + i;
-                    }
-                }
-                String str_divisores = str + "}";
-                SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
-                if (nums.size() == 2) {
-                    String prime_number = "\n" + getString(R.string._numero_primo);
-                    ssb.append(prime_number);
-                    ssb.setSpan(new ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length() - prime_number.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                    ssb.setSpan(new RelativeSizeSpan(0.9f), ssb.length() - prime_number.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                createCardView(ssb);
-                resetButtons();
-            }
-        }
-
-        @Override
-        protected void onCancelled(ArrayList<Long> parcial) {
-            super.onCancelled(parcial);
-            if (thisFragment != null && thisFragment.isVisible()) {
-                ArrayList<Long> nums = parcial;
-                String str = "";
-                for (long i : nums) {
-                    str = str + ", " + i;
-                    if (i == 1L) {
-                        str = getString(R.string.divisors_of) + " " + num + ":\n" + "{" + i;
-                    }
-                }
-                String str_divisores = str + "}";
-                SpannableStringBuilder ssb = new SpannableStringBuilder(str_divisores);
-                String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
-                ssb.append(incomplete_calc);
-                ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-                createCardView(ssb);
-                resetButtons();
-            }
-        }
     }
 
     private void resetButtons() {
@@ -565,7 +327,27 @@ public class DivisoresFragment extends Fragment {
         cancelButton.setVisibility(View.GONE);
     }
 
-    public void createCardView(SpannableStringBuilder ssb) {
+    private TextView getGradientSeparator() {
+        //View separator with gradient
+        TextView gradient_separator = new TextView(mActivity);
+        gradient_separator.setTag("gradient_separator");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            gradient_separator.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
+        } else {
+            gradient_separator.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
+        }
+        gradient_separator.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,   //largura
+                LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
+        gradient_separator.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
+        gradient_separator.setTextColor(ContextCompat.getColor(mActivity, R.color.lightBlue));
+        gradient_separator.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        return gradient_separator;
+    }
+
+    public void createCardView(Long number, BigInteger bigIntegerResult, Boolean wasCanceled) {
+
+
         //criar novo cardview
         final CardView cardview = new CardView(mActivity);
         cardview.setLayoutParams(new CardView.LayoutParams(
@@ -588,11 +370,21 @@ public class DivisoresFragment extends Fragment {
         final LinearLayout history = (LinearLayout) mActivity.findViewById(R.id.history);
         history.addView(cardview, 0);
 
+
         // criar novo Textview
         final TextView textView = new TextView(mActivity);
         textView.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,   //largura
                 ViewGroup.LayoutParams.WRAP_CONTENT)); //altura
+
+        String text = number + "#=\n" + bigIntegerResult;
+        SpannableStringBuilder ssb = new SpannableStringBuilder(text);
+        if (wasCanceled) {
+            String incomplete_calc = "\n" + getString(R.string._incomplete_calc);
+            ssb.append(incomplete_calc);
+            ssb.setSpan(new ForegroundColorSpan(Color.RED), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssb.setSpan(new RelativeSizeSpan(0.8f), ssb.length() - incomplete_calc.length(), ssb.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
 
         //Adicionar o texto com o resultado
         textView.setText(ssb);
@@ -600,7 +392,9 @@ public class DivisoresFragment extends Fragment {
         textView.setTag(R.id.texto, "texto");
 
         LinearLayout ll_vertical_root = new LinearLayout(mActivity);
-        ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+        ll_vertical_root.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+                LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         ll_vertical_root.setOrientation(LinearLayout.VERTICAL);
 
         // Create a generic swipe-to-dismiss touch listener.
@@ -619,29 +413,107 @@ public class DivisoresFragment extends Fragment {
                     }
                 }));
 
-        Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false);
+        Boolean shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", true);
         if (shouldShowPerformance) {
-            TextView gradientTextView = new TextView(mActivity);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                gradientTextView.setBackground(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
-            } else {
-                gradientTextView.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.bottom_border2));
-            }
-            gradientTextView.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,   //largura
-                    LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
-            gradientTextView.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
-            gradientTextView.setTextColor(ContextCompat.getColor(mActivity, R.color.lightBlue));
-            gradientTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-
-            NumberFormat formatter1 = new DecimalFormat("#.###");
-            String elapsed = "Performance:" + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
-            gradientTextView.setText(elapsed);
-            ll_vertical_root.addView(gradientTextView);
+            TextView gradient_separator = getGradientSeparator();
+            NumberFormat decimalFormatter = new DecimalFormat("#.###");
+            String elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s";
+            int numAlgarismos = bigIntegerResult.toString().length();
+            gradient_separator.setText(numAlgarismos + " Algarismos, " + elapsed);
+            ll_vertical_root.addView(gradient_separator);
         }
+
         ll_vertical_root.addView(textView);
 
-        // add the textview to the cardview
+        // add the root layout to the cardview
         cardview.addView(ll_vertical_root);
     }
+
+    private class BackGroundOperation extends AsyncTask<Long, Double, BigInteger> {
+        Long number;
+        ArrayList<Long> primes = new ArrayList<>();
+
+        @Override
+        public void onPreExecute() {
+            button.setClickable(false);
+            button.setText(R.string.working);
+            cancelButton.setVisibility(View.VISIBLE);
+            hideKeyboard();
+            CardView cardView1 = (CardView) mActivity.findViewById(R.id.card_view_1);
+            cv_width = cardView1.getWidth();
+            height_dip = (int) (4 * scale + 0.5f);
+            progressBar = mActivity.findViewById(R.id.progress);
+            progressBar.setLayoutParams(new LinearLayout.LayoutParams(10, height_dip));
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected BigInteger doInBackground(Long... num) {
+            number = num[0];
+            if (number == 1L) return BigInteger.ONE;
+            if (number == 2L) return BigInteger.valueOf(2L);
+
+            primes.add(1L);
+            primes.add(2L);
+
+            double progress;
+            double oldProgress = 0d;
+
+            for (long i = 3L; i <= number; i++) {
+                boolean isPrime = true;
+                if (i % 2 == 0) isPrime = false;
+                if (isPrime) {
+                    for (long j = 3; j < i; j = j + 2) {
+                        if (i % j == 0) {
+                            isPrime = false;
+                            break;
+                        }
+                    }
+                }
+                if (isPrime) {
+                    primes.add(i);
+                }
+                progress = (double) i / (double) number;
+                if (progress - oldProgress > 0.05d) { // update a cada 5%
+                    publishProgress(progress);
+                    oldProgress = progress;
+                }
+                if (isCancelled()) break;
+            }
+
+            BigInteger primorial = BigInteger.ONE;
+            for (int j = 0; j < primes.size(); j++) {
+                primorial = primorial.multiply(BigInteger.valueOf(primes.get(j)));
+            }
+
+            return primorial;
+
+        }
+
+        @Override
+        public void onProgressUpdate(Double... values) {
+            if (thisFragment != null && thisFragment.isVisible()) {
+                progressBar.setLayoutParams(new LinearLayout.LayoutParams((int) Math.round(values[0] * cv_width), height_dip));
+            }
+        }
+
+        @Override
+        protected void onPostExecute(BigInteger result) {
+            if (thisFragment != null && thisFragment.isVisible()) {
+                createCardView(number, result, false);
+                resetButtons();
+            }
+        }
+
+        @Override
+        protected void onCancelled(BigInteger parcial) {
+            super.onCancelled(parcial);
+            if (thisFragment != null && thisFragment.isVisible()) {
+                createCardView(primes.get(primes.size() - 1), parcial, true);
+                resetButtons();
+            }
+        }
+    }
+
+
 }

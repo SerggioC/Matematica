@@ -57,12 +57,13 @@
                             android:id="@+id/editNumFact"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
-                            android:background="@drawable/edittextstyle"
+                            android:layout_gravity="center"
+                            android:background="@drawable/edittext_statelist"
+                            android:imeOptions="actionDone"
+                            android:gravity="center"
                             android:hint="@string/introduzir_numero"
                             android:inputType="number"
                             android:maxLines="1"
-                            android:layout_gravity="center"
-                            android:gravity="center"
                             android:textAlignment="center"/>
 
                         <Button
@@ -87,14 +88,15 @@
                             android:background="@drawable/apptheme_btn_default_holo_light"
                             android:text="@string/fatorizar_btn"
                             android:textAllCaps="false"/>
+
                         <ImageView
                             android:id="@+id/cancelTask"
                             android:layout_width="29dp"
                             android:layout_height="29dp"
-                            android:layout_marginRight="4dp"
-                            android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="4dp"
                             android:src="@drawable/stop_button"
                             android:visibility="gone"/>
                     </RelativeLayout>

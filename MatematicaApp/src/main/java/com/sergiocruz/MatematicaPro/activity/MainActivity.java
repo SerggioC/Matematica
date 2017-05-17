@@ -21,7 +21,9 @@ import com.sergiocruz.MatematicaPro.fragment.FatorizarFragment;
 import com.sergiocruz.MatematicaPro.fragment.HomeFragment;
 import com.sergiocruz.MatematicaPro.fragment.MDCFragment;
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment;
+import com.sergiocruz.MatematicaPro.fragment.MultiplosFragment;
 import com.sergiocruz.MatematicaPro.fragment.PrimesTableFragment;
+import com.sergiocruz.MatematicaPro.fragment.PrimorialFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_FATORIZAR = "fatorizar";
     private static final String TAG_DIVISORES = "divisores";
     private static final String TAG_PRIMES_TABLE = "primes_table";
+    private static final String TAG_PRIMORIAL = "primorial";
+    private static final String TAG_MULTIPLOS = "multiplos";
+
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
@@ -163,6 +168,14 @@ public class MainActivity extends AppCompatActivity {
                 // Fragment Tabela de números Primos
                 PrimesTableFragment primesTableFragment = new PrimesTableFragment();
                 return primesTableFragment;
+            case 6:
+                // Fragment Calcular Primorial
+                PrimorialFragment primorialFragment = new PrimorialFragment();
+                return primorialFragment;
+            case 7:
+                // Fragment Calcular Múltiplos de um número
+                MultiplosFragment multiplosFragment = new MultiplosFragment();
+                return multiplosFragment;
             default:
                 return new HomeFragment();
         }
@@ -214,6 +227,14 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_prime_table:
                         navItemIndex = 5;
                         CURRENT_TAG = TAG_PRIMES_TABLE;
+                        break;
+                    case R.id.nav_primorial:
+                        navItemIndex = 6;
+                        CURRENT_TAG = TAG_PRIMORIAL;
+                        break;
+                    case R.id.nav_multiplos:
+                        navItemIndex = 7;
+                        CURRENT_TAG = TAG_MULTIPLOS;
                         break;
                     case R.id.nav_settings:
                         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -369,5 +390,20 @@ public class MainActivity extends AppCompatActivity {
         loadFragment();
     }
 
+    public void primorial(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 6;
+        CURRENT_TAG = TAG_PRIMORIAL;
+        loadFragment();
+    }
+
+    public void multiplos(View view) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+        navItemIndex = 7;
+        CURRENT_TAG = TAG_MULTIPLOS;
+        loadFragment();
+    }
 
 }

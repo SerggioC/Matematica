@@ -27,12 +27,14 @@ import android.text.style.SuperscriptSpan;
 import android.text.style.UnderlineSpan;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +69,8 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.Toast.makeText;
 import static com.sergiocruz.MatematicaPro.fragment.MMCFragment.CARD_TEXT_SIZE;
+import static com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt;
+import static com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt;
 import static java.lang.Long.parseLong;
 
 /**
@@ -93,6 +97,7 @@ public class MDCFragment extends Fragment {
     int taskNumber = 0;
     long startTime;
     String language;
+    View rootView;
 
     SharedPreferences sharedPrefs;
 
@@ -260,7 +265,12 @@ public class MDCFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if (id == R.id.action_save_history_images) {
+            MenuHelper.save_history_images(mActivity);
+        }
+        if (id == R.id.action_share_history_images) {
+            MenuHelper.share_history_images(mActivity);
+        }
         if (id == R.id.action_share_history) {
             MenuHelper.share_history(getActivity());
         }
@@ -296,74 +306,74 @@ public class MDCFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_mdc, container, false);
-        mdc_num_1 = (EditText) view.findViewById(R.id.mdc_num_1);
-        mdc_num_2 = (EditText) view.findViewById(R.id.mdc_num_2);
-        mdc_num_3 = (EditText) view.findViewById(R.id.mdc_num_3);
-        mdc_num_4 = (EditText) view.findViewById(R.id.mdc_num_4);
-        mdc_num_5 = (EditText) view.findViewById(R.id.mdc_num_5);
-        mdc_num_6 = (EditText) view.findViewById(R.id.mdc_num_6);
-        mdc_num_7 = (EditText) view.findViewById(R.id.mdc_num_7);
-        mdc_num_8 = (EditText) view.findViewById(R.id.mdc_num_8);
+        rootView = inflater.inflate(R.layout.fragment_mdc, container, false);
+        mdc_num_1 = (EditText) rootView.findViewById(R.id.mdc_num_1);
+        mdc_num_2 = (EditText) rootView.findViewById(R.id.mdc_num_2);
+        mdc_num_3 = (EditText) rootView.findViewById(R.id.mdc_num_3);
+        mdc_num_4 = (EditText) rootView.findViewById(R.id.mdc_num_4);
+        mdc_num_5 = (EditText) rootView.findViewById(R.id.mdc_num_5);
+        mdc_num_6 = (EditText) rootView.findViewById(R.id.mdc_num_6);
+        mdc_num_7 = (EditText) rootView.findViewById(R.id.mdc_num_7);
+        mdc_num_8 = (EditText) rootView.findViewById(R.id.mdc_num_8);
 
-        Button button = (Button) view.findViewById(R.id.button_calc_mdc);
+        Button button = (Button) rootView.findViewById(R.id.button_calc_mdc);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calc_mdc(view);
+                calc_mdc();
             }
         });
 
-        Button clearTextBtn_1 = (Button) view.findViewById(R.id.btn_clear_1);
+        Button clearTextBtn_1 = (Button) rootView.findViewById(R.id.btn_clear_1);
         clearTextBtn_1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_1.setText("");
             }
         });
-        Button clearTextBtn_2 = (Button) view.findViewById(R.id.btn_clear_2);
+        Button clearTextBtn_2 = (Button) rootView.findViewById(R.id.btn_clear_2);
         clearTextBtn_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_2.setText("");
             }
         });
-        Button clearTextBtn_3 = (Button) view.findViewById(R.id.btn_clear_3);
+        Button clearTextBtn_3 = (Button) rootView.findViewById(R.id.btn_clear_3);
         clearTextBtn_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_3.setText("");
             }
         });
-        Button clearTextBtn_4 = (Button) view.findViewById(R.id.btn_clear_4);
+        Button clearTextBtn_4 = (Button) rootView.findViewById(R.id.btn_clear_4);
         clearTextBtn_4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_4.setText("");
             }
         });
-        Button clearTextBtn_5 = (Button) view.findViewById(R.id.btn_clear_5);
+        Button clearTextBtn_5 = (Button) rootView.findViewById(R.id.btn_clear_5);
         clearTextBtn_5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_5.setText("");
             }
         });
-        Button clearTextBtn_6 = (Button) view.findViewById(R.id.btn_clear_6);
+        Button clearTextBtn_6 = (Button) rootView.findViewById(R.id.btn_clear_6);
         clearTextBtn_6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_6.setText("");
             }
         });
-        Button clearTextBtn_7 = (Button) view.findViewById(R.id.btn_clear_7);
+        Button clearTextBtn_7 = (Button) rootView.findViewById(R.id.btn_clear_7);
         clearTextBtn_7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mdc_num_7.setText("");
             }
         });
-        Button clearTextBtn_8 = (Button) view.findViewById(R.id.btn_clear_8);
+        Button clearTextBtn_8 = (Button) rootView.findViewById(R.id.btn_clear_8);
         clearTextBtn_8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -371,19 +381,19 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        ImageButton add_mdc = (ImageButton) view.findViewById(R.id.button_add_mdc);
+        ImageButton add_mdc = (ImageButton) rootView.findViewById(R.id.button_add_mdc);
         add_mdc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                add_mdc(view);
+                add_mdc();
             }
         });
 
-        ImageButton remove_mdc = (ImageButton) view.findViewById(R.id.button_remove_mdc);
+        ImageButton remove_mdc = (ImageButton) rootView.findViewById(R.id.button_remove_mdc);
         remove_mdc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                remove_mdc(view);
+                remove_mdc();
             }
         });
 
@@ -634,22 +644,41 @@ public class MDCFragment extends Fragment {
             }
         });
 
-        return view;
+        TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    calc_mdc();
+                    return true;
+                }
+                return false;
+            }
+        };
+
+        mdc_num_1.setOnEditorActionListener(editorActionListener);
+        mdc_num_2.setOnEditorActionListener(editorActionListener);
+        mdc_num_3.setOnEditorActionListener(editorActionListener);
+        mdc_num_4.setOnEditorActionListener(editorActionListener);
+        mdc_num_5.setOnEditorActionListener(editorActionListener);
+        mdc_num_6.setOnEditorActionListener(editorActionListener);
+        mdc_num_7.setOnEditorActionListener(editorActionListener);
+        mdc_num_8.setOnEditorActionListener(editorActionListener);
+        return rootView;
     }
 
-    public void add_mdc(View view) {
+    public void add_mdc() {
 
-        LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
-        LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
-        LinearLayout ll_78 = (LinearLayout) view.findViewById(R.id.linear_layout_78);
-        FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
-        FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
-        FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
-        FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
-        FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
-        FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
-        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mdc);
-        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mdc);
+        LinearLayout ll_34 = (LinearLayout) rootView.findViewById(R.id.linear_layout_34);
+        LinearLayout ll_56 = (LinearLayout) rootView.findViewById(R.id.linear_layout_56);
+        LinearLayout ll_78 = (LinearLayout) rootView.findViewById(R.id.linear_layout_78);
+        FrameLayout f_3 = (FrameLayout) rootView.findViewById(R.id.frame_3);
+        FrameLayout f_4 = (FrameLayout) rootView.findViewById(R.id.frame_4);
+        FrameLayout f_5 = (FrameLayout) rootView.findViewById(R.id.frame_5);
+        FrameLayout f_6 = (FrameLayout) rootView.findViewById(R.id.frame_6);
+        FrameLayout f_7 = (FrameLayout) rootView.findViewById(R.id.frame_7);
+        FrameLayout f_8 = (FrameLayout) rootView.findViewById(R.id.frame_8);
+        ImageButton add_one = (ImageButton) rootView.findViewById(R.id.button_add_mdc);
+        ImageButton less_one = (ImageButton) rootView.findViewById(R.id.button_remove_mdc);
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -668,10 +697,14 @@ public class MDCFragment extends Fragment {
             if (!f3_visible) {
                 f_3.setVisibility(View.VISIBLE);
                 less_one.setVisibility(View.VISIBLE);
+                mdc_num_2.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_3.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
             if (!f4_visible) {
                 f_4.setVisibility(View.VISIBLE);
+                mdc_num_3.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_4.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
         }
@@ -681,10 +714,14 @@ public class MDCFragment extends Fragment {
 
             if (!f5_visible) {
                 f_5.setVisibility(View.VISIBLE);
+                mdc_num_4.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_5.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
             if (!f6_visible) {
                 f_6.setVisibility(View.VISIBLE);
+                mdc_num_5.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_6.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
         }
@@ -693,32 +730,36 @@ public class MDCFragment extends Fragment {
 
             if (!f7_visible) {
                 f_7.setVisibility(View.VISIBLE);
+                mdc_num_6.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_7.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
             if (!f8_visible) {
                 f_8.setVisibility(View.VISIBLE);
                 add_one.setVisibility(View.INVISIBLE);
+                mdc_num_7.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_8.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
         }
 
     }
 
-    public void remove_mdc(View view) {
+    public void remove_mdc() {
 
-        LinearLayout ll_34 = (LinearLayout) view.findViewById(R.id.linear_layout_34);
-        LinearLayout ll_56 = (LinearLayout) view.findViewById(R.id.linear_layout_56);
-        LinearLayout ll_78 = (LinearLayout) view.findViewById(R.id.linear_layout_78);
+        LinearLayout ll_34 = (LinearLayout) rootView.findViewById(R.id.linear_layout_34);
+        LinearLayout ll_56 = (LinearLayout) rootView.findViewById(R.id.linear_layout_56);
+        LinearLayout ll_78 = (LinearLayout) rootView.findViewById(R.id.linear_layout_78);
 
-        FrameLayout f_3 = (FrameLayout) view.findViewById(R.id.frame_3);
-        FrameLayout f_4 = (FrameLayout) view.findViewById(R.id.frame_4);
-        FrameLayout f_5 = (FrameLayout) view.findViewById(R.id.frame_5);
-        FrameLayout f_6 = (FrameLayout) view.findViewById(R.id.frame_6);
-        FrameLayout f_7 = (FrameLayout) view.findViewById(R.id.frame_7);
-        FrameLayout f_8 = (FrameLayout) view.findViewById(R.id.frame_8);
+        FrameLayout f_3 = (FrameLayout) rootView.findViewById(R.id.frame_3);
+        FrameLayout f_4 = (FrameLayout) rootView.findViewById(R.id.frame_4);
+        FrameLayout f_5 = (FrameLayout) rootView.findViewById(R.id.frame_5);
+        FrameLayout f_6 = (FrameLayout) rootView.findViewById(R.id.frame_6);
+        FrameLayout f_7 = (FrameLayout) rootView.findViewById(R.id.frame_7);
+        FrameLayout f_8 = (FrameLayout) rootView.findViewById(R.id.frame_8);
 
-        ImageButton add_one = (ImageButton) view.findViewById(R.id.button_add_mdc);
-        ImageButton less_one = (ImageButton) view.findViewById(R.id.button_remove_mdc);
+        ImageButton add_one = (ImageButton) rootView.findViewById(R.id.button_add_mdc);
+        ImageButton less_one = (ImageButton) rootView.findViewById(R.id.button_remove_mdc);
 
         boolean ll_34_visibe = ll_34.getVisibility() == View.VISIBLE;
         boolean f3_visible = f_3.getVisibility() == View.VISIBLE;
@@ -735,12 +776,16 @@ public class MDCFragment extends Fragment {
                 mdc_num_8.setText("");
                 f_8.setVisibility(View.GONE);
                 add_one.setVisibility(View.VISIBLE);
+                mdc_num_7.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                mdc_num_8.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
             if (f7_visible) {
                 mdc_num_7.setText("");
                 f_7.setVisibility(View.GONE);
                 ll_78.setVisibility(View.GONE);
+                mdc_num_6.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_7.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
         }
@@ -749,12 +794,16 @@ public class MDCFragment extends Fragment {
             if (f6_visible) {
                 mdc_num_6.setText("");
                 f_6.setVisibility(View.GONE);
+                mdc_num_5.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                mdc_num_6.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
             if (f5_visible) {
                 mdc_num_5.setText("");
                 f_5.setVisibility(View.GONE);
                 ll_56.setVisibility(View.GONE);
+                mdc_num_5.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+                mdc_num_6.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
         }
@@ -763,6 +812,8 @@ public class MDCFragment extends Fragment {
             if (f4_visible) {
                 mdc_num_4.setText("");
                 f_4.setVisibility(View.GONE);
+                mdc_num_3.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                mdc_num_4.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
             if (f3_visible) {
@@ -770,15 +821,16 @@ public class MDCFragment extends Fragment {
                 f_3.setVisibility(View.GONE);
                 ll_34.setVisibility(View.GONE);
                 less_one.setVisibility(View.INVISIBLE);
+                mdc_num_2.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                mdc_num_3.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 return;
             }
         }
 
     }
 
-    private void calc_mdc(View view) {
+    private void calc_mdc() {
         startTime = System.nanoTime();
-        hideKeyboard();
 
         String str_num1 = mdc_num_1.getText().toString();
         String str_num2 = mdc_num_2.getText().toString();
@@ -791,8 +843,9 @@ public class MDCFragment extends Fragment {
 
         long num1, num2, num3, num4, num5, num6, num7, num8;
 
-        ArrayList<BigInteger> numbers = new ArrayList<BigInteger>();
-        ArrayList<Long> long_numbers = new ArrayList<Long>();
+        ArrayList<BigInteger> numbers = new ArrayList<>();
+        ArrayList<Long> long_numbers = new ArrayList <>();
+        ArrayList<TextView> empty_TextView = new ArrayList<>();
 
         if (!str_num1.equals("")) {
             try {
@@ -810,6 +863,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("1");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_1);
         }
         if (!str_num2.equals("")) {
             try {
@@ -827,6 +882,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("2");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_2);
         }
         if (!str_num3.equals("")) {
             try {
@@ -844,6 +901,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("3");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_3);
         }
         if (!str_num4.equals("")) {
             try {
@@ -861,6 +920,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("4");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_4);
         }
         if (!str_num5.equals("")) {
             try {
@@ -878,6 +939,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("5");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_5);
         }
         if (!str_num6.equals("")) {
             try {
@@ -895,6 +958,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("6");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_6);
         }
 
         if (!str_num7.equals("")) {
@@ -913,6 +978,8 @@ public class MDCFragment extends Fragment {
                 showToastNum("7");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_7);
         }
 
         if (!str_num8.equals("")) {
@@ -931,12 +998,21 @@ public class MDCFragment extends Fragment {
                 showToastNum("8");
                 return;
             }
+        } else {
+            empty_TextView.add(mdc_num_8);
         }
         if (numbers.size() < 2) {
             Toast thetoast = Toast.makeText(getActivity(), R.string.add_number_pair, Toast.LENGTH_SHORT);
             thetoast.setGravity(Gravity.CENTER, 0, 0);
             thetoast.show();
+            if (empty_TextView.get(0) != null) {
+                empty_TextView.get(0).requestFocus();
+                InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(empty_TextView.get(0), 0);
+            }
             return;
+        } else {
+            hideKeyboard();
         }
 
         String mdc_string = getString(R.string.mdc_result_prefix);
@@ -1001,7 +1077,7 @@ public class MDCFragment extends Fragment {
         MyTags tags = new MyTags(cardview, long_numbers, result_mdc, false, false, "", null, taskNumber);
         cardview.setTag(tags);
 
-        LinearLayout history = (LinearLayout) view.findViewById(R.id.history);
+        LinearLayout history = (LinearLayout) rootView.findViewById(R.id.history);
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0);
 
@@ -1090,14 +1166,15 @@ public class MDCFragment extends Fragment {
         explainLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                View explView = ((CardView) view.getParent().getParent().getParent()).findViewWithTag("ll_vertical_expl");
                 if (!isExpanded[0]) {
                     ((TextView) view).setText(ssb_hide_expl);
-                    ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.VISIBLE);
+                    expandIt(explView);
                     isExpanded[0] = true;
 
                 } else if (isExpanded[0]) {
                     ((TextView) view).setText(ssb_show_expl);
-                    ((LinearLayout) view.getParent().getParent()).findViewWithTag("ll_vertical_expl").setVisibility(View.GONE);
+                    collapseIt(explView);
                     isExpanded[0] = false;
                 }
             }

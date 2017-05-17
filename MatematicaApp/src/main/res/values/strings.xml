@@ -1,11 +1,11 @@
 <resources>
 
-    <string name="app_name" translatable="false">Matemática PRO</string>
-    <string name="app_version_name" translatable="false">3.0.1</string>
+    <string name="app_version_name" translatable="false">3.4</string>
+    <string name="app_version_date">May 2017</string>
 
-    <string name="app_long_description">Matemática: Prime Number Tools Pro v</string>
+    <string name="app_name" translatable="false">Primes PRO</string>
+    <string name="app_long_description">Prime Number Tools Pro v</string>
     <string name="app_version_description">App version:</string>
-    <string name="app_version_date">January 2017</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -15,7 +15,7 @@
     <!-- Navigation Drawer menu labels -->
 
     <string name="nav_home">Home</string>
-    <string name="nav_mmc">LMC</string>
+    <string name="nav_mmc">LCM</string>
     <string name="nav_mdc">GCD</string>
     <string name="nav_fatorizar">Factorize</string>
     <string name="nav_divisores">Divisors</string>
@@ -36,7 +36,17 @@
         <item>@string/factorize</item>
         <item>@string/divisors</item>
         <item>@string/tabela_primos</item>
+        <item>@string/nav_primorial</item>
+        <item>@string/nav_multiplos</item>
     </string-array>
+
+    <string name="calculate_primorial_title">Calculate Primorial of a number n#</string>
+    <string name="action_ajuda_primorial">How to calculate n#</string>
+    <string name="help_text_primorial">In mathematics, and more particularly in number theory, primorial is a function from natural numbers to natural numbers similar to the factorial function, but rather than successively multiplying positive integers, only prime numbers are multiplied. Primorial of a number is denoted by n#. </string>
+    <string name="nav_primorial">Calculate Primorial n#</string>
+    <string name="home_primorial_description">▸ Calculate Primorial of a number n#</string>
+    <string name="zeroPrimorial">Numbers > 0</string>
+
 
     <string name="app_email" translatable="false">mailto:sergiocrz@gmail.com</string>
 
@@ -48,7 +58,8 @@
     <string name="action_clear_all_history">Delete history</string>
     <string name="action_clear_result">Delete</string>
     <string name="action_clipboard_result">Copy text</string>
-    <string name="action_share_history">Share results</string>
+    <string name="action_share_history">Share all results as text</string>
+    <string name="action_share_history_images">Share all results as images</string>
     <string name="action_share_result">Share...</string>
     <string name="activity_title_about_us">About</string>
     <string name="activity_title_send_mail">Send e-mail</string>
@@ -80,7 +91,19 @@
     <string name="zero_no_divisores">Divisors of zero are all natural numbers greater than zero.</string>
 
     <string name="desenvolvido_por">Developed by Sérgio C.</string>
-    <string name="about_app_description">- Calculation of the Least Common Multiple (LCM) between up to 8 numbers with detailed color explanations\n - Calculation of the Greatest Common Divisor (GCD) between up to 8 numbers with detailed color explanations\n - Factorization in Prime Numbers with detailed explanations\n - Determine if a number is prime or also called Primality test\n - Determine whether one or more numbers are relatively prime through GCD\n - Calculate all divisors of an integer\n - Prime number table generator in a given range\n - Total prime numbers in range</string>
+    <string name="about_app_description">
+        - Calculation of the Least Common Multiple (LCM) between up to 8 numbers with detailed color explanations\n
+        - Calculation of the Greatest Common Divisor (GCD) between up to 8 numbers with detailed color explanations\n
+        - Factorization in Prime Numbers with detailed color explanations\n
+        - Determine if a number is prime or also called Primality test\n
+        - Determine whether one or more numbers are relatively prime through GCD\n
+        - Calculate all divisors of an integer\n
+        - Prime number table generator in a given range\n
+        - Total prime numbers in range\n
+        * TWO NEW TOOLS *\n
+        - Calculate Primorial of a number n#\n
+        - Calculate multiples of a number
+    </string>
     <string name="send_comment">Send suggestion, improvement or comment</string>
     <string name="send">Send</string>
     <string name="calculate_divisors_title">Calculate the divisors of a number</string>
@@ -92,7 +115,7 @@
     <string name="home_factorize_description">▸Factorize - Decompose a number into prime factors\n▸Check if a number is prime/Primality test</string>
     <string name="home_divisors_description">▸Divisors - Calculate all divisors of an integer\n▸Check if a number is prime</string>
     <string name="home_primetable_description">▸Prime numbers table generator for a given range\n▸Total of prime numbers in the range</string>
-    <string name="app_inicio">Matemática - Home</string>
+    <string name="app_inicio">Primes - Home</string>
     <string name="divisors">Divisors</string>
     <string name="factorize">Factorize number</string>
     <string name="mdc">GCD</string>
@@ -136,8 +159,8 @@
     <string name="cancel_it">Cancel operation?</string>
     <string name="and">and</string>
     <string name="action_save_image">Save image</string>
-    <string name="explain">Show Explanation ▾</string>
-    <string name="hide_explain">Hide Explanation ◂</string>
+    <string name="explain">[+] Show Explanation ▾</string>
+    <string name="hide_explain">[-] Hide Explanation ◂</string>
     <string name="pref_description_title">Application Preferences</string>
     <string name="action_settings">Preferences</string>
     <string name="comuns">common</string>
@@ -170,17 +193,62 @@
         <item>1</item>
     </string-array>
     <string name="cardinal_primos"># of primes:</string>
-    <string name="errorsavingimg">Error while saving image.</string>
+    <string name="errorsavingimg">Error while saving image. Please Allow the app to save files.</string>
     <string name="expl_text_divisores_1">▻ Divide the number successively by the lowest prime number, so as to obtain an exact division, until you get 1:</string>
     <string name="explain_divisores2">▻ The number is equal to the product of the prime factors obtained:</string>
     <string name="explain_divisores3">▻ Repeated factors are counted and this value is placed as an exponent:</string>
-    <string name="image_saved">Image saved in folder</string>
+    <string name="image_saved">Image saved</string>
     <string name="menor_exps">smaller exponents</string>
     <string name="to_obtain_mdc">factors to obtain the Greatest Common Divisor:</string>
     <string name="os_fatores">factors</string>
+    <string name="action_save_history_images">Save all as images</string>
+    <string name="all_images_saved">Saved all as images</string>
+    <string name="nothing_tosave">Nothing to save</string>
 
+    <item type="id" name="texto" />
 
+    <string-array name="multiplos_size">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    <string name="action_ajuda_multiplos">What are multiples of a number?</string>
+    <string name="calculate_multiplos_title">Calculate multiples of a number</string>
+    <string name="nav_multiplos">Multiples of a number</string>
+    <string name="help_text_multiplos">We call multiple of a number to the result of multiplying that number by any natural number: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+        A good example of multiple numbers is found in the traditional multiplication tables:\n
 
-    <item name="texto" type="id"/>
+        \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
+        \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
+        \t\t2x2 = 4 \t\t\t\t 3x2 = 6\n
+        \t\t2x3 = 6 \t\t\t\t 3x3 = 9\n
+        \t\t2x4 = 8 \t\t\t\t 3x4 = 12\n
+        \t\t2x5 = 10 \t\t\t\t 3x5 = 15\n
+        \t\t2x6 = 12 \t\t\t\t 3x6 = 18\n
+        \t\t2x7 = 14 \t\t\t\t 3x7 = 21\n
+        \t\t2x8 = 16 \t\t\t\t 3x8 = 24\n
+        \t\t2x9 = 18 \t\t\t\t 3x9 = 27\n
+        \t\t2x10 = 20 \t\t\t\t 3x10 = 30\n
+        \t\t... \t\t\t\t ...\n
+        {0, 2, 4, 6, 8, 10, ...} are multiples of 2.\n
+        {0, 3, 6, 9, 12, 15, ...} are multiples of 3.\n
+\n
+    When one number is divisible by another, that is, when dividing them results in a remainder equal to zero, we say that the numbers are multiples:\n
+\n
+    0 is a multiple of 3, since 0: 3 = 0 with remainder = 0\n
+    10 is a multiple of 5, because 10: 5 = 2 with remainder = 0\n
+    40 is divisible by 5, since 40: 5 = 8 with remainder = 0\n
+    55 is divisible by 5, since 55: 5 = 11 with remainder = 0\n
+\n
+    Zero is a multiple of any number and multiple of itself.\n
+    The set of multiples of a number is infinite because the set of natural numbers is also infinite.</string>
+    <string name="home_multiplos_description">▸ Calculate multiples of a number</string>
+    <string name="show_more">Show more ▸</string>
+    <string name="multpl_apresentar">Multiples to display</string>
+    <string name="action_share_history_images_pt">Partilhar imagem da tabela</string>
+
 
 </resources>

@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_version_date">Mai 2017</string>
+
     <string name="_incomplete_calc">Calcul incomplet...</string>
     <string name="_numero_primo">Nombre premier</string>
-    <string name="about_app_description">- Calcul du Plus Petit Commun Multiple (PPCM) entre jusqu\'à 8 nombres avec des explications détaillées en couleur\n
+    <string name="about_app_description">
+        - Calcul du Plus Petit Commun Multiple (PPCM) entre jusqu\'à 8 nombres avec des explications détaillées en couleur\n
         - Calcul du Plus Grand Commun Diviseur (PGCD) entre jusqu\'à 8 nombres avec des explications détaillées en couleur\n
-        - Factorisation en nombres premiers avec des explications détaillées\n
+        - Factorisation en nombres premiers avec des explications détaillées en couleur\n
         - Déterminer si un nombre est premier ou aussi appelé Test de Primalité\n 
         - Déterminer si un ou plusieurs nombres sont premiers entre eux, copremiers, ou encore étrangers par PGCD\n
         - Calculer tous les diviseurs d\'un entier\n
         - Générateur de tableaux de nombres premiers dans une gamme donnée\n
-        - Total des nombres premiers dans la gamme</string>
+        - Total des nombres premiers dans la gamme\n
+        * DEUX NOUVEAUX OUTILS *\n
+        - Calculer Primorial d\'un nombre n#\n
+        - Calcul de multiples d\'un nombre
+    </string>
     <string name="action_ajuda_divisores">Comment obtenir des diviseurs?</string>
     <string name="action_ajuda_fatorizar">Comment factoriser un nombre?</string>
     <string name="action_ajuda_mdc">Comment calculer le PGCD?</string>
@@ -19,7 +26,8 @@
     <string name="action_clipboard_result">Copier le texte</string>
     <string name="action_save_image">Enregistrer l\'image</string>
     <string name="action_settings">Préférences</string>
-    <string name="action_share_history">Partager les résultats</string>
+    <string name="action_share_history">Partagez tout comme texte</string>
+    <string name="action_share_history_images">Partagez tout comme images</string>
     <string name="action_share_result">Partager...</string>
     <string name="activity_title_about_us">Sur</string>
     <string name="activity_title_send_mail">Envoyer un e-mail</string>
@@ -28,9 +36,8 @@
     <string name="add_number_pair">Entrer au moins une paire d\'entiers</string>
     <string name="already_inclipboard">Résultat déjà dans le Presse-papiers</string>
     <string name="and">et</string>
-    <string name="app_inicio">Matemática - Accueil</string>
-    <string name="app_long_description">Matemática: Prime Number Tools Pro v</string>
-    <string name="app_version_date">Janvier 2017</string>
+    <string name="app_inicio">Primes PRO - Accueil</string>
+    <string name="app_long_description">Prime Number Tools Pro v</string>
     <string name="app_version_description">Version de l\'application:</string>
     <string name="calculate">Calculer</string>
     <string name="calculate_divisors_title">Calculer les diviseurs d\'un nombre</string>
@@ -78,7 +85,7 @@
     <string name="home_mdc_description">▸PGCD - Calculer le Plus Grand Commun Diviseur entre deux ou plusieurs nombres\n▸Déterminer si les nombres sont copremiers</string>
     <string name="home_mmc_description">▸PPCM - Calcul du Plus Petite Commun Multiple entre deux ou plusieurs nombres</string>
     <string name="home_primetable_description">▸Générateur de tableaux de nombres premiers dans une gamme donnée\n▸Total de nombres premiers dans la gamme</string>
-    <string name="image_saved">Image enregistrée dans le dossier</string>
+    <string name="image_saved">Image enregistrée</string>
     <string name="inicio">Accuel</string>
     <string name="insert_integer">Insérer un nombre entier</string>
     <string name="introduzir_numero">Insérer nombre ...</string>
@@ -156,6 +163,60 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+
+    <!-- Toolbar titles when navigation menu item is selected-->
+    <string-array name="nav_item_activity_titles">
+        <item>@string/app_inicio</item>
+        <item>@string/mmc</item>
+        <item>@string/mdc</item>
+        <item>@string/factorize</item>
+        <item>@string/divisors</item>
+        <item>@string/tabela_primos</item>
+        <item>@string/nav_primorial</item>
+        <item>@string/nav_multiplos</item>
+    </string-array>
+
+    <string name="action_ajuda_primorial">Comment calculer n#</string>
+    <string name="calculate_primorial_title">Calculer Primorial d\'un nombre</string>
+    <string name="help_text_primorial">En mathématiques, et plus particulièrement dans la théorie des nombres, primorial est une fonction de nombres naturels à des nombres naturels similaires à la fonction factorielle, mais plutôt que de multiplier successivement des nombres entiers positifs, seuls les nombres premiers sont multipliés. Primorial d\'un nombre est désigné par n#.</string>
+    <string name="home_primorial_description">▸ Calculer Primorial d\'un nombre n#</string>
+    <string name="nav_primorial">Calculer Primorial n#</string>
+    <string name="zeroPrimorial">Nombres > 0</string>
+    <string name="all_images_saved">All results saved as images in folder:</string>
+    <string name="action_ajuda_multiplos">Quels sont les multiples d\'un nombre?</string>
+    <string name="action_save_history_images">Enregistrez toutes les images</string>
+    <string name="calculate_multiplos_title">Calcul de multiples d\'un nombre</string>
+    <string name="nothing_tosave">Rien à sauvegarder</string>
+    <string name="nav_multiplos">Multiples d\'un nombre</string>
+    <string name="help_text_multiplos">Nous appelons un nombre multiple du résultat de la multiplication de ce nombre par un nombre naturel quelconque: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+        Un bon exemple de plusieurs numéros se trouve dans la table de multiplication traditionnelle:\n
+        \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
+        \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
+        \t\t2x2 = 4 \t\t\t\t 3x2 = 6\n
+        \t\t2x3 = 6 \t\t\t\t 3x3 = 9\n
+        \t\t2x4 = 8 \t\t\t\t 3x4 = 12\n
+        \t\t2x5 = 10 \t\t\t\t 3x5 = 15\n
+        \t\t2x6 = 12 \t\t\t\t 3x6 = 18\n
+        \t\t2x7 = 14 \t\t\t\t 3x7 = 21\n
+        \t\t2x8 = 16 \t\t\t\t 3x8 = 24\n
+        \t\t2x9 = 18 \t\t\t\t 3x9 = 27\n
+        \t\t2x10 = 20 \t\t\t\t 3x10 = 30\n
+        \t\t... \t\t\t\t ...\n
+        {0, 2, 4, 6, 8, 10, ...} sont des multiples de 2.\n
+        {0, 3, 6, 9, 12, 15, ...} sont des multiples de trois.\n
+        \n
+    Quand un nombre est divisible par un autre, qui est, quand la division entre eux se traduit par un reste de zéro, nous disons que les nombres sont multiples:\n
+        \n
+    0 est un multiple de 3, de 0: 3 = 0 avec un reste = 0\n
+    10 est un multiple de 5, de 10: 5 = 2 avec un reste = 0\n
+    40 est divisible par 5 conséquent 40: 5 = 8 avec un reste = 0\n
+    55 est divisible par 5 conséquent 55: 11 = 5 avec un reste= 0\n
+\n
+    Le zéro est un multiple d\'un nombre quelconque et un multiple de lui-même.\n
+    L\'ensemble des multiples d\'un nombre est infini parce que l\'ensemble des nombres naturels est aussi infinie.</string>
+    <string name="home_multiplos_description">▸ Calcul de multiples d\'un nombre</string>
+    <string name="multpl_apresentar">Multiples pour présenter</string>
+    <string name="show_more">Afficher plus ▸</string>
 
 </resources>
 

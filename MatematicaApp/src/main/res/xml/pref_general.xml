@@ -3,34 +3,34 @@
     <PreferenceCategory
         android:layout="@layout/settings_textview">
 
-    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-         dismiss it. -->
-    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <ListPreference
-        android:icon="@mipmap/ic_info"
-        android:defaultValue="0"
-        android:entries="@array/pref_list_titles"
-        android:entryValues="@array/pref_list_values"
-        android:key="pref_show_explanation"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_explanation"
-        android:summary="@string/pref_description_explanation"
-        />
-        <CheckBoxPreference
-            android:icon="@mipmap/ic_colors"
-            android:title="@string/pref_colors_title"
-            android:summary="@string/pref_description_colors"
-            android:key="pref_show_colors"
-            android:defaultValue="true"
+        <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+             dismiss it. -->
+        <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/pref_list_titles"
+            android:entryValues="@array/pref_list_values"
+            android:icon="@mipmap/ic_info"
+            android:key="pref_show_explanation"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:summary="@string/pref_description_explanation"
+            android:title="@string/pref_title_explanation"
             />
         <CheckBoxPreference
-            android:icon="@mipmap/ic_performance"
-            android:title="@string/pref_perform_title"
-            android:summary="@string/pref_description_performance"
-            android:key="pref_show_performance"
             android:defaultValue="true"
+            android:icon="@mipmap/ic_colors"
+            android:key="pref_show_colors"
+            android:summary="@string/pref_description_colors"
+            android:title="@string/pref_colors_title"
+            />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:icon="@mipmap/ic_performance"
+            android:key="pref_show_performance"
+            android:summary="@string/pref_description_performance"
+            android:title="@string/pref_perform_title"
             />
 
-</PreferenceCategory>
+    </PreferenceCategory>
 </PreferenceScreen>

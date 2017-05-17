@@ -18,10 +18,11 @@
             android:id="@+id/linear_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
@@ -36,37 +37,23 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="0dp"
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="8dp">
 
-                <LinearLayout
-                    android:id="@+id/linear_mmc"
+                <TextView
+                    android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@mipmap/ic_mmc"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
                     android:onClick="mmc"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:text="@string/home_mmc_description"
+                    android:textAppearance="@style/TextAppearance.AppCompat"/>
 
-                    <ImageView
-                        android:id="@+id/imageView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        android:onClick="mmc"
-                        app:srcCompat="@mipmap/ic_mmc"/>
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="mmc"
-                        android:text="@string/home_mmc_description"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -81,36 +68,19 @@
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="8dp">
 
-                <LinearLayout
-                    android:id="@+id/linear_mdc"
+                <TextView
+                    android:id="@+id/textmdc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@mipmap/ic_mdc"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
                     android:onClick="mdc"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:text="@string/home_mdc_description"
+                    android:textAppearance="@style/TextAppearance.AppCompat"/>
 
-                    <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        android:onClick="mdc"
-                        app:srcCompat="@mipmap/ic_mdc"/>
-
-                    <TextView
-                        android:id="@+id/textmdc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="mdc"
-                        android:text="@string/home_mdc_description"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-
-
-                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -125,34 +95,19 @@
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="8dp">
 
-                <LinearLayout
-                    android:id="@+id/linear_factor"
+                <TextView
+                    android:id="@+id/textfactor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@mipmap/ic_factor"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
                     android:onClick="fatorizar"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:text="@string/home_factorize_description"
+                    android:textAppearance="@style/TextAppearance.AppCompat"/>
 
-                    <ImageView
-                        android:id="@+id/imageView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        android:onClick="fatorizar"
-                        app:srcCompat="@mipmap/ic_factor"/>
-
-                    <TextView
-                        android:id="@+id/textfactor"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="fatorizar"
-                        android:text="@string/home_factorize_description"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -167,34 +122,19 @@
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="8dp">
 
-                <LinearLayout
-                    android:id="@+id/linear_divisores"
+                <TextView
+                    android:id="@+id/text_divisores"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@mipmap/ic_divisores"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
                     android:onClick="divisores"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:text="@string/home_divisors_description"
+                    android:textAppearance="@style/TextAppearance.AppCompat"/>
 
-                    <ImageView
-                        android:id="@+id/imageView5"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        android:onClick="divisores"
-                        app:srcCompat="@mipmap/ic_divisores"/>
-
-                    <TextView
-                        android:id="@+id/text_divisores"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="divisores"
-                        android:text="@string/home_divisors_description"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -209,36 +149,74 @@
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="8dp">
 
-                <LinearLayout
-                    android:id="@+id/linear_primos"
+                <TextView
+                    android:id="@+id/text_primos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:elevation="18dp"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@mipmap/ic_primes"
+                    android:drawablePadding="16dp"
+                    android:gravity="center_vertical"
                     android:onClick="primes_table"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:text="@string/home_primetable_description"
+                    android:textAppearance="@style/TextAppearance.AppCompat"/>
 
-                    <ImageView
-                        android:id="@+id/imageView7"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginRight="16dp"
-                        android:onClick="primes_table"
-                        app:srcCompat="@mipmap/ic_primes"/>
-
-                    <TextView
-                        android:id="@+id/text_primos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_vertical"
-                        android:onClick="primes_table"
-                        android:text="@string/home_primetable_description"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-                </LinearLayout>
             </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                card_view:cardBackgroundColor="@color/bgCardColor"
+                card_view:cardCornerRadius="8dp">
+
+                <TextView
+                    android:id="@+id/text_multiplos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:onClick="multiplos"
+                    android:text="@string/home_multiplos_description"
+                    android:drawableLeft="@mipmap/ic_multiplos"
+                    android:padding="8dp"
+                    android:drawablePadding="16dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat"/>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view_7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                card_view:cardBackgroundColor="@color/bgCardColor"
+                card_view:cardCornerRadius="8dp">
+
+                    <TextView
+                        android:id="@+id/textView7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:onClick="primorial"
+                        android:text="@string/home_primorial_description"
+                        android:drawableLeft="@mipmap/ic_primorial"
+                        android:padding="8dp"
+                        android:drawablePadding="16dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat"/>
+
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
     </ScrollView>

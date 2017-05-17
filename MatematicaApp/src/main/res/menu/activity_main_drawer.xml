@@ -31,6 +31,14 @@
         android:id="@+id/nav_prime_table"
         android:icon="@mipmap/ic_primes"
         android:title="@string/tabela_primos"/>
+    <item
+        android:id="@+id/nav_primorial"
+        android:icon="@mipmap/ic_primorial"
+        android:title="@string/nav_primorial"/>
+    <item
+        android:id="@+id/nav_multiplos"
+        android:icon="@mipmap/ic_multiplos"
+        android:title="@string/nav_multiplos"/>
 
     <item android:title="@string/mais">
         <menu>

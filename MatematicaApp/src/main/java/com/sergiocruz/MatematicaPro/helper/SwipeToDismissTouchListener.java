@@ -14,9 +14,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -42,12 +44,12 @@ import com.sergiocruz.MatematicaPro.R;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.widget.Toast.makeText;
+import static com.sergiocruz.MatematicaPro.helper.MenuHelper.IMAGES_FOLDER;
 
 /*****
  * Project Matematica
@@ -149,6 +151,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         }
     }
 
+
     private void showCustomPopup() {
 
         // Inflate the popup_menu_layout.xml
@@ -232,7 +235,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
                         mActivity.getResources().getString(R.string.app_version_name) + "\n" + text_fromTextViews_final);
                 sendIntent.setType("text/plain");
-                mActivity.startActivity(sendIntent);
+                mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getResources().getString(R.string.app_name)));
                 customPopUp.dismiss();
             }
         });
@@ -240,62 +243,61 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup_layout.findViewById(R.id.action_save_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor));
-                verifyStoragePermissions(mActivity);
-                theCardView.setDrawingCacheEnabled(true);
-                Bitmap bitmap = Bitmap.createBitmap(theCardView.getWidth(), theCardView.getHeight(), Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
-                //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                theCardView.draw(canvas);
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
-
-                String folder = "Matematica Images";
-                File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + folder);
-                try {
-                    if (!image_file.exists()) {
-                        image_file.mkdirs();
-                    }
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                    image_file = new File(Environment.getExternalStorageDirectory() + File.separator + folder + File.separator + "img" + timeStamp + ".jpg");
-                    image_file.createNewFile();
-                    FileOutputStream fileOutputStream = new FileOutputStream(image_file);
-                    fileOutputStream.write(byteArrayOutputStream.toByteArray());
-                    Toast thetoast = Toast.makeText(mView.getContext(), mActivity.getString(R.string.image_saved) + " " + folder, Toast.LENGTH_SHORT);
-                    thetoast.setGravity(Gravity.CENTER, 0, 0);
-                    thetoast.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e("Sergio>>>", "onClick: error ", e);
-                    Toast thetoast = Toast.makeText(mView.getContext(), mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
-                    thetoast.setGravity(Gravity.CENTER, 0, 0);
-                    thetoast.show();
-                }
-
-//
-//                try {
-//                    theCardView.setDrawingCacheEnabled(true);
-//                    Bitmap bitmap2 = theCardView.getDrawingCache();
-//                    File file, f = null;
-//                    if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-//                        file = new File(Environment.getExternalStorageDirectory(), "Android");
-//                        if (!file.exists()) {
-//                            file.mkdirs();
-//                            Log.i("Sergio>>>", "mkdirs");
-//                        }
-//                        f = new File(file.getAbsolutePath() + "/filename" + ".png");
-//                    }
-//                    FileOutputStream fostream = new FileOutputStream(f);
-//                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fostream);
-//                    fostream.close();
-//                } catch (Exception e) {
-//                    Log.d("Sergio>>>", "onClick: error? " + e);
-//                    e.printStackTrace();
-//                }
+                saveViewAsImage(theCardView);
                 customPopUp.dismiss();
             }
         });
 
+    }
+
+    public void saveViewAsImage(CardView theCardView) {
+        theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor));
+        verifyStoragePermissions(mActivity);
+        theCardView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = Bitmap.createBitmap(theCardView.getWidth(), theCardView.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        theCardView.draw(canvas);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
+
+        File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER);
+        try {
+            if (!image_file.exists()) {
+                image_file.mkdirs();
+            }
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+            image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER + File.separator + "img" + timeStamp + ".jpg");
+            image_file.createNewFile();
+            FileOutputStream fileOutputStream = new FileOutputStream(image_file);
+            fileOutputStream.write(byteArrayOutputStream.toByteArray());
+
+            Snackbar snack = Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.image_saved), Snackbar.LENGTH_LONG);
+            snack.setAction("Open Folder", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString() + File.separator + IMAGES_FOLDER + File.separator );
+                    intent.setDataAndType(uri, "*/*");
+                    try {
+                        mActivity.startActivity(Intent.createChooser(intent, "Open folder with"));
+                    } catch (android.content.ActivityNotFoundException e) {
+                        Toast.makeText(mActivity, "Please install a file manager.", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+            snack.setActionTextColor(Color.RED);
+            snack.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Sergio>>>", "onClick: error ", e);
+            Toast thetoast = Toast.makeText(mView.getContext(), mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
+            thetoast.setGravity(Gravity.CENTER, 0, 0);
+            thetoast.show();
+        }
     }
 
     @NonNull
@@ -303,16 +305,18 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         ArrayList<View> textViews_withTAG_texto = getViewsByTag((ViewGroup) mView, "texto");
         String text_fromTextViews_final = "";
         for (int i = 0; i < textViews_withTAG_texto.size(); i++) {
-            String text_fromTextView = (((TextView) textViews_withTAG_texto.get(i)).getText().toString()) + "\n";
-            SpannableString ss = new SpannableString(((TextView) textViews_withTAG_texto.get(i)).getText());
-            SuperscriptSpan[] spans = ss.getSpans(0, ((TextView) textViews_withTAG_texto.get(i)).getText().length(), SuperscriptSpan.class);
-            int corr = 0;
-            for (SuperscriptSpan span : spans) {
-                int start = ss.getSpanStart(span) + corr;
-                text_fromTextView = text_fromTextView.substring(0, start) + "^" + text_fromTextView.substring(start);
-                corr++;
+            if (textViews_withTAG_texto.get(i) instanceof TextView) {
+                String text_fromTextView = (((TextView) textViews_withTAG_texto.get(i)).getText().toString()) + "\n";
+                SpannableString ss = new SpannableString(((TextView) textViews_withTAG_texto.get(i)).getText());
+                SuperscriptSpan[] spans = ss.getSpans(0, ((TextView) textViews_withTAG_texto.get(i)).getText().length(), SuperscriptSpan.class);
+                int corr = 0;
+                for (SuperscriptSpan span : spans) {
+                    int start = ss.getSpanStart(span) + corr;
+                    text_fromTextView = text_fromTextView.substring(0, start) + "^" + text_fromTextView.substring(start);
+                    corr++;
+                }
+                text_fromTextViews_final += text_fromTextView;
             }
-            text_fromTextViews_final += text_fromTextView;
         }
         return text_fromTextViews_final;
     }

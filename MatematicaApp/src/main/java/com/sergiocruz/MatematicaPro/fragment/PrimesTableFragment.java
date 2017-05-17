@@ -6,25 +6,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -39,14 +48,22 @@ import android.widget.Toast;
 import com.sergiocruz.MatematicaPro.R;
 import com.sergiocruz.MatematicaPro.activity.AboutActivity;
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
+import com.sergiocruz.MatematicaPro.helper.MenuHelper;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static android.widget.Toast.makeText;
 import static com.sergiocruz.MatematicaPro.R.id.card_view_1;
 import static com.sergiocruz.MatematicaPro.R.id.min;
+import static com.sergiocruz.MatematicaPro.helper.MenuHelper.IMAGES_FOLDER;
+import static com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener.verifyStoragePermissions;
 import static java.lang.Long.parseLong;
 
 /*****
@@ -92,7 +109,7 @@ public class PrimesTableFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_primes_table, menu);
         inflater.inflate(R.menu.menu_sub_main, menu);
     }
 
@@ -102,7 +119,55 @@ public class PrimesTableFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (id == R.id.action_save_image_pt) {
+            verifyStoragePermissions(mActivity);
+            history_gridView.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(history_gridView.getWidth(), history_gridView.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawColor(Color.WHITE, PorterDuff.Mode.ADD);
+            history_gridView.draw(canvas);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
 
+            File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER);
+            try {
+                if (!image_file.exists()) {
+                    image_file.mkdirs();
+                }
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+                image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER + File.separator + "img" + timeStamp + ".jpg");
+                image_file.createNewFile();
+                FileOutputStream fileOutputStream = new FileOutputStream(image_file);
+                fileOutputStream.write(byteArrayOutputStream.toByteArray());
+                Snackbar snack = Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.image_saved), Snackbar.LENGTH_LONG);
+                snack.setAction("Open Folder", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString() + File.separator + IMAGES_FOLDER + File.separator );
+                        intent.setDataAndType(uri, "*/*");
+                        try {
+                            mActivity.startActivity(Intent.createChooser(intent, "Open folder with"));
+                        } catch (android.content.ActivityNotFoundException e) {
+                            Toast.makeText(mActivity, "Please install a file manager.", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+                snack.setActionTextColor(Color.RED);
+                snack.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("Sergio>>>", "onClick: error ", e);
+                Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
+                thetoast.setGravity(Gravity.CENTER, 0, 0);
+                thetoast.show();
+            }
+        }
+        if (id == R.id.action_share_history_image_pt) {
+            MenuHelper.share_history_images(mActivity);
+        }
         if (id == R.id.action_share_history) {
             if (tableData != null) {
                 String primes_string = getString(R.string.table_between) + " " +
@@ -311,6 +376,16 @@ public class PrimesTableFragment extends Fragment {
             }
         });
 
+        max_edittext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    gerar_tabela_primos(view);
+                }
+                return true;
+            }
+        });
+
         return view;
     }
 
@@ -466,7 +541,7 @@ public class PrimesTableFragment extends Fragment {
             history_gridView = (GridView) mActivity.findViewById(R.id.history);
             ViewGroup cardView1 = (ViewGroup) mActivity.findViewById(card_view_1);
             cv_width = cardView1.getWidth();
-            progressBar = (View) mActivity.findViewById(R.id.progress);
+            progressBar = mActivity.findViewById(R.id.progress);
             float scale = mActivity.getResources().getDisplayMetrics().density;
             height_dip = (int) (4 * scale + 0.5f);
             progressBar.setLayoutParams(new LinearLayout.LayoutParams(10, height_dip));
@@ -604,7 +679,7 @@ public class PrimesTableFragment extends Fragment {
                 int max_num_length = parcial.get(parcial.size() - 1).length();
                 final float scale = mActivity.getResources().getDisplayMetrics().density;
                 int num_length = max_num_length * (int) (18 * scale + 0.5f) + 8;
-                int num_columns = (int) Math.round(width / num_length);
+                int num_columns = Math.round(width / num_length);
                 history_gridView.setNumColumns(num_columns);
 
                 if (checkboxChecked) {

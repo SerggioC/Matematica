@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2E7D32</color>
+    <color name="apptheme_color">#669900</color>
+    <color name="colorPrimary">#388e3c</color>
     <color name="colorPrimaryDark">#29712d</color>
     <color name="colorAccent">#2ac911</color>
     <color name="white">#FFFFFF</color>
     <color name="transparente">#00ffffff</color>
     <color name="black">#000000</color>
-    <color name="bgCardColor">#a969bc4d</color>
+    <color name="bgCardColor">#a959c934</color>
     <color name="lightGreen">#f1f8e9</color>
     <color name="cardsColor">#FFFFFF</color>
     <color name="greener">#dcedc8</color>
@@ -24,11 +25,18 @@
     <color name="f_color2">#4CAF50</color>
     <color name="f_color3">#ff1744</color>
     <color name="f_color4">#ffc400</color>
-    <color name="f_color5">#9C27B0</color>
+    <color name="f_color5">#e040fb</color>
     <color name="f_color6">#ff80ab</color>
     <color name="f_color7">#4358c7</color>
     <color name="f_color8">#ff6f00</color>
-    <color name="f_color9">#263238</color>
+    <color name="f_color9">#00d9ad</color>
+    <color name="f_color10">#7e00be</color>
+    <color name="f_color11">#ffccbc</color>
+    <color name="f_color12">#aaff00</color>
+    <color name="f_color13">#5241c4</color>
+    <color name="f_color14">#99738c</color>
+    <color name="f_color15">#734d00</color>
+    <color name="f_color16">#263238</color>
 
     <array name="f_colors_xml">
         <item>@color/f_color1</item>
@@ -40,6 +48,14 @@
         <item>@color/f_color7</item>
         <item>@color/f_color8</item>
         <item>@color/f_color9</item>
+        <item>@color/f_color10</item>
+        <item>@color/f_color11</item>
+        <item>@color/f_color12</item>
+        <item>@color/f_color13</item>
+        <item>@color/f_color14</item>
+        <item>@color/f_color15</item>
+        <item>@color/f_color16</item>
     </array>
+
 
 </resources>

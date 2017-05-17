@@ -2,8 +2,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="com.sergiocruz.MatematicaPro.fragment.MMCFragment">
-
+             tools:context="com.sergiocruz.MatematicaPro.fragment.PrimesTableFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -87,13 +86,14 @@
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
                             android:layout_gravity="center"
-                            android:background="@drawable/edittextstyle"
+                            android:background="@drawable/edittext_statelist"
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLines="1"
                             android:text="1"
                             android:textAlignment="center"
-                            android:textSize="@dimen/edittextsize"/>
+                            android:textSize="@dimen/edittextsize"
+                            android:imeOptions="flagNavigateNext"/>
 
                         <Button
                             android:id="@+id/btn_clear_min"
@@ -116,12 +116,13 @@
                             android:layout_height="@dimen/edittext_height"
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/edittext_margin_left"
-                            android:background="@drawable/edittextstyle"
+                            android:background="@drawable/edittext_statelist"
                             android:gravity="center"
                             android:inputType="number"
                             android:maxLines="1"
                             android:text="50"
                             android:textAlignment="center"
+                            android:imeOptions="actionDone"
                             android:textSize="@dimen/edittextsize"/>
 
                         <Button

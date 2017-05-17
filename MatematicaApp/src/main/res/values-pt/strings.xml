@@ -1,8 +1,8 @@
 <resources>
+    <string name="app_version_date">Maio 2017</string>
 
-    <string name="app_long_description">Matemática: Prime Number Tools PRO v</string>
+    <string name="app_long_description">Prime Number Tools PRO v</string>
     <string name="app_version_description">Versão da Aplicação:</string>
-    <string name="app_version_date">Janeiro 2017</string>
 
     <!-- Navigation Drawer menu labels -->
     <string name="nav_home">Início</string>
@@ -23,11 +23,14 @@
         <item>@string/factorize</item>
         <item>@string/divisors</item>
         <item>@string/tabela_primos</item>
+        <item>@string/nav_primorial</item>
+        <item>@string/nav_multiplos</item>
     </string-array>
 
     <string name="activity_title_about_us">Sobre</string>
     <string name="action_clear_all_history">Apagar o histórico</string>
-    <string name="action_share_history">Partilhar resultados</string>
+    <string name="action_share_history">Partilhar tudo como texto</string>
+    <string name="action_share_history_images">Partilhar tudo como imagens</string>
     <string name="activity_title_send_mail">Enviar e-mail</string>
     <string name="activity_title_share">Partilhar</string>
     <string name="action_clipboard_result">Copiar texto</string>
@@ -81,7 +84,19 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="calculate">Calcular</string>
     <string name="divisors_of">Divisores de</string>
     <string name="_incomplete_calc">Cálculo incompleto…</string>
-    <string name="about_app_description">- Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números com explicação detalhada a cores\n - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números com explicação detalhada a cores\n - Fatorização em Números Primos com explicação detalhada\n - Determinar se um número é primo\n - Determinar se um ou mais números são primos entre si através do MDC\n - Cálculo de todos os divisores de um número inteiro\n - Gerador de tabela de números primos num dado intervalo\n - Total de números primos no intervalo\n</string>
+    <string name="about_app_description">
+        - Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números com explicação detalhada a cores\n
+        - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números com explicação detalhada a cores\n
+        - Fatorização em Números Primos com explicação detalhada a cores\n
+        - Determinar se um número é primo\n
+        - Determinar se um ou mais números são primos entre si através do MDC\n
+        - Cálculo de todos os divisores de um número inteiro\n
+        - Gerador de tabela de números primos num dado intervalo\n
+        - Total de números primos no intervalo\n
+        * DUAS NOVAS FERRAMENTAS *\n
+        - Calcular primorial de um número n#\n
+        - Calcular múltiplos de um número
+    </string>
     <string name="desenvolvido_por">Desenvolvido por Sérgio C.</string>
     <string name="send_comment">Enviar sugestão, melhoria ou comentário</string>
     <string name="send">Enviar</string>
@@ -94,7 +109,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="home_factorize_description">▸Fatorizar - Decompor um número em fatores primos\n▸Verificar se um número é primo</string>
     <string name="home_divisors_description">▸Divisores - Calcular todos os divisores de um número inteiro\n▸Verificar se um número é primo</string>
     <string name="home_primetable_description">▸Tabela de números primos num dado intervalo\n▸Total de números primos no intervalo</string>
-    <string name="app_inicio">Matemática - Início</string>
+    <string name="app_inicio">Primes PRO - Início</string>
     <string name="mmc">MMC</string>
     <string name="mdc">MDC</string>
     <string name="factorize">Fatorizar número</string>
@@ -104,7 +119,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="mmc_title">MMC - Mínimo Multiplo Comum</string>
     <string name="primetable_title">Gerar Tabela de Números Primos</string>
     <string name="mostrar_todos">Mostrar todos </string>
-    <string name="valor_minimo">Valor Minimo</string>
+    <string name="valor_minimo">Valor Mínimo</string>
     <string name="valor_maximo">Valor Máximo</string>
     <string name="history_deleted">Histórico de resultados apagado</string>
     <string name="nothing_toshare">Sem resultados para partilhar</string>
@@ -170,7 +185,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="explain_divisores2">▻O número é igual ao produto dos fatores primos obtidos:</string>
     <string name="explain_divisores3">▻Os fatores repetidos são contados e coloca-se esse valor em expoente:</string>
     <string name="cardinal_primos"># de primos:</string>
-    <string name="image_saved">Imagem guardada na pasta</string>
+    <string name="image_saved">Imagem guardada</string>
     <string name="errorsavingimg">Erro ao guardar imagem.</string>
     <string-array name="pref_list_titles">
         <item>Mostar sempre</item>
@@ -184,5 +199,51 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     </string-array>
 
     <item type="id" name="texto"/>
+    <string name="action_ajuda_primorial">Como calcular n#</string>
+    <string name="calculate_primorial_title">Calcular Primorial de um número n#</string>
+    <string name="help_text_primorial">Em matemática, mais particularmente na teoria dos números, primorial é uma função de números naturais para números naturais semelhantes à função factorial mas, em vez de se multiplicar sucessivamente números inteiros positivos, são apenas multiplicados números primos. Primorial de um número é denotado por n#. Por exemplo 7#=2x3x5x7=210</string>
+    <string name="home_primorial_description">▸ Calcular Primorial de um número n#</string>
+    <string name="nav_primorial">Calcular Primorial n#</string>
+    <string name="zeroPrimorial">Números > 0</string>
+    <string name="all_images_saved">Imagens guardadas</string>
+
+    <string name="nav_multiplos">Múltiplos de um número</string>
+    <string name="home_multiplos_description">▸ Calcular múltiplos de um número</string>
+    <string name="calculate_multiplos_title">Calcular múltiplos de um número</string>
+    <string name="action_ajuda_multiplos">O que são múltiplos de um número?</string>
+
+    <string name="help_text_multiplos"> Denominamos múltiplo de um número ao resultado da multiplicação desse número por um número natural qualquer: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9...}.\n
+        Um bom exemplo de números múltiplos é encontrado na tradicional tabuada:\n
+        \t\t2x0=0\t\t\t\t       3x0=0\n
+        \t\t2x1=2\t\t\t\t       3x1=3\n
+        \t\t2x2=4\t\t\t\t       3x2=6\n
+        \t\t2x3=6\t\t\t\t       3x3=9\n
+        \t\t2x4=8\t\t\t\t       3x4=12\n
+        \t\t2x5=10\t\t      3x5=15\n
+        \t\t2x6=12\t\t      3x6=18\n
+        \t\t2x7=14\t\t      3x7=21\n
+        \t\t2x8=16\t\t      3x8=24\n
+        \t\t2x9=18\t\t      3x9=27\n
+        \t\t2x10=20\t     3x10=30\n
+        \t\t\t\t... \t\t\t\t  ...\n
+        {0, 2, 4, 6, 8, 10, ...} São multiplos de 2.\n
+        {0, 3, 6, 9, 12, 15, ...} São multiplos de 3.\n
+\n
+    Quando um número é divisível por outro, isto é, quando da divisão entre eles resulta um resto igual a zero, dizemos que os números são múltiplos:\n
+\n
+    0 é múltiplo de 3, pois 0:3 = 0 com resto = 0\n
+    10 é múltiplo de 5, pois 10:5 = 2 com resto = 0\n
+    40 é divisivel por 5, pois 40:5 = 8 com resto = 0\n
+    55 é divisivel por 5, pois 55:5 = 11 com resto = 0\n
+\n
+    O zero é múltiplo de qualquer número e múltiplo de si próprio.\n
+    O conjunto dos múltiplos de um número é infinito porque o conjunto dos números naturais também é infinito.
+    </string>
+    <string name="action_save_history_images">Guardar tudo como imagens</string>
+    <string name="nothing_tosave">Nada a guardar</string>
+    <string name="multpl_apresentar">Múltiplos a apresentar</string>
+    <string name="show_more">Mostrar mais ▸</string>
+    <string name="action_save_history_image_pt">Guardar imagem da tabela</string>
+    <string name="action_share_history_pt">Partilhar tabela</string>
 
 </resources>

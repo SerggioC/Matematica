@@ -52,7 +52,7 @@ public class CreateCardView {
         //Adicionar o texto com o resultado
         textView.setText(ssb_result);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        textView.setTag("texto");
+        textView.setTag(R.id.texto, "texto");
 
         // add the textview to the cardview
         cardview.addView(textView);

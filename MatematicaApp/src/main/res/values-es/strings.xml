@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_version_date">Mayo 2017</string>
+
     <string name="_incomplete_calc">Cálculo incompleto...</string>
     <string name="_numero_primo">Número primo</string>
-    <string name="about_app_description"> - Cálculo del mínimo común múltiplo (MCM) entre un máximo de 8 números con explicación detallada en color\n - Cálculo del máximo común divisor (MCD) entre un máximo de 8 números con explicación detallada en color\n  - Factorización en números primos con explicación detallada\n - Determinar si un número es primo o también llamado de Prueba de Primalidad\n - Determinar si uno o más números son relativamente primos a través de MCD\n - Calcular todos los divisores de un número entero\n - Generador de tabla de números primos en un rango dado\n - Números primos totales en el rango</string>
+    <string name="about_app_description">
+        - Cálculo del mínimo común múltiplo (MCM) entre un máximo de 8 números con explicación detallada en color\n
+        - Cálculo del máximo común divisor (MCD) entre un máximo de 8 números con explicación detallada en color\n
+        - Factorización en números primos con explicación detallada en color\n
+        - Determinar si un número es primo o también llamado de Prueba de Primalidad\n
+        - Determinar si uno o más números son relativamente primos a través de MCD\n
+        - Calcular todos los divisores de un número entero\n
+        - Generador de tabla de números primos en un rango dado\n
+        - Números primos totales en el rango\n
+        * DOS NUEVAS HERRAMIENTAS *
+        - Calcular Primorial de un número n#\n
+        - Calcular múltiples de un número</string>
     <string name="action_ajuda_divisores">¿Cómo obtener divisores?</string>
     <string name="action_ajuda_fatorizar">¿Cómo factorizar un número?</string>
     <string name="action_ajuda_mdc">¿Cómo calcular MCD?</string>
@@ -12,7 +25,9 @@
     <string name="action_clipboard_result">Copiar texto</string>
     <string name="action_save_image">Guardar imagen</string>
     <string name="action_settings">Preferencias</string>
-    <string name="action_share_history">Compartir resultados</string>
+    <string name="action_share_history">Compartir todos como texto</string>
+    <string name="action_share_history_images">Compartir todos como imágenes</string>
+
     <string name="action_share_result">Compartir...</string>
     <string name="activity_title_about_us">Acerca de</string>
     <string name="activity_title_send_mail">Enviar correo electrónico</string>
@@ -21,9 +36,8 @@
     <string name="add_number_pair">Introduzca al menos un par de números enteros</string>
     <string name="already_inclipboard">Resultado ya en el portapapeles</string>
     <string name="and">y</string>
-    <string name="app_inicio">Matemática - Inicio</string>
-    <string name="app_long_description">Matemática: Prime Number Tools Pro v</string>
-    <string name="app_version_date">Enero 2017</string>
+    <string name="app_inicio">Primes PRO - Inicio</string>
+    <string name="app_long_description">Prime Number Tools Pro v</string>
     <string name="app_version_description">Version de aplicacion:</string>
     <string name="calculate">Calcular</string>
     <string name="calculate_divisors_title">Calcular los divisores de un número</string>
@@ -149,13 +163,66 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+
+    <!-- Toolbar titles when navigation menu item is selected-->
+    <string-array name="nav_item_activity_titles">
+        <item>@string/app_inicio</item>
+        <item>@string/mmc</item>
+        <item>@string/mdc</item>
+        <item>@string/factorize</item>
+        <item>@string/divisors</item>
+        <item>@string/tabela_primos</item>
+        <item>@string/nav_primorial</item>
+    </string-array>
+
     <string name="cardinal_primos"># de primos:</string>
     <string name="errorsavingimg">Error al guardar la imagen.</string>
     <string name="expl_text_divisores_1">▻ Se divide el número sucesivamente por el número primo más pequeño, a fin de obtener una división exacta, hasta obtener 1:</string>
     <string name="explain_divisores2">▻ El número es igual al producto de los factores primos obtenidos:</string>
     <string name="explain_divisores3">▻ Los factores repetidos se cuentan y este valor se coloca como un exponente:</string>
-    <string name="image_saved">Imagen guardada en la carpeta</string>
+    <string name="image_saved">Imagen guardada</string>
     <string name="menor_exps">exponentes más pequeños</string>
     <string name="to_obtain_mdc">Factores para obtener el Máximo Común Divisor:</string>
     <string name="os_fatores">los factores</string>
+    <string name="action_ajuda_primorial">Como calcular n#</string>
+    <string name="calculate_primorial_title">Calcular primorial de un número</string>
+    <string name="help_text_primorial">En matemáticas, y más particularmente en la teoría de números, primorial es una función de los números naturales a los números naturales similares a la función factorial, pero en lugar de multiplicar sucesivamente enteros positivos, sólo los números primos son multiplicados. Primorial de un número se denota por n#.</string>
+    <string name="home_primorial_description">▸ Calcular Primorial de un número n#</string>
+    <string name="nav_primorial">Calcular Primorial n#</string>
+    <string name="zeroPrimorial">Números > 0</string>
+    <string name="all_images_saved">All results saved as images in folder:</string>
+    <string name="action_ajuda_multiplos">¿Qué son múltiples de un número?</string>
+    <string name="action_save_history_images">Guardar todo como imágenes</string>
+    <string name="calculate_multiplos_title">Calcular múltiples de un número</string>
+    <string name="nothing_tosave">Nada que salvar</string>
+    <string name="nav_multiplos">Múltiples de un número</string>
+    <string name="help_text_multiplos">Se denomina múltiplo de un número al resultado de la multiplicación de ese número por un número natural cualquiera: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+        Un buen ejemplo de números múltiples se encuentra en la tradicional tabla del multiplicar:\n
+        \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
+        \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
+        \t\t2x2 = 4 \t\t\t\t 3x2 = 6\n
+        \t\t2x3 = 6 \t\t\t\t 3x3 = 9\n
+        \t\t2x4 = 8 \t\t\t\t 3x4 = 12\n
+        \t\t2x5 = 10 \t\t\t\t 3x5 = 15\n
+        \t\t2x6 = 12 \t\t\t\t 3x6 = 18\n
+        \t\t2x7 = 14 \t\t\t\t 3x7 = 21\n
+        \t\t2x8 = 16 \t\t\t\t 3x8 = 24\n
+        \t\t2x9 = 18 \t\t\t\t 3x9 = 27\n
+        \t\t2x10 = 20 \t\t\t\t 3x10 = 30\n
+        \t\t... \t\t\t\t ...\n
+        {0, 2, 4, 6, 8, 10, ...} Son múltiples de 2.\n
+        {0, 3, 6, 9, 12, 15, ...} Son múltiples de 3.\n
+
+    Cuando un número es divisible por otro, es decir, cuando de la división entre ellos resulta un resto igual a cero, decimos que los números son múltiples:\n
+
+    0 es múltiplo de 3, pues 0: 3 = 0 con resto = 0\n
+    10 es múltiple de 5, pues 10: 5 = 2 con resto = 0\n
+    40 es divisible por 5, pues 40: 5 = 8 con resto = 0\n
+    55 es divisible por 5, pues 55: 5 = 11 con resto = 0\n
+
+    El cero es múltiplo de cualquier número y múltiplo de sí mismo.
+    El conjunto de los múltiplos de un número es infinito porque el conjunto de los números naturales también es infinito.</string>
+    <string name="home_multiplos_description">▸ Calcular múltiples de un número</string>
+    <string name="multpl_apresentar">Múltiples para presentar</string>
+    <string name="show_more">Mostrar más ▸</string>
 </resources>

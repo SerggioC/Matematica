@@ -57,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:baselineAligned="false"
                         android:orientation="horizontal"
-                        android:paddingTop="8dp">
+                        android:paddingTop="4dp">
 
                         <FrameLayout
                             android:layout_width="match_parent"
@@ -70,11 +70,12 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
                                 android:textAlignment="center"
+                                android:imeOptions="flagNavigateNext"
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
@@ -98,11 +99,12 @@
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
                                 android:textAlignment="center"
+                                android:imeOptions="actionDone"
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
@@ -139,7 +141,7 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
@@ -169,7 +171,7 @@
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
@@ -209,7 +211,7 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
@@ -239,7 +241,7 @@
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
@@ -279,7 +281,7 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"
@@ -309,7 +311,7 @@
                                 android:layout_height="@dimen/edittext_height"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittextstyle"
+                                android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
                                 android:inputType="number"
                                 android:maxLines="1"

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_save_history_images"
-        android:title="@string/action_save_history_images"
+        android:id="@+id/action_save_image_pt"
+        android:title="@string/action_save_history_image_pt"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_share_history"
-        android:title="@string/action_share_history"
+        android:title="@string/action_share_history_pt"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_share_history_images"
-        android:title="@string/action_share_history_images"
+        android:id="@+id/action_share_history_image_pt"
+        android:title="@string/action_share_history_images_pt"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_clear_all_history"
