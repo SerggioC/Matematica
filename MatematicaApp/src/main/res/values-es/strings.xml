@@ -85,11 +85,11 @@
     <string name="hide_explain">Ocultar explicación ◂</string>
     <string name="highest_is_high">Valor máximo demasiado alto</string>
     <string name="history_deleted">Historial de resultados eliminado</string>
-    <string name="home_divisors_description">▸Divisores - Calcular todos los divisores de un entero\n▸Compruebe si un número es primo</string>
-    <string name="home_factorize_description">▸Factorizar - Descomponer un número en factores primos\n▸Compruebe si un número es primo / Prueba de primalidad</string>
-    <string name="home_mdc_description">▸MCD - Calcular el Máximo Común Divisor entre dos o más números\n▸Determinar si los números son primos relativos</string>
-    <string name="home_mmc_description">▸MCM - Calcular el Mínimo Común Múltiplo entre dos o más números</string>
-    <string name="home_primetable_description">▸Generador de tabla de números primos para un rango dado</string>
+    <string name="home_divisors_description">▸ Divisores - Calcular todos los divisores de un entero\n▸ Compruebe si un número es primo</string>
+    <string name="home_factorize_description">▸ Factorizar - Descomponer un número en factores primos\n▸ Compruebe si un número es primo / Prueba de primalidad</string>
+    <string name="home_mdc_description">▸ MCD - Calcular el Máximo Común Divisor entre dos o más números\n▸ Determinar si los números son primos relativos</string>
+    <string name="home_mmc_description">▸ MCM - Calcular el Mínimo Común Múltiplo entre dos o más números</string>
+    <string name="home_primetable_description">▸ Generador de tabla de números primos para un rango dado</string>
     <string name="inicio">Inicio</string>
     <string name="insert_integer">Introduzca un número entero</string>
     <string name="introduzir_numero">Introduzca número...</string>
@@ -164,17 +164,6 @@
         <item>1</item>
     </string-array>
 
-    <!-- Toolbar titles when navigation menu item is selected-->
-    <string-array name="nav_item_activity_titles">
-        <item>@string/app_inicio</item>
-        <item>@string/mmc</item>
-        <item>@string/mdc</item>
-        <item>@string/factorize</item>
-        <item>@string/divisors</item>
-        <item>@string/tabela_primos</item>
-        <item>@string/nav_primorial</item>
-    </string-array>
-
     <string name="cardinal_primos"># de primos:</string>
     <string name="errorsavingimg">Error al guardar la imagen.</string>
     <string name="expl_text_divisores_1">▻ Se divide el número sucesivamente por el número primo más pequeño, a fin de obtener una división exacta, hasta obtener 1:</string>
@@ -187,7 +176,7 @@
     <string name="action_ajuda_primorial">Como calcular n#</string>
     <string name="calculate_primorial_title">Calcular primorial de un número</string>
     <string name="help_text_primorial">En matemáticas, y más particularmente en la teoría de números, primorial es una función de los números naturales a los números naturales similares a la función factorial, pero en lugar de multiplicar sucesivamente enteros positivos, sólo los números primos son multiplicados. Primorial de un número se denota por n#.</string>
-    <string name="home_primorial_description">▸ Calcular Primorial de un número n#</string>
+    <string name="home_primorial_description">▸ Primorial - Calcular Primorial de un número n#</string>
     <string name="nav_primorial">Calcular Primorial n#</string>
     <string name="zeroPrimorial">Números > 0</string>
     <string name="all_images_saved">All results saved as images in folder:</string>
@@ -222,7 +211,12 @@
 
     El cero es múltiplo de cualquier número y múltiplo de sí mismo.
     El conjunto de los múltiplos de un número es infinito porque el conjunto de los números naturales también es infinito.</string>
-    <string name="home_multiplos_description">▸ Calcular múltiples de un número</string>
+    <string name="home_multiplos_description">▸ Múltiples - Calcular múltiples de un número</string>
     <string name="multpl_apresentar">Múltiples para presentar</string>
     <string name="show_more">Mostrar más ▸</string>
+    <string name="action_save_history_image_pt">Guardar imagen de la tabla</string>
+    <string name="action_share_history_images_pt">Compartir imagen de la tabla</string>
+    <string name="action_share_history_pt">Compartir texto de la tabla</string>
+    <string name="open_folder">Abrir carpeta</string>
+    <string name="empty_table">Tabla vacía</string>
 </resources>

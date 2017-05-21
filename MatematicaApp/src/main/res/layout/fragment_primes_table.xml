@@ -82,7 +82,7 @@
                         android:layout_weight="1">
 
                         <EditText
-                            android:id="@+id/min"
+                            android:id="@+id/min_pt"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
                             android:layout_gravity="center"
@@ -111,7 +111,7 @@
                         android:layout_weight="1">
 
                         <EditText
-                            android:id="@+id/max"
+                            android:id="@+id/max_pt"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
                             android:layout_gravity="center"

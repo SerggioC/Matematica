@@ -80,11 +80,11 @@
     <string name="hide_explain">Masquer Explication ◂</string>
     <string name="highest_is_high">Le valeur maximum est trop élevée</string>
     <string name="history_deleted">Historique des résultats supprimés</string>
-    <string name="home_divisors_description">▸Diviseurs - Calcule tous les diviseurs d\'un entier\n▸Vérifier si un nombre est premier</string>
-    <string name="home_factorize_description">▸Factoriser - Décomposer un nombre en facteurs premiers\n▸Vérifier si un nombre est premier / test de primalité</string>
-    <string name="home_mdc_description">▸PGCD - Calculer le Plus Grand Commun Diviseur entre deux ou plusieurs nombres\n▸Déterminer si les nombres sont copremiers</string>
-    <string name="home_mmc_description">▸PPCM - Calcul du Plus Petite Commun Multiple entre deux ou plusieurs nombres</string>
-    <string name="home_primetable_description">▸Générateur de tableaux de nombres premiers dans une gamme donnée\n▸Total de nombres premiers dans la gamme</string>
+    <string name="home_divisors_description">▸ Diviseurs - Calcule tous les diviseurs d\'un entier\n▸ Vérifier si un nombre est premier</string>
+    <string name="home_factorize_description">▸ Factoriser - Décomposer un nombre en facteurs premiers\n▸ Vérifier si un nombre est premier / test de primalité</string>
+    <string name="home_mdc_description">▸ PGCD - Calculer le Plus Grand Commun Diviseur entre deux ou plusieurs nombres\n▸ Déterminer si les nombres sont copremiers</string>
+    <string name="home_mmc_description">▸ PPCM - Calcul du Plus Petite Commun Multiple entre deux ou plusieurs nombres</string>
+    <string name="home_primetable_description">▸ Générateur de tableaux de nombres premiers dans une gamme donnée\n▸ Total de nombres premiers dans la gamme</string>
     <string name="image_saved">Image enregistrée</string>
     <string name="inicio">Accuel</string>
     <string name="insert_integer">Insérer un nombre entier</string>
@@ -164,22 +164,10 @@
         <item>1</item>
     </string-array>
 
-    <!-- Toolbar titles when navigation menu item is selected-->
-    <string-array name="nav_item_activity_titles">
-        <item>@string/app_inicio</item>
-        <item>@string/mmc</item>
-        <item>@string/mdc</item>
-        <item>@string/factorize</item>
-        <item>@string/divisors</item>
-        <item>@string/tabela_primos</item>
-        <item>@string/nav_primorial</item>
-        <item>@string/nav_multiplos</item>
-    </string-array>
-
     <string name="action_ajuda_primorial">Comment calculer n#</string>
     <string name="calculate_primorial_title">Calculer Primorial d\'un nombre</string>
     <string name="help_text_primorial">En mathématiques, et plus particulièrement dans la théorie des nombres, primorial est une fonction de nombres naturels à des nombres naturels similaires à la fonction factorielle, mais plutôt que de multiplier successivement des nombres entiers positifs, seuls les nombres premiers sont multipliés. Primorial d\'un nombre est désigné par n#.</string>
-    <string name="home_primorial_description">▸ Calculer Primorial d\'un nombre n#</string>
+    <string name="home_primorial_description">▸ Primorial - Calculer Primorial d\'un nombre n#</string>
     <string name="nav_primorial">Calculer Primorial n#</string>
     <string name="zeroPrimorial">Nombres > 0</string>
     <string name="all_images_saved">All results saved as images in folder:</string>
@@ -214,9 +202,14 @@
 \n
     Le zéro est un multiple d\'un nombre quelconque et un multiple de lui-même.\n
     L\'ensemble des multiples d\'un nombre est infini parce que l\'ensemble des nombres naturels est aussi infinie.</string>
-    <string name="home_multiplos_description">▸ Calcul de multiples d\'un nombre</string>
+    <string name="home_multiplos_description">▸ Multiples - Calcul de multiples d\'un nombre</string>
     <string name="multpl_apresentar">Multiples pour présenter</string>
     <string name="show_more">Afficher plus ▸</string>
+    <string name="action_save_history_image_pt">Enregistrer l\'image de la table</string>
+    <string name="action_share_history_images_pt">Partager l\'image de la table</string>
+    <string name="action_share_history_pt">Partager le texte de la table</string>
+    <string name="open_folder">Ouvrir le dossier</string>
+    <string name="empty_table">Table vide</string>
 
 </resources>
 

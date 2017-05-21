@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -28,19 +27,12 @@ import com.sergiocruz.MatematicaPro.fragment.PrimorialFragment;
 public class MainActivity extends AppCompatActivity {
 
     // tags used to attach the fragments
-    private static final String TAG_HOME = "home";
-    private static final String TAG_MMC = "mmc";
-    private static final String TAG_MDC = "mdc";
-    private static final String TAG_FATORIZAR = "fatorizar";
-    private static final String TAG_DIVISORES = "divisores";
-    private static final String TAG_PRIMES_TABLE = "primes_table";
-    private static final String TAG_PRIMORIAL = "primorial";
-    private static final String TAG_MULTIPLOS = "multiplos";
+    private static final String[] FRAGMENT_TAGS = {"home", "mmc", "mdc", "fatorizar", "divisores", "primes_table", "multiplos", "primorial"};
+    private static final Fragment[] FRAGMENTS = {new HomeFragment(), new MMCFragment(), new MDCFragment(), new FatorizarFragment(), new DivisoresFragment(), new PrimesTableFragment(), new MultiplosFragment(), new PrimorialFragment()};
 
     // index to identify current nav menu item
     public static int navItemIndex = 0;
 
-    public static String CURRENT_TAG = TAG_HOME;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private Toolbar toolbar;
@@ -76,16 +68,11 @@ public class MainActivity extends AppCompatActivity {
         setUpNavigationView();
 
         if (savedInstanceState == null) {
-            navItemIndex = 0;
-            CURRENT_TAG = TAG_HOME;
-            loadFragment();
-            navigationView.getMenu().getItem(navItemIndex).setActionView(R.layout.menu_dot);
+            loadFragment(0);
         } else if (savedInstanceState != null) {
             //Restore the fragment's instance
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
-
         }
-
     }
 
     @Override
@@ -100,16 +87,22 @@ public class MainActivity extends AppCompatActivity {
      * Returns respected fragment that user
      * selected from navigation menu
      */
-    private void loadFragment() {
+    private void loadFragment(int item_index) {
+        //remove dot in menu
+        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
+
+        navItemIndex = item_index;
+
         // selecting appropriate nav menu item
-        selectNavMenu();
+        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
+        navigationView.getMenu().getItem(navItemIndex).setActionView(R.layout.menu_dot);
 
         // set toolbar title
-        setToolbarTitle();
+        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer
-        if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
+        if (getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAGS[navItemIndex]) != null) {
             drawer.closeDrawers();
             return;
         }
@@ -122,10 +115,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // update the main content by replacing fragments
-                Fragment fragment = getFragment();
+                Fragment fragment = FRAGMENTS[navItemIndex];
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                fragmentTransaction.replace(R.id.frame, fragment, CURRENT_TAG);
+                fragmentTransaction.replace(R.id.frame, fragment, FRAGMENT_TAGS[navItemIndex]);
                 fragmentTransaction.commitAllowingStateLoss();
             }
         };
@@ -140,54 +133,6 @@ public class MainActivity extends AppCompatActivity {
 
         // refresh toolbar menu
         invalidateOptionsMenu();
-    }
-
-    private Fragment getFragment() {
-        switch (navItemIndex) {
-            case 0:
-                // home
-                HomeFragment homeFragment = new HomeFragment();
-                return homeFragment;
-            case 1:
-                // photos
-                MMCFragment MMCFragment = new MMCFragment();
-                return MMCFragment;
-            case 2:
-                // movies fragment
-                MDCFragment MDCFragment = new MDCFragment();
-                return MDCFragment;
-            case 3:
-                // Fragment Fatorizar em números primos
-                FatorizarFragment fatorizarFragment = new FatorizarFragment();
-                return fatorizarFragment;
-            case 4:
-                // Fragment Divisores
-                DivisoresFragment divisoresFragment = new DivisoresFragment();
-                return divisoresFragment;
-            case 5:
-                // Fragment Tabela de números Primos
-                PrimesTableFragment primesTableFragment = new PrimesTableFragment();
-                return primesTableFragment;
-            case 6:
-                // Fragment Calcular Primorial
-                PrimorialFragment primorialFragment = new PrimorialFragment();
-                return primorialFragment;
-            case 7:
-                // Fragment Calcular Múltiplos de um número
-                MultiplosFragment multiplosFragment = new MultiplosFragment();
-                return multiplosFragment;
-            default:
-                return new HomeFragment();
-        }
-    }
-
-    private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
-    }
-
-    private void selectNavMenu() {
-        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
-        navigationView.getMenu().getItem(navItemIndex).setActionView(R.layout.menu_dot);
     }
 
     private void setUpNavigationView() {
@@ -206,35 +151,27 @@ public class MainActivity extends AppCompatActivity {
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.home:
                         navItemIndex = 0;
-                        CURRENT_TAG = TAG_HOME;
                         break;
                     case R.id.nav_mmc:
                         navItemIndex = 1;
-                        CURRENT_TAG = TAG_MMC;
                         break;
                     case R.id.nav_mdc:
                         navItemIndex = 2;
-                        CURRENT_TAG = TAG_MDC;
                         break;
                     case R.id.nav_fatorizar:
                         navItemIndex = 3;
-                        CURRENT_TAG = TAG_FATORIZAR;
                         break;
                     case R.id.nav_divisores:
                         navItemIndex = 4;
-                        CURRENT_TAG = TAG_DIVISORES;
                         break;
                     case R.id.nav_prime_table:
                         navItemIndex = 5;
-                        CURRENT_TAG = TAG_PRIMES_TABLE;
-                        break;
-                    case R.id.nav_primorial:
-                        navItemIndex = 6;
-                        CURRENT_TAG = TAG_PRIMORIAL;
                         break;
                     case R.id.nav_multiplos:
+                        navItemIndex = 6;
+                        break;
+                    case R.id.nav_primorial:
                         navItemIndex = 7;
-                        CURRENT_TAG = TAG_MULTIPLOS;
                         break;
                     case R.id.nav_settings:
                         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
@@ -252,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     default:
                         navItemIndex = 0;
-                        CURRENT_TAG = TAG_HOME;
                 }
 
                 //Checking if the item is in checked state or not, if not make it in checked state
@@ -263,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 menuItem.setChecked(true);
 
-                loadFragment();
+                loadFragment(navItemIndex);
 
                 return true;
             }
@@ -308,9 +244,7 @@ public class MainActivity extends AppCompatActivity {
             // checking if user is on other navigation menu
             // rather than home
             if (navItemIndex != 0) {
-                navItemIndex = 0;
-                CURRENT_TAG = TAG_HOME;
-                loadFragment();
+                loadFragment(0);
                 return;
             }
         }
@@ -318,92 +252,32 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-
-        // show menu only when home fragment is selected
-//        if (navItemIndex == 0) {
-//            getMenuInflater().inflate(R.menu.main, menu);
-//        }
-/*
-        // if fragment is fatorizar, load the menu
-        if (navItemIndex == 3 || navItemIndex == 4) {
-            getMenuInflater().inflate(R.menu.menu_main, menu);
-        }*/
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        //int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_buy) {
-//            Toast.makeText(getApplicationContext(), "Comprar versão PRO para remover anúncios", Toast.LENGTH_LONG).show();
-//            return true;
-//        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     public void mmc(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 1;
-        CURRENT_TAG = TAG_MMC;
-        loadFragment();
+        loadFragment(1);
     }
 
     public void mdc(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 2;
-        CURRENT_TAG = TAG_MDC;
-        loadFragment();
+        loadFragment(2);
     }
 
     public void fatorizar(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 3;
-        CURRENT_TAG = TAG_FATORIZAR;
-        loadFragment();
+        loadFragment(3);
     }
 
     public void divisores(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 4;
-        CURRENT_TAG = TAG_DIVISORES;
-        loadFragment();
+        loadFragment(4);
     }
 
     public void primes_table(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 5;
-        CURRENT_TAG = TAG_PRIMES_TABLE;
-        loadFragment();
-    }
-
-    public void primorial(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 6;
-        CURRENT_TAG = TAG_PRIMORIAL;
-        loadFragment();
+        loadFragment(5);
     }
 
     public void multiplos(View view) {
-        //remove dot in menu
-        navigationView.getMenu().getItem(navItemIndex).setActionView(null);
-        navItemIndex = 7;
-        CURRENT_TAG = TAG_MULTIPLOS;
-        loadFragment();
+        loadFragment(6);
+    }
+
+    public void primorial(View view) {
+        loadFragment(7);
     }
 
 }

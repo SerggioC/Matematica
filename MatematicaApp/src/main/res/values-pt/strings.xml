@@ -15,18 +15,6 @@
     <string name="nav_sendmail">Enviar e-mail</string>
     <string name="nav_about_us">Sobre a Aplicação</string>
 
-    <!-- Toolbar titles when navigation menu item is selected-->
-    <string-array name="nav_item_activity_titles">
-        <item>@string/app_inicio</item>
-        <item>@string/mmc</item>
-        <item>@string/mdc</item>
-        <item>@string/factorize</item>
-        <item>@string/divisors</item>
-        <item>@string/tabela_primos</item>
-        <item>@string/nav_primorial</item>
-        <item>@string/nav_multiplos</item>
-    </string-array>
-
     <string name="activity_title_about_us">Sobre</string>
     <string name="action_clear_all_history">Apagar o histórico</string>
     <string name="action_share_history">Partilhar tudo como texto</string>
@@ -104,11 +92,11 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="introduzir_numero">Introduzir número…</string>
     <string name="fatorize_title">Fatorização em números primos</string>
     <string name="fatorizar_btn">Fatorizar</string>
-    <string name="home_mmc_description">▸MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números</string>
-    <string name="home_mdc_description">▸MDC - Calcular o Máximo Divisor Comum entre dois ou mais números\n▸Determinar se os números são primos entre si</string>
-    <string name="home_factorize_description">▸Fatorizar - Decompor um número em fatores primos\n▸Verificar se um número é primo</string>
-    <string name="home_divisors_description">▸Divisores - Calcular todos os divisores de um número inteiro\n▸Verificar se um número é primo</string>
-    <string name="home_primetable_description">▸Tabela de números primos num dado intervalo\n▸Total de números primos no intervalo</string>
+    <string name="home_mmc_description">▸ MMC - Calcular o Mínimo Múltiplo Comum entre dois ou mais números</string>
+    <string name="home_mdc_description">▸ MDC - Calcular o Máximo Divisor Comum entre dois ou mais números\n▸ Determinar se os números são primos entre si</string>
+    <string name="home_factorize_description">▸ Fatorizar - Decompor um número em fatores primos\n▸ Verificar se um número é primo</string>
+    <string name="home_divisors_description">▸ Divisores - Calcular todos os divisores de um número inteiro\n▸ Verificar se um número é primo</string>
+    <string name="home_primetable_description">▸ Tabela de números primos num dado intervalo\n▸ Total de números primos no intervalo</string>
     <string name="app_inicio">Primes PRO - Início</string>
     <string name="mmc">MMC</string>
     <string name="mdc">MDC</string>
@@ -198,17 +186,17 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
         <item>1</item>
     </string-array>
 
-    <item type="id" name="texto"/>
+    <item name="texto" type="id"/>
     <string name="action_ajuda_primorial">Como calcular n#</string>
     <string name="calculate_primorial_title">Calcular Primorial de um número n#</string>
     <string name="help_text_primorial">Em matemática, mais particularmente na teoria dos números, primorial é uma função de números naturais para números naturais semelhantes à função factorial mas, em vez de se multiplicar sucessivamente números inteiros positivos, são apenas multiplicados números primos. Primorial de um número é denotado por n#. Por exemplo 7#=2x3x5x7=210</string>
-    <string name="home_primorial_description">▸ Calcular Primorial de um número n#</string>
+    <string name="home_primorial_description">▸ Primorial - Calcular Primorial de um número n#</string>
     <string name="nav_primorial">Calcular Primorial n#</string>
     <string name="zeroPrimorial">Números > 0</string>
     <string name="all_images_saved">Imagens guardadas</string>
 
     <string name="nav_multiplos">Múltiplos de um número</string>
-    <string name="home_multiplos_description">▸ Calcular múltiplos de um número</string>
+    <string name="home_multiplos_description">▸ Múltiplos - Calcular múltiplos de um número</string>
     <string name="calculate_multiplos_title">Calcular múltiplos de um número</string>
     <string name="action_ajuda_multiplos">O que são múltiplos de um número?</string>
 
@@ -226,8 +214,8 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
         \t\t2x9=18\t\t      3x9=27\n
         \t\t2x10=20\t     3x10=30\n
         \t\t\t\t... \t\t\t\t  ...\n
-        {0, 2, 4, 6, 8, 10, ...} São multiplos de 2.\n
-        {0, 3, 6, 9, 12, 15, ...} São multiplos de 3.\n
+        {0, 2, 4, 6, 8, 10, ...} São múltiplos de 2.\n
+        {0, 3, 6, 9, 12, 15, ...} São múltiplos de 3.\n
 \n
     Quando um número é divisível por outro, isto é, quando da divisão entre eles resulta um resto igual a zero, dizemos que os números são múltiplos:\n
 \n
@@ -244,6 +232,9 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="multpl_apresentar">Múltiplos a apresentar</string>
     <string name="show_more">Mostrar mais ▸</string>
     <string name="action_save_history_image_pt">Guardar imagem da tabela</string>
-    <string name="action_share_history_pt">Partilhar tabela</string>
+    <string name="action_share_history_pt">Partilhar texto da tabela</string>
+    <string name="action_share_history_images_pt">Partilhar imagem da tabela</string>
+    <string name="open_folder">Abrir pasta</string>
+    <string name="empty_table">Tabela vazia</string>
 
 </resources>

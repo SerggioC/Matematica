@@ -6,24 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -50,20 +45,11 @@ import com.sergiocruz.MatematicaPro.activity.AboutActivity;
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity;
 import com.sergiocruz.MatematicaPro.helper.MenuHelper;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import static android.widget.Toast.makeText;
-import static com.sergiocruz.MatematicaPro.R.id.card_view_1;
-import static com.sergiocruz.MatematicaPro.R.id.min;
-import static com.sergiocruz.MatematicaPro.helper.MenuHelper.IMAGES_FOLDER;
-import static com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener.verifyStoragePermissions;
 import static java.lang.Long.parseLong;
 
 /*****
@@ -119,64 +105,59 @@ public class PrimesTableFragment extends Fragment {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        int childCount = history_gridView.getChildCount();
         if (id == R.id.action_save_image_pt) {
-            verifyStoragePermissions(mActivity);
-            history_gridView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(history_gridView.getWidth(), history_gridView.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(Color.WHITE, PorterDuff.Mode.ADD);
-            history_gridView.draw(canvas);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
-
-            File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER);
-            try {
-                if (!image_file.exists()) {
-                    image_file.mkdirs();
+            MenuHelper.verifyStoragePermissions(mActivity);
+            if (childCount > 0) {
+                String img_path = MenuHelper.saveViewToImage(history_gridView, 0, true);
+                if (img_path != null) {
+                    MenuHelper.openFolder_Snackbar(mActivity, getString(R.string.image_saved));
+                } else {
+                    Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
                 }
-                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-                image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER + File.separator + "img" + timeStamp + ".jpg");
-                image_file.createNewFile();
-                FileOutputStream fileOutputStream = new FileOutputStream(image_file);
-                fileOutputStream.write(byteArrayOutputStream.toByteArray());
-                Snackbar snack = Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.image_saved), Snackbar.LENGTH_LONG);
-                snack.setAction("Open Folder", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString() + File.separator + IMAGES_FOLDER + File.separator );
-                        intent.setDataAndType(uri, "*/*");
-                        try {
-                            mActivity.startActivity(Intent.createChooser(intent, "Open folder with"));
-                        } catch (android.content.ActivityNotFoundException e) {
-                            Toast.makeText(mActivity, "Please install a file manager.", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
-                snack.setActionTextColor(Color.RED);
-                snack.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("Sergio>>>", "onClick: error ", e);
-                Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
+            } else {
+                Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.empty_table), Toast.LENGTH_SHORT);
                 thetoast.setGravity(Gravity.CENTER, 0, 0);
                 thetoast.show();
             }
         }
         if (id == R.id.action_share_history_image_pt) {
-            MenuHelper.share_history_images(mActivity);
+            MenuHelper.verifyStoragePermissions(mActivity);
+            if (childCount > 0) {
+                ArrayList<Uri> file_uris = new ArrayList<>(1);
+                String img_path = MenuHelper.saveViewToImage(history_gridView, 0, true);
+                if (img_path != null) {
+                    file_uris.add(Uri.parse(img_path));
+
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
+                            mActivity.getResources().getString(R.string.app_version_name) + "\n");
+                    sendIntent.setType("image/jpeg");
+                    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, file_uris);
+                    mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getResources().getString(R.string.app_name)));
+
+                } else {
+                    Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                }
+            } else {
+                Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.empty_table), Toast.LENGTH_SHORT);
+                thetoast.setGravity(Gravity.CENTER, 0, 0);
+                thetoast.show();
+
+            }
         }
+        // Partilhar tabela como texto
         if (id == R.id.action_share_history) {
             if (tableData != null) {
-                String primes_string = getString(R.string.table_between) + " " +
-                        num_min + " " + getString(R.string.and) + " " + num_max + ":\n" +
-                        tableData;
+                String primes_string = getString(R.string.table_between) + " " + num_min + " " + getString(R.string.and) + " " + num_max + ":\n" + tableData;
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
-                        mActivity.getResources().getString(R.string.app_version_name) + "\n" + primes_string);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) + mActivity.getResources().getString(R.string.app_version_name) + "\n" + primes_string);
                 sendIntent.setType("text/plain");
                 mActivity.startActivity(sendIntent);
             } else {
@@ -191,8 +172,8 @@ public class PrimesTableFragment extends Fragment {
             tableData = null;
             num_min = 0L;
             num_max = 50L;
-            ((EditText) mActivity.findViewById(min)).setText("1");
-            ((EditText) mActivity.findViewById(R.id.max)).setText("50");
+            ((EditText) mActivity.findViewById(R.id.min_pt)).setText("1");
+            ((EditText) mActivity.findViewById(R.id.max_pt)).setText("50");
             mActivity.findViewById(R.id.numPrimesTextView).setVisibility(View.GONE);
             mActivity.findViewById(R.id.performanceTextView).setVisibility(View.GONE);
         }
@@ -243,10 +224,6 @@ public class PrimesTableFragment extends Fragment {
                 checkboxChecked = b;
                 if (tableData != null) {
                     if (checkboxChecked) {
-                            full_table = new ArrayList<String>();
-                            for (long i = num_min; i <= num_max; i++) {
-                                full_table.add(String.valueOf(i));
-                        }
                         history_gridView
                                 .setAdapter(
                                         new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, full_table) {
@@ -263,7 +240,7 @@ public class PrimesTableFragment extends Fragment {
                                         }
                                 );
                     } else {
-                        ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, tableData);
+                        ArrayAdapter<String> primes_adapter = new ArrayAdapter<>(mActivity, R.layout.table_item, R.id.tableItem, tableData);
                         history_gridView.setAdapter(primes_adapter);
                     }
                 }
@@ -274,9 +251,7 @@ public class PrimesTableFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 displayCancelDialogBox();
-
             }
         });
 
@@ -292,7 +267,7 @@ public class PrimesTableFragment extends Fragment {
         btn_clear_min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText min = (EditText) mActivity.findViewById(R.id.min);
+                EditText min = (EditText) mActivity.findViewById(R.id.min_pt);
                 min.setText("");
             }
         });
@@ -301,12 +276,12 @@ public class PrimesTableFragment extends Fragment {
         btn_clear_max.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText max = (EditText) mActivity.findViewById(R.id.max);
+                EditText max = (EditText) mActivity.findViewById(R.id.max_pt);
                 max.setText("");
             }
         });
 
-        final EditText min_edittext = (EditText) view.findViewById(R.id.min);
+        final EditText min_edittext = (EditText) view.findViewById(R.id.min_pt);
 
         min_edittext.addTextChangedListener(new TextWatcher() {
             Long num1;
@@ -341,7 +316,7 @@ public class PrimesTableFragment extends Fragment {
             }
         });
 
-        final EditText max_edittext = (EditText) view.findViewById(R.id.max);
+        final EditText max_edittext = (EditText) view.findViewById(R.id.max_pt);
 
         max_edittext.addTextChangedListener(new TextWatcher() {
             Long num2;
@@ -389,12 +364,18 @@ public class PrimesTableFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        history_gridView = (GridView) view.findViewById(R.id.history);
+    }
+
     public void gerar_tabela_primos(View view) {
 
-        EditText min_edittext = (EditText) view.findViewById(min);
+        EditText min_edittext = (EditText) view.findViewById(R.id.min_pt);
         String min_string = min_edittext.getText().toString().replaceAll("[^\\d]", "");
 
-        EditText max_edittext = (EditText) view.findViewById(R.id.max);
+        EditText max_edittext = (EditText) view.findViewById(R.id.max_pt);
         String max_string = max_edittext.getText().toString().replaceAll("[^\\d]", "");
 
         if (min_string.equals(null) || min_string.equals("") || max_string.equals(null) || max_string.equals("")) {
@@ -475,7 +456,6 @@ public class PrimesTableFragment extends Fragment {
         return primes;
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -501,7 +481,6 @@ public class PrimesTableFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
     }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -538,8 +517,7 @@ public class PrimesTableFragment extends Fragment {
             button.setText(getString(R.string.working));
             cancelButton.setVisibility(View.VISIBLE);
             hideKeyboard();
-            history_gridView = (GridView) mActivity.findViewById(R.id.history);
-            ViewGroup cardView1 = (ViewGroup) mActivity.findViewById(card_view_1);
+            ViewGroup cardView1 = (ViewGroup) mActivity.findViewById(R.id.card_view_1);
             cv_width = cardView1.getWidth();
             progressBar = mActivity.findViewById(R.id.progress);
             float scale = mActivity.getResources().getDisplayMetrics().density;
@@ -554,6 +532,10 @@ public class PrimesTableFragment extends Fragment {
         public ArrayList<String> doInBackground(Long... params) {
             num_min = params[0];
             num_max = params[1];
+            full_table = new ArrayList<>();
+            for (long i = num_min; i <= num_max; i++) {
+                full_table.add(String.valueOf(i));
+            }
             ArrayList<String> primes = new ArrayList<>();
             double progress;
             double oldProgress = 0d;
@@ -610,10 +592,6 @@ public class PrimesTableFragment extends Fragment {
                 history_gridView.setNumColumns(num_columns);
 
                 if (checkboxChecked) {
-                    full_table = new ArrayList<String>();
-                    for (long i = num_min; i <= num_max; i++) {
-                        full_table.add(String.valueOf(i));
-                    }
                     history_gridView
                             .setAdapter(
                                     new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, full_table) {
@@ -630,7 +608,7 @@ public class PrimesTableFragment extends Fragment {
                                     }
                             );
                 } else {
-                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, result);
+                    ArrayAdapter<String> primes_adapter = new ArrayAdapter<>(mActivity, R.layout.table_item, R.id.tableItem, result);
                     history_gridView.setAdapter(primes_adapter);
                 }
                 numPrimesTV.setVisibility(View.VISIBLE);
@@ -683,10 +661,6 @@ public class PrimesTableFragment extends Fragment {
                 history_gridView.setNumColumns(num_columns);
 
                 if (checkboxChecked) {
-                    full_table = new ArrayList<String>();
-                    for (long i = num_min; i <= num_max; i++) {
-                        full_table.add(String.valueOf(i));
-                    }
                     history_gridView
                             .setAdapter(
                                     new ArrayAdapter<String>(mActivity, R.layout.table_item, R.id.tableItem, full_table) {

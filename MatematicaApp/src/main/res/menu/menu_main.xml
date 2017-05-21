@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_save_history_images"
-        android:title="@string/action_save_history_images"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_share_history"
         android:title="@string/action_share_history"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_share_history_images"
         android:title="@string/action_share_history_images"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_save_history_images"
+        android:title="@string/action_save_history_images"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_clear_all_history"

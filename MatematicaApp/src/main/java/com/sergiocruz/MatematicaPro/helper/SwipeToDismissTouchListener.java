@@ -1,6 +1,5 @@
 package com.sergiocruz.MatematicaPro.helper;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -9,23 +8,15 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.text.SpannableString;
 import android.text.style.SuperscriptSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -41,15 +32,9 @@ import android.widget.Toast;
 
 import com.sergiocruz.MatematicaPro.R;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import static android.widget.Toast.makeText;
-import static com.sergiocruz.MatematicaPro.helper.MenuHelper.IMAGES_FOLDER;
 
 /*****
  * Project Matematica
@@ -61,12 +46,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
     private static final int POPUP_WIDTH = 188;
     private static final int POPUP_HEIGHT = 190;
-    // Storage Permissions
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
     private final Handler handler = new Handler();
     boolean mBooleanIsPressed = false;
     // Cached ViewConfiguration and system-wide constant values
@@ -131,26 +110,6 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         }
         return views;
     }
-
-    /**
-     * Checks if the app has permission to write to device storage
-     * If the app does not has permission then the user will be prompted to grant permissions
-     *
-     * @param activity
-     */
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // if we don't have permission prompt the user to give permission
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
-
 
     private void showCustomPopup() {
 
@@ -243,61 +202,20 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
         popup_layout.findViewById(R.id.action_save_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveViewAsImage(theCardView);
+                MenuHelper.verifyStoragePermissions(mActivity);
+                theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor));
+                String img_path = MenuHelper.saveViewToImage(theCardView, 0, false);
+                if (img_path != null) {
+                    MenuHelper.openFolder_Snackbar(mActivity, mActivity.getString(R.string.image_saved));
+                } else {
+                    Toast thetoast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
+                    thetoast.setGravity(Gravity.CENTER, 0, 0);
+                    thetoast.show();
+                }
                 customPopUp.dismiss();
             }
         });
 
-    }
-
-    public void saveViewAsImage(CardView theCardView) {
-        theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor));
-        verifyStoragePermissions(mActivity);
-        theCardView.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(theCardView.getWidth(), theCardView.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        //canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        theCardView.draw(canvas);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, byteArrayOutputStream);
-
-        File image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER);
-        try {
-            if (!image_file.exists()) {
-                image_file.mkdirs();
-            }
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            image_file = new File(Environment.getExternalStorageDirectory() + File.separator + IMAGES_FOLDER + File.separator + "img" + timeStamp + ".jpg");
-            image_file.createNewFile();
-            FileOutputStream fileOutputStream = new FileOutputStream(image_file);
-            fileOutputStream.write(byteArrayOutputStream.toByteArray());
-
-            Snackbar snack = Snackbar.make(mActivity.findViewById(android.R.id.content), mActivity.getString(R.string.image_saved), Snackbar.LENGTH_LONG);
-            snack.setAction("Open Folder", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString() + File.separator + IMAGES_FOLDER + File.separator );
-                    intent.setDataAndType(uri, "*/*");
-                    try {
-                        mActivity.startActivity(Intent.createChooser(intent, "Open folder with"));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Toast.makeText(mActivity, "Please install a file manager.", Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
-            snack.setActionTextColor(Color.RED);
-            snack.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("Sergio>>>", "onClick: error ", e);
-            Toast thetoast = Toast.makeText(mView.getContext(), mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT);
-            thetoast.setGravity(Gravity.CENTER, 0, 0);
-            thetoast.show();
-        }
     }
 
     @NonNull
@@ -633,6 +551,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
 
         animator.start();
     }
+
 
     /**
      * The callback interface used by {@link SwipeToDismissTouchListener} to inform its client
