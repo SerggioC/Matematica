@@ -4,7 +4,7 @@
     <string name="app_version_date">May 2017</string>
 
     <string name="app_name" translatable="false">Primes PRO</string>
-    <string name="app_long_description">Prime Number Tools Pro v</string>
+    <string name="app_long_description" translatable="false">Prime Number Tools Pro v</string>
     <string name="app_version_description">App version:</string>
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
@@ -115,7 +115,7 @@
     <string name="home_factorize_description">▸ Factorize - Decompose a number into prime factors\n▸ Check if a number is prime/Primality test</string>
     <string name="home_divisors_description">▸ Divisors - Calculate all divisors of an integer\n▸ Check if a number is prime</string>
     <string name="home_primetable_description">▸ Prime numbers table generator for a given range\n▸ Total of prime numbers in the range</string>
-    <string name="app_inicio">Primes - Home</string>
+    <string name="app_inicio">Primes PRO - Home</string>
     <string name="divisors">Divisors</string>
     <string name="factorize">Factorize number</string>
     <string name="mdc">GCD</string>
@@ -207,7 +207,7 @@
 
     <item type="id" name="texto" />
 
-    <string-array name="multiplos_size">
+    <string-array name="multiplos_size" translatable="false">
         <item>10</item>
         <item>20</item>
         <item>30</item>

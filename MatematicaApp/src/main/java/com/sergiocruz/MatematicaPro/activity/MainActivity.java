@@ -24,26 +24,23 @@ import com.sergiocruz.MatematicaPro.fragment.MultiplosFragment;
 import com.sergiocruz.MatematicaPro.fragment.PrimesTableFragment;
 import com.sergiocruz.MatematicaPro.fragment.PrimorialFragment;
 
-public class MainActivity extends AppCompatActivity {
+import static com.sergiocruz.MatematicaPro.helper.MenuHelper.verifyStoragePermissions;
 
+public class MainActivity extends AppCompatActivity {
     // tags used to attach the fragments
     private static final String[] FRAGMENT_TAGS = {"home", "mmc", "mdc", "fatorizar", "divisores", "primes_table", "multiplos", "primorial"};
     private static final Fragment[] FRAGMENTS = {new HomeFragment(), new MMCFragment(), new MDCFragment(), new FatorizarFragment(), new DivisoresFragment(), new PrimesTableFragment(), new MultiplosFragment(), new PrimorialFragment()};
-
     // index to identify current nav menu item
     public static int navItemIndex = 0;
-
+    Fragment mContent;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private Toolbar toolbar;
-
     // toolbar titles respected to selected nav menu item
     private String[] activityTitles;
-
     // flag to load home fragment when user presses back key
     private boolean shouldLoadHomeFragOnBackPress = true;
     private Handler mHandler;
-    Fragment mContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             //Restore the fragment's instance
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
         }
+        verifyStoragePermissions(this);
     }
 
     @Override
@@ -222,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         //Setting the actionbarToggle to drawer layout
-        drawer.setDrawerListener(actionBarDrawerToggle);
+        drawer.addDrawerListener(actionBarDrawerToggle);
 
         //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();

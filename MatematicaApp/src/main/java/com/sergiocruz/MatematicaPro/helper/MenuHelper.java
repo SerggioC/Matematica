@@ -46,7 +46,7 @@ import static com.sergiocruz.MatematicaPro.R.id.history;
 
 public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCallback{
     public static final String IMAGES_FOLDER = "Matematica Images";
-    public static final int SAVED_IMAGE_QUALITY = 75;
+    public static final int SAVED_IMAGE_QUALITY = 90;
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {

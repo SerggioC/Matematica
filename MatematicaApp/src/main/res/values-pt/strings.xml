@@ -1,7 +1,6 @@
 <resources>
     <string name="app_version_date">Maio 2017</string>
 
-    <string name="app_long_description">Prime Number Tools PRO v</string>
     <string name="app_version_description">Versão da Aplicação:</string>
 
     <!-- Navigation Drawer menu labels -->

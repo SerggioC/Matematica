@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="_incomplete_calc">Unvollständige Berechnung ...</string>
+    <string name="_numero_primo">primzahlen</string>
+    <string name="about_app_description">- Berechnung der Kleinstes gemeinsames Vielfaches (kgV) zwischen bis zu 8 Zahlen mit detaillierten Farberklärungen\n
+         - Berechnung des Größter gemeinsamer Teiler (ggT) zwischen bis zu 8 Zahlen mit detaillierten Farberklärungen\n
+         - Faktorisierung in Primzahlen mit detaillierten Farberklärungen\n
+         - Bestimmen Sie, ob eine Zahl prim ist oder auch Primärprüfung genannt wird\n
+         - Bestimmen Sie, ob eine oder mehrere Zahlen durch ggT relativ primär sind\n
+         - Berechnen Sie alle Divisoren einer Ganzzahl\n
+         - Prime Anzahl tabellen generator in einem gegebenen Bereich\n
+         - Gesamtzahlen in Reichweite\n
+         * ZWEI NEUE WERKZEUGE *\n
+         - Berechnen Sie das Primär einer Zahl n#\n
+         - Vielfaches einer Zahl berechnen</string>
+    <string name="action_ajuda_divisores">Wie erhält man Divisoren?</string>
+    <string name="action_ajuda_fatorizar">Wie kann man eine Zahl faktorisieren?</string>
+    <string name="action_ajuda_mdc">Wie man ggT berechnet?</string>
+    <string name="action_ajuda_mmc">Wie man kgV berechnet?</string>
+    <string name="action_ajuda_multiplos">Was sind Vielfache einer Zahl?</string>
+    <string name="action_ajuda_primorial">Wie n# berechnen</string>
+    <string name="action_clear_all_history">Verlauf löschen</string>
+    <string name="action_clear_result">Löschen</string>
+    <string name="action_clipboard_result">Text kopieren</string>
+    <string name="action_save_history_image_pt">Speichern Sie das Tabellenbild</string>
+    <string name="action_save_history_images">Bild der Tabelle speichern</string>
+    <string name="action_save_image">Bild speichern</string>
+    <string name="action_settings">Präferenzen</string>
+    <string name="action_share_history">Alle Ergebnisse als Text teilen</string>
+    <string name="action_share_history_images">Alle Ergebnisse als Bilder teilen</string>
+    <string name="action_share_history_images_pt">Teilen Sie das Bild der Tabelle</string>
+    <string name="action_share_history_pt">Tabellentext teilen</string>
+    <string name="action_share_result">Aktie...</string>
+    <string name="activity_title_about_us">Über</string>
+    <string name="activity_title_send_mail">E-Mail senden</string>
+    <string name="activity_title_share">Aktie</string>
+    <string name="add_num_inteiro">Geben Sie eine Ganzzahl ein</string>
+    <string name="add_number_pair">Geben Sie mindestens ein Paar Ganzzahlen ein</string>
+    <string name="all_images_saved">Gespeichert alle als Bilder</string>
+    <string name="already_inclipboard">Ergebnis bereits in der Zwischenablage</string>
+    <string name="and">und</string>
+    <string name="app_inicio">Primes PRO - Zuhause</string>
+    <string name="app_version_date">Mai 2017</string>
+    <string name="app_version_description">App Version:</string>
+    <string name="calculate">Berechnen</string>
+    <string name="calculate_divisors_title">Berechnen Sie die Divisoren einer Zahl</string>
+    <string name="calculate_multiplos_title">Berechnen Sie Vielfache einer Zahl</string>
+    <string name="calculate_primorial_title">Berechnen Sie das Primary einer Zahl n#</string>
+    <string name="cancel_it">Operation abbrechen</string>
+    <string name="canceled_noprimes">Operation abgebrochen. Es wurden keine Primzahlen im Bereich gefunden.</string>
+    <string name="canceled_op">Operation abgebrochen.</string>
+    <string name="cardinal_primos">Anzahl der Primzahlen:</string>
+    <string name="comuns">verbreitet</string>
+    <string name="copied_toclipboard">In die Zwischenablage kopiert</string>
+    <string name="decompor_num">▻Verwenden Sie die Zahlen in</string>
+    <string name="desenvolvido_por">Entwickelt von Sérgio C.</string>
+    <string name="divisores_">Divisoren:</string>
+    <string name="divisores_number">Divisoren einer Zahl</string>
+    <string name="divisors">Divisoren</string>
+    <string name="divisors_of">Divisoren von</string>
+    <string name="empty_table">Leeren Tisch</string>
+    <string name="errorsavingimg">Fehler beim Speichern des Bildes. Bitte erlauben Sie der App, Dateien zu speichern.</string>
+    <string name="escolher">▻Wählen Sie</string>
+    <string name="existem">Es gibt</string>
+    <string name="expl_text_divisores_1">▻ Teilen Sie die Nummer nacheinander durch die niedrigste Primzahl, um eine genaue Teilung zu erhalten, bis Sie 1:</string>
+    <string name="explain">[+] Erläuterung anzeigen ▾</string>
+    <string name="explain_divisores2">▻ Die Zahl ist gleich dem Produkt der erhaltenen Primfaktoren:</string>
+    <string name="explain_divisores3">▻ Wiederholte Faktoren werden gezählt und dieser Wert wird als Exponent platziert:</string>
+    <string name="factorization_of">Faktorisierung von</string>
+    <string name="factorize">Faktorisierungsnummer</string>
+    <string name="factorizing">Faktorisierung ...</string>
+    <string name="fatores_primos">Hauptfaktoren:</string>
+    <string name="fatorizar_btn">Faktorisieren</string>
+    <string name="fatorizcao">Faktorisieren</string>
+    <string name="fatorize_title">Primzahlfaktorisierung</string>
+    <string name="fill_min_max">Füllen Sie die niedrigsten und höchsten Werte aus</string>
+    <string name="found">Gefunden</string>
+    <string name="gerar">Generieren</string>
+    <string name="has">hat</string>
+    <string name="has_email">Hast du eine E-Mail-APP installiert?</string>
+    <string name="has_no_factors">Hat keine primären Faktoren.</string>
+    <string name="help_text_divisores">Divisoren einer natürlichen Zahl sind alle natürlichen Zahlen, die bei der Teilung einer solchen Zahl zu einer exakten Teilung führen, dh mit einem Rest gleich Null.\n
+  Der Satz von Divisoren einer Zahl ist ein endlicher Satz. Um solche Divisoren zu finden, verwenden wir Faktorisierung oder Zersetzung in Primärfaktoren.\n
+   Wir multiplizieren jeden der Faktoren der Zersetzung mit der Zahl 1 und seinen aufeinanderfolgenden Ergebnissen und wiederholen nicht die gleichen Ergebnisse.\n
+  Um die Anzahl der Divisoren einer natürlichen Zahl zu erhalten, multiplizieren wir alle Exponenten der resultierenden Faktorisierung nach dem Hinzufügen einer Einheit zu jedem Exponenten.\n
+Definitionsgemäß sind Primzahlen Zahlen, die zu dem Satz von null ungleichen Zahlen zählen, die genau zwei verschiedene natürliche Teiler haben: die Zahl 1 und die Zahl selbst, deren Teilung genau mit dem Rest gleich Null sein wird.</string>
+    <string name="help_text_fatores">Die Zerlegung einer natürlichen Zahl in ein Produkt von Primfaktoren wird als Faktorisierung bezeichnet.\n
+  Die Faktorisierung einer beliebigen Primzahl wird dazu führen, dass die Zahl selbst, weil diese nicht faktorierbar sind. In der Faktorisierung kann der gleiche Primfaktor mehr als einmal auftreten. Wenn dies geschieht, stellen wir den Faktor in Form einer Macht dar, deren Exponent die Anzahl der Vorkommen eines solchen Faktors ist und die Basis der Faktor selbst ist.\n
+  Um die Zerlegung einer Zahl in ein Produkt von Primfaktoren durchzuführen, müssen wir nach der niedrigsten Primzahl suchen, die es in eine exakte Teilung aufteilen kann (Rest der Division gleich Null) und durch diese Zahl so lange wie möglich teilen.\n
+  Dann müssen wir nach der nächsten Prime-Nummer suchen, die es teilen kann und in diesem Verfahren fortfahren, bis der Quotient der Division in 1 geschieht. In diesem Moment werden wir alle primären Faktoren haben, die eine solche Zahl bilden.</string>
+    <string name="help_text_mdc">Divisor ist eine natürliche Zahl von null, die beim Teilen einer anderen natürlichen Zahl eine Teilung mit dem Rest gleich Null erzeugt, dh eine genaue Teilung erzeugt. In diesem Sinne ist die Menge der Zahlen, die von den Divisoren einer natürlichen Zahl gebildet wird, a endliche Menge.\n
+  Wenn die Zahl 1 der einzige Divisor ist, der einer Menge von natürlichen Zahlen gemeinsam ist, so sagen wir, dass die Zahlen dieses Satzes relativ prime oder auch als coprimes bezeichnet werden.\n
+   Eine praktische Methode zur Bestimmung der ggT einer Gruppe von natürlichen Zahlen ist es, die Menge der Divisoren jeder Zahl zu bestimmen und zu überprüfen, welcher der größte Wert ist, der allen Sätzen gemeinsam ist, dies wird der Greates Common Divisor sein.\n
+  Eine weitere Methode zur ggT-Bestimmung ist durch Faktorisierung. Die ggT wird das Produkt von gemeinsamen Faktoren mit niedrigerem Exponenten sein.</string>
+    <string name="help_text_mmc">Bei zwei oder mehr nicht null natürlichen Zahlen ist das kleinste gemeinsame Vielfache (kgV) das niedrigste seiner Vielfachen, das allen gemeinsam ist, mit Ausnahme von Null, das die niedrigste der natürlichen Zahlen ist und ein Vielfaches von allen ist .\n
+   Die Vielfachen einer natürlichen Zahl sind alle diejenigen, die durch diese Zahl teilen, haben Null als den Rest der Teilung.\n
+   Die Vielfachen einer natürlichen Zahl sind das Ergebnis des Produktes dieser Zahl durch eine andere natürliche Zahl.\n
+   Da die Menge der natürlichen Zahlen ein unendlicher Satz ist, sind die Vielfachen einer Zahl auch unendlich.\n
+   Eine praktische Methode zur Bestimmung des kgV eines Satzes von natürlichen Zahlen ist die Zersetzung in primäre Faktoren.\n
+   LCM ist das Produkt von gemeinsamen und nicht gemeinsamen Faktoren, mit den größten Exponenten.\n</string>
+    <string name="help_text_multiplos">Wir nennen ein Vielfaches einer Zahl zum Ergebnis der Multiplikation dieser Zahl mit einer beliebigen natürlichen Zahl: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+ Ein gutes Beispiel für mehrere Zahlen findet sich in den traditionellen Multiplikationstabellen:\n
+\t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
+ \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
+ \t\t2x2 = 4 \t\t\t\t 3x2 = 6\n
+ \t\t2x3 = 6 \t\t\t\t 3x3 = 9\n
+ \t\t2x4 = 8 \t\t\t\t 3x4 = 12\n
+ \t\t2x5 = 10 \t\t\t\t 3x5 = 15\n
+ \t\t2x6 = 12 \t\t\t\t 3x6 = 18\n
+ \t\t2x7 = 14 \t\t\t\t 3x7 = 21\n
+ \t\t2x8 = 16 \t\t\t\t 3x8 = 24\n
+ \t\t2x9 = 18 \t\t\t\t 3x9 = 27\n
+ \t\t2x10 = 20 \t\t\t\t 3x10 = 30\n
+ \t\t... \t\t\t\t ...\n
+ {0, 2, 4, 6, 8, 10, ...} sind Vielfache von 2.\n
+ {0, 3, 6, 9, 12, 15, ...} sind Vielfache von 3.\n
+\n
+Wenn eine Zahl durch eine andere teilbar ist, das heißt, wenn sie dividiert wird, ergibt sich ein Rest gleich Null, wir sagen, dass die Zahlen Vielfache sind:\n
+0 ist ein Vielfaches von 3, da 0: 3 = 0 mit Rest = 0 ist\n
+10 ist ein Vielfaches von 5, weil 10: 5 = 2 mit Rest = 0 ist\n
+40 ist durch 5 teilbar, da 40: 5 = 8 mit Rest = 0 ist\n
+55 ist durch 5 teilbar, da 55: 5 = 11 mit Rest = 0\n
+\n
+Zero ist ein Vielfaches von beliebiger Anzahl und Vielfachen von sich selbst.\n
+Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürlichen Zahlen auch unendlich ist.</string>
+    <string name="help_text_primorial">In der Mathematik und vor allem in der Zahlentheorie ist das Primarium eine Funktion von natürlichen Zahlen zu natürlichen Zahlen, die der faktoriellen Funktion ähnlich sind, aber anstatt sukzessive positive ganze Zahlen zu multiplizieren, werden nur Primzahlen multipliziert. Primär einer Zahl wird mit n# bezeichnet.</string>
+    <string name="hide_explain">[-] Ausblenden ◂</string>
+    <string name="highest_is_high">Höchster Wert ist zu hoch</string>
+    <string name="history_deleted">Geschichte der Ergebnisse gelöscht</string>
+    <string name="home_divisors_description">▸ Divisoren - Berechnen Sie alle Divisoren einer Ganzzahl</string>
+    <string name="home_factorize_description">▸ Prüfen Sie, ob eine Zahl prim ist</string>
+    <string name="home_mdc_description">▸ Faktorisieren - Zerlegen Sie eine Zahl in primäre Faktoren</string>
+    <string name="home_mmc_description">▸ Prüfen Sie, ob eine Zahl prime / Primality-Test ist</string>
+    <string name="home_multiplos_description">▸ ggT - Berechnen Sie den Größter gemeinsamer Teiler zwischen zwei oder mehr Zahlen</string>
+    <string name="home_primetable_description">▸ Bestimmen Sie, ob die Zahlen relativ Primzahlen sind</string>
+    <string name="home_primorial_description">▸ kgV - Berechnen Sie die Kleinstes gemeinsames Vielfaches zwischen zwei oder mehr Zahlen</string>
+    <string name="image_saved">▸ Vielfache - Mehrfache Anzahl berechnen</string>
+    <string name="inicio">▸ Prime-Nummern-Tabellengenerator für einen bestimmten Bereich</string>
+    <string name="insert_integer">▸ Summe der Primzahlen im Bereich</string>
+    <string name="introduzir_numero">▸ Primär - Berechnen Sie das Primär einer Zahl n#</string>
+    <string name="its_a_prime">Bild gespeichert</string>
+    <string name="lowest_is_high">Anfang</string>
+    <string name="lowest_prime">Geben Sie eine ganzzahlige Zahl ein</string>
+    <string name="maior_exps">Nummer einfügen ...</string>
+    <string name="maiores_qzero">Zahlen größer als null.</string>
+    <string name="mais">Mehr</string>
+    <string name="mdc">ggT</string>
+    <string name="mdc_description">Größter gemeinsamer Teiler</string>
+    <string name="mdc_result_prefix">ggT(</string>
+    <string name="mdc_title">ggT - Größter gemeinsamer Teiler</string>
+    <string name="menor_exps">Kleinere exponenten</string>
+    <string name="mmc">kgV</string>
+    <string name="mmc_description">Kleinstes gemeinsames Vielfaches</string>
+    <string name="mmc_result_prefix">kgV(</string>
+    <string name="mmc_title">kgV - Kleinstes gemeinsames Vielfaches</string>
+    <string name="mostrar_todos">Zeige alles</string>
+    <string name="multiply">▻ Multiply</string>
+    <string name="multpl_apresentar">Multiples zum Anzeigen</string>
+    <string name="nao">Nein</string>
+    <string name="nao_comuns">nicht üblich</string>
+    <string name="nav_about_us">Über diese App</string>
+    <string name="nav_divisores">Divisoren</string>
+    <string name="nav_fatorizar">Faktorisieren</string>
+    <string name="nav_home">Zuhause</string>
+    <string name="nav_mdc">GCD</string>
+    <string name="nav_mmc">LCM</string>
+    <string name="nav_multiplos">Vielfache einer Zahl</string>
+    <string name="nav_primes_table">Primes Tischgenerator</string>
+    <string name="nav_primorial">Berechnen Sie das primäre n #</string>
+    <string name="nav_sendmail">E-Mail senden</string>
+    <string name="nav_share">Aktie</string>
+    <string name="no_data">Keine Daten zu teilen</string>
+    <string name="no_primes_range">Es gibt keine Primzahlen im Bereich.</string>
+    <string name="nothing_tosave">Nichts zu retten</string>
+    <string name="nothing_toshare">Keine Ergebnisse zu teilen</string>
+    <string name="number_in_field">Anzahl im Feld</string>
+    <string name="numero_alto">Die Nummer ist zu hoch</string>
+    <string name="open_folder">Ordner öffnen</string>
+    <string name="os_fatores">Faktoren</string>
+    <string name="performance">Performance:</string>
+    <string name="pref_colors_title">Farben anzeigen</string>
+    <string name="pref_description_colors">Zeigen Sie verschiedene Farben für einfache Erklärungen an</string>
+    <string name="pref_description_explanation">Auswählen, wann man Erklärungen der Berechnungen vorlegt: Immer, wenn gefragt oder niemals.</string>
+    <string name="pref_description_performance">CPU-Laufzeit nach der Berechnung anzeigen</string>
+    <string name="pref_description_title">Anwendungseinstellungen</string>
+    <string name="pref_perform_title">Leistung zeigen</string>
+    <string name="pref_title_explanation">Erklärungen anzeigen</string>
+    <string name="primes_in_range">Primzahlen im Bereich.</string>
+    <string name="primetable_title">Prime Number Table Generator</string>
+    <string name="primos_si">Relativ Primzahlen</string>
+    <string name="send">Senden</string>
+    <string name="send_comment">Senden Sie Vorschlag, Verbesserung oder Kommentar</string>
+    <string name="send_it">E-Mail senden?</string>
+    <string name="send_mail_contact">E-Mail senden / Kontakt</string>
+    <string name="show_more">Zeige mehr ▸</string>
+    <string name="sim">Ja</string>
+    <string name="tabela_primos">Prime Zahlen Tabelle</string>
+    <string name="table_between">Tabelle der Primzahlen zwischen</string>
+    <string name="the_number">Nummer</string>
+    <string name="title_activity_settings">Präferenzen</string>
+    <string name="to_obtain_mdc">Faktoren, um den größten gemeinsamen Divisor zu erhalten:</string>
+    <string name="to_obtain_mmc">Die Faktoren, um das Least Common Multiple zu erhalten:</string>
+    <string name="too_high">zu hoch</string>
+    <string name="uma_vez">nur einmal</string>
+    <string name="valor_maximo">Höchster Wert</string>
+    <string name="valor_minimo">Niedrigster Wert</string>
+    <string name="with_the">mit dem</string>
+    <string name="working">Arbeiten…</string>
+    <string name="zeroPrimorial">Zahlen> 0</string>
+    <string name="zero_no_divisores">Divisoren von Null sind alle natürlichen Zahlen größer als Null.</string>
+
+    <string-array name="pref_list_titles">
+        <item>Immer anzeigen</item>
+        <item>Auf Wunsch anzeigen</item>
+        <item>Niemals zeigen</item>
+    </string-array>
+    <string-array name="pref_list_values">
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+</resources>
