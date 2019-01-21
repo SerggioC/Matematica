@@ -30,6 +30,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sergiocruz.MatematicaPro.BuildConfig;
 import com.sergiocruz.MatematicaPro.R;
 
 import java.util.ArrayList;
@@ -192,7 +193,7 @@ public class SwipeToDismissTouchListener implements View.OnTouchListener {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
-                        mActivity.getResources().getString(R.string.app_version_name) + "\n" + text_fromTextViews_final);
+                        BuildConfig.VERSION_NAME + "\n" + text_fromTextViews_final);
                 sendIntent.setType("text/plain");
                 mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getResources().getString(R.string.app_name)));
                 customPopUp.dismiss();

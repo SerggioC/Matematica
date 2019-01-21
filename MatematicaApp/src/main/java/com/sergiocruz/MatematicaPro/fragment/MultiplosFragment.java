@@ -307,7 +307,7 @@ public class MultiplosFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,   //largura
                 LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
 
-        String text = "Múltiplos de " + number + "=\n" + multiplos;
+        String text = getString(R.string.multiplosde) + " " + number + "=\n" + multiplos;
         SpannableStringBuilder ssb = new SpannableStringBuilder(text);
 
         //Adicionar o texto com o resultado

@@ -154,9 +154,9 @@ public class MMCFragment extends Fragment {
     }
 
     private void showToastMoreThanZero() {
-        Toast thetoast = Toast.makeText(mActivity, R.string.maiores_qzero, Toast.LENGTH_SHORT);
-        thetoast.setGravity(Gravity.CENTER, 0, 0);
-        thetoast.show();
+        Toast theToast = Toast.makeText(mActivity, R.string.maiores_qzero, Toast.LENGTH_SHORT);
+        theToast.setGravity(Gravity.CENTER, 0, 0);
+        theToast.show();
     }
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2

@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.sergiocruz.MatematicaPro.BuildConfig;
 import com.sergiocruz.MatematicaPro.R;
 
 /**
@@ -51,7 +52,7 @@ public class SendMailActivity extends AppCompatActivity {
         intent.setType("text/plain");
         intent.setData(Uri.parse(getString(R.string.app_email))); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_SUBJECT, getApplication().getResources().getString(R.string.app_long_description) +
-                getApplication().getResources().getString(R.string.app_version_name) + "e-mail");
+                BuildConfig.VERSION_NAME + "e-mail");
         intent.putExtra(Intent.EXTRA_TEXT, ((android.support.design.widget.TextInputEditText) this.findViewById(R.id.mail_text)).getText().toString());
         if (intent.resolveActivity(getPackageManager()) != null) {
             displayDialogBox(intent);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">May 2017</string>
+    <string name="app_version_date">Aug 2018</string>
 
     <string name="has_email">Do you have an email APP installed?</string>
     <string name="action_ajuda_divisores">How to obtain divisors?</string>
@@ -12,7 +12,7 @@
     <string name="action_clipboard_result">Copy text</string>
     <string name="action_share_history">Share all results as text</string>
     <string name="action_share_history_images">Share all results as images</string>
-    <string name="action_share_result">Share...</string>
+    <string name="action_share_result">Share…</string>
     <string name="activity_title_about_us">About</string>
     <string name="activity_title_send_mail">Send e-mail</string>
     <string name="activity_title_share">Share</string>
@@ -127,7 +127,7 @@
     <string name="comuns">common</string>
     <string name="decompor_num">▻Decompose the numbers in</string>
     <string name="escolher">▻Choose</string>
-    <string name="factorizing">Factorizing...</string>
+    <string name="factorizing">Factorizing…</string>
     <string name="fatores_primos">prime factors:</string>
     <string name="maior_exps">greatest exponents</string>
     <string name="multiply">▻Multiply</string>
@@ -174,7 +174,7 @@
     <string name="calculate_multiplos_title">Calculate multiples of a number</string>
     <string name="nothing_tosave">Nothing to save</string>
     <string name="nav_multiplos">Multiples of a number</string>
-    <string name="help_text_multiplos">We call multiple of a number to the result of multiplying that number by any natural number: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+    <string name="help_text_multiplos">We call multiple of a number to the result of multiplying that number by any natural number: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 …}.\n
         A good example of multiple numbers is found in the traditional multiplication tables:\n
         \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
         \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
@@ -187,9 +187,9 @@
         \t\t2x8 = 16 \t\t\t\t 3x8 = 24\n
         \t\t2x9 = 18 \t\t\t\t 3x9 = 27\n
         \t\t2x10 = 20 \t\t\t\t 3x10 = 30\n
-        \t\t... \t\t\t\t ...\n
-        {0, 2, 4, 6, 8, 10, ...} are multiples of 2.\n
-        {0, 3, 6, 9, 12, 15, ...} are multiples of 3.\n
+        \t\t… \t\t\t\t …\n
+        {0, 2, 4, 6, 8, 10, …} are multiples of 2.\n
+        {0, 3, 6, 9, 12, 15, …} are multiples of 3.\n
 \n
     When one number is divisible by another, that is, when dividing them results in a remainder equal to zero, we say that the numbers are multiples:\n
 \n
@@ -208,4 +208,8 @@
     <string name="action_share_history_pt">Share table text</string>
     <string name="open_folder">Open folder</string>
     <string name="empty_table">Empty table</string>
+    <string name="home_primality_description">▸ Primality Test Verify if a number is prime</string>
+    <string name="application_title_image">Application Title image</string>
+    <string name="primality">Primality Test</string>
+    <string name="multiplosde">Multiples of</string>
 </resources>

@@ -672,6 +672,7 @@ public class FatorizarFragment extends Fragment {
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(new SwipeToDismissTouchListener(
+
                 cardview,
                 mActivity,
                 new SwipeToDismissTouchListener.DismissCallbacks() {

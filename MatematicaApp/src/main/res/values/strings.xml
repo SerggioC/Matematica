@@ -1,7 +1,6 @@
 <resources>
 
-    <string name="app_version_name" translatable="false">3.4</string>
-    <string name="app_version_date">May 2017</string>
+    <string name="app_version_date">August 2018</string>
 
     <string name="app_name" translatable="false">Primes PRO</string>
     <string name="app_long_description" translatable="false">Prime Number Tools Pro v</string>
@@ -38,6 +37,7 @@
         <item>@string/tabela_primos</item>
         <item>@string/nav_multiplos</item>
         <item>@string/nav_primorial</item>
+        <item>@string/primality</item>
     </string-array>
 
     <string name="calculate_primorial_title">Calculate Primorial of a number n#</string>
@@ -60,7 +60,7 @@
     <string name="action_clipboard_result">Copy text</string>
     <string name="action_share_history">Share all results as text</string>
     <string name="action_share_history_images">Share all results as images</string>
-    <string name="action_share_result">Share...</string>
+    <string name="action_share_result">Share…</string>
     <string name="activity_title_about_us">About</string>
     <string name="activity_title_send_mail">Send e-mail</string>
     <string name="activity_title_share">Share</string>
@@ -166,7 +166,7 @@
     <string name="comuns">common</string>
     <string name="decompor_num">▻Decompose the numbers in</string>
     <string name="escolher">▻Choose</string>
-    <string name="factorizing">Factorizing...</string>
+    <string name="factorizing">Factorizing…</string>
     <string name="fatores_primos">prime factors:</string>
     <string name="maior_exps">greatest exponents</string>
     <string name="multiply">▻Multiply</string>
@@ -205,7 +205,7 @@
     <string name="all_images_saved">Saved all as images</string>
     <string name="nothing_tosave">Nothing to save</string>
 
-    <item type="id" name="texto" />
+    <item name="texto" type="id" />
 
     <string-array name="multiplos_size" translatable="false">
         <item>10</item>
@@ -218,7 +218,7 @@
     <string name="action_ajuda_multiplos">What are multiples of a number?</string>
     <string name="calculate_multiplos_title">Calculate multiples of a number</string>
     <string name="nav_multiplos">Multiples of a number</string>
-    <string name="help_text_multiplos">We call multiple of a number to the result of multiplying that number by any natural number: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+    <string name="help_text_multiplos"><![CDATA[We call multiple of a number to the result of multiplying that number by any natural number: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 …}.\n
  A good example of multiple numbers is found in the traditional multiplication tables:\n
 
 \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
@@ -232,9 +232,9 @@
  \t\t2x8 = 16 \t\t\t\t 3x8 = 24\n
  \t\t2x9 = 18 \t\t\t\t 3x9 = 27\n
  \t\t2x10 = 20 \t\t\t\t 3x10 = 30\n
- \t\t... \t\t\t\t ...\n
- {0, 2, 4, 6, 8, 10, ...} are multiples of 2.\n
- {0, 3, 6, 9, 12, 15, ...} are multiples of 3.\n
+ \t\t… \t\t\t\t …\n
+ {0, 2, 4, 6, 8, 10, …} are multiples of 2.\n
+ {0, 3, 6, 9, 12, 15, …} are multiples of 3.\n
 \n
     When one number is divisible by another, that is, when dividing them results in a remainder equal to zero, we say that the numbers are multiples:\n
 \n
@@ -244,7 +244,7 @@
     55 is divisible by 5, since 55: 5 = 11 with remainder = 0\n
 \n
     Zero is a multiple of any number and multiple of itself.\n
-    The set of multiples of a number is infinite because the set of natural numbers is also infinite.</string>
+    The set of multiples of a number is infinite because the set of natural numbers is also infinite.]]></string>
     <string name="home_multiplos_description">▸ multiples - Calculate multiples of a number</string>
     <string name="show_more">Show more ▸</string>
     <string name="multpl_apresentar">Multiples to display</string>
@@ -253,6 +253,11 @@
     <string name="action_share_history_pt">Share table text</string>
     <string name="empty_table">Empty table</string>
     <string name="open_folder">Open folder</string>
+    <string name="application_title_image">Application Title image</string>
+    <string name="home_primality_description">▸ Primality Test Verify if a number is prime</string>
+    <string name="primality">Primality Test</string>
+    <string name="multiplosde">Multiples of</string>
+    <string name="ckeck">Check</string>
 
 
 </resources>

@@ -40,7 +40,7 @@
     <string name="already_inclipboard">Ergebnis bereits in der Zwischenablage</string>
     <string name="and">und</string>
     <string name="app_inicio">Primes PRO - Zuhause</string>
-    <string name="app_version_date">Mai 2017</string>
+    <string name="app_version_date">Aug 2018</string>
     <string name="app_version_description">App Version:</string>
     <string name="calculate">Berechnen</string>
     <string name="calculate_divisors_title">Berechnen Sie die Divisoren einer Zahl</string>
@@ -219,4 +219,8 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string name="home_primality_description">▸ Primalitätstest Überprüfen Sie, ob eine Zahl eine Primzahl ist</string>
+    <string name="primality">Primalitätstest</string>
+    <string name="multiplosde">Vielfache der</string>
+    <string name="application_title_image">Titelbild der Anwendung</string>
 </resources>

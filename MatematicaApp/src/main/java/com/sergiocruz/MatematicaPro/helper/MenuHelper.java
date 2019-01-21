@@ -9,8 +9,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -27,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sergiocruz.MatematicaPro.BuildConfig;
 import com.sergiocruz.MatematicaPro.R;
 
 import java.io.ByteArrayOutputStream;
@@ -35,6 +38,8 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import kotlin.annotation.Target;
 
 import static com.sergiocruz.MatematicaPro.R.id.history;
 
@@ -45,8 +50,8 @@ import static com.sergiocruz.MatematicaPro.R.id.history;
  ******/
 
 public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCallback{
-    public static final String IMAGES_FOLDER = "Matematica Images";
-    public static final int SAVED_IMAGE_QUALITY = 90;
+    private static final String IMAGES_FOLDER = "Matematica Images";
+    private static final int SAVED_IMAGE_QUALITY = 90;
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
@@ -87,7 +92,6 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
 
     }
 
-    @NonNull
     public static String saveViewToImage(View theViewToSave, int index, boolean drawWhiteBG) {
         String pathname;
         theViewToSave.setDrawingCacheEnabled(true);
@@ -119,17 +123,14 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
 
     public static void openFolder_Snackbar(final Activity mActivity, String toastText) {
         Snackbar snack = Snackbar.make(mActivity.findViewById(android.R.id.content), toastText, Snackbar.LENGTH_LONG);
-        snack.setAction(mActivity.getString(R.string.open_folder), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString() + File.separator + IMAGES_FOLDER + File.separator);
-                intent.setDataAndType(uri, "*/*");
-                try {
-                    mActivity.startActivity(Intent.createChooser(intent, mActivity.getString(R.string.open_folder)));
-                } catch (android.content.ActivityNotFoundException e) {
-                    Toast.makeText(mActivity, "Error. Please install a file manager.", Toast.LENGTH_SHORT).show();
-                }
+        snack.setAction(mActivity.getString(R.string.open_folder), v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath().toString() + File.separator + IMAGES_FOLDER + File.separator);
+            intent.setDataAndType(uri, "*/*");
+            try {
+                mActivity.startActivity(Intent.createChooser(intent, mActivity.getString(R.string.open_folder)));
+            } catch (android.content.ActivityNotFoundException e) {
+                Toast.makeText(mActivity, "Error. Please install a file manager.", Toast.LENGTH_SHORT).show();
             }
         });
         snack.setActionTextColor(ContextCompat.getColor(mActivity, R.color.f_color8));
@@ -137,7 +138,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
     }
 
     public static void remove_history(Activity activity) {
-        ViewGroup history = (ViewGroup) activity.findViewById(R.id.history);
+        ViewGroup history = activity.findViewById(R.id.history);
         if ((history).getChildCount() > 0)
             (history).removeAllViews();
         Toast thetoast = Toast.makeText(activity, R.string.history_deleted, Toast.LENGTH_SHORT);
@@ -146,7 +147,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
     }
 
     public static void share_history(Activity activity) {
-        ViewGroup history_view = (ViewGroup) activity.findViewById(history);
+        ViewGroup history_view = activity.findViewById(history);
         ArrayList<View> textViews_withTAG_texto = getViewsByTag(history_view, "texto");
         if (textViews_withTAG_texto.size() > 0) {
             String text_fromTextViews_final = "";
@@ -168,7 +169,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, activity.getResources().getString(R.string.app_long_description) +
-                    activity.getResources().getString(R.string.app_version_name) + "\n" + text_fromTextViews_final);
+                    BuildConfig.VERSION_NAME + "\n" + text_fromTextViews_final);
             sendIntent.setType("text/plain");
             activity.startActivity(Intent.createChooser(sendIntent, activity.getResources().getString(R.string.app_name)));
 
@@ -182,7 +183,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
     // Partilhar todas as imagens
     public static void share_history_images(Activity mActivity) {
         verifyStoragePermissions(mActivity);
-        ViewGroup history_view = (ViewGroup) mActivity.findViewById(history);
+        ViewGroup history_view = mActivity.findViewById(history);
         int childCount = history_view.getChildCount();
 
         if (childCount > 0) {
@@ -197,7 +198,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
             sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.getResources().getString(R.string.app_long_description) +
-                    mActivity.getResources().getString(R.string.app_version_name) + "\n");
+                    BuildConfig.VERSION_NAME + "\n");
             sendIntent.setType("image/jpeg");
             sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, file_uris);
             mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.getResources().getString(R.string.app_name)));
@@ -211,7 +212,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
     // Guardar todas as imagens
     public static void save_history_images(final Activity mActivity) {
         verifyStoragePermissions(mActivity);
-        ViewGroup history_view = (ViewGroup) mActivity.findViewById(history);
+        ViewGroup history_view = mActivity.findViewById(history);
         int childCount = history_view.getChildCount();
         if (childCount > 0) {
             String img_path = null;

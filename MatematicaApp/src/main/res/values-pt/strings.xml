@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_version_date">Maio 2017</string>
+    <string name="app_version_date">Agosto 2018</string>
 
     <string name="app_version_description">Versão da Aplicação:</string>
 
@@ -235,5 +235,9 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="action_share_history_images_pt">Partilhar imagem da tabela</string>
     <string name="open_folder">Abrir pasta</string>
     <string name="empty_table">Tabela vazia</string>
+    <string name="home_primality_description">▸ Teste de primalidade\nVerificar se um número é primo</string>
+    <string name="multiplosde">Múltiplos de</string>
+    <string name="primality">Teste de Primalidade</string>
+    <string name="application_title_image">Imagem do Titulo da aplicação</string>
 
 </resources>

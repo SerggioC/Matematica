@@ -1,223 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sergiocruz.MatematicaPro.fragment.HomeFragment">
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/linear_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/linear_main"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical">
+            android:contentDescription="@string/application_title_image"
+            android:scaleType="fitXY"
+            android:src="@drawable/math_board_pro" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
-                android:src="@drawable/math_board_pro"/>
+        <TextView
+            android:id="@+id/primality"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_mmc"
+            android:drawableLeft="@mipmap/ic_mmc"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="primality"
+            android:padding="@dimen/default_gap"
+            android:text="@string/home_primality_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="0dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_mmc"
+            android:drawableLeft="@mipmap/ic_mmc"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="mmc"
+            android:padding="@dimen/default_gap"
+            android:text="@string/home_mmc_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@mipmap/ic_mmc"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:onClick="mmc"
-                    android:padding="8dp"
-                    android:text="@string/home_mmc_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat"/>
+        <TextView
+            android:id="@+id/textmdc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_mdc"
+            android:drawableLeft="@mipmap/ic_mdc"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="mdc"
+            android:padding="8dp"
+            android:text="@string/home_mdc_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/textfactor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_factor"
+            android:drawableLeft="@mipmap/ic_factor"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="fatorizar"
+            android:padding="8dp"
+            android:text="@string/home_factorize_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
+        <TextView
+            android:id="@+id/text_divisores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_divisores"
+            android:drawableLeft="@mipmap/ic_divisores"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="divisores"
+            android:padding="8dp"
+            android:text="@string/home_divisors_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-                <TextView
-                    android:id="@+id/textmdc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@mipmap/ic_mdc"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:onClick="mdc"
-                    android:padding="8dp"
-                    android:text="@string/home_mdc_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat"/>
+        <TextView
+            android:id="@+id/text_primos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_primes"
+            android:drawableLeft="@mipmap/ic_primes"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="primes_table"
+            android:padding="8dp"
+            android:text="@string/home_primetable_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/text_multiplos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/default_gap"
+            android:layout_marginTop="@dimen/default_gap"
+            android:layout_marginRight="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_multiplos"
+            android:drawableLeft="@mipmap/ic_multiplos"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="multiplos"
+            android:padding="8dp"
+            android:text="@string/home_multiplos_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
+        <TextView
+            android:id="@+id/textViewPrimorial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/default_gap"
+            android:background="@drawable/intro_cards_background"
+            android:drawableStart="@mipmap/ic_primorial"
+            android:drawableLeft="@mipmap/ic_primorial"
+            android:drawablePadding="16dp"
+            android:gravity="center_vertical"
+            android:onClick="primorial"
+            android:padding="8dp"
+            android:text="@string/home_primorial_description"
+            android:textAppearance="@style/TextAppearance.AppCompat" />
 
-                <TextView
-                    android:id="@+id/textfactor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@mipmap/ic_factor"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:onClick="fatorizar"
-                    android:padding="8dp"
-                    android:text="@string/home_factorize_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat"/>
+    </LinearLayout>
 
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
-
-                <TextView
-                    android:id="@+id/text_divisores"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@mipmap/ic_divisores"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:onClick="divisores"
-                    android:padding="8dp"
-                    android:text="@string/home_divisors_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat"/>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
-
-                <TextView
-                    android:id="@+id/text_primos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@mipmap/ic_primes"
-                    android:drawablePadding="16dp"
-                    android:gravity="center_vertical"
-                    android:onClick="primes_table"
-                    android:padding="8dp"
-                    android:text="@string/home_primetable_description"
-                    android:textAppearance="@style/TextAppearance.AppCompat"/>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
-
-                <TextView
-                    android:id="@+id/text_multiplos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:onClick="multiplos"
-                    android:text="@string/home_multiplos_description"
-                    android:drawableLeft="@mipmap/ic_multiplos"
-                    android:padding="8dp"
-                    android:drawablePadding="16dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat"/>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_7"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="8dp">
-
-                    <TextView
-                        android:id="@+id/textView7"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:onClick="primorial"
-                        android:text="@string/home_primorial_description"
-                        android:drawableLeft="@mipmap/ic_primorial"
-                        android:padding="8dp"
-                        android:drawablePadding="16dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat"/>
-
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-
-    </ScrollView>
-
-</RelativeLayout>
+</ScrollView>

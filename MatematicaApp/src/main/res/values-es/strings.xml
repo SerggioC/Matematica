@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">Mayo 2017</string>
+    <string name="app_version_date">08/2018</string>
 
     <string name="_incomplete_calc">Cálculo incompleto...</string>
     <string name="_numero_primo">Número primo</string>
@@ -218,4 +218,8 @@
     <string name="action_share_history_pt">Compartir texto de la tabla</string>
     <string name="open_folder">Abrir carpeta</string>
     <string name="empty_table">Tabla vacía</string>
+    <string name="home_primality_description">▸ Test Prueba de primalidad Verificar si un número es primo</string>
+    <string name="application_title_image">Imagen del título de la aplicación</string>
+    <string name="primality">Prueba de Primalidad</string>
+    <string name="multiplosde">Múltiples de</string>
 </resources>
