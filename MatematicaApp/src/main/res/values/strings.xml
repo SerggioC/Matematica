@@ -258,6 +258,8 @@
     <string name="primality">Primality Test</string>
     <string name="multiplosde">Multiples of</string>
     <string name="ckeck">Check</string>
+    <string name="cancel_task">Cancel Task</string>
+    <string name="information_icon">Information Icon</string>
 
 
 </resources>

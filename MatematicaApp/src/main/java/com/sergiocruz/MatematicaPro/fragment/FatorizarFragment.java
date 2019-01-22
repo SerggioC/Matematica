@@ -488,7 +488,7 @@ public class FatorizarFragment extends Fragment {
         SpannableStringBuilder ssb_num = new SpannableStringBuilder(str_num);
         ssb_num.append(ssb_fatores_top);
         textView.setText(ssb_num);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Companion.getCARD_TEXT_SIZE());
         textView.setTag(R.id.texto, "texto");
 
         // add the textview com os fatores multiplicados to the Linear layout vertical root
@@ -505,7 +505,7 @@ public class FatorizarFragment extends Fragment {
 
             TextView textView_expl1 = new TextView(mActivity);
             textView_expl1.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            textView_expl1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            textView_expl1.setTextSize(TypedValue.COMPLEX_UNIT_SP, Companion.getCARD_TEXT_SIZE());
             String explain_text_1 = getString(R.string.expl_text_divisores_1);
             SpannableStringBuilder ssb_explain_1 = new SpannableStringBuilder(explain_text_1);
             ForegroundColorSpan boldColorSpan = new ForegroundColorSpan(ContextCompat.getColor(mActivity, R.color.boldColor));
@@ -538,7 +538,7 @@ public class FatorizarFragment extends Fragment {
 
             TextView textView_results = new TextView(mActivity);
             textView_results.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, Companion.getCARD_TEXT_SIZE());
             textView_results.setGravity(Gravity.RIGHT);
             SpannableStringBuilder ssb_str_results = new SpannableStringBuilder(str_results);
             ssb_str_results.setSpan(new RelativeSizeSpan(0.9f), ssb_str_results.length() - str_results.length(), ssb_str_results.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -549,7 +549,7 @@ public class FatorizarFragment extends Fragment {
 
             TextView textView_divisores = new TextView(mActivity);
             textView_divisores.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            textView_divisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, Companion.getCARD_TEXT_SIZE());
             textView_divisores.setGravity(Gravity.LEFT);
             ssb_str_divisores.setSpan(new RelativeSizeSpan(0.9f), ssb_str_divisores.length() - ssb_str_divisores.length(), ssb_str_divisores.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
             textView_divisores.setText(ssb_str_divisores);
@@ -574,7 +574,7 @@ public class FatorizarFragment extends Fragment {
             explainLink.setLayoutParams(new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,   //largura
                     LinearLayout.LayoutParams.WRAP_CONTENT)); //altura
-            explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, Companion.getCARD_TEXT_SIZE());
             explainLink.setTextColor(ContextCompat.getColor(mActivity, R.color.linkBlue));
 
             final Boolean[] isExpanded = {false};
@@ -631,7 +631,7 @@ public class FatorizarFragment extends Fragment {
 
             TextView textView_fact_expanded = new TextView(mActivity);
             textView_fact_expanded.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-            textView_fact_expanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE);
+            textView_fact_expanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, Companion.getCARD_TEXT_SIZE());
             textView_fact_expanded.setGravity(Gravity.LEFT);
             String explain_text_2 = getString(R.string.explain_divisores2) + "\n";
             SpannableStringBuilder ssb_explain_2 = new SpannableStringBuilder(explain_text_2);

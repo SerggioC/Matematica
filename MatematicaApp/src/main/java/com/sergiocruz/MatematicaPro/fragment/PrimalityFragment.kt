@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.helper.showCustomToast
+import kotlinx.android.synthetic.main.fragment_primality.*
+import java.math.BigInteger
 
 /**
  * A simple [Fragment] subclass.
@@ -30,6 +33,22 @@ class PrimalityFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkPrime.setOnClickListener {
+            val number = editNum.text.toString()
+            val bigNumber = number.toBigIntegerOrNull(10)
+            if (bigNumber != null) {
+                checkIfProbablePrime(bigNumber)
+            } else {
+                showCustomToast(context, "Invalid Number")
+            }
+        }
+        btnClearText.setOnClickListener {
+            editNum.setText("")
+        }
+    }
 
+    private fun checkIfProbablePrime(bigNumber: BigInteger) {
+        val isPrime = bigNumber.isProbablePrime(100)
+        showCustomToast(context, if (isPrime) "Prime Number!" else "Not a prime")
     }
 }

@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView2"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGrey">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bgCardColor"
-        android:layout_margin="4dp"
-        android:orientation="vertical">
-
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/background_card_style"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView5"
@@ -33,9 +38,8 @@
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 
-
         <EditText
-            android:id="@+id/editNumFact"
+            android:id="@+id/editNum"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/edittext_height"
             android:layout_gravity="center"
@@ -56,54 +60,46 @@
             card_view:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <Button
-            android:id="@+id/btn_clear"
+            android:id="@+id/btnClearText"
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/ic_clear_text"
-            card_view:layout_constraintBottom_toBottomOf="@+id/editNumFact"
-            card_view:layout_constraintEnd_toEndOf="@+id/editNumFact"
-            card_view:layout_constraintTop_toTopOf="@+id/editNumFact" />
-
+            card_view:layout_constraintBottom_toBottomOf="@+id/editNum"
+            card_view:layout_constraintEnd_toEndOf="@+id/editNum"
+            card_view:layout_constraintTop_toTopOf="@+id/editNum" />
 
         <Button
             android:id="@+id/checkPrime"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
             android:background="@drawable/apptheme_btn_default_holo_light"
             android:text="@string/ckeck"
             android:textAllCaps="false"
-            card_view:layout_constraintBottom_toBottomOf="parent"
-            card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/editNumFact" />
+            card_view:layout_constraintEnd_toEndOf="@+id/editNum"
+            card_view:layout_constraintTop_toBottomOf="@+id/editNum" />
 
         <ImageView
             android:id="@+id/cancelTask"
-            android:layout_width="29dp"
+            android:layout_width="wrap_content"
             android:layout_height="29dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
+            android:contentDescription="@string/cancel_task"
             android:src="@drawable/stop_button"
             android:visibility="gone"
             card_view:layout_constraintBottom_toBottomOf="@+id/checkPrime"
             card_view:layout_constraintEnd_toStartOf="@+id/checkPrime"
-            card_view:layout_constraintHorizontal_bias="0.438"
-            card_view:layout_constraintStart_toStartOf="@+id/editNumFact"
+            card_view:layout_constraintStart_toStartOf="@+id/editNum"
             card_view:layout_constraintTop_toTopOf="@+id/checkPrime" />
-
 
         <View
             android:id="@+id/progress"
@@ -111,26 +107,31 @@
             android:layout_height="4dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
             android:background="@color/lightBlue"
-            android:visibility="gone"
-            card_view:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent" />
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/checkPrime" />
 
-
-        <LinearLayout
-            android:id="@+id/history"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:orientation="vertical"
-            card_view:layout_constraintTop_toTopOf="@+id/progress"
-            tools:layout_editor_absoluteX="74dp" />
 
     </android.support.constraint.ConstraintLayout>
 
-</ScrollView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        card_view:layout_constraintEnd_toEndOf="parent"
+        card_view:layout_constraintStart_toStartOf="parent"
+        card_view:layout_constraintTop_toBottomOf="@+id/head" />
 
+
+</android.support.constraint.ConstraintLayout>

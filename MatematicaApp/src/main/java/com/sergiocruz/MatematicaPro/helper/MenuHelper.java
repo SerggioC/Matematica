@@ -78,6 +78,7 @@ public class MenuHelper implements ActivityCompat.OnRequestPermissionsResultCall
     }
 
 
+    // TODO manage permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.i("Sergio>", this + "\nonRequestPermissionsResult:\nrequestCode=\n" + requestCode);
