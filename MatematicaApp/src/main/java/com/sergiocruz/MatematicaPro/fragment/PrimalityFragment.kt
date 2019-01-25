@@ -8,42 +8,32 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.helper.InfoLevel
 import com.sergiocruz.MatematicaPro.helper.showCustomToast
 import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PrimalityFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
-class PrimalityFragment : Fragment() {
+class PrimalityFragment : BaseFragment() {
+    override fun getLayoutIdForFragment() = R.layout.fragment_primality
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_primality, container, false)
-    }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkPrime.setOnClickListener {
-            val number = editNum.text.toString()
+        calculateButton.setOnClickListener {
+            val number = inputEditText.text.toString()
             val bigNumber = number.toBigIntegerOrNull(10)
             if (bigNumber != null) {
                 checkIfProbablePrime(bigNumber)
             } else {
-                showCustomToast(context, "Invalid Number")
+                showCustomToast(context, "Invalid Number", InfoLevel.WARNING)
             }
         }
-        btnClearText.setOnClickListener {
-            editNum.setText("")
+        clearButton.setOnClickListener {
+            inputEditText.setText("")
         }
     }
 

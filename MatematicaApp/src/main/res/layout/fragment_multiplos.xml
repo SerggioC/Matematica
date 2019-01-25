@@ -71,7 +71,7 @@
                             android:textAlignment="center"/>
 
                         <Button
-                            android:id="@+id/btn_clear"
+                            android:id="@+id/clearButton"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
                             android:layout_gravity="center_vertical|right"

@@ -1,6 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
@@ -10,16 +10,11 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -27,11 +22,11 @@ import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.*
-import com.sergiocruz.MatematicaPro.helper.OnCancelBackgroundTask
-import com.sergiocruz.MatematicaPro.helper.displayCancelDialogBox
+import com.sergiocruz.MatematicaPro.helper.*
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.openFolder_Snackbar
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.saveViewToImage
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.verifyStoragePermissions
 import kotlinx.android.synthetic.main.fragment_primes_table.*
-import java.lang.Long.parseLong
 import java.lang.Long.toString
 import java.text.DecimalFormat
 import java.util.*
@@ -42,40 +37,34 @@ import java.util.*
  * Created by Sergio on 11/11/2016 16:31
  */
 
-class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
+class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
+    OnEditorActionError {
+
 
     private var BG_Operation: AsyncTask<Long, Double, ArrayList<String>> = LongOperation()
     var tableData: ArrayList<String>? = null
     internal var cv_width: Int = 0
     internal var height_dip: Int = 0
-    var num_min: Long = 0L
-    var num_max: Long = 50L
+    var numMin: Long? = 0L
+    var numMax: Long? = 50L
     internal var checkboxChecked: Boolean? = true
     internal var full_table: ArrayList<String>? = null
     lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // have a menu in this fragment
         setHasOptionsMenu(true)
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
     }
 
+    override fun getLayoutIdForFragment() = R.layout.fragment_primes_table
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-
-        // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_primes_table, menu)
         inflater.inflate(R.menu.menu_sub_main, menu)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ) = inflater.inflate(R.layout.fragment_primes_table, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         switchPrimos.setOnCheckedChangeListener { compoundButton, bool ->
@@ -104,82 +93,25 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                         }
                     }
                 } else {
-                    val primes_adapter =
-                        ArrayAdapter(activity!!, R.layout.table_item, R.id.tableItem, tableData!!)
-                    historyGridView.adapter = primes_adapter
+                    historyGridView.adapter =
+                        ArrayAdapter(context, R.layout.table_item, R.id.tableItem, tableData)
                 }
             }
         }
 
-        cancelTask.setOnClickListener { displayCancelDialogBox(this.context!!, this) }
-
-        createTableBtn.setOnClickListener { makePrimesTable(view) }
-
+        cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
+        createTableBtn.setOnClickListener { makePrimesTable() }
         btn_clear_min.setOnClickListener { min_pt.setText("") }
-
         btn_clear_max.setOnClickListener { max_pt.setText("") }
 
-        min_pt.addTextChangedListener(object : TextWatcher {
-            var num1: Long? = null
-            var oldnum1: String? = null
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                oldnum1 = s.toString()
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (TextUtils.isEmpty(s)) return
-
-                try {
-                    // Tentar converter o string para long
-                    num1 = parseLong(s.toString())
-                } catch (e: Exception) {
-                    min_pt.setText(oldnum1)
-                    min_pt.setSelection(min_pt.text.length) //Colocar o cursor no final do texto
-
-                    showCenterToast(R.string.lowest_is_high)
-                }
-
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-
-
-        max_pt.addTextChangedListener(object : TextWatcher {
-            var num2: Long? = null
-            var oldnum2: String? = null
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                oldnum2 = s.toString()
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (TextUtils.isEmpty(s)) return
-
-                try {
-                    // Tentar converter o string para long
-                    num2 = parseLong(s.toString())
-                } catch (e: Exception) {
-                    max_pt.setText(oldnum2)
-                    max_pt.setSelection(max_pt.text.length) //Colocar o cursor no final do texto
-                    showCenterToast(R.string.highest_is_high)
-                }
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-            }
-        })
-
-        max_pt.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) makePrimesTable(view)
-            true
-        }
-
+        min_pt.watchThis(this, this)
+        max_pt.watchThis(this, this)
     }
+
+    override fun onActionError() =
+        showCustomToast(context, getString(R.string.highest_is_high), InfoLevel.WARNING)
+
+    override fun onActionDone() = makePrimesTable()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -188,25 +120,20 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
         val id = item.itemId
         val childCount = historyGridView.childCount
         if (id == R.id.action_save_image_pt) {
-            verifyStoragePermissions(activity)
+            verifyStoragePermissions(activity as Activity)
             if (childCount > 0) {
                 val img_path = saveViewToImage(historyGridView, 0, true)
                 if (img_path != null) {
                     openFolder_Snackbar(activity!!, getString(R.string.image_saved))
                 } else {
-                    val thetoast =
-                        Toast.makeText(context, R.string.errorsavingimg, Toast.LENGTH_SHORT)
-                    thetoast.setGravity(Gravity.CENTER, 0, 0)
-                    thetoast.show()
+                    showCustomToast(context, getString(R.string.errorsavingimg), InfoLevel.ERROR)
                 }
             } else {
-                val theToast = Toast.makeText(context, R.string.empty_table, Toast.LENGTH_SHORT)
-                theToast.setGravity(Gravity.CENTER, 0, 0)
-                theToast.show()
+                showCustomToast(context, getString(R.string.empty_table), InfoLevel.WARNING)
             }
         }
         if (id == R.id.action_share_history_image_pt) {
-            verifyStoragePermissions(activity)
+            verifyStoragePermissions(activity as Activity)
             if (childCount > 0) {
                 val file_uris = ArrayList<Uri>(1)
                 val img_path = saveViewToImage(historyGridView, 0, true)
@@ -229,43 +156,33 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                     )
 
                 } else {
-                    val theToast =
-                        Toast.makeText(context, R.string.errorsavingimg, Toast.LENGTH_SHORT)
-                    theToast.setGravity(Gravity.CENTER, 0, 0)
-                    theToast.show()
+                    showCustomToast(context, getString(R.string.errorsavingimg), InfoLevel.ERROR)
                 }
             } else {
-                val thetoast = Toast.makeText(context, R.string.empty_table, Toast.LENGTH_SHORT)
-                thetoast.setGravity(Gravity.CENTER, 0, 0)
-                thetoast.show()
-
+                showCustomToast(context, getString(R.string.empty_table), InfoLevel.WARNING)
             }
         }
         // Partilhar tabela como texto
         if (id == R.id.action_share_history) {
             if (tableData != null) {
-                val primes_string =
-                    getString(R.string.table_between) + " " + num_min + " " + getString(R.string.and) + " " + num_max + ":\n" + tableData
+                val primesString =
+                    getString(R.string.table_between) + " " + numMin + " " + getString(R.string.and) + " " + numMax + ":\n" + tableData
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.putExtra(
                     Intent.EXTRA_TEXT, getString(R.string.app_long_description) +
-                            BuildConfig.VERSION_NAME + "\n" + primes_string
+                            BuildConfig.VERSION_NAME + "\n" + primesString
                 )
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             } else {
-                val theToast = Toast.makeText(context, R.string.no_data, Toast.LENGTH_SHORT)
-                theToast.setGravity(Gravity.CENTER, 0, 0)
-                theToast.show()
+                showCustomToast(context, getString(R.string.no_data))
             }
         }
 
         if (id == R.id.action_clear_all_history) {
             historyGridView.adapter = null
             tableData = null
-            num_min = 0L
-            num_max = 50L
             min_pt.text = Editable.Factory().newEditable("1")
             max_pt.text = Editable.Factory().newEditable("50")
         }
@@ -279,55 +196,51 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
-        cancelAsyncTask()
+        if (cancelAsyncTask(BG_Operation, context)) resetButtons()
     }
 
-    private fun makePrimesTable(view: View) {
-        val min_string = min_pt.text.toString().replace("[^\\d]".toRegex(), "")
-        val max_string = max_pt.text.toString().replace("[^\\d]".toRegex(), "")
+    private fun makePrimesTable() {
+        val minString = min_pt.text.toString().replace("[^\\d]".toRegex(), "")
+        val maxString = max_pt.text.toString().replace("[^\\d]".toRegex(), "")
 
-        if (TextUtils.isEmpty(min_string) || TextUtils.isEmpty(min_string)) {
-            showCenterToast(R.string.fill_min_max)
+        if (TextUtils.isEmpty(minString) || TextUtils.isEmpty(minString)) {
+            showCustomToast(context, getString(R.string.fill_min_max), InfoLevel.WARNING)
             return
         }
 
-        try {
-            // Tentar converter o string do valor mínimo para Long 2^63-1
-            num_min = parseLong(min_string)
-            if (num_min < 1L) {
-                showCenterToast(R.string.lowest_prime)
-                min_pt.setText("1")
-                num_min = 1L
-            }
-        } catch (e: Exception) {
-            showCenterToast(R.string.lowest_is_high)
+        var minValue = minString.toLongOrNull(10)
+        if (minValue == null) {
+            showCustomToast(context, getString(R.string.lowest_is_high), InfoLevel.WARNING)
+            return
+        } else if (minValue < 1) {
+            showCustomToast(context, getString(R.string.lowest_prime), InfoLevel.WARNING)
+            min_pt.setText("1")
+            numMin = 1L
+            minValue = 1L
+        }
+
+        var maxValue = maxString.toLongOrNull(10)
+        if (maxValue == null) {
+            showCustomToast(context, getString(R.string.highest_is_high), InfoLevel.WARNING)
+            return
+        } else if (maxValue < 1) {
+            showCustomToast(context, getString(R.string.lowest_prime), InfoLevel.WARNING)
+            max_pt.setText("1")
+            numMax = 1L
+            maxValue = 1L
+        }
+
+        if (minValue > maxValue) {
+            val swapp = minValue
+            minValue = maxValue
+            maxValue = swapp
+            min_pt.setText(minValue.toString())
+            max_pt.setText(maxValue.toString())
+            makePrimesTable()
             return
         }
 
-        try {
-            // Tentar converter o string do valor mínimo para Long 2^63-1
-            num_max = parseLong(max_string)
-            if (num_max < 1L) {
-                showCenterToast(R.string.lowest_prime)
-                max_pt.setText("1")
-                num_max = 2L
-            }
-        } catch (e: Exception) {
-            showCenterToast(R.string.highest_is_high)
-            return
-        }
-
-
-        if (num_min > num_max) {
-            val swapp = num_min
-            num_min = num_max
-            num_max = swapp
-            min_pt.setText(num_min.toString())
-            max_pt.setText(num_max.toString())
-            makePrimesTable(view)
-        }
-
-        BG_Operation = LongOperation().execute(num_min, num_max)
+        BG_Operation = LongOperation().execute(minValue, maxValue)
 
     }
 
@@ -359,26 +272,7 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        if (BG_Operation.status == AsyncTask.Status.RUNNING) {
-            BG_Operation.cancel(true)
-            showCenterToast(R.string.canceled_op)
-        }
-    }
-
-
-    private fun cancelAsyncTask() {
-        if (BG_Operation.status == AsyncTask.Status.RUNNING) {
-            BG_Operation.cancel(true)
-            showCenterToast(R.string.canceled_op)
-            resetButtons()
-        }
-    }
-
-    private fun showCenterToast(@StringRes resId: Int) {
-        val theToast = Toast.makeText(context, resId, Toast.LENGTH_SHORT)
-        theToast.setGravity(Gravity.CENTER, 0, 0)
-        theToast.show()
+        cancelAsyncTask(BG_Operation, context)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -397,18 +291,13 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
             val lr_dip = (4 * scale + 0.5f).toInt() * 2
             cv_width = width - lr_dip
         }
-        hideKeyboard()
-    }
+        hideKeyboard(activity as Activity)
 
-    fun hideKeyboard() {
-        //Hide the keyboard
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
     }
 
     private fun resetButtons() {
         progressBar.visibility = View.GONE
-        cancelTask.visibility = View.GONE
+        cancelButton.visibility = View.GONE
         createTableBtn.isClickable = true
         createTableBtn.setText(R.string.gerar)
     }
@@ -419,8 +308,8 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
         public override fun onPreExecute() {
             createTableBtn.isClickable = false
             createTableBtn.text = getString(R.string.working)
-            cancelTask.visibility = View.VISIBLE
-            hideKeyboard()
+            cancelButton.visibility = View.VISIBLE
+            hideKeyboard(activity as Activity)
             cv_width = cardViewMain.width
             val scale = activity!!.resources.displayMetrics.density
             height_dip = (4 * scale + 0.5f).toInt()
@@ -429,25 +318,25 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
         }
 
         override fun doInBackground(vararg params: Long?): ArrayList<String> {
-            num_min = params[0] as Long
-            num_max = params[1] as Long
+            val numMin = params[0] as Long
+            val numMax = params[1] as Long
 
             full_table = ArrayList()
 
-            for (i in num_min..num_max) {
+            for (i in numMin..numMax) {
                 full_table!!.add(i.toString())
             }
             val primes = ArrayList<String>()
             var progress: Double
             var oldProgress = 0.0
-            var min = num_min
+            var min = numMin
             if (min == 1L) min = 2L
             if (min == 2L) {
                 primes.add("2")
                 min = 3L
             }
 
-            for (i in min..num_max) {
+            for (i in min..numMax) {
                 var isPrime = true
                 if (i % 2 == 0L) isPrime = false
                 if (isPrime) {
@@ -463,7 +352,7 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                 if (isPrime) {
                     primes.add(toString(i))
                 }
-                progress = i.toDouble() / num_max.toDouble()
+                progress = i.toDouble() / numMax.toDouble()
                 if (progress - oldProgress > 0.05) {
                     publishProgress(progress)
                     oldProgress = progress
@@ -477,10 +366,10 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
             if (this@PrimesTableFragment.isVisible) {
                 val progress: Double = values[0] ?: 0.0
                 progressBar.layoutParams =
-                        LinearLayout.LayoutParams(
-                            Math.round(progress * cv_width).toInt(),
-                            height_dip
-                        )
+                    LinearLayout.LayoutParams(
+                        Math.round(progress * cv_width).toInt(),
+                        height_dip
+                    )
             }
         }
 
@@ -492,7 +381,7 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                 display.getSize(size)
                 val width = size.x  //int height = size.y;
                 //int max_num_length = result.get(result.size() - 1).length();
-                val max_num_length = num_max.toString().length
+                val max_num_length = numMax.toString().length
                 val scale = resources.displayMetrics.density
                 val num_length = max_num_length * (18 * scale + 0.5f).toInt() + 8
                 val num_columns = Math.round((width / num_length).toFloat())
@@ -514,9 +403,19 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                             val view = super.getView(position, convertView, parent)
                             view as CardView
                             if (tableData!!.contains(full_table!![position])) { // Se o número for primo
-                                view.setCardBackgroundColor(ContextCompat.getColor(this.context, R.color.gridcolor))
+                                view.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this.context,
+                                        R.color.gridcolor
+                                    )
+                                )
                             } else {
-                                view.setCardBackgroundColor(ContextCompat.getColor(this.context, R.color.white))
+                                view.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this.context,
+                                        R.color.white
+                                    )
+                                )
                             }
                             return view
                         }
@@ -529,13 +428,9 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                 numPrimesTextView.visibility = View.VISIBLE
                 numPrimesTextView.text = "${getString(R.string.cardinal_primos)} ${result.size}"
                 if (result.size == 0) {
-                    showCenterToast(R.string.no_primes_range)
+                    showCustomToast(context, getString(R.string.no_primes_range))
                 } else {
-                    Toast.makeText(
-                        activity,
-                        getString(R.string.existem) + " " + result.size + " " + getString(R.string.primes_in_range),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showCustomToast(context, getString(R.string.existem) + " " + result.size + " " + getString(R.string.primes_in_range))
                 }
                 showPerformance()
                 resetButtons()
@@ -603,12 +498,11 @@ class PrimesTableFragment : Fragment(), OnCancelBackgroundTask {
                     Toast.LENGTH_LONG
                 ).show()
                 numPrimesTextView.visibility = View.VISIBLE
-                numPrimesTextView.text = getString(R.string.cardinal_primos) + " (" + parcial.size +
-                        ")"
+                numPrimesTextView.text = "${getString(R.string.cardinal_primos)} (${parcial.size})"
                 showPerformance()
                 resetButtons()
             } else if (parcial.size == 0) {
-                showCenterToast(R.string.canceled_noprimes)
+                showCustomToast(context, getString(R.string.canceled_noprimes))
                 historyGridView.adapter = null
                 resetButtons()
             }

@@ -31,7 +31,7 @@
                 android:paddingTop="4dp">
 
                 <TextView
-                    android:id="@+id/textView5"
+                    android:id="@+id/titleTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -153,14 +153,15 @@
                         android:textAllCaps="false"/>
 
                     <ImageView
-                        android:id="@+id/cancelTask"
+                        android:id="@+id/cancelButton"
                         android:layout_width="29dp"
                         android:layout_height="29dp"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="16dp"
                         android:layout_toRightOf="@id/createTableBtn"
                         android:src="@drawable/stop_button"
-                        android:visibility="gone"/>
+                        android:visibility="gone"
+                        android:contentDescription="TODO" />
 
 
                     <android.support.v7.widget.SwitchCompat

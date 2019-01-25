@@ -28,7 +28,7 @@
             android:textSize="20sp"/>
 
         <WebView
-            android:id="@+id/web_view"
+            android:id="@+id/webView"
             android:layout_width="108dp"
             android:layout_height="67dp"
             android:layout_gravity="center_horizontal"
@@ -48,11 +48,11 @@
             android:textAlignment="viewStart"/>
 
         <Button
+            android:id="@+id/sendMailButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/apptheme_btn_default_holo_light"
-            android:onClick="send_me_mail"
             android:text="@string/send"/>
 
     </LinearLayout>

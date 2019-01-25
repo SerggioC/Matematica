@@ -14,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/mathv4"/>
+        android:src="@drawable/mathv4"
+        android:contentDescription="TODO" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -33,7 +34,8 @@
 
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/black"
-            app:srcCompat="@mipmap/ic_launcher"/>
+            app:srcCompat="@mipmap/ic_launcher"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/name"

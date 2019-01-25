@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.verifyStoragePermissions
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.verifyStoragePermissions
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 

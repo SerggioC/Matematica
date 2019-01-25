@@ -21,7 +21,7 @@
         card_view:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -30,7 +30,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:fontFamily="sans-serif"
             android:text="@string/primality"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -39,7 +38,7 @@
             card_view:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editNum"
+            android:id="@+id/inputEditText"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/edittext_height"
             android:layout_gravity="center"
@@ -57,21 +56,21 @@
             android:textAlignment="center"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/textView5" />
+            card_view:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
         <Button
-            android:id="@+id/btnClearText"
+            android:id="@+id/clearButton"
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/ic_clear_text"
-            card_view:layout_constraintBottom_toBottomOf="@+id/editNum"
-            card_view:layout_constraintEnd_toEndOf="@+id/editNum"
-            card_view:layout_constraintTop_toTopOf="@+id/editNum" />
+            card_view:layout_constraintBottom_toBottomOf="@+id/inputEditText"
+            card_view:layout_constraintEnd_toEndOf="@+id/inputEditText"
+            card_view:layout_constraintTop_toTopOf="@+id/inputEditText" />
 
         <Button
-            android:id="@+id/checkPrime"
+            android:id="@+id/calculateButton"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_centerInParent="true"
@@ -81,11 +80,12 @@
             android:background="@drawable/apptheme_btn_default_holo_light"
             android:text="@string/ckeck"
             android:textAllCaps="false"
-            card_view:layout_constraintEnd_toEndOf="@+id/editNum"
-            card_view:layout_constraintTop_toBottomOf="@+id/editNum" />
+            card_view:layout_constraintEnd_toEndOf="@+id/inputEditText"
+            card_view:layout_constraintStart_toStartOf="@+id/inputEditText"
+            card_view:layout_constraintTop_toBottomOf="@+id/inputEditText" />
 
         <ImageView
-            android:id="@+id/cancelTask"
+            android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="29dp"
             android:layout_alignParentEnd="true"
@@ -96,13 +96,13 @@
             android:contentDescription="@string/cancel_task"
             android:src="@drawable/stop_button"
             android:visibility="gone"
-            card_view:layout_constraintBottom_toBottomOf="@+id/checkPrime"
-            card_view:layout_constraintEnd_toStartOf="@+id/checkPrime"
-            card_view:layout_constraintStart_toStartOf="@+id/editNum"
-            card_view:layout_constraintTop_toTopOf="@+id/checkPrime" />
+            card_view:layout_constraintBottom_toBottomOf="@+id/calculateButton"
+            card_view:layout_constraintEnd_toStartOf="@+id/calculateButton"
+            card_view:layout_constraintStart_toStartOf="@+id/inputEditText"
+            card_view:layout_constraintTop_toTopOf="@+id/calculateButton" />
 
         <View
-            android:id="@+id/progress"
+            android:id="@+id/progressBar"
             android:layout_width="0dp"
             android:layout_height="4dp"
             android:layout_marginStart="8dp"
@@ -114,12 +114,12 @@
             android:visibility="visible"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/checkPrime" />
-
+            card_view:layout_constraintTop_toBottomOf="@+id/calculateButton" />
 
     </android.support.constraint.ConstraintLayout>
 
-    <View
+    <LinearLayout
+        android:id="@+id/history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -132,6 +132,7 @@
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toBottomOf="@+id/head" />
+
 
 
 </android.support.constraint.ConstraintLayout>

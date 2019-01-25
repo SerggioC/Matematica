@@ -29,7 +29,8 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:contentDescription="TODO" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                     android:paddingTop="4dp">
 
                     <TextView
-                        android:id="@+id/textView5"
+                        android:id="@+id/titleTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -79,7 +80,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_1"
+                                android:id="@+id/clearButton1"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -108,7 +109,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_2"
+                                android:id="@+id/clearButton2"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -149,7 +150,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_3"
+                                android:id="@+id/clearButton3"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -179,7 +180,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_4"
+                                android:id="@+id/clearButton4"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -219,7 +220,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_5"
+                                android:id="@+id/clearButton5"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -249,7 +250,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_6"
+                                android:id="@+id/clearButton6"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -289,7 +290,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_7"
+                                android:id="@+id/clearButton7"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -319,7 +320,7 @@
                                 android:textSize="@dimen/edittextsize"/>
 
                             <Button
-                                android:id="@+id/btn_clear_8"
+                                android:id="@+id/clearButton8"
                                 android:layout_width="27dp"
                                 android:layout_height="27dp"
                                 android:layout_gravity="center_vertical|right"
@@ -334,7 +335,7 @@
                         android:layout_gravity="center_horizontal">
 
                         <Button
-                            android:id="@+id/button_calc_mdc"
+                            android:id="@+id/calculateButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
@@ -349,7 +350,8 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/add_one"/>
+                            android:background="@drawable/add_one"
+                            android:contentDescription="TODO" />
 
                         <ImageButton
                             android:id="@+id/button_remove_mdc"
@@ -358,7 +360,8 @@
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@id/button_add_mdc"
                             android:background="@drawable/less_one"
-                            android:visibility="invisible"/>
+                            android:visibility="invisible"
+                            android:contentDescription="TODO" />
 
                     </RelativeLayout>
                 </LinearLayout>

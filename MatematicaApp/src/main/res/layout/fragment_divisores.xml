@@ -55,7 +55,7 @@
                         android:paddingTop="4dp">
 
                         <EditText
-                            android:id="@+id/editNum"
+                            android:id="@+id/inputEditText"
                             android:layout_width="fill_parent"
                             android:layout_height="@dimen/edittext_height"
                             android:layout_gravity="center"
@@ -68,7 +68,7 @@
                             android:textAlignment="center"/>
 
                         <Button
-                            android:id="@+id/btn_clear"
+                            android:id="@+id/clearButton"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
                             android:layout_gravity="center_vertical|right"
@@ -82,7 +82,7 @@
                         android:animateLayoutChanges="true">
 
                         <Button
-                            android:id="@+id/button_calc_divisores"
+                            android:id="@+id/calculateButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
@@ -92,7 +92,7 @@
                             android:textAllCaps="false"/>
 
                         <ImageView
-                            android:id="@+id/cancelTask"
+                            android:id="@+id/cancelButton"
                             android:layout_width="29dp"
                             android:layout_height="29dp"
                             android:layout_marginRight="4dp"
@@ -100,11 +100,12 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:src="@drawable/stop_button"
-                            android:visibility="gone"/>
+                            android:visibility="gone"
+                            android:contentDescription="TODO" />
                     </RelativeLayout>
 
                     <View
-                        android:id="@+id/progress"
+                        android:id="@+id/progressBar"
                         android:layout_width="0dp"
                         android:layout_height="4dp"
                         android:background="@color/lightBlue"

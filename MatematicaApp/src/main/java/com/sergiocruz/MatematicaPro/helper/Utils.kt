@@ -1,10 +1,13 @@
 package com.sergiocruz.MatematicaPro.helper
 
+import android.app.Activity
 import android.content.Context
+import android.os.AsyncTask
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -39,10 +42,18 @@ enum class InfoLevel {
     INFO, CONFIRM, WARNING, ERROR
 }
 
+fun cancelAsyncTask(task: AsyncTask<*,*,*>, context: Context?): Boolean {
+    return if (task.status == AsyncTask.Status.RUNNING) {
+        task.cancel(true)
+        showCustomToast(context, context?.getString(R.string.canceled_op), InfoLevel.WARNING)
+        true
+    } else false
+}
+
 //fun showCustomToast(context: Context, toastText: String, icon_RID: Int, text_color_Res_Id: Int, duration: Int? = Toast.LENGTH_LONG) {
 fun showCustomToast(
     context: Context?,
-    toastText: String,
+    toastText: String?,
     level: InfoLevel = INFO,
     duration: Int = Toast.LENGTH_LONG
 ) {
@@ -74,4 +85,22 @@ fun showCustomToast(
     theCustomToast.duration = duration
     theCustomToast.view = layout
     theCustomToast.show()
+}
+
+
+fun hideKeyboard(activity: Activity?) {
+    //Hide the keyboard
+    val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+}
+
+fun getGradientSeparator(context: Context?): TextView {
+    return LayoutInflater.from(context).inflate(R.layout.gradient_separator, null) as TextView
+}
+
+fun showToastNum(field: String, context: Context?) {
+    showCustomToast(
+        context,
+        context?.getString(R.string.number_in_field) + " " + field + " " + context?.getString(R.string.too_high)
+    )
 }
