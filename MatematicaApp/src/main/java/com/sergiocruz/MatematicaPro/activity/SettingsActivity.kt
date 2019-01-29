@@ -2,10 +2,7 @@ package com.sergiocruz.MatematicaPro.activity
 
 
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.Preference
-import android.preference.PreferenceActivity
-import android.preference.PreferenceManager
+import android.preference.*
 import android.view.MenuItem
 
 import com.sergiocruz.MatematicaPro.R
@@ -39,7 +36,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                 preference.setSummary(if (index >= 0) preference.entries[index] else null)
 
                 //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
-                val pref_show_colors = findPreference("pref_show_colors")
+                val pref_show_colors = findPreference(getString(R.string.pref_key_show_colors))
                 if (index == 0 || index == 1) {
                     pref_show_colors.isEnabled = true
                 } else if (index == 2) {
@@ -85,7 +82,22 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         super.onCreate(savedInstanceState)
         setupActionBar()
         addPreferencesFromResource(R.xml.pref_general)
-        bindPreferenceSummaryToValue(findPreference("pref_show_explanation"))
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_show_explanation)))
+
+        val prefBruteForce = findPreference(getString(R.string.pref_key_brute_force)) as SwitchPreference
+        val prefProbabilistic = findPreference(getString(R.string.pref_key_probabilistic)) as SwitchPreference
+
+        prefBruteForce.setOnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
+            prefBruteForce.isChecked = !prefBruteForce.isChecked
+            prefProbabilistic.isChecked = !prefBruteForce.isChecked
+            true
+        }
+        prefProbabilistic.setOnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
+            prefProbabilistic.isChecked = !prefProbabilistic.isChecked
+            prefBruteForce.isChecked = !prefBruteForce.isChecked
+            true
+        }
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+#keep kotlin coroutines stuff
+-keepclasseswithmembernames class kotlinx.** {
+    volatile <fields>;
+}

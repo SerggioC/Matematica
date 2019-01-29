@@ -1,11 +1,11 @@
 package com.sergiocruz.MatematicaPro.fragment
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.annotation.LayoutRes
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 
 abstract class BaseFragment : Fragment() {
 
@@ -17,5 +17,22 @@ abstract class BaseFragment : Fragment() {
 
     @LayoutRes
     abstract fun getLayoutIdForFragment(): Int
+
+    lateinit var sharedPrefs: SharedPreferences
+    var scale: Float = 0.toFloat()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+        scale = resources.displayMetrics.density
+    }
+
+    abstract fun loadOptionsMenus(): List<Int>
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        loadOptionsMenus().onEach { inflater.inflate(it, menu) }
+    }
 
 }

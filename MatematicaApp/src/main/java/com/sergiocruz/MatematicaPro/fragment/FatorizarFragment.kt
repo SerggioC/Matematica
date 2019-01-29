@@ -22,7 +22,6 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
 import com.sergiocruz.MatematicaPro.R
-import com.sergiocruz.MatematicaPro.R.string.fatorizar_btn
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity
@@ -37,31 +36,17 @@ import java.util.Map
 
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
     OnEditorActionError {
+
     private var BG_Operation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
 
-    internal var scale: Float = 0.toFloat()
     internal var cv_width: Int = 0
     internal var height_dip: Int = 0
     private var startTime: Long? = null
-    private lateinit var sharedPrefs: SharedPreferences
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        scale = resources.displayMetrics.density
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-    }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_fatorizar
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-        inflater.inflate(R.menu.menu_help_fatorizar, menu)
-    }
-
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_fatorizar)
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -70,16 +55,16 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         val id = item!!.itemId
 
         if (id == R.id.action_save_history_images) {
-            MenuHelper.save_history_images(activity as Activity)
+            MenuHelper.saveHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(activity as Activity)
+            MenuHelper.shareHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(activity as Activity)
+            MenuHelper.shareHistory(activity as Activity)
         }
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(activity as Activity)
+            MenuHelper.removeHistory(activity as Activity)
         }
         if (id == R.id.action_ajuda) {
             val history = activity!!.findViewById<View>(R.id.history) as ViewGroup
@@ -243,7 +228,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // add the textview com os fatores multiplicados to the Linear layout vertical root
         ll_vertical_root.addView(textView)
 
-        val shouldShowExplanation = sharedPrefs.getString("pref_show_explanation", "0")
+        val shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
 
@@ -412,16 +397,16 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 }
             }
 
-            val gradient_separator = getGradientSeparator(context)
+            val gradientSeparator = getGradientSeparator(context)
 
-            val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false)
+            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
                     "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime!!) / 1000000000.0) + "s"
-                gradient_separator.text = elapsed
+                gradientSeparator.text = elapsed
             } else {
-                gradient_separator.text = ""
+                gradientSeparator.text = ""
             }
 
             //Linearlayout horizontal com o explainlink e gradiente
@@ -431,7 +416,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
             )
             ll_horizontal_link.addView(explainLink)
-            ll_horizontal_link.addView(gradient_separator)
+            ll_horizontal_link.addView(gradientSeparator)
 
             ll_vertical_root.addView(ll_horizontal_link)
 
@@ -498,7 +483,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
 
-            val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false)
+            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 //View separator with gradient
                 val gradientSeparator = getGradientSeparator(context)
@@ -651,7 +636,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val fColors: ArrayList<Int> = ArrayList()
             val f_colors = resources.getIntArray(R.array.f_colors_xml)
 
-            val shouldShowColors = sharedPrefs.getBoolean("pref_show_colors", true)
+            val shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             if (shouldShowColors) {
                 for (f_color in f_colors) fColors.add(f_color)
                 fColors.shuffle() //randomizar as cores
@@ -837,10 +822,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             )
         }
 
-        progressBar.visibility = View.GONE
-        calculateButton.text = getString(fatorizar_btn)
-        calculateButton.isClickable = true
-        cancelButton.visibility = View.GONE
+        resetButtons()
+
     }
 
 }

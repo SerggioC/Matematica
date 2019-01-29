@@ -9,7 +9,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -20,7 +19,6 @@ import android.util.TypedValue
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -43,23 +41,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     internal var cv_width: Int = 0
     internal var height_dip: Int = 0
     private var num: Long = 0
-    private lateinit var sharedPrefs: SharedPreferences
     private var startTime: Long = 0
-    internal var scale: Float = 0f
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        scale = activity?.resources?.displayMetrics?.density!!
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-        inflater.inflate(R.menu.menu_help_primorial, menu)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_primorial)
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -67,16 +51,16 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item!!.itemId
         if (id == R.id.action_save_history_images) {
-            MenuHelper.save_history_images(activity!!)
+            MenuHelper.saveHistoryImages(activity!!)
         }
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(activity!!)
+            MenuHelper.shareHistory(activity!!)
         }
         if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(activity!!)
+            MenuHelper.shareHistoryImages(activity!!)
         }
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(activity!!)
+            MenuHelper.removeHistory(activity!!)
         }
         if (id == R.id.action_help_primorial) {
             val help_primorial = getString(R.string.help_text_primorial)

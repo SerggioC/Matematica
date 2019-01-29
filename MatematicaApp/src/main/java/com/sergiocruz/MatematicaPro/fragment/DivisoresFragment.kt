@@ -45,14 +45,10 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     internal var cv_width: Int = 0
     internal var height_dip: Int = 0
     internal var num: Long = 0
-    private lateinit var sharedPrefs: SharedPreferences
     private var startTime: Long = 0
-    internal var scale: Float = 0.toFloat()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
         scale = resources.displayMetrics.density
     }
 
@@ -70,14 +66,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         inputEditText.watchThis(this, this)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        // Inflate the menu; this adds items to the action bar if it is present.
-
-        inflater?.inflate(R.menu.menu_main, menu)
-        inflater?.inflate(R.menu.menu_sub_main, menu)
-        inflater?.inflate(R.menu.menu_help_divisores, menu)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -85,16 +74,16 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
         if (id == R.id.action_save_history_images) {
-            MenuHelper.save_history_images(activity as Activity)
+            MenuHelper.saveHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(activity as Activity)
+            MenuHelper.shareHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(activity as Activity)
+            MenuHelper.shareHistory(activity as Activity)
         }
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(activity as Activity)
+            MenuHelper.removeHistory(activity as Activity)
         }
         if (id == R.id.action_help_divisores) {
             val helpDivisores = getString(R.string.help_text_divisores)

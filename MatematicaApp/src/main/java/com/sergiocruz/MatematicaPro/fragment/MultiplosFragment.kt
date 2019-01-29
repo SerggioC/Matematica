@@ -6,13 +6,11 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
@@ -20,8 +18,6 @@ import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -47,24 +43,9 @@ import java.text.DecimalFormat
 class MultiplosFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
     var BG_Operation: AsyncTask<Long, Double, String> = BackGroundOperation(null, null)
     private var num: Long = 0
-    internal lateinit var sharedPrefs: SharedPreferences
     internal var startTime: Long = 0
-    private var scale: Float = 0f
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
-        scale = activity?.resources?.displayMetrics?.density!!
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-        inflater.inflate(R.menu.menu_help_multiplos, menu)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -72,20 +53,20 @@ class MultiplosFragment : BaseFragment(), OnEditorActionDone, OnEditorActionErro
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item!!.itemId
         if (id == R.id.action_save_history_images) {
-            MenuHelper.save_history_images(activity as Activity)
+            MenuHelper.saveHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(activity as Activity)
+            MenuHelper.shareHistory(activity as Activity)
         }
         if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(activity as Activity)
+            MenuHelper.shareHistoryImages(activity as Activity)
         }
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(activity as Activity)
+            MenuHelper.removeHistory(activity as Activity)
         }
         if (id == R.id.action_help_multiplos) {
-            val help_multiplos = getString(R.string.help_text_multiplos)
-            val ssb = SpannableStringBuilder(help_multiplos)
+            val helpMultiplos = getString(R.string.help_text_multiplos)
+            val ssb = SpannableStringBuilder(helpMultiplos)
             CreateCardView.create(history, ssb, activity as Activity)
         }
         if (id == R.id.action_about) {

@@ -17,10 +17,7 @@ class HomeFragment : BaseFragment() {
 
     override fun getLayoutIdForFragment() = R.layout.fragment_home
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_sub_main)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId

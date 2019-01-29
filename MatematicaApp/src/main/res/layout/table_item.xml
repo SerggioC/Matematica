@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view_1"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardViewItem"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:layout_marginBottom="2dp"
     card_view:cardBackgroundColor="@color/bgCardColor"
     card_view:cardCornerRadius="1dp"
     card_view:cardElevation="2dp">
 
     <TextView
-        android:id="@+id/tableItem"
+        android:id="@+id/textViewItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:text="2"
+        tools:text="2"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/black"
         android:textAlignment="center"
         android:layout_gravity="center"
-        android:textIsSelectable="true">
+        android:textIsSelectable="true"/>
 
-    </TextView>
 </android.support.v7.widget.CardView>

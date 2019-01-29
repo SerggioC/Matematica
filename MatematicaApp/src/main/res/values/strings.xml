@@ -260,6 +260,19 @@
     <string name="ckeck">Check</string>
     <string name="cancel_task">Cancel Task</string>
     <string name="information_icon">Information Icon</string>
+    <string name="calc_mode">Calculation Mode</string>
+    <string name="pref_title_brute_force">Brute Force Mode</string>
+    <string name="pref_summary_brute_force">Brute Force Mode (Iterative) might be slower</string>
+    <string name="pref_title_probabilistic">Probabilistic Mode</string>
+    <string name="pref_summary_probabilistic">Advanced Probabilistic Algorithm is faster</string>
+    <string name="pref_key_show_explanation" translatable="false">pref_show_explanation</string>
+    <string name="pref_key_show_colors" translatable="false">pref_show_colors</string>
+    <string name="pref_key_brute_force" translatable="false">pref_brute_force</string>
+    <string name="pref_key_probabilistic" translatable="false">pref_probabilistic</string>
+    <string name="pref_key_show_performance">pref_show_performance</string>
+    <string name="error_no_file_manager">Error. Please install a file manager.</string>
+    <bool name="pref_default_brute_force">true</bool>
+    <bool name="pref_default_probabilistic">false</bool>
 
 
 </resources>

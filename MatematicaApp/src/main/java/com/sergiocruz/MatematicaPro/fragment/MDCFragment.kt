@@ -47,13 +47,11 @@ import java.util.*
 class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
-    private var scale: Float = 0f
     internal var height_dip: Int = 0
     internal var cv_width: Int = 0
     private var taskNumber = 0
     internal var startTime: Long = 0
     private lateinit var language: String
-    internal lateinit var sharedPrefs: SharedPreferences
 
     private fun showToastMoreThanZero() {
         showCustomToast(context, getString(R.string.maiores_qzero))
@@ -73,16 +71,11 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // have a menu in this fragment
-        setHasOptionsMenu(true)
-
-        scale = resources.displayMetrics.density
         val fColors = resources.getIntArray(R.array.f_colors_xml)
         this.fColors = ArrayList()
         for (i in fColors.indices) {
             this.fColors.add(fColors[i])
         }
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity)
         language = Locale.getDefault().displayLanguage
     }
 
@@ -135,12 +128,7 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_main, menu)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-        inflater.inflate(R.menu.menu_help_mdc, menu)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mdc)
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -148,17 +136,17 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item!!.itemId
         if (id == R.id.action_save_history_images) {
-            MenuHelper.save_history_images(activity as Activity)
+            MenuHelper.saveHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(activity as Activity)
+            MenuHelper.shareHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(activity as Activity)
+            MenuHelper.shareHistory(activity as Activity)
         }
 
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(activity as Activity)
+            MenuHelper.removeHistory(activity as Activity)
             mdc_num_1.setText("")
             mdc_num_2.setText("")
             mdc_num_3.setText("")

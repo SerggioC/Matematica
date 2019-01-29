@@ -47,25 +47,14 @@ import java.text.NumberFormat
 import java.util.*
 import java.util.Map
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [MMCFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [MMCFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
-    
+class MMCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
-    internal var scale: Float = 0f
-    internal var height_dip: Int = 0
-    internal var cv_width: Int = 0
-    internal var taskNumber = 0
+    private var height_dip: Int = 0
+    private var cv_width: Int = 0
+    private var taskNumber = 0
     internal var startTime: Long = 0
-    internal lateinit var sharedPrefs: SharedPreferences
-    internal lateinit var language: String
+    private lateinit var language: String
 
     private val emptyTextView = ArrayList<TextView>()
 
@@ -109,15 +98,9 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
     //    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // have a menu in this fragment
-        setHasOptionsMenu(true)
-
-        scale = resources.displayMetrics.density
         val f_colors = resources.getIntArray(R.array.f_colors_xml)
         fColors = ArrayList()
         for (f_color in f_colors) fColors.add(f_color)
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         language = Locale.getDefault().displayLanguage
     }
 
@@ -155,14 +138,8 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         hideKeyboard(activity as Activity)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        // Inflate the menu; this adds items to the action bar if it is present.
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mmc)
 
-        inflater.inflate(R.menu.menu_main, menu)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-        inflater.inflate(R.menu.menu_help_mmc, menu)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -170,17 +147,17 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item!!.itemId
         if (id == R.id.action_save_history_images) {
-            MenuHelper.save_history_images(activity as Activity)
+            MenuHelper.saveHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history_images) {
-            MenuHelper.share_history_images(activity as Activity)
+            MenuHelper.shareHistoryImages(activity as Activity)
         }
         if (id == R.id.action_share_history) {
-            MenuHelper.share_history(activity!!)
+            MenuHelper.shareHistory(activity!!)
         }
 
         if (id == R.id.action_clear_all_history) {
-            MenuHelper.remove_history(activity!!)
+            MenuHelper.removeHistory(activity!!)
             mmc_num_1.setText("")
             mmc_num_2.setText("")
             mmc_num_3.setText("")
@@ -192,8 +169,8 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         }
         if (id == R.id.action_ajuda) {
             val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
-            val help_divisores = getString(R.string.help_text_mmc)
-            val ssb = SpannableStringBuilder(help_divisores)
+            val helpDivisores = getString(R.string.help_text_mmc)
+            val ssb = SpannableStringBuilder(helpDivisores)
             create(history, ssb, activity!!)
         }
         if (id == R.id.action_about) {
@@ -205,19 +182,11 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActionDone() {
-        calculateMMC()
-    }
+    override fun onActionDone() = calculateMMC()
 
-    override fun onActionError() {
-        showToastHighNumber()
-    }
-    
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_mmc, container, false)
+    override fun onActionError() = showToastHighNumber()
+
+    override fun getLayoutIdForFragment() = R.layout.fragment_mmc
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -243,10 +212,7 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         mmc_num_6.watchThis(this, this)
         mmc_num_7.watchThis(this, this)
         mmc_num_8.watchThis(this, this)
-
     }
-    
-    
 
     fun add_mmc() {
         val ll_34_visibe = linear_layout_34.visibility == View.VISIBLE
@@ -676,12 +642,12 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         // add the textview to the cardview
         ll_vertical_root.addView(textView)
 
-        val shouldShowExplanation = sharedPrefs.getString("pref_show_explanation", "0")
+        val shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
             createExplanations(cardview, ll_vertical_root, shouldShowExplanation)
         } else {
-            val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false)
+            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")
@@ -727,9 +693,9 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
         explainLink.tag = "explainLink"
         explainLink.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, //largura
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ) //altura
-        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
+            LinearLayout.LayoutParams.WRAP_CONTENT //altura
+        )
+        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
         explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
         explainLink.gravity = Gravity.CENTER_VERTICAL
 
@@ -1176,7 +1142,7 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
                                     val next_base = next_bases[nb]
                                     val next_exp = next_exps[nb]
 
-                                    if (next_base === current_base && next_exp > maiores_exps[maiores_bases.indexOf(
+                                    if (next_base == current_base && next_exp > maiores_exps[maiores_bases.indexOf(
                                             current_base
                                         )] && maiores_bases.contains(next_base)
                                     ) {
@@ -1192,7 +1158,6 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
                         i += 2
                     }
                 }
-
 
                 val ssb_mmc = SpannableStringBuilder()
 
@@ -1241,7 +1206,6 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
                 (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(
                     ssb_mmc
                 )
-
 
                 ssb_mmc.delete(0, ssb_mmc.length)
                 result_mmc = cardTags.resultMDC!!
@@ -1300,4 +1264,4 @@ class MMCFragment : Fragment(), OnEditorActionDone, OnEditorActionError {
             return result
         }
     }
-}// Required empty public constructor
+}

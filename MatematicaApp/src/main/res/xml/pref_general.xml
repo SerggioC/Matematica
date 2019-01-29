@@ -1,7 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:layout="@layout/settings_textview">
+    <PreferenceCategory android:layout="@layout/settings_textview">
 
         <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
              dismiss it. -->
@@ -11,26 +10,40 @@
             android:entries="@array/pref_list_titles"
             android:entryValues="@array/pref_list_values"
             android:icon="@mipmap/ic_info"
-            android:key="pref_show_explanation"
+            android:key="@string/pref_key_show_explanation"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:summary="@string/pref_description_explanation"
-            android:title="@string/pref_title_explanation"
-            />
+            android:title="@string/pref_title_explanation" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:icon="@mipmap/ic_colors"
-            android:key="pref_show_colors"
+            android:key="@string/pref_key_show_colors"
             android:summary="@string/pref_description_colors"
-            android:title="@string/pref_colors_title"
-            />
+            android:title="@string/pref_colors_title" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:icon="@mipmap/ic_performance"
-            android:key="pref_show_performance"
+            android:key="@string/pref_key_show_performance"
             android:summary="@string/pref_description_performance"
-            android:title="@string/pref_perform_title"
-            />
+            android:title="@string/pref_perform_title" />
 
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/calc_mode">
+
+        <SwitchPreference
+            android:icon="@drawable/force"
+            android:defaultValue="@bool/pref_default_brute_force"
+            android:key="@string/pref_key_brute_force"
+            android:title="@string/pref_title_brute_force"
+            android:summary="@string/pref_summary_brute_force"/>
+        <SwitchPreference
+            android:icon="@drawable/probabilistic"
+            android:defaultValue="@bool/pref_default_probabilistic"
+            android:key="@string/pref_key_probabilistic"
+            android:title="@string/pref_title_probabilistic"
+            android:summary="@string/pref_summary_probabilistic"/>
+    </PreferenceCategory>
+
+
 </PreferenceScreen>

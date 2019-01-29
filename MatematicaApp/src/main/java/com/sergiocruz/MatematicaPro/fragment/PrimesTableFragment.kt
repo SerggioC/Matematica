@@ -2,34 +2,31 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.Color
 import android.graphics.Point
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
+import android.support.v7.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextUtils
-import android.view.*
-import android.widget.ArrayAdapter
+import android.util.Log
+import android.view.MenuItem
+import android.view.View
 import android.widget.LinearLayout
-import android.widget.Toast
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.openFolder_Snackbar
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.openFolderSnackbar
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.saveViewToImage
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.verifyStoragePermissions
 import kotlinx.android.synthetic.main.fragment_primes_table.*
+import kotlinx.coroutines.*
 import java.lang.Long.toString
+import java.math.BigInteger
 import java.text.DecimalFormat
-import java.util.*
 
 /*****
  * Project Matematica
@@ -40,70 +37,48 @@ import java.util.*
 class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
     OnEditorActionError {
 
-
+    var tableData = ArrayList<String>()
     private var BG_Operation: AsyncTask<Long, Double, ArrayList<String>> = LongOperation()
-    var tableData: ArrayList<String>? = null
-    internal var cv_width: Int = 0
-    internal var height_dip: Int = 0
-    var numMin: Long? = 0L
-    var numMax: Long? = 50L
-    internal var checkboxChecked: Boolean? = true
-    internal var full_table: ArrayList<String>? = null
-    lateinit var sharedPrefs: SharedPreferences
+    private var cvWidth: Int = 0
+    private var heightDp: Int = 0
+    private var numMin: Long? = 0L
+    private var numMax: Long? = 50L
+    private var bruteForceMode: Boolean = true
+    private lateinit var tableAdapter: TableAdapter
+    private lateinit var layoutManager: GridLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // have a menu in this fragment
-        setHasOptionsMenu(true)
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.context)
+        bruteForceMode = sharedPrefs.getBoolean(
+            getString(R.string.pref_key_brute_force),
+            resources.getBoolean(R.bool.pref_default_brute_force)
+        )
     }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_primes_table
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_primes_table, menu)
-        inflater.inflate(R.menu.menu_sub_main, menu)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_primes_table, R.menu.menu_sub_main)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        switchPrimos.setOnCheckedChangeListener { compoundButton, bool ->
-            checkboxChecked = bool
-            if (tableData != null) {
-                if (checkboxChecked!!) {
-                    historyGridView.adapter = object :
-                        ArrayAdapter<String>(
-                            activity!!,
-                            R.layout.table_item,
-                            R.id.tableItem,
-                            full_table!!
-                        ) {
-                        override fun getView(
-                            position: Int,
-                            convertView: View?,
-                            parent: ViewGroup
-                        ): View {
-                            val view = super.getView(position, convertView, parent)
-                            if (tableData!!.contains(full_table!![position])) { //Se o número for primo
-                                (view as CardView).setCardBackgroundColor(Color.parseColor("#9769bc4d"))
-                            } else {
-                                (view as CardView).setCardBackgroundColor(Color.parseColor("#FFFFFF"))
-                            }
-                            return view
-                        }
-                    }
-                } else {
-                    historyGridView.adapter =
-                        ArrayAdapter(context, R.layout.table_item, R.id.tableItem, tableData)
-                }
-            }
+        calcMode.setText(
+            if (bruteForceMode)
+                R.string.pref_title_brute_force
+            else
+                R.string.pref_title_probabilistic
+        )
+
+        switchPrimos.setOnCheckedChangeListener { _, isChecked ->
+            tableAdapter.reloadAdapter(isChecked)
         }
 
-        cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
+        cancelButton.setOnClickListener {
+            if (BG_Operation.status == AsyncTask.Status.RUNNING) {
+                displayCancelDialogBox(context!!, this)
+            }
+        }
         createTableBtn.setOnClickListener { makePrimesTable() }
         btn_clear_min.setOnClickListener { min_pt.setText("") }
         btn_clear_max.setOnClickListener { max_pt.setText("") }
-
         min_pt.watchThis(this, this)
         max_pt.watchThis(this, this)
     }
@@ -118,13 +93,13 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
-        val childCount = historyGridView.childCount
+        val childCount = historyGridRecyclerView.childCount
         if (id == R.id.action_save_image_pt) {
             verifyStoragePermissions(activity as Activity)
             if (childCount > 0) {
-                val img_path = saveViewToImage(historyGridView, 0, true)
+                val img_path = saveViewToImage(historyGridRecyclerView, 0, true)
                 if (img_path != null) {
-                    openFolder_Snackbar(activity!!, getString(R.string.image_saved))
+                    openFolderSnackbar(activity!!, getString(R.string.image_saved))
                 } else {
                     showCustomToast(context, getString(R.string.errorsavingimg), InfoLevel.ERROR)
                 }
@@ -136,7 +111,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             verifyStoragePermissions(activity as Activity)
             if (childCount > 0) {
                 val file_uris = ArrayList<Uri>(1)
-                val img_path = saveViewToImage(historyGridView, 0, true)
+                val img_path = saveViewToImage(historyGridRecyclerView, 0, true)
                 if (img_path != null) {
                     file_uris.add(Uri.parse(img_path))
 
@@ -181,8 +156,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         }
 
         if (id == R.id.action_clear_all_history) {
-            historyGridView.adapter = null
-            tableData = null
+            historyGridRecyclerView.adapter = null
             min_pt.text = Editable.Factory().newEditable("1")
             max_pt.text = Editable.Factory().newEditable("50")
         }
@@ -200,6 +174,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private fun makePrimesTable() {
+        hideKeyboard(activity)
         val minString = min_pt.text.toString().replace("[^\\d]".toRegex(), "")
         val maxString = max_pt.text.toString().replace("[^\\d]".toRegex(), "")
 
@@ -215,8 +190,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         } else if (minValue < 1) {
             showCustomToast(context, getString(R.string.lowest_prime), InfoLevel.WARNING)
             min_pt.setText("1")
-            numMin = 1L
-            minValue = 1L
+            numMin = 1
+            minValue = 1
         }
 
         var maxValue = maxString.toLongOrNull(10)
@@ -226,22 +201,165 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         } else if (maxValue < 1) {
             showCustomToast(context, getString(R.string.lowest_prime), InfoLevel.WARNING)
             max_pt.setText("1")
-            numMax = 1L
-            maxValue = 1L
+            numMax = 1
+            maxValue = 1
         }
 
         if (minValue > maxValue) {
-            val swapp = minValue
+            val swap = minValue
             minValue = maxValue
-            maxValue = swapp
+            maxValue = swap
             min_pt.setText(minValue.toString())
             max_pt.setText(maxValue.toString())
             makePrimesTable()
             return
         }
 
-        BG_Operation = LongOperation().execute(minValue, maxValue)
+        if (bruteForceMode) {
+            BG_Operation = LongOperation().execute(minValue, maxValue)
+        } else {
+            // launch coroutine in the Default thread
+            GlobalScope.launch(Dispatchers.Default) {
+                val startTime = System.currentTimeMillis()
+                val result = probabilisticMode2(minValue, maxValue)
 
+                withContext(Dispatchers.Main) {
+
+                    Log.i("Sergio> ", "Thread.currentThread().name: ${Thread.currentThread().name}")
+                    val time = System.currentTimeMillis() - startTime
+                    Log.i("Sergio> ", "time: $time")
+
+                    setUpAdapter(maxValue)
+                    tableAdapter.swap(result.fullTable, result.primesTable, switchPrimos.isChecked)
+                }
+            }
+        }
+    }
+
+    /** Data class to wrap the result of the async calculation
+     * containing primesTable and fullTable */
+    data class ResultWrapper(
+        val fullTable: MutableMap<Int, Pair<String, Boolean>>,
+        val primesTable: MutableMap<Int, Pair<String, Boolean>>
+    )
+
+    private fun probabilisticMode11(minValue: Long, maxValue: Long): ResultWrapper {
+        val fullTable = mutableMapOf<Int, Pair<String, Boolean>>()
+        val primesOnlyTable = mutableMapOf<Int, Pair<String, Boolean>>()
+        var indexPrimes = 0
+        for ((index, i) in (minValue..maxValue).withIndex()) {
+            fullTable[index] = Pair(i.toString(), false)
+            val currentVal: BigInteger = BigInteger.valueOf(i)
+            if (currentVal.isProbablePrime(100)) {
+                primesOnlyTable[indexPrimes] = Pair(i.toString(), true)
+                indexPrimes++
+                fullTable[index] = Pair(i.toString(), true)
+            }
+        }
+        Log.i("Sergio> ", "Thread.currentThread().name: ${Thread.currentThread().name}")
+        return ResultWrapper(fullTable, primesOnlyTable)
+    }
+
+    private suspend fun probabilisticMode1(minValue: Long, maxValue: Long): ResultWrapper {
+        val fullTable = mutableMapOf<Int, Pair<String, Boolean>>()
+        val primesOnlyTable = mutableMapOf<Int, Pair<String, Boolean>>()
+        val deferred = GlobalScope.async {
+            var indexPrimes = 0
+            for ((index, i) in (minValue..maxValue).withIndex()) {
+                fullTable[index] = Pair(i.toString(), false)
+                val currentVal: BigInteger = BigInteger.valueOf(i)
+                if (currentVal.isProbablePrime(100)) {
+                    primesOnlyTable[indexPrimes] = Pair(i.toString(), true)
+                    indexPrimes++
+                    fullTable[index] = Pair(i.toString(), true)
+                }
+            }
+            ResultWrapper(fullTable, primesOnlyTable)
+        }
+        return deferred.await()
+    }
+
+    private suspend fun testThis() {
+        val job: Job = Job()
+        val scope: CoroutineScope = CoroutineScope(job + Dispatchers.Default)
+        val deferred = scope.async {
+            "Async Done!"
+        }
+        val result: String = deferred.await()
+        Log.i("Sergio> ", "result: $result")
+
+        scope.launch { }
+
+        val uiScope = CoroutineScope(Dispatchers.Main)
+        uiScope.launch {
+            // do something on UI
+        }
+
+        val te: String = withContext(Dispatchers.IO) {
+            "Async With Context Done!"
+        }
+
+
+    }
+
+
+    private fun probabilisticMode2(minValue: Long, maxValue: Long): ResultWrapper {
+        val fullTable = mutableMapOf<Int, Pair<String, Boolean>>()
+        val primesOnlyTable = mutableMapOf<Int, Pair<String, Boolean>>()
+
+        var indexPrimes = 0
+        var index = 0
+        var tracker = minValue
+        var lastTracker = tracker
+
+        val currentVal: BigInteger = BigInteger.valueOf(tracker)
+        if (currentVal.isProbablePrime(100)) {
+            primesOnlyTable[indexPrimes] = Pair(currentVal.toString(), true)
+            fullTable[index] = Pair(currentVal.toString(), true)
+            indexPrimes++
+        } else {
+            fullTable[index] = Pair(currentVal.toString(), false)
+        }
+        index++
+        tracker++
+
+        while (tracker <= maxValue) {
+            tracker = BigInteger.valueOf(tracker).nextProbablePrime().toLong()
+            if (tracker > maxValue) break
+            primesOnlyTable[indexPrimes] = Pair(tracker.toString(), true)
+            indexPrimes++
+            fullTable[index] = Pair(tracker.toString(), true)
+            index++
+
+            for (i in (lastTracker + 1)..tracker) {
+                fullTable[index] = Pair(i.toString(), false)
+                index++
+            }
+            fullTable[index] = Pair(index.toString(), true)
+
+            lastTracker = tracker
+        }
+        return ResultWrapper(fullTable, primesOnlyTable)
+    }
+
+    private fun setUpAdapter(maxValue: Long) {
+        tableAdapter = TableAdapter()
+        tableAdapter.setHasStableIds(true)
+        historyGridRecyclerView.adapter = tableAdapter
+        historyGridRecyclerView.setHasFixedSize(true)
+        layoutManager = GridLayoutManager(context, getNumColumns(maxValue))
+        historyGridRecyclerView.layoutManager = layoutManager
+    }
+
+    private fun getNumColumns(maxValue: Long): Int {
+        val display = activity?.windowManager?.defaultDisplay
+        val size = Point()
+        display?.getSize(size)
+        val width = size.x  //int height = size.y;
+        val numMaxLength = maxValue.toString().length
+        val scale = resources.displayMetrics.density
+        val numLength = numMaxLength * (18 * scale + 0.5f).toInt() + 8
+        return Math.round((width / numLength).toFloat())
     }
 
     private fun getPrimes(num_min: Int, num_max: Int): ArrayList<String> {
@@ -287,9 +405,9 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             val scale = resources.displayMetrics.density
             val num_length = min_num_length * (18 * scale + 0.5f).toInt() + 8
             val num_columns = Math.round((width / num_length).toFloat())
-            historyGridView.numColumns = num_columns
+            layoutManager.spanCount = num_columns
             val lr_dip = (4 * scale + 0.5f).toInt() * 2
-            cv_width = width - lr_dip
+            cvWidth = width - lr_dip
         }
         hideKeyboard(activity as Activity)
 
@@ -303,6 +421,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     inner class LongOperation : AsyncTask<Long, Double, ArrayList<String>>() {
+
         private var startTime = System.nanoTime()
 
         public override fun onPreExecute() {
@@ -310,10 +429,9 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             createTableBtn.text = getString(R.string.working)
             cancelButton.visibility = View.VISIBLE
             hideKeyboard(activity as Activity)
-            cv_width = cardViewMain.width
-            val scale = activity!!.resources.displayMetrics.density
-            height_dip = (4 * scale + 0.5f).toInt()
-            progressBar.layoutParams = LinearLayout.LayoutParams(10, height_dip)
+            cvWidth = cardViewMain.width
+            heightDp = (4 * scale + 0.5f).toInt()
+            progressBar.layoutParams = LinearLayout.LayoutParams(10, heightDp)
             progressBar.visibility = View.VISIBLE
         }
 
@@ -321,10 +439,10 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             val numMin = params[0] as Long
             val numMax = params[1] as Long
 
-            full_table = ArrayList()
+            var fullTable = ArrayList<String>()
 
             for (i in numMin..numMax) {
-                full_table!!.add(i.toString())
+                fullTable.add(i.toString())
             }
             val primes = ArrayList<String>()
             var progress: Double
@@ -333,7 +451,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             if (min == 1L) min = 2L
             if (min == 2L) {
                 primes.add("2")
-                min = 3L
+                min = 3
             }
 
             for (i in min..numMax) {
@@ -367,8 +485,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 val progress: Double = values[0] ?: 0.0
                 progressBar.layoutParams =
                     LinearLayout.LayoutParams(
-                        Math.round(progress * cv_width).toInt(),
-                        height_dip
+                        Math.round(progress * cvWidth).toInt(),
+                        heightDp
                     )
             }
         }
@@ -376,61 +494,56 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         override fun onPostExecute(result: ArrayList<String>) {
             tableData = result
             if (this@PrimesTableFragment.isVisible) {
-                val display = activity!!.windowManager.defaultDisplay
-                val size = Point()
-                display.getSize(size)
-                val width = size.x  //int height = size.y;
-                //int max_num_length = result.get(result.size() - 1).length();
-                val max_num_length = numMax.toString().length
-                val scale = resources.displayMetrics.density
-                val num_length = max_num_length * (18 * scale + 0.5f).toInt() + 8
-                val num_columns = Math.round((width / num_length).toFloat())
-                historyGridView.numColumns = num_columns
-
-                if (checkboxChecked!!) {
-                    historyGridView.adapter = object :
-                        ArrayAdapter<String>(
-                            activity!!,
-                            R.layout.table_item,
-                            R.id.tableItem,
-                            full_table!!
-                        ) {
-                        override fun getView(
-                            position: Int,
-                            convertView: View?,
-                            parent: ViewGroup
-                        ): View {
-                            val view = super.getView(position, convertView, parent)
-                            view as CardView
-                            if (tableData!!.contains(full_table!![position])) { // Se o número for primo
-                                view.setCardBackgroundColor(
-                                    ContextCompat.getColor(
-                                        this.context,
-                                        R.color.gridcolor
-                                    )
-                                )
-                            } else {
-                                view.setCardBackgroundColor(
-                                    ContextCompat.getColor(
-                                        this.context,
-                                        R.color.white
-                                    )
-                                )
-                            }
-                            return view
-                        }
-                    }
-                } else {
-                    val primes_adapter =
-                        ArrayAdapter(activity!!, R.layout.table_item, R.id.tableItem, result)
-                    historyGridView.adapter = primes_adapter
-                }
+//                val num_columns = getNumColumns()
+//                historyGridRecyclerView.numColumns = num_columns
+//
+//                if (checkboxChecked!!) {
+//                    historyGridRecyclerView.adapter = object :
+//                        ArrayAdapter<String>(
+//                            activity!!,
+//                            R.layout.table_item,
+//                            R.id.textViewItem,
+//                            fullTable!!
+//                        ) {
+//                        override fun getView(
+//                            position: Int,
+//                            convertView: View?,
+//                            parent: ViewGroup
+//                        ): View {
+//                            val view = super.getView(position, convertView, parent)
+//                            view as CardView
+//                            if (tableData!!.contains(fullTable!![position])) { // Se o número for primo
+//                                view.setCardBackgroundColor(
+//                                    ContextCompat.getColor(
+//                                        this.context,
+//                                        R.color.gridcolor
+//                                    )
+//                                )
+//                            } else {
+//                                view.setCardBackgroundColor(
+//                                    ContextCompat.getColor(
+//                                        this.context,
+//                                        R.color.white
+//                                    )
+//                                )
+//                            }
+//                            return view
+//                        }
+//                    }
+//                } else {
+//                    val primes_adapter =
+//                        ArrayAdapter(activity!!, R.layout.table_item, R.id.textViewItem, result)
+//                    historyGridRecyclerView.adapter = primes_adapter
+//                }
                 numPrimesTextView.visibility = View.VISIBLE
                 numPrimesTextView.text = "${getString(R.string.cardinal_primos)} ${result.size}"
                 if (result.size == 0) {
                     showCustomToast(context, getString(R.string.no_primes_range))
                 } else {
-                    showCustomToast(context, getString(R.string.existem) + " " + result.size + " " + getString(R.string.primes_in_range))
+                    showCustomToast(
+                        context,
+                        getString(R.string.existem) + " " + result.size + " " + getString(R.string.primes_in_range)
+                    )
                 }
                 showPerformance()
                 resetButtons()
@@ -445,7 +558,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 val elapsed =
                     " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 performanceTextView.visibility = View.VISIBLE
-                performanceTextView.text = getString(R.string.performance) + " " + elapsed
+                performanceTextView.text = "${getString(R.string.performance)} $elapsed"
             } else {
                 performanceTextView.visibility = View.GONE
             }
@@ -463,51 +576,52 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 val scale = resources.displayMetrics.density
                 val num_length = max_num_length * (18 * scale + 0.5f).toInt() + 8
                 val num_columns = Math.round((width / num_length).toFloat())
-                historyGridView.numColumns = num_columns
+//                historyGridRecyclerView.numColumns = num_columns
+//
+//                if (checkboxChecked!!) {
+//                    historyGridRecyclerView.adapter = object :
+//                        ArrayAdapter<String>(
+//                            activity!!,
+//                            R.layout.table_item,
+//                            R.id.textViewItem,
+//                            fullTable!!
+//                        ) {
+//                        override fun getView(
+//                            position: Int,
+//                            convertView: View?,
+//                            parent: ViewGroup
+//                        ): View {
+//                            val view = super.getView(position, convertView, parent)
+//                            if (tableData!!.contains(fullTable!![position])) { //Se o número for primo
+//                                (view as CardView).setCardBackgroundColor(Color.parseColor("#9769bc4d"))
+//                            } else {
+//                                (view as CardView).setCardBackgroundColor(Color.parseColor("#FFFFFF"))
+//                            }
+//                            return view
+//                        }
+//                    }
+//                } else {
+//                    val primes_adapter =
+//                        ArrayAdapter(activity!!, R.layout.table_item, R.id.textViewItem, parcial)
+//                    historyGridRecyclerView.adapter = primes_adapter
+//                }
 
-                if (checkboxChecked!!) {
-                    historyGridView.adapter = object :
-                        ArrayAdapter<String>(
-                            activity!!,
-                            R.layout.table_item,
-                            R.id.tableItem,
-                            full_table!!
-                        ) {
-                        override fun getView(
-                            position: Int,
-                            convertView: View?,
-                            parent: ViewGroup
-                        ): View {
-                            val view = super.getView(position, convertView, parent)
-                            if (tableData!!.contains(full_table!![position])) { //Se o número for primo
-                                (view as CardView).setCardBackgroundColor(Color.parseColor("#9769bc4d"))
-                            } else {
-                                (view as CardView).setCardBackgroundColor(Color.parseColor("#FFFFFF"))
-                            }
-                            return view
-                        }
-                    }
-                } else {
-                    val primes_adapter =
-                        ArrayAdapter(activity!!, R.layout.table_item, R.id.tableItem, parcial)
-                    historyGridView.adapter = primes_adapter
-                }
-                Toast.makeText(
+                showCustomToast(
                     context,
-                    getString(R.string.found) + " " + parcial.size + " " + getString(R.string.primes_in_range),
-                    Toast.LENGTH_LONG
-                ).show()
+                    getString(R.string.found) + " " + parcial.size + " " + getString(R.string.primes_in_range)
+                )
                 numPrimesTextView.visibility = View.VISIBLE
                 numPrimesTextView.text = "${getString(R.string.cardinal_primos)} (${parcial.size})"
                 showPerformance()
                 resetButtons()
             } else if (parcial.size == 0) {
                 showCustomToast(context, getString(R.string.canceled_noprimes))
-                historyGridView.adapter = null
+                historyGridRecyclerView.adapter = null
                 resetButtons()
             }
 
         }
+
     }
 }
 

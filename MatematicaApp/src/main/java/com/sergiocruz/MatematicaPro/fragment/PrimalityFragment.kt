@@ -14,12 +14,10 @@ import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 
 class PrimalityFragment : BaseFragment() {
+
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
+
     override fun getLayoutIdForFragment() = R.layout.fragment_primality
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,6 +37,6 @@ class PrimalityFragment : BaseFragment() {
 
     private fun checkIfProbablePrime(bigNumber: BigInteger) {
         val isPrime = bigNumber.isProbablePrime(100)
-        showCustomToast(context, if (isPrime) "Prime Number!" else "Not a prime")
+        showCustomToast(context, if (isPrime) "Prime Number!" else "Not a prime Number")
     }
 }
