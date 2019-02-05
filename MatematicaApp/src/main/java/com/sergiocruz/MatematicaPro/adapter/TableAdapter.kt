@@ -1,4 +1,4 @@
-package com.sergiocruz.MatematicaPro.fragment
+package com.sergiocruz.MatematicaPro.adapter
 
 import android.graphics.Color
 import android.support.v7.widget.CardView

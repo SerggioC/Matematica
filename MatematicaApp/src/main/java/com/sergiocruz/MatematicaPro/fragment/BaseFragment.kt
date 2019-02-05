@@ -19,7 +19,7 @@ abstract class BaseFragment : Fragment() {
     abstract fun getLayoutIdForFragment(): Int
 
     lateinit var sharedPrefs: SharedPreferences
-    var scale: Float = 0.toFloat()
+    var scale: Float = 0f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
