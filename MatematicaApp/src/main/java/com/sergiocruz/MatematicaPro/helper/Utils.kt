@@ -42,7 +42,7 @@ enum class InfoLevel {
     INFO, CONFIRM, WARNING, ERROR
 }
 
-fun cancelAsyncTask(task: AsyncTask<*,*,*>, context: Context?): Boolean {
+fun cancelAsyncTask(task: AsyncTask<*, *, *>, context: Context?): Boolean {
     return if (task.status == AsyncTask.Status.RUNNING) {
         task.cancel(true)
         showCustomToast(context, context?.getString(R.string.canceled_op), InfoLevel.WARNING)
@@ -87,11 +87,15 @@ fun showCustomToast(
     theCustomToast.show()
 }
 
-
+//Hide the keyboard
 fun hideKeyboard(activity: Activity?) {
-    //Hide the keyboard
     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+}
+
+fun showKeyboard(activity: Activity?) {
+    val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(activity.currentFocus, 0)
 }
 
 fun getGradientSeparator(context: Context?): TextView {

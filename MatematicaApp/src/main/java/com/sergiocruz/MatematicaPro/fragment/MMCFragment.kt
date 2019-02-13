@@ -47,7 +47,7 @@ import java.text.NumberFormat
 import java.util.*
 import java.util.Map
 
-class MMCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
+class MMCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
     private var height_dip: Int = 0
@@ -57,10 +57,6 @@ class MMCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
     private lateinit var language: String
 
     private val emptyTextView = ArrayList<TextView>()
-
-    private fun showToastHighNumber() {
-        showCustomToast(context, getString(R.string.numero_alto), InfoLevel.WARNING)
-    }
 
     private fun showToastNum(field: String) {
         showCustomToast(context, getString(R.string.number_in_field) + " " + field + " " + getString(R.string.too_high), InfoLevel.WARNING)
@@ -184,8 +180,6 @@ class MMCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
 
     override fun onActionDone() = calculateMMC()
 
-    override fun onActionError() = showToastHighNumber()
-
     override fun getLayoutIdForFragment() = R.layout.fragment_mmc
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -204,14 +198,14 @@ class MMCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
         button_add_mmc.setOnClickListener { add_mmc() }
         button_remove_mmc.setOnClickListener { remove_mmc() }
 
-        mmc_num_1.watchThis(this, this)
-        mmc_num_2.watchThis(this, this)
-        mmc_num_3.watchThis(this, this)
-        mmc_num_4.watchThis(this, this)
-        mmc_num_5.watchThis(this, this)
-        mmc_num_6.watchThis(this, this)
-        mmc_num_7.watchThis(this, this)
-        mmc_num_8.watchThis(this, this)
+        mmc_num_1.watchThis(this)
+        mmc_num_2.watchThis(this)
+        mmc_num_3.watchThis(this)
+        mmc_num_4.watchThis(this)
+        mmc_num_5.watchThis(this)
+        mmc_num_6.watchThis(this)
+        mmc_num_7.watchThis(this)
+        mmc_num_8.watchThis(this)
     }
 
     fun add_mmc() {

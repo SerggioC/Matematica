@@ -40,7 +40,7 @@ import java.text.DecimalFormat
  * Created by Sergio on 13/05/2017 14:00
  */
 
-class MultiplosFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
+class MultiplosFragment : BaseFragment(), OnEditorActions {
     var BG_Operation: AsyncTask<Long, Double, String> = BackGroundOperation(null, null)
     private var num: Long = 0
     internal var startTime: Long = 0
@@ -89,13 +89,9 @@ class MultiplosFragment : BaseFragment(), OnEditorActionDone, OnEditorActionErro
         calculateMultiples()
     }
 
-    override fun onActionError() {
-        showCustomToast(context, getString(R.string.numero_alto), InfoLevel.WARNING)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editNumMultiplos.watchThis(this, this)
+        editNumMultiplos.watchThis(this)
         clearButton.setOnClickListener { editNumMultiplos.setText("") }
         button_calc_multiplos.setOnClickListener { calculateMultiples() }
     }

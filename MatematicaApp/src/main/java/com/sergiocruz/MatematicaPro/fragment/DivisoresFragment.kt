@@ -38,8 +38,7 @@ import java.util.*
  * Use the [DivisoresFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
-    OnEditorActionError {
+class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
     var BG_Operation: AsyncTask<Long, Double, ArrayList<Long>> = BackGroundOperation()
     internal var cv_width: Int = 0
@@ -56,14 +55,12 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onActionDone() = calcDivisors()
 
-    override fun onActionError() = showCustomToast(context, getString(R.string.numero_alto))
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
         calculateButton.setOnClickListener { calcDivisors() }
         clearButton.setOnClickListener { inputEditText.setText("") }
-        inputEditText.watchThis(this, this)
+        inputEditText.watchThis(this)
     }
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)

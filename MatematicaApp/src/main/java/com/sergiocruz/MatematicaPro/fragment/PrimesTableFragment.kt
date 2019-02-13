@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextUtils
@@ -15,7 +16,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.LinearLayout
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -41,9 +41,9 @@ import java.text.DecimalFormat
  * Created by Sergio on 11/11/2016 16:31
  */
 
-class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
-    OnEditorActionError, SharedPreferences.OnSharedPreferenceChangeListener {
-    var tableData = ArrayList<String>()
+class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions,
+    SharedPreferences.OnSharedPreferenceChangeListener {
+    private var tableData = ArrayList<String>()
 
     companion object {
         // isProbablePrime function returns a prime with probability = 1 - (1/2)^certainty
@@ -52,7 +52,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     private var BG_Operation: AsyncTask<Long, Double, ResultWrapper> = LongOperation()
     private var cvWidth: Int = 0
-    private var heightDp: Int = 0
+    private var heightDp: Int = (4 * scale + 0.5f).toInt()
     private var numMin: Long? = 0L
     private var numMax: Long? = 50L
     private var bruteForceMode: Boolean = true
@@ -84,7 +84,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         writeCalcMode()
 
         switchPrimos.setOnCheckedChangeListener { _, isChecked ->
-            tableAdapter.reloadAdapter(isChecked)
+            if (::tableAdapter.isInitialized)
+                tableAdapter.reloadAdapter(isChecked)
         }
 
         cancelButton.setOnClickListener {
@@ -97,8 +98,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         createTableBtn.setOnClickListener { makePrimesTable() }
         btn_clear_min.setOnClickListener { min_pt.setText("") }
         btn_clear_max.setOnClickListener { max_pt.setText("") }
-        min_pt.watchThis(this, this)
-        max_pt.watchThis(this, this)
+        min_pt.watchThis(this)
+        max_pt.watchThis(this)
     }
 
     private fun writeCalcMode() {
@@ -109,9 +110,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 R.string.pref_title_probabilistic
         )
     }
-
-    override fun onActionError() =
-        showCustomToast(context, getString(R.string.highest_is_high), WARNING)
 
     override fun onActionDone() = makePrimesTable()
 
@@ -205,17 +203,24 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         val minString = min_pt.text.toString().replace("[^\\d]".toRegex(), "")
         val maxString = max_pt.text.toString().replace("[^\\d]".toRegex(), "")
 
-        if (TextUtils.isEmpty(minString) || TextUtils.isEmpty(minString)) {
-            showCustomToast(context, getString(R.string.fill_min_max), WARNING)
+        if (TextUtils.isEmpty(minString)) {
+            min_pt.requestFocus()
+            min_pt.error = getString(R.string.fill_this)
+            showKeyboard(activity)
+            return
+        }
+        if (TextUtils.isEmpty(maxString)) {
+            max_pt.requestFocus()
+            max_pt.error = getString(R.string.fill_this)
+            showKeyboard(activity)
             return
         }
 
         var minValue = minString.toLongOrNull(10)
         if (minValue == null) {
-            showCustomToast(context, getString(R.string.lowest_is_high), WARNING)
+            min_pt.error = getString(R.string.numero_alto)
             return
         } else if (minValue < 1) {
-            showCustomToast(context, getString(R.string.lowest_prime), WARNING)
             min_pt.setText("1")
             numMin = 1
             minValue = 1
@@ -223,10 +228,9 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
         var maxValue = maxString.toLongOrNull(10)
         if (maxValue == null) {
-            showCustomToast(context, getString(R.string.highest_is_high), WARNING)
+            max_pt.error = getString(R.string.numero_alto)
             return
         } else if (maxValue < 1) {
-            showCustomToast(context, getString(R.string.lowest_prime), WARNING)
             max_pt.setText("1")
             numMax = 1
             maxValue = 1
@@ -242,22 +246,16 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             return
         }
 
-        status = OperationStatus.Running
-
         if (bruteForceMode) {
             setUpAdapter(maxValue)
             BG_Operation = LongOperation().execute(minValue, maxValue)
         } else {
             lockButtons()
+            status = OperationStatus.Running
             // launch coroutine in the Default thread
             GlobalScope.launch(Dispatchers.Default) {
                 val startTime = System.currentTimeMillis()
-                lateinit var result: ResultWrapper
-                when (selections.checkedRadioButtonId) {
-                    p1.id -> result = probabilisticMode1(minValue, maxValue)
-                    p2.id -> result = probabilisticMode2(minValue, maxValue)
-                    else -> result = probabilisticMode1(minValue, maxValue)
-                }
+                val result: ResultWrapper = probabilisticMode(minValue, maxValue)
                 withContext(Dispatchers.Main) {
                     showPerformance(startTime)
                     setUpAdapter(maxValue)
@@ -279,7 +277,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         val primesTable: MutableMap<Int, Pair<String, Boolean>>
     )
 
-    private fun probabilisticMode1(minValue: Long, maxValue: Long): ResultWrapper {
+    private fun probabilisticMode(minValue: Long, maxValue: Long): ResultWrapper {
         val fullTable = mutableMapOf<Int, Pair<String, Boolean>>()
         val primesOnlyTable = mutableMapOf<Int, Pair<String, Boolean>>()
         var indexPrimes = 0
@@ -307,7 +305,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     sealed class OperationStatus {
         object Running : OperationStatus()
         object Canceled : OperationStatus()
-        object Done: OperationStatus()
+        object Done : OperationStatus()
         object Idle : OperationStatus()
     }
 
@@ -412,8 +410,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             val lr_dip = (4 * scale + 0.5f).toInt() * 2
             cvWidth = width - lr_dip
         }
-        hideKeyboard(activity as Activity)
-
+        hideKeyboard(activity)
     }
 
     private fun lockButtons() {
@@ -427,8 +424,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private fun resetButtons() {
-        heightDp = (4 * scale + 0.5f).toInt()
-        progressBar.layoutParams = LinearLayout.LayoutParams(10, heightDp)
+        cvWidth = (4 * scale + 0.5f).toInt()
+        progressBar.layoutParams = ConstraintLayout.LayoutParams(cvWidth, heightDp)
         progressBar.visibility = GONE
         cancelButton.visibility = GONE
         createTableBtn.isClickable = true
@@ -506,7 +503,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             if (this@PrimesTableFragment.isVisible) {
                 val progress: Double = values[0] ?: 0.0
                 progressBar.layoutParams =
-                    LinearLayout.LayoutParams(
+                    ConstraintLayout.LayoutParams(
                         Math.round(progress * cvWidth).toInt(),
                         heightDp
                     )
@@ -631,7 +628,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             val elapsed =
                 " " + decimalFormatter.format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
             performanceTextView.visibility = VISIBLE
-            performanceTextView.text = "${getString(R.string.performance)} $elapsed"
+            performanceTextView.text = getString(R.string.performance) + " " + elapsed
         } else {
             performanceTextView.visibility = GONE
         }

@@ -35,8 +35,7 @@ import java.util.*
  * Created by Sergio on 05/02/2017 12:47
  */
 
-class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
-    OnEditorActionError {
+class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
     var BG_Operation: AsyncTask<Long, Double, BigInteger> = BackGroundOperation()
     internal var cv_width: Int = 0
     internal var height_dip: Int = 0
@@ -95,16 +94,13 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (cancelAsyncTask(BG_Operation, context)) resetButtons()
     }
 
-    override fun onActionError() =
-        showCustomToast(context, getString(R.string.numero_alto), InfoLevel.WARNING)
-    
     override fun onActionDone() = calculatePrimorial()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         button_calc_primorial.setOnClickListener { calculatePrimorial() }
-        inputEditText.watchThis(this, this)
+        inputEditText.watchThis(this)
         cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
         clearButton.setOnClickListener { inputEditText.setText("") }
     }

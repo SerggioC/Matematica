@@ -44,7 +44,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
+class MDCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
     internal var height_dip: Int = 0
@@ -83,10 +83,6 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
 
     override fun onActionDone() = calculateMDC()
 
-    override fun onActionError() {
-        showCustomToast(context, getString(R.string.numero_alto))
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -104,14 +100,14 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
         button_add_mdc.setOnClickListener { addMdcField() }
         button_remove_mdc.setOnClickListener { removeMdcField() }
 
-        mdc_num_1.watchThis(this, this)
-        mdc_num_2.watchThis(this, this)
-        mdc_num_3.watchThis(this, this)
-        mdc_num_4.watchThis(this, this)
-        mdc_num_5.watchThis(this, this)
-        mdc_num_6.watchThis(this, this)
-        mdc_num_7.watchThis(this, this)
-        mdc_num_8.watchThis(this, this)
+        mdc_num_1.watchThis(this)
+        mdc_num_2.watchThis(this)
+        mdc_num_3.watchThis(this)
+        mdc_num_4.watchThis(this)
+        mdc_num_5.watchThis(this)
+        mdc_num_6.watchThis(this)
+        mdc_num_7.watchThis(this)
+        mdc_num_8.watchThis(this)
     }
 
     override fun onDestroy() {
@@ -595,12 +591,12 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
         val textView = TextView(activity)
         textView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) //altura
+            ViewGroup.LayoutParams.WRAP_CONTENT //altura
+        )
 
         //Adicionar o texto com o resultado ao TextView
         textView.text = ssb
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
         textView.setTag(R.id.texto, "texto")
 
         // add the textview to the cardview
@@ -1132,9 +1128,7 @@ class MDCFragment : BaseFragment(), OnEditorActionDone, OnEditorActionError {
                 ssb_mdc.setSpan(StyleSpan(BOLD), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssb_mdc.setSpan(RelativeSizeSpan(0.9f), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 //explainTextView_2
-                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(
-                    ssb_mdc
-                )
+                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(ssb_mdc)
 
                 ssb_mdc.delete(0, ssb_mdc.length)
                 result_mdc = cardTags.resultMDC!!

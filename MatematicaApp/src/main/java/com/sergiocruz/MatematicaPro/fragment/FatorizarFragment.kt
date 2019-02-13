@@ -2,13 +2,11 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
@@ -17,7 +15,10 @@ import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
-import android.view.*
+import android.view.Gravity
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
@@ -34,8 +35,7 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.Map
 
-class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActionDone,
-    OnEditorActionError {
+class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
     private var BG_Operation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
@@ -46,7 +46,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getLayoutIdForFragment() = R.layout.fragment_fatorizar
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_fatorizar)
+    override fun loadOptionsMenus() =
+        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_fatorizar)
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -119,7 +120,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
         calculateButton.setOnClickListener { calculatePrimeFactors() }
         clearButton.setOnClickListener { factorizeTextView.setText("") }
-        factorizeTextView.watchThis(this, this)
+        factorizeTextView.watchThis(this)
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
@@ -128,10 +129,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onActionDone() {
         calculatePrimeFactors()
-    }
-
-    override fun onActionError() {
-        showCustomToast(context, getString(R.string.numero_alto), InfoLevel.WARNING)
     }
 
     private fun calculatePrimeFactors() {
@@ -228,7 +225,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // add the textview com os fatores multiplicados to the Linear layout vertical root
         ll_vertical_root.addView(textView)
 
-        val shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
+        val shouldShowExplanation =
+            sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
 
@@ -399,7 +397,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             val gradientSeparator = getGradientSeparator(context)
 
-            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
+            val shouldShowPerformance =
+                sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
@@ -483,7 +482,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
 
-            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
+            val shouldShowPerformance =
+                sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 //View separator with gradient
                 val gradientSeparator = getGradientSeparator(context)
@@ -636,7 +636,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val fColors: ArrayList<Int> = ArrayList()
             val f_colors = resources.getIntArray(R.array.f_colors_xml)
 
-            val shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
+            val shouldShowColors =
+                sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             if (shouldShowColors) {
                 for (f_color in f_colors) fColors.add(f_color)
                 fColors.shuffle() //randomizar as cores

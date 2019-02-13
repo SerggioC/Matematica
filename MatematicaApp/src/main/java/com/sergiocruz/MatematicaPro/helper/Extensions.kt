@@ -1,21 +1,20 @@
 package com.sergiocruz.MatematicaPro.helper
 
+import android.support.design.widget.TextInputEditText
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import com.sergiocruz.MatematicaPro.R
 
-interface OnEditorActionDone {
+interface OnEditorActions {
     fun onActionDone()
 }
 
-interface OnEditorActionError {
-    fun onActionError()
-}
-
 /** EditText Editor Action Extension Function */
-fun EditText.watchThis(onActionDone : OnEditorActionDone, onActionError: OnEditorActionError) {
+//fun EditText.watchThis(onActionDone : OnEditorActionDone, onActionError: OnEditorActionError) {
+fun EditText.watchThis(onEditor: OnEditorActions) {
     this.addTextChangedListener(object : TextWatcher {
         lateinit var oldNum: String
 
@@ -30,8 +29,8 @@ fun EditText.watchThis(onActionDone : OnEditorActionDone, onActionError: OnEdito
                 var num = java.lang.Long.parseLong("$s")
             } catch (e: Exception) {
                 this@watchThis.setText(oldNum)
-                this@watchThis.setSelection(this@watchThis.text.length) //Colocar o cursor no final do texto
-                onActionError.onActionError()
+                this@watchThis.setSelection(this@watchThis.text!!.length) //Colocar o cursor no final do texto
+                this@watchThis.error = this@watchThis.context.getString(R.string.numero_alto)
                 return
             }
         }
@@ -41,7 +40,7 @@ fun EditText.watchThis(onActionDone : OnEditorActionDone, onActionError: OnEdito
 
     this.setOnEditorActionListener { _, actionId, _ ->
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            onActionDone.onActionDone()
+            onEditor.onActionDone()
             return@setOnEditorActionListener true
         }
         false
