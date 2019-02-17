@@ -28,8 +28,6 @@ import java.util.*
  * Package com.sergiocruz.Matematica.helper
  * Created by Sergio on 25/10/2016 23:10
  */
-
-class SwipeToDismissTouchListener
 /**
  * Constructs a new swipe-to-dismiss touch listener for the given view.
  *
@@ -38,7 +36,7 @@ class SwipeToDismissTouchListener
  * @param callbacks The callback to trigger when the user has indicated that he would like to
  * dismiss this view.
  */
-    (// Fixed properties
+class SwipeToDismissTouchListener(
     private val mView: View,
     private val mActivity: Activity,
     private val mCallbacks: DismissCallbacks
@@ -385,8 +383,8 @@ class SwipeToDismissTouchListener
                     // Cancel listview's touch
                     val cancelEvent = MotionEvent.obtain(motionEvent)
                     cancelEvent.action =
-                            MotionEvent.ACTION_CANCEL or
-                            (motionEvent.actionIndex shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
+                        MotionEvent.ACTION_CANCEL or
+                                (motionEvent.actionIndex shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
                     mView.onTouchEvent(cancelEvent)
                     try {
                         cancelEvent.recycle()
@@ -406,7 +404,7 @@ class SwipeToDismissTouchListener
                     mView.translationX = deltaX - mSwipingSlop
                     // TODO: use an ease-out interpolator or such
                     mView.alpha =
-                            Math.max(0f, Math.min(1f, 1f - 2f * Math.abs(deltaX) / mViewWidth))
+                        Math.max(0f, Math.min(1f, 1f - 2f * Math.abs(deltaX) / mViewWidth))
                     return true
                 }
             }

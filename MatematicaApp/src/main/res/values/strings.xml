@@ -30,6 +30,7 @@
     <!-- Toolbar titles when navigation menu item is selected-->
     <string-array name="nav_item_activity_titles">
         <item>@string/app_inicio</item>
+        <item>@string/primality</item>
         <item>@string/mmc</item>
         <item>@string/mdc</item>
         <item>@string/factorize</item>
@@ -37,7 +38,6 @@
         <item>@string/tabela_primos</item>
         <item>@string/nav_multiplos</item>
         <item>@string/nav_primorial</item>
-        <item>@string/primality</item>
     </string-array>
 
     <string name="calculate_primorial_title">Calculate Primorial of a number n#</string>

@@ -50,7 +50,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         private const val certainty = 100
     }
 
-    private var BG_Operation: AsyncTask<Long, Double, ResultWrapper> = LongOperation()
+    private var asyncTask: AsyncTask<Long, Double, ResultWrapper> = LongOperation()
     private var cvWidth: Int = 0
     private var heightDp: Int = (4 * scale + 0.5f).toInt()
     private var numMin: Long? = 0L
@@ -89,7 +89,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         }
 
         cancelButton.setOnClickListener {
-            if (BG_Operation.status == AsyncTask.Status.RUNNING) {
+            if (asyncTask.status == AsyncTask.Status.RUNNING) {
                 displayCancelDialogBox(context!!, this)
             } else if (status == OperationStatus.Running) {
                 status = OperationStatus.Canceled
@@ -195,7 +195,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
-        if (cancelAsyncTask(BG_Operation, context)) resetButtons()
+        if (cancelAsyncTask(asyncTask, context)) resetButtons()
     }
 
     private fun makePrimesTable() {
@@ -248,7 +248,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
         if (bruteForceMode) {
             setUpAdapter(maxValue)
-            BG_Operation = LongOperation().execute(minValue, maxValue)
+            asyncTask = LongOperation().execute(minValue, maxValue)
         } else {
             lockButtons()
             status = OperationStatus.Running
@@ -391,7 +391,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     override fun onDestroy() {
         super.onDestroy()
-        cancelAsyncTask(BG_Operation, context)
+        cancelAsyncTask(asyncTask, context)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -407,8 +407,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             val num_length = min_num_length * (18 * scale + 0.5f).toInt() + 8
             val num_columns = Math.round((width / num_length).toFloat())
             layoutManager.spanCount = num_columns
-            val lr_dip = (4 * scale + 0.5f).toInt() * 2
-            cvWidth = width - lr_dip
+            val lrDip = (4 * scale + 0.5f).toInt() * 2
+            cvWidth = width - lrDip
         }
         hideKeyboard(activity)
     }
@@ -516,47 +516,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
                 tableAdapter.swap(result.fullTable, result.primesTable, switchPrimos.isChecked)
 
-//                val num_columns = getNumColumns()
-//                historyGridRecyclerView.numColumns = num_columns
-//
-//                if (switchPrimos.isChecked) {
-//                    historyGridRecyclerView.adapter = object :
-//                        ArrayAdapter<String>(
-//                            activity!!,
-//                            R.layout.table_item,
-//                            R.id.textViewItem,
-//                            fullTable!!
-//                        ) {
-//                        override fun getView(
-//                            position: Int,
-//                            convertView: View?,
-//                            parent: ViewGroup
-//                        ): View {
-//                            val view = super.getView(position, convertView, parent)
-//                            view as CardView
-//                            if (tableData.contains(fullTable!![position])) { // Se o número for primo
-//                                view.setCardBackgroundColor(
-//                                    ContextCompat.getColor(
-//                                        this.context,
-//                                        R.color.gridcolor
-//                                    )
-//                                )
-//                            } else {
-//                                view.setCardBackgroundColor(
-//                                    ContextCompat.getColor(
-//                                        this.context,
-//                                        R.color.white
-//                                    )
-//                                )
-//                            }
-//                            return view
-//                        }
-//                    }
-//                } else {
-//                    val primesAdapter =
-//                        ArrayAdapter(activity!!, R.layout.table_item, R.id.textViewItem, result)
-//                    historyGridRecyclerView.adapter = primesAdapter
-//                }
                 numPrimesTextView.visibility = VISIBLE
                 numPrimesTextView.text =
                     "${getString(R.string.cardinal_primos)} ${result.primesTable.size}"
@@ -569,43 +528,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             super.onCancelled(parcial)
 
             if (this@PrimesTableFragment.isVisible && parcial.fullTable.isNotEmpty()) {
-                val display = activity!!.windowManager.defaultDisplay
-                val size = Point()
-                display.getSize(size)
-                val width = size.x  //int height = size.y;
-                val max_num_length = parcial.fullTable[parcial.fullTable.size - 1].toString().length
-                val scale = resources.displayMetrics.density
-                val num_length = max_num_length * (18 * scale + 0.5f).toInt() + 8
-                val num_columns = Math.round((width / num_length).toFloat())
-//                historyGridRecyclerView.numColumns = num_columns
-//
-//                if (checkboxChecked!!) {
-//                    historyGridRecyclerView.adapter = object :
-//                        ArrayAdapter<String>(
-//                            activity!!,
-//                            R.layout.table_item,
-//                            R.id.textViewItem,
-//                            fullTable!!
-//                        ) {
-//                        override fun getView(
-//                            position: Int,
-//                            convertView: View?,
-//                            parent: ViewGroup
-//                        ): View {
-//                            val view = super.getView(position, convertView, parent)
-//                            if (tableData!!.contains(fullTable!![position])) { //Se o número for primo
-//                                (view as CardView).setCardBackgroundColor(Color.parseColor("#9769bc4d"))
-//                            } else {
-//                                (view as CardView).setCardBackgroundColor(Color.parseColor("#FFFFFF"))
-//                            }
-//                            return view
-//                        }
-//                    }
-//                } else {
-//                    val primes_adapter =
-//                        ArrayAdapter(activity!!, R.layout.table_item, R.id.textViewItem, parcial)
-//                    historyGridRecyclerView.adapter = primes_adapter
-//                }
+
+                tableAdapter.swap(parcial.fullTable, parcial.primesTable, switchPrimos.isChecked)
 
                 numPrimesTextView.visibility = VISIBLE
                 numPrimesTextView.text =
@@ -635,19 +559,3 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

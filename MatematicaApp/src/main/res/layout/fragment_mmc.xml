@@ -1,388 +1,383 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.sergiocruz.MatematicaPro.fragment.MMCFragment">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGrey"
+    tools:context="com.sergiocruz.MatematicaPro.fragment.MMCFragment">
 
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/lightGrey">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/left_right_layout_margin"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="@dimen/left_right_layout_margin"
+            app:cardBackgroundColor="@color/bgCardColor"
+            app:cardCornerRadius="4dp">
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_view_1"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/left_right_layout_margin"
-                android:layout_marginRight="@dimen/left_right_layout_margin"
-                android:layout_marginTop="4dp"
-                card_view:cardBackgroundColor="@color/bgCardColor"
-                card_view:cardCornerRadius="4dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/left_right_layout_margin"
+                android:paddingTop="4dp"
+                android:paddingRight="@dimen/left_right_layout_margin"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    android:id="@+id/titleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/mmc_title"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="normal" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingBottom="4dp"
-                    android:paddingLeft="@dimen/left_right_layout_margin"
-                    android:paddingRight="@dimen/left_right_layout_margin"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
                     android:paddingTop="4dp">
 
-                    <TextView
-                        android:id="@+id/titleTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="sans-serif"
-                        android:text="@string/mmc_title"
-                        android:textAlignment="center"
-                        android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:textStyle="normal"/>
-
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:paddingTop="4dp">
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
 
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/mmc_num_1"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:imeOptions="flagNavigateNext"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton1"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1">
-
-                            <EditText
-                                android:id="@+id/mmc_num_2"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"
-                                android:imeOptions="actionDone"/>
-
-                            <Button
-                                android:id="@+id/clearButton2"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/linear_layout_34"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:animateLayoutChanges="true"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:paddingBottom="4dp"
-                        android:paddingTop="4dp"
-                        android:visibility="gone">
-
-                        <FrameLayout
-                            android:id="@+id/frame_3"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/mmc_num_3"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton3"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-
-                        <FrameLayout
-                            android:id="@+id/frame_4"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/mmc_num_4"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton4"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/linear_layout_56"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:animateLayoutChanges="true"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:paddingBottom="4dp"
-                        android:visibility="gone">
-
-                        <FrameLayout
-                            android:id="@+id/frame_5"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/mmc_num_5"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton5"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-
-                        <FrameLayout
-                            android:id="@+id/frame_6"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/mmc_num_6"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton6"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/linear_layout_78"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:animateLayoutChanges="true"
-                        android:baselineAligned="false"
-                        android:orientation="horizontal"
-                        android:paddingBottom="4dp"
-                        android:visibility="gone">
-
-                        <FrameLayout
-                            android:id="@+id/frame_7"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/mmc_num_7"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton7"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-
-                        <FrameLayout
-                            android:id="@+id/frame_8"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:visibility="gone">
-
-                            <EditText
-                                android:id="@+id/mmc_num_8"
-                                android:layout_width="fill_parent"
-                                android:layout_height="@dimen/edittext_height"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="@dimen/edittext_margin_left"
-                                android:background="@drawable/edittext_statelist"
-                                android:gravity="center"
-                                android:inputType="number"
-                                android:maxLines="1"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/edittextsize"/>
-
-                            <Button
-                                android:id="@+id/clearButton8"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text"/>
-
-                        </FrameLayout>
-                    </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal">
+                        <EditText
+                            android:id="@+id/mmc_num_1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:imeOptions="flagNavigateNext"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
 
                         <Button
-                            android:id="@+id/calculateButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/apptheme_btn_default_holo_light"
-                            android:text="@string/calculate"
-                            android:textAllCaps="false"/>
+                            android:id="@+id/clearButton1"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
 
-                        <ImageButton
-                            android:id="@+id/button_add_mmc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:background="@drawable/add_one"
-                            android:contentDescription="TODO" />
+                    </FrameLayout>
 
-                        <ImageButton
-                            android:id="@+id/button_remove_mmc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_toLeftOf="@id/button_add_mmc"
-                            android:background="@drawable/less_one"
-                            android:visibility="invisible"
-                            android:contentDescription="TODO" />
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1">
 
-                    </RelativeLayout>
+                        <EditText
+                            android:id="@+id/mmc_num_2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/edittext_margin_left"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:imeOptions="actionDone"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton2"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/stealfocus"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:visibility="visible"/>
+                <LinearLayout
+                    android:id="@+id/linear_layout_34"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:visibility="gone">
 
-            </android.support.v7.widget.CardView>
+                    <FrameLayout
+                        android:id="@+id/frame_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:visibility="gone">
 
-            <LinearLayout
-                android:id="@+id/history"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                android:layout_marginTop="8dp"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                        <EditText
+                            android:id="@+id/mmc_num_3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton3"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/frame_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/mmc_num_4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/edittext_margin_left"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton4"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linear_layout_56"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="4dp"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:id="@+id/frame_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/mmc_num_5"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton5"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/frame_6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/mmc_num_6"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/edittext_margin_left"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton6"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linear_layout_78"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="4dp"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:id="@+id/frame_7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/mmc_num_7"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton7"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/frame_8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/mmc_num_8"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/edittext_height"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/edittext_margin_left"
+                            android:background="@drawable/edittext_statelist"
+                            android:gravity="center"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/edittextsize" />
+
+                        <Button
+                            android:id="@+id/clearButton8"
+                            android:layout_width="27dp"
+                            android:layout_height="27dp"
+                            android:layout_gravity="center_vertical|right"
+                            android:background="@drawable/ic_clear_text" />
+
+                    </FrameLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
+
+                    <Button
+                        android:id="@+id/calculateButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/apptheme_btn_default_holo_light"
+                        android:text="@string/calculate"
+                        android:textAllCaps="false" />
+
+                    <ImageButton
+                        android:id="@+id/button_add_mmc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/add_one"
+                        android:contentDescription="TODO" />
+
+                    <ImageButton
+                        android:id="@+id/button_remove_mmc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/button_add_mmc"
+                        android:background="@drawable/less_one"
+                        android:contentDescription="TODO"
+                        android:visibility="invisible" />
+
+                </RelativeLayout>
             </LinearLayout>
 
-        </LinearLayout>
+            <EditText
+                android:id="@+id/stealfocus"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="visible" />
 
-    </ScrollView>
+        </android.support.v7.widget.CardView>
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="8dp"
+            android:animateLayoutChanges="true"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+</ScrollView>
+
+

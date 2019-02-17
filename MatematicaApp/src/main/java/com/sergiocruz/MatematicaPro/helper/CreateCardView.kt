@@ -32,15 +32,15 @@ object CreateCardView {
 
         //int pixels = (int) (dips * scale + 0.5f);
         val scale = activity.resources.displayMetrics.density
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardview.useCompatPadding = true
 
-        val cv_color = ContextCompat.getColor(activity, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cv_color)
+        val cvColor = ContextCompat.getColor(activity, R.color.cardsColor)
+        cardview.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)

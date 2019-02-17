@@ -97,8 +97,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         display?.getSize(size)
         val width = size.x
         //int height = size.y;
-        val lr_dip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lr_dip
+        val lrDip = (4 * scale + 0.5f).toInt() * 2
+        cv_width = width - lrDip
 
         hideKeyboard(activity as Activity)
 
@@ -179,25 +179,25 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardview.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardview.useCompatPadding = true
 
-        val cv_color = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cv_color)
+        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
+        cardview.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)
 
-        val ll_vertical_root = LinearLayout(activity)
-        ll_vertical_root.layoutParams = LinearLayout.LayoutParams(
+        val llVerticalRoot = LinearLayout(activity)
+        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
             LinearLayoutCompat.LayoutParams.WRAP_CONTENT
         )
-        ll_vertical_root.orientation = LinearLayout.VERTICAL
+        llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // criar novo Textview para o resultado da fatorização
         val textView = TextView(activity)
@@ -223,7 +223,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         textView.setTag(R.id.texto, "texto")
 
         // add the textview com os fatores multiplicados to the Linear layout vertical root
-        ll_vertical_root.addView(textView)
+        llVerticalRoot.addView(textView)
 
         val shouldShowExplanation =
             sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
@@ -417,7 +417,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             ll_horizontal_link.addView(explainLink)
             ll_horizontal_link.addView(gradientSeparator)
 
-            ll_vertical_root.addView(ll_horizontal_link)
+            llVerticalRoot.addView(ll_horizontal_link)
 
             ll_vertical_expl.addView(ll_horizontal)
 
@@ -477,7 +477,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             ll_vertical_expl.addView(textView_fact_expanded)
 
-            ll_vertical_root.addView(ll_vertical_expl)
+            llVerticalRoot.addView(ll_vertical_expl)
 
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
@@ -491,11 +491,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val elapsed =
                     getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime!!) / 1000000000.0) + "s"
                 gradientSeparator.text = elapsed
-                ll_vertical_root.addView(gradientSeparator, 0)
+                llVerticalRoot.addView(gradientSeparator, 0)
             }
         }
 
-        cardview.addView(ll_vertical_root)
+        cardview.addView(llVerticalRoot)
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(

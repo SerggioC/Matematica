@@ -41,39 +41,28 @@ import java.text.DecimalFormat
  */
 
 class MultiplosFragment : BaseFragment(), OnEditorActions {
-    var BG_Operation: AsyncTask<Long, Double, String> = BackGroundOperation(null, null)
+    private var asyncTask: AsyncTask<Long, Double, String> = BackGroundOperation(null, null)
     private var num: Long = 0
     internal var startTime: Long = 0
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item!!.itemId
-        if (id == R.id.action_save_history_images) {
-            MenuHelper.saveHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history) {
-            MenuHelper.shareHistory(activity as Activity)
-        }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.shareHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.removeHistory(activity as Activity)
-        }
-        if (id == R.id.action_help_multiplos) {
-            val helpMultiplos = getString(R.string.help_text_multiplos)
-            val ssb = SpannableStringBuilder(helpMultiplos)
-            CreateCardView.create(history, ssb, activity as Activity)
-        }
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
+            R.id.action_help_multiplos -> {
+                val help = getString(R.string.help_text_multiplos)
+                val ssb = SpannableStringBuilder(help)
+                CreateCardView.create(history, ssb, activity as Activity)
+            }
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
@@ -85,9 +74,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     override fun getLayoutIdForFragment() = R.layout.fragment_multiplos
 
-    override fun onActionDone() {
-        calculateMultiples()
-    }
+    override fun onActionDone() = calculateMultiples()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,18 +85,19 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (BG_Operation.status == AsyncTask.Status.RUNNING) {
-            BG_Operation.cancel(true)
+        if (asyncTask.status == AsyncTask.Status.RUNNING) {
+            asyncTask.cancel(true)
             showCustomToast(context, getString(R.string.canceled_op), InfoLevel.WARNING)
         }
     }
 
-    fun calculateMultiples() {
+    private fun calculateMultiples() {
         startTime = System.nanoTime()
         hideKeyboard(activity)
         val editnumText = editNumMultiplos.text.toString()
         if (TextUtils.isEmpty(editnumText)) {
             showCustomToast(context, getString(R.string.add_num_inteiro), InfoLevel.WARNING)
+            editNumMultiplos.error = getString(R.string.add_num_inteiro)
             return
         }
         if (editnumText == "0") {
@@ -124,8 +112,8 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             return
         }
 
-        val spinnerMaxMultiplos = java.lang.Long.parseLong(spinner_multiplos.selectedItem.toString())
-        BG_Operation = BackGroundOperation(false, null).execute(num, 0L, spinnerMaxMultiplos)
+        val spinnerMaxMultiplos = spinner_multiplos.selectedItem.toString().toLongOrNull()
+        asyncTask = BackGroundOperation(false, null).execute(num, 0L, spinnerMaxMultiplos)
     }
 
     fun createCardView(number: Long?, multiplos: String, min_multiplos: Long?, showMore: Boolean?) {
@@ -140,15 +128,15 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         cardview.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardview.useCompatPadding = true
 
-        val cv_color = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cv_color)
+        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
+        cardview.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)
@@ -168,12 +156,12 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
 
-        val ll_vertical_root = LinearLayout(activity)
-        ll_vertical_root.layoutParams = LinearLayout.LayoutParams(
+        val llVerticalRoot = LinearLayout(activity)
+        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
             LinearLayoutCompat.LayoutParams.WRAP_CONTENT
         )
-        ll_vertical_root.orientation = LinearLayout.VERTICAL
+        llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(
@@ -198,40 +186,40 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             val elapsed =
                 getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
             gradientSeparator.text = elapsed
-            ll_vertical_root.addView(gradientSeparator)
+            llVerticalRoot.addView(gradientSeparator)
         }
 
-        ll_vertical_root.addView(textView)
+        llVerticalRoot.addView(textView)
 
         if (showMore!!) {
             // criar novo Textview com link para mostrar mais números múltiplos
-            val showmore = TextView(activity)
-            showmore.layoutParams = LinearLayout.LayoutParams(
+            val showMoreTextView = TextView(activity)
+            showMoreTextView.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, //largura
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ) //altura
-            showmore.gravity = Gravity.RIGHT
-            showmore.setText(R.string.show_more)
-            showmore.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-            showmore.setTypeface(null, Typeface.BOLD)
-            showmore.setTextColor(ContextCompat.getColor(activity!!, R.color.bgCardColor))
-            showmore.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            showmore.setOnClickListener {
+            showMoreTextView.gravity = Gravity.RIGHT
+            showMoreTextView.setText(R.string.show_more)
+            showMoreTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+            showMoreTextView.setTypeface(null, Typeface.BOLD)
+            showMoreTextView.setTextColor(ContextCompat.getColor(activity!!, R.color.bgCardColor))
+            showMoreTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            showMoreTextView.setOnClickListener {
                 startTime = System.nanoTime()
-                val spinner_max_multiplos =
+                val spinner =
                     java.lang.Long.parseLong(spinner_multiplos.selectedItem.toString())
-                BG_Operation = BackGroundOperation(true, cardview).execute(
+                asyncTask = BackGroundOperation(true, cardview).execute(
                     num,
                     cardview.tag as Long,
-                    spinner_max_multiplos
+                    spinner
                 )
             }
 
-            ll_vertical_root.addView(showmore)
+            llVerticalRoot.addView(showMoreTextView)
         }
 
         // add the root layout to the cardview
-        cardview.addView(ll_vertical_root)
+        cardview.addView(llVerticalRoot)
     }
 
     inner class BackGroundOperation internal constructor(
@@ -297,6 +285,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     textViewPreResult.text = preResult
                 }
             }
+            theCardView = null
         }
 
     }

@@ -20,12 +20,9 @@ class HomeFragment : BaseFragment() {
     override fun loadOptionsMenus() = listOf(R.menu.menu_sub_main)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

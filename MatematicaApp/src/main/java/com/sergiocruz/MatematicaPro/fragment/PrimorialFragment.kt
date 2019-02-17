@@ -1,13 +1,11 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
@@ -44,34 +42,23 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_primorial)
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item!!.itemId
-        if (id == R.id.action_save_history_images) {
-            MenuHelper.saveHistoryImages(activity!!)
-        }
-        if (id == R.id.action_share_history) {
-            MenuHelper.shareHistory(activity!!)
-        }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.shareHistoryImages(activity!!)
-        }
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.removeHistory(activity!!)
-        }
-        if (id == R.id.action_help_primorial) {
-            val help_primorial = getString(R.string.help_text_primorial)
-            val ssb = SpannableStringBuilder(help_primorial)
-            val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
-            CreateCardView.create(history, ssb, activity!!)
-        }
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity!!)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity!!)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity!!)
+            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity!!)
+            R.id.action_help_primorial -> {
+                val help = getString(R.string.help_text_primorial)
+                val ssb = SpannableStringBuilder(help)
+                val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
+                CreateCardView.create(history, ssb, activity!!)
+            }
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
@@ -83,8 +70,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         display.getSize(size)
         val width = size.x
         //int height = size.y;
-        val lr_dip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lr_dip
+        val lrDip = (4 * scale + 0.5f).toInt() * 2
+        cv_width = width - lrDip
         hideKeyboard(activity)
     }
 
@@ -151,15 +138,15 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardview.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardview.useCompatPadding = true
 
-        val cv_color = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cv_color)
+        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
+        cardview.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
         val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
@@ -197,12 +184,12 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
 
-        val ll_vertical_root = LinearLayout(activity)
-        ll_vertical_root.layoutParams = LinearLayout.LayoutParams(
+        val llVerticalRoot = LinearLayout(activity)
+        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
             LinearLayoutCompat.LayoutParams.MATCH_PARENT,
             LinearLayoutCompat.LayoutParams.WRAP_CONTENT
         )
-        ll_vertical_root.orientation = LinearLayout.VERTICAL
+        llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(
@@ -228,13 +215,13 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
             val numAlgarismos = bigIntegerResult.toString().length
             gradient_separator.text = numAlgarismos.toString() + " Algarismos, " + elapsed
-            ll_vertical_root.addView(gradient_separator)
+            llVerticalRoot.addView(gradient_separator)
         }
 
-        ll_vertical_root.addView(textView)
+        llVerticalRoot.addView(textView)
 
         // add the root layout to the cardview
-        cardview.addView(ll_vertical_root)
+        cardview.addView(llVerticalRoot)
     }
 
     private inner class BackGroundOperation : AsyncTask<Long, Double, BigInteger>() {

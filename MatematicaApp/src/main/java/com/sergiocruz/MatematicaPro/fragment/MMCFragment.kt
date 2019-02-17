@@ -4,17 +4,13 @@ import android.animation.LayoutTransition
 import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
@@ -24,11 +20,15 @@ import android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE
 import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
-import android.view.*
+import android.view.Gravity
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
+import android.widget.TextView
 import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -38,9 +38,7 @@ import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.CreateCardView.create
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.expandIt
-
 import kotlinx.android.synthetic.main.fragment_mmc.*
-import java.lang.Long.parseLong
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -55,16 +53,8 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     private var taskNumber = 0
     internal var startTime: Long = 0
     private lateinit var language: String
+    private lateinit var arrayOfEditTexts: Array<EditText>
 
-    private val emptyTextView = ArrayList<TextView>()
-
-    private fun showToastNum(field: String) {
-        showCustomToast(context, getString(R.string.number_in_field) + " " + field + " " + getString(R.string.too_high), InfoLevel.WARNING)
-    }
-
-    private fun showToastMoreThanZero() {
-        showCustomToast(context, getString(R.string.maiores_qzero), InfoLevel.WARNING)
-    }
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
      */
@@ -128,52 +118,35 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         val size = Point()
         display?.getSize(size)
         val width = size.x  //int height = size.y;
-        val lr_dip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lr_dip
+        val lrDip = (4 * scale + 0.5f).toInt() * 2
+        cv_width = width - lrDip
 
         hideKeyboard(activity as Activity)
     }
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mmc)
+    override fun loadOptionsMenus() =
+        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mmc)
 
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item!!.itemId
-        if (id == R.id.action_save_history_images) {
-            MenuHelper.saveHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.shareHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history) {
-            MenuHelper.shareHistory(activity!!)
-        }
-
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.removeHistory(activity!!)
-            mmc_num_1.setText("")
-            mmc_num_2.setText("")
-            mmc_num_3.setText("")
-            mmc_num_4.setText("")
-            mmc_num_5.setText("")
-            mmc_num_6.setText("")
-            mmc_num_7.setText("")
-            mmc_num_8.setText("")
-        }
-        if (id == R.id.action_ajuda) {
-            val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
-            val helpDivisores = getString(R.string.help_text_mmc)
-            val ssb = SpannableStringBuilder(helpDivisores)
-            create(history, ssb, activity!!)
-        }
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity!!)
+            R.id.action_clear_all_history -> {
+                MenuHelper.removeHistory(activity!!)
+                arrayOfEditTexts.forEach { it.setText("") }
+            }
+            R.id.action_ajuda -> {
+                val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
+                val helpDivisores = getString(R.string.help_text_mmc)
+                val ssb = SpannableStringBuilder(helpDivisores)
+                create(history, ssb, activity!!)
+            }
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
@@ -184,6 +157,18 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        arrayOfEditTexts = arrayOf(
+            mmc_num_1,
+            mmc_num_2,
+            mmc_num_3,
+            mmc_num_4,
+            mmc_num_5,
+            mmc_num_6,
+            mmc_num_7,
+            mmc_num_8
+        )
+
         calculateButton.setOnClickListener { calculateMMC() }
 
         clearButton1.setOnClickListener { mmc_num_1.setText("") }
@@ -195,20 +180,14 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         clearButton7.setOnClickListener { mmc_num_7.setText("") }
         clearButton8.setOnClickListener { mmc_num_8.setText("") }
 
-        button_add_mmc.setOnClickListener { add_mmc() }
-        button_remove_mmc.setOnClickListener { remove_mmc() }
+        button_add_mmc.setOnClickListener { addMMC() }
+        button_remove_mmc.setOnClickListener { removeMMC() }
 
-        mmc_num_1.watchThis(this)
-        mmc_num_2.watchThis(this)
-        mmc_num_3.watchThis(this)
-        mmc_num_4.watchThis(this)
-        mmc_num_5.watchThis(this)
-        mmc_num_6.watchThis(this)
-        mmc_num_7.watchThis(this)
-        mmc_num_8.watchThis(this)
+        arrayOfEditTexts.forEach { it.watchThis(this) }
+
     }
 
-    fun add_mmc() {
+    private fun addMMC() {
         val ll_34_visibe = linear_layout_34.visibility == View.VISIBLE
         val f3_visible = frame_3.visibility == View.VISIBLE
         val f4_visible = frame_4.visibility == View.VISIBLE
@@ -274,7 +253,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     }
 
-    fun remove_mmc() {
+    private fun removeMMC() {
         val ll34Visibe = linear_layout_34.visibility == View.VISIBLE
         val f3_visible = frame_3.visibility == View.VISIBLE
         val f4_visible = frame_4.visibility == View.VISIBLE
@@ -348,221 +327,58 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     private fun calculateMMC() {
         startTime = System.nanoTime()
 
-        val str_num1 = mmc_num_1.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num2 = mmc_num_2.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num3 = mmc_num_3.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num4 = mmc_num_4.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num5 = mmc_num_5.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num6 = mmc_num_6.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num7 = mmc_num_7.text.toString().replace("[^\\d]".toRegex(), "")
-        val str_num8 = mmc_num_8.text.toString().replace("[^\\d]".toRegex(), "")
+        val emptyTextView = ArrayList<TextView>()
+        val bigNumbers = ArrayList<BigInteger>()
+        val longNumbers = ArrayList<Long>()
 
-        val num1: Long
-        val num2: Long
-        val num3: Long
-        val num4: Long
-        val num5: Long
-        val num6: Long
-        val num7: Long
-        val num8: Long
+        arrayOfEditTexts.forEach {
+            val numString = it.text.toString().replace("[^\\d]".toRegex(), "")
+            if (TextUtils.isEmpty(numString)) {
+                emptyTextView.add(it)
+            } else {
+                val number = numString.toLongOrNull()
+                when (number) {
+                    null -> {
+                        it.requestFocus()
+                        it.error = getString(R.string.numero_alto)
+                        showKeyboard(activity)
+                    }
+                    0L -> {
+                        it.requestFocus()
+                        it.error = getString(R.string.maiores_qzero)
+                        showKeyboard(activity)
+                    }
+                    else -> {
+                        longNumbers.add(number)
+                        bigNumbers.add(number.toBigInteger())
+                    }
 
-        val numbers = ArrayList<BigInteger>()
-        val long_numbers = ArrayList<Long>()
-
-        if (TextUtils.isEmpty(str_num1).not()) {
-            try {
-                // Tentar converter o string para Long
-                num1 = parseLong(str_num1)
-                if (num1 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num1 > 0L) {
-                    val num1b = BigInteger(str_num1)
-                    numbers.add(num1b)
-                    long_numbers.add(num1)
                 }
-            } catch (e: Exception) {
-                showToastNum("1")
-                showCustomToast(context,
-                    "${getString(R.string.number_in_field)} 1 ${getString(R.string.too_high)}"
-                )
-                return
             }
-
-        } else {
-            emptyTextView.add(mmc_num_1)
         }
 
-        if (str_num2 != "") {
-            try {
-                // Tentar converter o string para Long
-                num2 = parseLong(str_num2)
-                if (num2 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num2 > 0L) {
-                    val num2b = BigInteger(str_num2)
-                    numbers.add(num2b)
-                    long_numbers.add(num2)
-                }
-            } catch (e: Exception) {
-                showToastNum("2")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_2)
-        }
-
-        if (str_num3 != "") {
-            try {
-                // Tentar converter o string para Long
-                num3 = parseLong(str_num3)
-                if (num3 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num3 > 0L) {
-                    val num3b = BigInteger(str_num3)
-                    numbers.add(num3b)
-                    long_numbers.add(num3)
-                }
-            } catch (e: Exception) {
-                showToastNum("3")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_3)
-        }
-        if (str_num4 != "") {
-            try {
-                // Tentar converter o string para Long
-                num4 = parseLong(str_num4)
-                if (num4 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num4 > 0L) {
-                    val num4b = BigInteger(str_num4)
-                    numbers.add(num4b)
-                    long_numbers.add(num4)
-                }
-            } catch (e: Exception) {
-                showToastNum("4")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_4)
-        }
-        if (str_num5 != "") {
-            try {
-                // Tentar converter o string para Long
-                num5 = parseLong(str_num5)
-                if (num5 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num5 > 0L) {
-                    val num5b = BigInteger(str_num5)
-                    numbers.add(num5b)
-                    long_numbers.add(num5)
-                }
-            } catch (e: Exception) {
-                showToastNum("5")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_5)
-        }
-        if (str_num6 != "") {
-            try {
-                // Tentar converter o string para Long
-                num6 = parseLong(str_num6)
-                if (num6 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num6 > 0L) {
-                    val num6b = BigInteger(str_num6)
-                    numbers.add(num6b)
-                    long_numbers.add(num6)
-                }
-            } catch (e: Exception) {
-                showToastNum("6")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_6)
-        }
-
-        if (str_num7 != "") {
-            try {
-                // Tentar converter o string para Long
-                num7 = parseLong(str_num7)
-                if (num7 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num7 > 0L) {
-                    val num7b = BigInteger(str_num7)
-                    numbers.add(num7b)
-                    long_numbers.add(num7)
-                }
-            } catch (e: Exception) {
-                showToastNum("7")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_7)
-        }
-
-        if (str_num8 != "") {
-            try {
-                // Tentar converter o string para Long
-                num8 = parseLong(str_num8)
-                if (num8 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num8 > 0L) {
-                    val num8b = BigInteger(str_num8)
-                    numbers.add(num8b)
-                    long_numbers.add(num8)
-                }
-            } catch (e: Exception) {
-                showToastNum("8")
-                return
-            }
-
-        } else {
-            emptyTextView.add(mmc_num_8)
-        }
-        if (numbers.size < 2) {
-            val thetoast = Toast.makeText(activity, R.string.add_number_pair, Toast.LENGTH_SHORT)
-            thetoast.setGravity(Gravity.CENTER, 0, 0)
-            thetoast.show()
-            if (emptyTextView[0] != null) {
-                emptyTextView[0].requestFocus()
-                val imm =
-                    activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(emptyTextView[0], 0)
-            }
+        if (bigNumbers.size < 2) {
+            emptyTextView[0].requestFocus()
+            emptyTextView[0].error = getString(R.string.add_number_pair)
+            showKeyboard(activity)
             return
         } else {
-            hideKeyboard(activity as Activity)
+            hideKeyboard(activity)
+            emptyTextView.clear()
         }
 
-        var mmc_string = getString(R.string.mmc_result_prefix)
-        var result_mmc: BigInteger? = null
+        var mmcString = getString(R.string.mmc_result_prefix)
+        var resultMMC: BigInteger? = null
 
-        if (numbers.size > 1) {
-            for (i in 0 until numbers.size - 1) {
-                mmc_string += "${numbers[i]}, "
+        if (bigNumbers.size > 1) {
+            for (i in 0 until bigNumbers.size - 1) {
+                mmcString += "${bigNumbers[i]}, "
             }
-            mmc_string += "${numbers[numbers.size - 1]})= "
-            result_mmc = mmc(numbers)
+            mmcString += "${bigNumbers[bigNumbers.size - 1]})= "
+            resultMMC = mmc(bigNumbers)
         }
 
-        mmc_string += result_mmc
+        mmcString += resultMMC
 
         //criar novo cardview
         val cardview = ClickableCardView(activity as Activity)
@@ -572,11 +388,11 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         ) // height
         cardview.preventCornerOverlap = true
         //int pixels = (int) (dips * scale + 0.5f);
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardview.useCompatPadding = true
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -586,8 +402,8 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             cardview.layoutTransition = lt
         }
 
-        val cv_color = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cv_color)
+        val cvColor = ContextCompat.getColor(context!!, R.color.cardsColor)
+        cardview.setCardBackgroundColor(cvColor)
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(
@@ -601,63 +417,64 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
                     override fun onDismiss(view: View?) {
                         //history.removeView(cardview);
-                        check_bg_operation(view)
+                        checkBackgroudOperation(view)
                     }
                 })
         )
 
-        //Adicionar os números a fatorizar na tag do cardview
-        val tags = MyTags(cardview, long_numbers, result_mmc, false, false, "", null, taskNumber)
-        cardview.tag = tags
+        // Adicionar os números a fatorizar na tag do cardview
+        cardview.tag = MyTags(cardview, longNumbers, resultMMC, false, false, "", null, taskNumber)
 
         val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)
 
-        val ll_vertical_root = LinearLayout(activity)
-        ll_vertical_root.layoutParams = LinearLayout.LayoutParams(
+        val llVerticalRoot = LinearLayout(activity)
+        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        ll_vertical_root.orientation = LinearLayout.VERTICAL
+        llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // criar novo Textview
         val textView = TextView(activity)
         textView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, //largura
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ) //altura
+            LinearLayout.LayoutParams.WRAP_CONTENT //altura
+        )
 
         //Adicionar o texto com o resultado
-        textView.text = mmc_string
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
+        textView.text = mmcString
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
         textView.setTag(R.id.texto, "texto")
 
         // add the textview to the cardview
-        ll_vertical_root.addView(textView)
+        llVerticalRoot.addView(textView)
 
-        val shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
+        val shouldShowExplanation =
+            sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(cardview, ll_vertical_root, shouldShowExplanation)
+            createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
         } else {
-            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
+            val shouldShowPerformance =
+                sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
                     getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 gradientSeparator.text = elapsed
-                ll_vertical_root.addView(gradientSeparator, 0)
+                llVerticalRoot.addView(gradientSeparator, 0)
             }
-            cardview.addView(ll_vertical_root)
+            cardview.addView(llVerticalRoot)
         }
 
     }
 
     private fun createExplanations(
         cardview: CardView,
-        ll_vertical_root: LinearLayout,
+        llVerticalRoot: LinearLayout,
         shouldShowExplanation: String?
     ) {
 
@@ -848,9 +665,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         ll_vertical_expl.addView(explainTextView_1)
         ll_vertical_expl.addView(explainTextView_2)
         ll_vertical_expl.addView(explainTextView_3)
-        ll_vertical_root.addView(ll_horizontal)
-        ll_vertical_root.addView(progressBar)
-        ll_vertical_root.addView(ll_vertical_expl)
+        llVerticalRoot.addView(ll_horizontal)
+        llVerticalRoot.addView(progressBar)
+        llVerticalRoot.addView(ll_vertical_expl)
 
         if (shouldShowExplanation == "-1") {  //Always show Explanation
             ll_vertical_expl.visibility = View.VISIBLE
@@ -861,22 +678,19 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             explainLink.text = ssb_show_expl
             isExpanded[0] = false
         }
-        cardview.addView(ll_vertical_root)
+        cardview.addView(llVerticalRoot)
 
         val thisCardTags = cardview.tag as MyTags
-        //        Boolean hasExplanation = thisCardTags.getHasExplanation();
-        //        Boolean hasBGOperation = thisCardTags.getHasBGOperation();
 
-        //        if (!hasBGOperation && !hasExplanation) {
         thisCardTags.taskNumber = taskNumber
-        val BG_Operation_MMC = BackGroundOperation_MMC(thisCardTags)
+        val asyncTask = BackGroundOperationMMC(thisCardTags)
             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        asyncTaskQueue.add(BG_Operation_MMC)
+        asyncTaskQueue.add(asyncTask)
         taskNumber++
-        //        }
+
     }
 
-    fun check_bg_operation(view: View?) {
+    fun checkBackgroudOperation(view: View?) {
         val theTags = view?.tag as MyTags
         if (theTags.hasBGOperation == true) {
             val taskNumber = theTags.taskNumber
@@ -891,7 +705,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     }
 
     // Asynctask <Params, Progress, Result>
-    inner class BackGroundOperation_MMC internal constructor(private var cardTags: MyTags) :
+    inner class BackGroundOperationMMC internal constructor(private var cardTags: MyTags) :
         AsyncTask<Void, Double, Void>() {
         lateinit var theCardViewBG: CardView
         lateinit var mmc_numbers: ArrayList<Long>
@@ -911,7 +725,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             progressBar = theCardViewBG.findViewWithTag("progressBar")
             progressBar.visibility = View.VISIBLE
             gradient_separator =
-                    theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
+                theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
             val shouldShowColors = sharedPrefs.getBoolean("pref_show_colors", true)
@@ -982,7 +796,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 var value0 = values[0]
                 if (value0!! > 1f) value0 = 1.0
                 progressBar.layoutParams =
-                        LinearLayout.LayoutParams(Math.round(value0 * cv_width).toInt(), height_dip)
+                    LinearLayout.LayoutParams(Math.round(value0 * cv_width).toInt(), height_dip)
                 val text =
                     " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0)
                 val ssb = SpannableStringBuilder(text)
@@ -991,7 +805,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             }
         }
 
-        override fun onPostExecute(result: Void) {
+        override fun onPostExecute(result: Void?) {
             if (this@MMCFragment.isVisible) {
 
                 bgfatores = cardTags.bGfatores!!
@@ -1142,7 +956,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                                     ) {
                                         maiores_exps[maiores_bases.indexOf(next_base)] = next_exp
                                         colors[maiores_bases.indexOf(current_base)] =
-                                                (j / 2).toLong()
+                                            (j / 2).toLong()
                                     }
 
                                 }

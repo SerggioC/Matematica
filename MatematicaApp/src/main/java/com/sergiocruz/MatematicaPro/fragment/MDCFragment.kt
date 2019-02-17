@@ -4,27 +4,27 @@ import android.animation.LayoutTransition
 import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
-import android.view.*
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
@@ -38,7 +38,6 @@ import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.expandIt
 import kotlinx.android.synthetic.main.fragment_mdc.*
-import java.lang.Long.parseLong
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -47,15 +46,12 @@ import java.util.*
 class MDCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
-    internal var height_dip: Int = 0
-    internal var cv_width: Int = 0
+    internal var heightDip: Int = 0
+    internal var cvWidth: Int = 0
     private var taskNumber = 0
     internal var startTime: Long = 0
     private lateinit var language: String
-
-    private fun showToastMoreThanZero() {
-        showCustomToast(context, getString(R.string.maiores_qzero))
-    }
+    private lateinit var arrayOfEditTexts: Array<EditText>
 
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
@@ -86,6 +82,17 @@ class MDCFragment : BaseFragment(), OnEditorActions {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        arrayOfEditTexts = arrayOf(
+            mdc_num_1,
+            mdc_num_2,
+            mdc_num_3,
+            mdc_num_4,
+            mdc_num_5,
+            mdc_num_6,
+            mdc_num_7,
+            mdc_num_8
+        )
+
         calculateButton.setOnClickListener { calculateMDC() }
 
         clearButton1.setOnClickListener { mdc_num_1.setText("") }
@@ -100,14 +107,8 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         button_add_mdc.setOnClickListener { addMdcField() }
         button_remove_mdc.setOnClickListener { removeMdcField() }
 
-        mdc_num_1.watchThis(this)
-        mdc_num_2.watchThis(this)
-        mdc_num_3.watchThis(this)
-        mdc_num_4.watchThis(this)
-        mdc_num_5.watchThis(this)
-        mdc_num_6.watchThis(this)
-        mdc_num_7.watchThis(this)
-        mdc_num_8.watchThis(this)
+        arrayOfEditTexts.forEach { it.watchThis(this) }
+
     }
 
     override fun onDestroy() {
@@ -124,47 +125,29 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         }
     }
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mdc)
+    override fun loadOptionsMenus() =
+        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mdc)
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item!!.itemId
-        if (id == R.id.action_save_history_images) {
-            MenuHelper.saveHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.shareHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history) {
-            MenuHelper.shareHistory(activity as Activity)
-        }
-
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.removeHistory(activity as Activity)
-            mdc_num_1.setText("")
-            mdc_num_2.setText("")
-            mdc_num_3.setText("")
-            mdc_num_4.setText("")
-            mdc_num_5.setText("")
-            mdc_num_6.setText("")
-            mdc_num_7.setText("")
-            mdc_num_8.setText("")
-        }
-
-        if (id == R.id.action_ajuda) {
-            val history = activity!!.findViewById<View>(R.id.history) as ViewGroup
-            val helpDivisores = getString(R.string.help_text_mdc)
-            val ssb = SpannableStringBuilder(helpDivisores)
-            CreateCardView.create(history, ssb, activity as Activity)
-        }
-
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_clear_all_history -> {
+                MenuHelper.removeHistory(activity as Activity)
+                arrayOfEditTexts.forEach { it.setText("") }
+            }
+            R.id.action_ajuda -> {
+                val history = activity!!.findViewById<View>(R.id.history) as ViewGroup
+                val helpDivisores = getString(R.string.help_text_mdc)
+                val ssb = SpannableStringBuilder(helpDivisores)
+                CreateCardView.create(history, ssb, activity as Activity)
+            }
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
@@ -307,217 +290,59 @@ class MDCFragment : BaseFragment(), OnEditorActions {
     private fun calculateMDC() {
         startTime = System.nanoTime()
 
-        val str_num1 = mdc_num_1.text.toString()
-        val str_num2 = mdc_num_2.text.toString()
-        val str_num3 = mdc_num_3.text.toString()
-        val str_num4 = mdc_num_4.text.toString()
-        val str_num5 = mdc_num_5.text.toString()
-        val str_num6 = mdc_num_6.text.toString()
-        val str_num7 = mdc_num_7.text.toString()
-        val str_num8 = mdc_num_8.text.toString()
+        val emptyTextView = ArrayList<TextView>()
+        val bigNumbers = ArrayList<BigInteger>()
+        val longNumbers = ArrayList<Long>()
 
-        val num1: Long
-        val num2: Long
-        val num3: Long
-        val num4: Long
-        val num5: Long
-        val num6: Long
-        val num7: Long
-        val num8: Long
-
-        val numbers = ArrayList<BigInteger>()
-        val long_numbers = ArrayList<Long>()
-        val empty_TextView = ArrayList<TextView>()
-
-        if (str_num1 != "") {
-            try {
-                // Tentar converter o string para long
-                num1 = parseLong(str_num1)
-                if (num1 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num1 > 0L) {
-                    val num1b = BigInteger(str_num1)
-                    numbers.add(num1b)
-                    long_numbers.add(num1)
+        arrayOfEditTexts.forEach {
+            val numString = it.text.toString().replace("[^\\d]".toRegex(), "")
+            if (TextUtils.isEmpty(numString)) {
+                emptyTextView.add(it)
+            } else {
+                val number = numString.toLongOrNull()
+                when (number) {
+                    null -> {
+                        it.requestFocus()
+                        it.error = getString(R.string.numero_alto)
+                        showKeyboard(activity)
+                    }
+                    0L -> {
+                        it.requestFocus()
+                        it.error = getString(R.string.maiores_qzero)
+                        showKeyboard(activity)
+                    }
+                    else -> {
+                        longNumbers.add(number)
+                        bigNumbers.add(number.toBigInteger())
+                    }
                 }
-            } catch (e: Exception) {
-                showToastNum("1", context)
-                return
             }
-
-        } else {
-            empty_TextView.add(mdc_num_1)
-        }
-        if (str_num2 != "") {
-            try {
-                // Tentar converter o string para long
-                num2 = parseLong(str_num2)
-                if (num2 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num2 > 0L) {
-                    val num2b = BigInteger(str_num2)
-                    numbers.add(num2b)
-                    long_numbers.add(num2)
-                }
-            } catch (e: Exception) {
-                showToastNum("2", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_2)
-        }
-        if (str_num3 != "") {
-            try {
-                // Tentar converter o string para long
-                num3 = parseLong(str_num3)
-                if (num3 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num3 > 0L) {
-                    val num3b = BigInteger(str_num3)
-                    numbers.add(num3b)
-                    long_numbers.add(num3)
-                }
-            } catch (e: Exception) {
-                showToastNum("3", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_3)
-        }
-        if (str_num4 != "") {
-            try {
-                // Tentar converter o string para long
-                num4 = parseLong(str_num4)
-                if (num4 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num4 > 0L) {
-                    val num4b = BigInteger(str_num4)
-                    numbers.add(num4b)
-                    long_numbers.add(num4)
-                }
-            } catch (e: Exception) {
-                showToastNum("4", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_4)
-        }
-        if (str_num5 != "") {
-            try {
-                // Tentar converter o string para long
-                num5 = parseLong(str_num5)
-                if (num5 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num5 > 0L) {
-                    val num5b = BigInteger(str_num5)
-                    numbers.add(num5b)
-                    long_numbers.add(num5)
-                }
-            } catch (e: Exception) {
-                showToastNum("5", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_5)
-        }
-        if (str_num6 != "") {
-            try {
-                // Tentar converter o string para long
-                num6 = parseLong(str_num6)
-                if (num6 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num6 > 0L) {
-                    val num6b = BigInteger(str_num6)
-                    numbers.add(num6b)
-                    long_numbers.add(num6)
-                }
-            } catch (e: Exception) {
-                showToastNum("6", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_6)
         }
 
-        if (str_num7 != "") {
-            try {
-                // Tentar converter o string para long
-                num7 = parseLong(str_num7)
-                if (num7 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num7 > 0L) {
-                    val num7b = BigInteger(str_num7)
-                    numbers.add(num7b)
-                    long_numbers.add(num7)
-                }
-            } catch (e: Exception) {
-                showToastNum("7", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_7)
-        }
-
-        if (str_num8 != "") {
-            try {
-                // Tentar converter o string para long
-                num8 = parseLong(str_num8)
-                if (num8 == 0L) {
-                    showToastMoreThanZero()
-                    return
-                } else if (num8 > 0L) {
-                    val num8b = BigInteger(str_num8)
-                    numbers.add(num8b)
-                    long_numbers.add(num8)
-                }
-            } catch (e: Exception) {
-                showToastNum("8", context)
-                return
-            }
-
-        } else {
-            empty_TextView.add(mdc_num_8)
-        }
-        if (numbers.size < 2) {
-            showCustomToast(context, getString(R.string.add_number_pair))
-            if (empty_TextView[0] != null) {
-                empty_TextView[0].requestFocus()
-                val imm =
-                    activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.showSoftInput(empty_TextView[0], 0)
-            }
+        if (bigNumbers.size < 2) {
+            emptyTextView[0].requestFocus()
+            emptyTextView[0].error = getString(R.string.add_number_pair)
+            showKeyboard(activity)
             return
         } else {
-            hideKeyboard(activity as Activity)
+            hideKeyboard(activity)
+            emptyTextView.clear()
         }
 
-        var mdc_string: String = getString(R.string.mdc_result_prefix)
-        var result_mdc: BigInteger? = null
+        var mdcString: String = getString(R.string.mdc_result_prefix)
+        var resultMDC: BigInteger? = null
 
-        if (numbers.size > 1) {
-            for (i in 0 until numbers.size - 1) {
-                mdc_string += numbers[i].toString() + ", "
+        if (bigNumbers.size > 1) {
+            for (i in 0 until bigNumbers.size - 1) {
+                mdcString += bigNumbers[i].toString() + ", "
             }
-            mdc_string += numbers[numbers.size - 1].toString() + ")= "
-            result_mdc = mdc(numbers)
+            mdcString += bigNumbers[bigNumbers.size - 1].toString() + ")= "
+            resultMDC = mdc(bigNumbers)
         }
 
-        mdc_string += result_mdc
-        val ssb = SpannableStringBuilder(mdc_string)
-        if (result_mdc!!.toString() == "1") {
+        mdcString += resultMDC
+        val ssb = SpannableStringBuilder(mdcString)
+        if (resultMDC.toString() == "1") {
             ssb.append("\n" + getString(R.string.primos_si))
             ssb.setSpan(
                 ForegroundColorSpan(Color.parseColor("#29712d")),
@@ -541,11 +366,11 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         ) // height
         cardview.preventCornerOverlap = true
         //int pixels = (int) (dips * scale + 0.5f);
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardview.useCompatPadding = true
         cardview.layoutTransition = LayoutTransition()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -554,8 +379,8 @@ class MDCFragment : BaseFragment(), OnEditorActions {
             lt.enableTransitionType(CHANGE_DISAPPEARING)
         }
 
-        val cv_color = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cv_color)
+        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
+        cardview.setCardBackgroundColor(cvColor)
 
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(
@@ -574,18 +399,18 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 })
         )
 
-        val tags = MyTags(cardview, long_numbers, result_mdc, false, false, "", null, taskNumber)
+        val tags = MyTags(cardview, longNumbers, resultMDC, false, false, "", null, taskNumber)
         cardview.tag = tags
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)
 
-        val ll_vertical_root = LinearLayout(activity)
-        ll_vertical_root.layoutParams = LinearLayout.LayoutParams(
+        val llVerticalRoot = LinearLayout(activity)
+        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        ll_vertical_root.orientation = LinearLayout.VERTICAL
+        llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // criar novo Textview
         val textView = TextView(activity)
@@ -600,12 +425,12 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         textView.setTag(R.id.texto, "texto")
 
         // add the textview to the cardview
-        ll_vertical_root.addView(textView)
+        llVerticalRoot.addView(textView)
 
         val shouldShowExplanation = sharedPrefs.getString("preframe_show_explanation", "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(cardview, ll_vertical_root, shouldShowExplanation)
+            createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
         } else {
             val shouldShowPerformance = sharedPrefs.getBoolean("preframe_show_performance", false)
             if (shouldShowPerformance) {
@@ -614,15 +439,15 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 val elapsed =
                     getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 gradientSeparator.text = elapsed
-                ll_vertical_root.addView(gradientSeparator, 0)
+                llVerticalRoot.addView(gradientSeparator, 0)
             }
-            cardview.addView(ll_vertical_root) //Só o resultado sem explicações
+            cardview.addView(llVerticalRoot) //Só o resultado sem explicações
         }
     }
 
     private fun createExplanations(
         cardview: CardView,
-        ll_vertical_root: LinearLayout,
+        llVerticalRoot: LinearLayout,
         shouldShowExplanation: String?
     ) {
         val ssb_hide_expl = SpannableStringBuilder(getString(R.string.hide_explain))
@@ -690,11 +515,11 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         ll_vertical_expl.orientation = LinearLayout.VERTICAL
 
         //ProgressBar
-        cv_width = card_view_1.width
-        height_dip = (3 * scale + 0.5f).toInt()
+        cvWidth = card_view_1.width
+        heightDip = (3 * scale + 0.5f).toInt()
         val progressBar = View(activity)
         progressBar.tag = "progressBar"
-        val layoutParams = LinearLayout.LayoutParams(1, height_dip) //Largura, Altura
+        val layoutParams = LinearLayout.LayoutParams(1, heightDip) //Largura, Altura
         progressBar.layoutParams = layoutParams
 
         //Ponto 1
@@ -798,9 +623,9 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         ll_vertical_expl.addView(explainTextView_1)
         ll_vertical_expl.addView(explainTextView_2)
         ll_vertical_expl.addView(explainTextView_3)
-        ll_vertical_root.addView(ll_horizontal)
-        ll_vertical_root.addView(progressBar)
-        ll_vertical_root.addView(ll_vertical_expl)
+        llVerticalRoot.addView(ll_horizontal)
+        llVerticalRoot.addView(progressBar)
+        llVerticalRoot.addView(ll_vertical_expl)
 
         if (shouldShowExplanation == "-1") {  //Always show Explanation
             ll_vertical_expl.visibility = View.VISIBLE
@@ -812,16 +637,15 @@ class MDCFragment : BaseFragment(), OnEditorActions {
             isExpanded[0] = false
         }
 
-        cardview.addView(ll_vertical_root)
+        cardview.addView(llVerticalRoot)
 
         val thisCardTags = cardview.tag as MyTags
 
         thisCardTags.taskNumber = taskNumber
-        val BG_Operation_MDC = BackGroundOperation_MDC(thisCardTags)
+        val asyncTask = BackGroundOperation_MDC(thisCardTags)
             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        asyncTaskQueue.add(BG_Operation_MDC)
+        asyncTaskQueue.add(asyncTask)
         taskNumber++
-
     }
 
     fun checkBackgroundOperation(view: View?) {
@@ -924,7 +748,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 var value0 = values[0]
                 if (value0!! > 1f) value0 = 1.0
                 progressBar.layoutParams =
-                    LinearLayout.LayoutParams(Math.round(value0 * cv_width).toInt(), height_dip)
+                    LinearLayout.LayoutParams(Math.round(value0 * cvWidth).toInt(), heightDip)
                 val text =
                     " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0)
                 val ssb = SpannableStringBuilder(text)
@@ -1072,8 +896,8 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                     var lowerIndex = 0
                     if (Collections.frequency(temp_bases, current_base) == datasets.size / 2) {
                         for (i in temp_exps.indices) {
-                            if (temp_exps.get(i) < lower_exp) {
-                                lower_exp = temp_exps.get(i)
+                            if (temp_exps[i] < lower_exp) {
+                                lower_exp = temp_exps[i]
                                 lowerIndex = i
                             }
                         }
@@ -1128,7 +952,9 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 ssb_mdc.setSpan(StyleSpan(BOLD), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssb_mdc.setSpan(RelativeSizeSpan(0.9f), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 //explainTextView_2
-                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(ssb_mdc)
+                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(
+                    ssb_mdc
+                )
 
                 ssb_mdc.delete(0, ssb_mdc.length)
                 result_mdc = cardTags.resultMDC!!

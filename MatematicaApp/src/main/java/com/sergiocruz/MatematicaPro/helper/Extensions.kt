@@ -1,6 +1,5 @@
 package com.sergiocruz.MatematicaPro.helper
 
-import android.support.design.widget.TextInputEditText
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -29,7 +28,9 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
                 var num = java.lang.Long.parseLong("$s")
             } catch (e: Exception) {
                 this@watchThis.setText(oldNum)
-                this@watchThis.setSelection(this@watchThis.text!!.length) //Colocar o cursor no final do texto
+                this@watchThis.setSelection(
+                    this@watchThis.text?.length ?: 0
+                ) //Colocar o cursor no final do texto
                 this@watchThis.error = this@watchThis.context.getString(R.string.numero_alto)
                 return
             }
@@ -39,7 +40,7 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
     })
 
     this.setOnEditorActionListener { _, actionId, _ ->
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
+        if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
             onEditor.onActionDone()
             return@setOnEditorActionListener true
         }

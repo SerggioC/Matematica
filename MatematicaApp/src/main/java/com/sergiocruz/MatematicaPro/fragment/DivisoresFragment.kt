@@ -2,13 +2,11 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutCompat
@@ -18,7 +16,9 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
-import android.view.*
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.sergiocruz.MatematicaPro.R
@@ -30,26 +30,13 @@ import kotlinx.android.synthetic.main.fragment_divisores.*
 import java.text.DecimalFormat
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [DivisoresFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [DivisoresFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
-    var BG_Operation: AsyncTask<Long, Double, ArrayList<Long>> = BackGroundOperation()
-    internal var cv_width: Int = 0
-    internal var height_dip: Int = 0
+    private var asyncTask: AsyncTask<Long, Double, ArrayList<Long>> = BackGroundOperation()
+    internal var cvWidth: Int = 0
+    internal var heightDip: Int = 0
     internal var num: Long = 0
     private var startTime: Long = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        scale = resources.displayMetrics.density
-    }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_divisores
 
@@ -63,39 +50,28 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         inputEditText.watchThis(this)
     }
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
+    override fun loadOptionsMenus() =
+        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        if (id == R.id.action_save_history_images) {
-            MenuHelper.saveHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.shareHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history) {
-            MenuHelper.shareHistory(activity as Activity)
-        }
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.removeHistory(activity as Activity)
-        }
-        if (id == R.id.action_help_divisores) {
-            val helpDivisores = getString(R.string.help_text_divisores)
-            val ssb = SpannableStringBuilder(helpDivisores)
-            CreateCardView.create(history, ssb, activity as Activity)
-        }
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
+            R.id.action_help_divisores -> {
+                val help = getString(R.string.help_text_divisores)
+                val ssb = SpannableStringBuilder(help)
+                CreateCardView.create(history, ssb, activity as Activity)
+            }
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
@@ -112,8 +88,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         display?.getSize(size)
         val width = size.x
         //int height = size.y;
-        val lr_dip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lr_dip
+        val lrDip = (4 * scale + 0.5f).toInt() * 2
+        cvWidth = width - lrDip
         hideKeyboard(activity as Activity)
     }
 
@@ -123,15 +99,15 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onDestroy() {
         super.onDestroy()
-        if (BG_Operation.status == AsyncTask.Status.RUNNING) {
-            BG_Operation.cancel(true)
+        if (asyncTask.status == AsyncTask.Status.RUNNING) {
+            asyncTask.cancel(true)
             showCustomToast(context, getString(R.string.canceled_op))
         }
     }
 
     private fun cancelAsyncTask() {
-        if (BG_Operation.status == AsyncTask.Status.RUNNING) {
-            BG_Operation.cancel(true)
+        if (asyncTask.status == AsyncTask.Status.RUNNING) {
+            asyncTask.cancel(true)
             showCustomToast(context, getString(R.string.canceled_op), InfoLevel.WARNING)
             resetButtons()
         }
@@ -159,7 +135,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             CreateCardView.create(history, ssb, activity as Activity)
             return
         }
-        BG_Operation = BackGroundOperation().execute(num)
+        asyncTask = BackGroundOperation().execute(num)
     }
 
     fun getAllDivisoresLong(numero: Long?): ArrayList<Long> {
@@ -184,9 +160,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         public override fun onPreExecute() {
             lockInput()
-            cv_width = card_view_1.width
-            height_dip = (4 * scale + 0.5f).toInt()
-            progressBar.layoutParams = LinearLayout.LayoutParams(10, height_dip)
+            cvWidth = card_view_1.width
+            heightDip = (4 * scale + 0.5f).toInt()
+            progressBar.layoutParams = LinearLayout.LayoutParams(10, heightDip)
             progressBar.visibility = View.VISIBLE
         }
 
@@ -235,7 +211,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                         divisores.add(i)
                         number /= i
                     }
-                    progress = i.toDouble() / (number as Double / i.toDouble())
+                    progress = i.toDouble() / (number.toDouble() / i.toDouble())
                     if (progress - oldProgress > 0.1) {
                         publishProgress(progress, i.toDouble())
                         oldProgress = progress
@@ -268,8 +244,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             if (this@DivisoresFragment.isVisible) {
                 progressBar.layoutParams =
                     LinearLayout.LayoutParams(
-                        Math.round(values[0]!! * cv_width).toInt(),
-                        height_dip
+                        Math.round(values[0]!! * cvWidth).toInt(),
+                        heightDip
                     )
             }
         }
@@ -310,9 +286,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         override fun onCancelled(parcial: ArrayList<Long>) {
             super.onCancelled(parcial)
             if (this@DivisoresFragment.isVisible) {
-                val nums = parcial
                 var str = ""
-                for (i in nums) {
+                for (i in parcial) {
                     str = "$str, $i"
                     if (i == 1L) {
                         str = getString(R.string.divisors_of) + " " + num + ":\n" + "{" + i
@@ -344,7 +319,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         calculateButton.isClickable = false
         calculateButton.setText(R.string.working)
         cancelButton.visibility = View.VISIBLE
-        hideKeyboard(activity as Activity)
+        hideKeyboard(activity)
     }
 
     private fun resetButtons() {
@@ -364,11 +339,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
-        val lr_dip = (6 * scale + 0.5f).toInt()
-        val tb_dip = (8 * scale + 0.5f).toInt()
+        val lrDip = (6 * scale + 0.5f).toInt()
+        val tbDip = (8 * scale + 0.5f).toInt()
         cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
         cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.setContentPadding(lr_dip, tb_dip, lr_dip, tb_dip)
+        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
         val color = ContextCompat.getColor(requireContext(), R.color.cardsColor)

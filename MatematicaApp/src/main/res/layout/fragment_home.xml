@@ -122,7 +122,7 @@
             android:drawableLeft="@mipmap/ic_primes"
             android:drawablePadding="16dp"
             android:gravity="center_vertical"
-            android:onClick="primes_table"
+            android:onClick="primesTable"
             android:padding="8dp"
             android:text="@string/home_primetable_description"
             android:textAppearance="@style/TextAppearance.AppCompat" />

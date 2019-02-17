@@ -57,11 +57,8 @@ fun showCustomToast(
     level: InfoLevel = INFO,
     duration: Int = Toast.LENGTH_LONG
 ) {
-    val inflater = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    if (inflater == null) {
-        Toast.makeText(context, toastText, duration).show()
-        return
-    }
+    if (context == null) return
+    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     val layout = inflater.inflate(R.layout.custom_toast, null)
     val text: TextView = layout.findViewById(R.id.toast_layout_text)
     text.text = toastText
@@ -73,9 +70,9 @@ fun showCustomToast(
     }
     val iconResId = when (level) {
         INFO -> R.mipmap.ic_info
-        CONFIRM -> R.drawable.ic_ok
-        WARNING -> R.drawable.ic_warn
-        ERROR -> R.drawable.ic_error
+        CONFIRM -> R.mipmap.ic_ok
+        WARNING -> R.mipmap.ic_warn
+        ERROR -> R.mipmap.ic_error
     }
     text.setTextColor(ContextCompat.getColor(context, textColorResId))
     val imageV: ImageView = layout.findViewById(R.id.toast_img)
@@ -90,12 +87,12 @@ fun showCustomToast(
 //Hide the keyboard
 fun hideKeyboard(activity: Activity?) {
     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+    imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 }
 
 fun showKeyboard(activity: Activity?) {
     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.showSoftInput(activity.currentFocus, 0)
+    imm?.showSoftInput(activity.currentFocus, 0)
 }
 
 fun getGradientSeparator(context: Context?): TextView {

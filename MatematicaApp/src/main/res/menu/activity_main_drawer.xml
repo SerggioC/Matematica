@@ -9,6 +9,10 @@
                 android:title="@string/inicio"
                 android:titleCondensed="@string/inicio"/>
             <item
+                android:id="@+id/nav_primality"
+                android:icon="@mipmap/ic_primorial"
+                android:title="@string/primality"/>
+            <item
                 android:id="@+id/nav_mmc"
                 android:icon="@mipmap/ic_mmc"
                 android:title="@string/mmc_description"
@@ -40,10 +44,6 @@
                 android:id="@+id/nav_primorial"
                 android:icon="@mipmap/ic_primorial"
                 android:title="@string/nav_primorial"/>
-            <item
-                android:id="@+id/nav_primality"
-                android:icon="@mipmap/ic_primorial"
-                android:title="@string/primality"/>
 
             <item android:title="@string/mais">
                 <menu>

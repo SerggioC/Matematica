@@ -4,10 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.View
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.*
@@ -17,8 +15,8 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity() {
     // toolbar titles respected to selected nav menu item
-    private var activityTitles: Array<String>? = null
-    private var mHandler: Handler? = null
+    private lateinit var activityTitles: Array<String>
+    private lateinit var mHandler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,22 +44,22 @@ class MainActivity : AppCompatActivity() {
      * Returns respected fragment that user
      * selected from navigation menu
      */
-    private fun loadFragment(item_index: Int) {
+    private fun loadFragment(index: Int) {
         //remove dot in menu
         nav_view.menu.getItem(navItemIndex).actionView = null
 
-        navItemIndex = item_index
+        navItemIndex = index
 
         // selecting appropriate nav menu item
-        nav_view.menu.getItem(navItemIndex).isChecked = true
-        nav_view.menu.getItem(navItemIndex).setActionView(R.layout.menu_dot)
+        nav_view.menu.getItem(index).isChecked = true
+        nav_view.menu.getItem(index).setActionView(R.layout.menu_dot)
 
         // set toolbar title
-        supportActionBar!!.title = activityTitles!![navItemIndex]
+        supportActionBar?.title = activityTitles[index]
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer_layout
-        if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[navItemIndex]) != null) {
+        if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[index]) != null) {
             drawer_layout.closeDrawers()
             return
         }
@@ -71,21 +69,21 @@ class MainActivity : AppCompatActivity() {
         // So using runnable, the fragment is loaded with cross fade effect
         // This effect can be seen in GMail app
 
-        mHandler!!.post {
+        mHandler.post {
             // update the main content by replacing fragments
-            val fragment = FRAGMENTS[navItemIndex]
+            val fragment = FRAGMENTS[index]
             val fragmentTransaction = supportFragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(
                 android.R.anim.fade_in,
                 android.R.anim.fade_out
             )
-            fragmentTransaction.replace(R.id.frame, fragment, FRAGMENT_TAGS[navItemIndex])
+            fragmentTransaction.replace(R.id.frame, fragment, FRAGMENT_TAGS[index])
             fragmentTransaction.commitAllowingStateLoss()
         }
 
 
         //Closing drawer_layout on item click
-        drawer_layout!!.closeDrawers()
+        drawer_layout.closeDrawers()
 
         // refresh toolbar menu
         invalidateOptionsMenu()
@@ -107,33 +105,33 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 //Replacing the main content with ContentFragment Which is our Inbox View;
                 R.id.home -> navItemIndex = 0
-                R.id.nav_mmc -> navItemIndex = 1
-                R.id.nav_mdc -> navItemIndex = 2
-                R.id.nav_fatorizar -> navItemIndex = 3
-                R.id.nav_divisores -> navItemIndex = 4
-                R.id.nav_prime_table -> navItemIndex = 5
-                R.id.nav_multiplos -> navItemIndex = 6
-                R.id.nav_primorial -> navItemIndex = 7
-                R.id.nav_primality -> navItemIndex = 8
+                R.id.nav_primality -> navItemIndex = 1
+                R.id.nav_mmc -> navItemIndex = 2
+                R.id.nav_mdc -> navItemIndex = 3
+                R.id.nav_fatorizar -> navItemIndex = 4
+                R.id.nav_divisores -> navItemIndex = 5
+                R.id.nav_prime_table -> navItemIndex = 6
+                R.id.nav_multiplos -> navItemIndex = 7
+                R.id.nav_primorial -> navItemIndex = 8
                 R.id.nav_settings -> {
                     startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
-                    drawer_layout!!.closeDrawers()
+                    drawer_layout.closeDrawers()
                 }
                 R.id.nav_about -> {
                     // launch new intent instead of loading fragment
                     startActivity(Intent(this@MainActivity, AboutActivity::class.java))
-                    drawer_layout!!.closeDrawers()
+                    drawer_layout.closeDrawers()
                 }
                 R.id.nav_send -> {
                     // launch new intent instead of loading fragment
                     startActivity(Intent(this@MainActivity, SendMailActivity::class.java))
-                    drawer_layout!!.closeDrawers()
+                    drawer_layout.closeDrawers()
                 }
                 else -> navItemIndex = 0
             }
 
             //Checking if the item is in checked state or not, if not make it in checked state
-            menuItem.isChecked = !menuItem.isChecked
+            menuItem.isChecked = menuItem.isChecked.not()
 
             loadFragment(navItemIndex)
 
@@ -145,15 +143,15 @@ class MainActivity : AppCompatActivity() {
                 drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer)
 
         //Setting the actionbarToggle to drawer_layout layout
-        drawer_layout!!.addDrawerListener(actionBarDrawerToggle)
+        drawer_layout.addDrawerListener(actionBarDrawerToggle)
 
         //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState()
     }
 
     override fun onBackPressed() {
-        if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout!!.closeDrawers()
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawers()
             return
         }
 
@@ -170,35 +168,35 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun mmc(view: View) {
+    fun primality(view: View) {
         loadFragment(1)
     }
 
-    fun mdc(view: View) {
+    fun mmc(view: View) {
         loadFragment(2)
     }
 
-    fun fatorizar(view: View) {
+    fun mdc(view: View) {
         loadFragment(3)
     }
 
-    fun divisores(view: View) {
+    fun fatorizar(view: View) {
         loadFragment(4)
     }
 
-    fun primes_table(view: View) {
+    fun divisores(view: View) {
         loadFragment(5)
     }
 
-    fun multiplos(view: View) {
+    fun primesTable(view: View) {
         loadFragment(6)
     }
 
-    fun primorial(view: View) {
+    fun multiplos(view: View) {
         loadFragment(7)
     }
 
-    fun primality(view: View) {
+    fun primorial(view: View) {
         loadFragment(8)
     }
 
@@ -206,25 +204,25 @@ class MainActivity : AppCompatActivity() {
         // tags used to attach the fragments
         private val FRAGMENT_TAGS = arrayOf(
             "home",
+            "primality",
             "mmc",
             "mdc",
             "fatorizar",
             "divisores",
-            "primes_table",
+            "primesTable",
             "multiplos",
-            "primorial",
-            "primality"
+            "primorial"
         )
         private val FRAGMENTS = arrayOf(
             HomeFragment(),
+            PrimalityFragment(),
             MMCFragment(),
             MDCFragment(),
             FatorizarFragment(),
             DivisoresFragment(),
             PrimesTableFragment(),
             MultiplosFragment(),
-            PrimorialFragment(),
-            PrimalityFragment()
+            PrimorialFragment()
         )
         // index to identify current nav menu item
         var navItemIndex = 0
