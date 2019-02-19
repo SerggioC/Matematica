@@ -12,6 +12,8 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
+import android.support.v4.view.WindowInsetsCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
@@ -95,13 +97,19 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         var hasCanceled = false
         for (i in asyncTaskQueue.indices) {
-            asyncTaskQueue[i]?.cancel(true)
-            hasCanceled = true
+            asyncTaskQueue[i]?.let {
+                if (it.status == AsyncTask.Status.RUNNING) {
+                    it.cancel(true)
+                    hasCanceled = true
+                }
+            }
         }
 
         if (hasCanceled) {
             showCustomToast(context, getString(R.string.canceled_op), InfoLevel.WARNING)
         }
+
+        arrayOfEditTexts = emptyArray()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
@@ -157,6 +165,21 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val scale = resources.displayMetrics.density
+
+        ViewCompat.setOnApplyWindowInsetsListener(card_view_1) { view: View?, insets: WindowInsetsCompat? ->
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                val insetTop: Int = insets?.systemWindowInsetTop ?: 0
+                view?.setPadding(
+                    ((view.paddingLeft) / scale).toInt(),
+                    (view.paddingTop / scale + insetTop).toInt(),
+                    (view.paddingRight / scale).toInt(),
+                    (view.paddingBottom / scale).toInt()
+                )
+            }
+            return@setOnApplyWindowInsetsListener insets?.consumeSystemWindowInsets()
+        }
 
         arrayOfEditTexts = arrayOf(
             mmc_num_1,
@@ -183,7 +206,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         button_add_mmc.setOnClickListener { addMMC() }
         button_remove_mmc.setOnClickListener { removeMMC() }
 
-        arrayOfEditTexts.forEach { it.watchThis(this) }
+        arrayOfEditTexts.forEach {
+            it.watchThis(this)
+            it.error = null
+        }
 
     }
 
@@ -365,6 +391,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         } else {
             hideKeyboard(activity)
             emptyTextView.clear()
+            arrayOfEditTexts.forEach {
+                it.error = null
+            }
         }
 
         var mmcString = getString(R.string.mmc_result_prefix)
@@ -381,34 +410,34 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         mmcString += resultMMC
 
         //criar novo cardview
-        val cardview = ClickableCardView(activity as Activity)
-        cardview.layoutParams = ViewGroup.LayoutParams(
+        val cardView = ClickableCardView(activity as Activity)
+        cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
             ViewGroup.LayoutParams.WRAP_CONTENT
         ) // height
-        cardview.preventCornerOverlap = true
+        cardView.preventCornerOverlap = true
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardview.useCompatPadding = true
+        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
+        cardView.useCompatPadding = true
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             val lt = LayoutTransition()
             lt.enableTransitionType(CHANGE_APPEARING)
             lt.enableTransitionType(CHANGE_DISAPPEARING)
-            cardview.layoutTransition = lt
+            cardView.layoutTransition = lt
         }
 
         val cvColor = ContextCompat.getColor(context!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cvColor)
+        cardView.setCardBackgroundColor(cvColor)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardview.setOnTouchListener(
+        cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
-                cardview,
+                cardView,
                 activity as Activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?): Boolean {
@@ -423,11 +452,11 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         )
 
         // Adicionar os números a fatorizar na tag do cardview
-        cardview.tag = MyTags(cardview, longNumbers, resultMMC, false, false, "", null, taskNumber)
+        cardView.tag = MyTags(cardView, longNumbers, resultMMC, false, false, "", null, taskNumber)
 
         val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
         // Add cardview to history layout at the top (index 0)
-        history.addView(cardview, 0)
+        history.addView(cardView, 0)
 
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
@@ -455,7 +484,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
+            createExplanations(cardView, llVerticalRoot, shouldShowExplanation)
         } else {
             val shouldShowPerformance =
                 sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
@@ -467,7 +496,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 gradientSeparator.text = elapsed
                 llVerticalRoot.addView(gradientSeparator, 0)
             }
-            cardview.addView(llVerticalRoot)
+            cardView.addView(llVerticalRoot)
         }
 
     }

@@ -1,9 +1,12 @@
 package com.sergiocruz.MatematicaPro.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.view.GravityCompat
+import android.support.v4.view.ViewCompat
+import android.support.v4.view.WindowInsetsCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         activityTitles = resources.getStringArray(R.array.nav_item_activity_titles)
 
         // initializing navigation menu
-        setUpnavigationView()
+        setUpNavigationView()
 
         if (savedInstanceState == null) {
             loadFragment(0)
@@ -89,7 +92,8 @@ class MainActivity : AppCompatActivity() {
         invalidateOptionsMenu()
     }
 
-    private fun setUpnavigationView() {
+
+    private fun setUpNavigationView() {
 
         // Icones coloridos no menu de gaveta lateral
         nav_view.itemIconTintList = null
@@ -139,8 +143,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         val actionBarDrawerToggle =
-            ActionBarDrawerToggle(this,
-                drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer)
+            ActionBarDrawerToggle(
+                this,
+                drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer
+            )
 
         //Setting the actionbarToggle to drawer_layout layout
         drawer_layout.addDrawerListener(actionBarDrawerToggle)

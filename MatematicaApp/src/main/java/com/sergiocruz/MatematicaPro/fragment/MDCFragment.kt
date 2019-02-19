@@ -109,6 +109,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
 
         arrayOfEditTexts.forEach { it.watchThis(this) }
 
+
     }
 
     override fun onDestroy() {
@@ -123,6 +124,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         if (hasCanceled) {
             showCustomToast(context, getString(R.string.canceled_op), InfoLevel.WARNING)
         }
+        arrayOfEditTexts = emptyArray()
     }
 
     override fun loadOptionsMenus() =
