@@ -11,7 +11,7 @@ import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder

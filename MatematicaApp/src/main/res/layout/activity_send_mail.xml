@@ -36,7 +36,7 @@
             android:gravity="center_horizontal"
             android:textAlignment="center"/>
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/mail_text"
             android:layout_width="match_parent"
             android:layout_height="150dp"

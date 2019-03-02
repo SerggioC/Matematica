@@ -1,11 +1,12 @@
 package com.sergiocruz.MatematicaPro.fragment
 
+
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
 import android.view.*
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment() {
 
@@ -30,7 +31,7 @@ abstract class BaseFragment : Fragment() {
 
     abstract fun loadOptionsMenus(): List<Int>
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         loadOptionsMenus().onEach { inflater.inflate(it, menu) }
     }

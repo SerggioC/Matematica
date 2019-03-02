@@ -8,14 +8,14 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -126,7 +126,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 if (img_path != null) {
                     openFolderSnackbar(activity!!, getString(R.string.image_saved))
                 } else {
-                    showCustomToast(context, getString(R.string.errorsavingimg), ERROR)
+                    showCustomToast(this.context, getString(R.string.errorsavingimg), ERROR)
                 }
             } else {
                 showCustomToast(context, getString(R.string.empty_table), WARNING)
@@ -394,7 +394,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         cancelAsyncTask(asyncTask, context)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         //Quando altera a orientação do ecrã
         if (tableData != null) {

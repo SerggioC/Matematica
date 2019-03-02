@@ -1,15 +1,12 @@
 package com.sergiocruz.MatematicaPro.activity
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.view.GravityCompat
-import android.support.v4.view.ViewCompat
-import android.support.v4.view.WindowInsetsCompat
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.verifyStoragePermissions

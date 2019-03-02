@@ -10,7 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan

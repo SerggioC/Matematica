@@ -7,9 +7,6 @@ import android.graphics.Color
 import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
@@ -22,6 +19,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -49,11 +49,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun loadOptionsMenus() =
         listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_fatorizar)
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item!!.itemId
+        val id = item.itemId
 
         if (id == R.id.action_save_history_images) {
             MenuHelper.saveHistoryImages(activity as Activity)
@@ -83,7 +83,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     }
 
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         //         Checks the orientation of the screen
         //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {

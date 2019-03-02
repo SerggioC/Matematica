@@ -1,8 +1,8 @@
 package com.sergiocruz.MatematicaPro
 
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import java.math.BigInteger
-import java.util.ArrayList
+import java.util.*
 
 class MyTags internal constructor(
     internal var cardView: CardView,

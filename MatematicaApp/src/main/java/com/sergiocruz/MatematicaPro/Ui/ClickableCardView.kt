@@ -1,7 +1,7 @@
 package com.sergiocruz.MatematicaPro.Ui
 
 import android.content.Context
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 
 class ClickableCardView(context: Context) : CardView(context) {
     override fun performClick(): Boolean {

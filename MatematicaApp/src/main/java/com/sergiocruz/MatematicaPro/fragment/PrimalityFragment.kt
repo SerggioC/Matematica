@@ -3,13 +3,13 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.support.v7.widget.LinearLayoutCompat
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.sergiocruz.MatematicaPro.R
@@ -59,9 +59,14 @@ class PrimalityFragment : BaseFragment() {
         createCardView(bigNumber, isPrime)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun createCardView(bigNumber: BigInteger, isPrime: Boolean) {
         //criar novo cardview
-        val cardView = ClickableCardView(activity as Activity)
+        val cardView: ClickableCardView = ClickableCardView(activity as Activity)
         cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
             ViewGroup.LayoutParams.WRAP_CONTENT // height
@@ -77,7 +82,7 @@ class PrimalityFragment : BaseFragment() {
         cardView.useCompatPadding = true
 
         if (isPrime) {
-            val color = ContextCompat.getColor(requireContext(), R.color.greener)
+            val color = ContextCompat.getColor(context!!, R.color.greener)
             cardView.setCardBackgroundColor(color)
         } else {
             val color = ContextCompat.getColor(requireContext(), R.color.cardsColor)

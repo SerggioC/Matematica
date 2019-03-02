@@ -11,7 +11,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder

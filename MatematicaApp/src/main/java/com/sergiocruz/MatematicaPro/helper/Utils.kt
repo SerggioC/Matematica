@@ -3,7 +3,7 @@ package com.sergiocruz.MatematicaPro.helper
 import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import android.view.LayoutInflater
