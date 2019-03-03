@@ -109,7 +109,6 @@ class MDCFragment : BaseFragment(), OnEditorActions {
 
         arrayOfEditTexts.forEach { it.watchThis(this) }
 
-
     }
 
     override fun onDestroy() {
@@ -726,7 +725,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                         fatores_ix.add(j)
                         number_i /= j
                     }
-                    progress = j.toDouble() / (number_i as Double / j.toDouble())
+                    progress = j.toDouble() / (number_i.toDouble() / j.toDouble())
                     if (progress - oldProgress > 0.1) {
                         publishProgress(progress, i.toDouble())
                         oldProgress = progress
@@ -759,7 +758,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
             }
         }
 
-        override fun onPostExecute(result: Void) {
+        override fun onPostExecute(result: Void?) {
             if (this@MDCFragment.isVisible) {
                 bgfatores = cardTags.bGfatores!!
                 val datasets = ArrayList<ArrayList<Long>>()
