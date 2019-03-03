@@ -11,9 +11,6 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.util.TypedValue
@@ -23,14 +20,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_multiplos.*
-
 import java.math.BigInteger
 import java.text.DecimalFormat
 
@@ -45,7 +42,8 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     private var num: Long = 0
     internal var startTime: Long = 0
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
+    override fun loadOptionsMenus() =
+        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -67,7 +65,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         hideKeyboard(activity)
     }
@@ -179,7 +177,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 })
         )
 
-        val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", true)
+        val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
         if (shouldShowPerformance) {
             val gradientSeparator = getGradientSeparator(context)
             val decimalFormatter = DecimalFormat("#.###")
@@ -224,7 +222,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     inner class BackGroundOperation internal constructor(
         private var expandResult: Boolean?,
-        private var theCardView: View?
+        private var theCardView: ClickableCardView?
     ) : AsyncTask<Long, Double, String>() {
         internal var number: Long? = null
         private var maxValue: Long? = null
@@ -242,14 +240,14 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             val minValue = num[1]
             maxValue = num[2]!! + num[1]!!
 
-            var stringMultiplos = ""
+            var stringMultiples = ""
 
             for (i in minValue!! until maxValue!!) {
                 val bigNumber = BigInteger.valueOf(number!!).multiply(BigInteger.valueOf(i))
-                stringMultiplos += "$bigNumber, "
+                stringMultiples += "$bigNumber, "
             }
-            stringMultiplos += "...}"
-            return stringMultiplos
+            stringMultiples += "...}"
+            return stringMultiples
         }
 
         override fun onPostExecute(result: String) {
@@ -262,23 +260,21 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     theCardView?.tag = maxValue
                     val textViewPreResult: TextView
                     val shouldShowPerformance =
-                        sharedPrefs.getBoolean("pref_show_performance", true)
+                        sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
                     if (shouldShowPerformance) {
                         textViewPreResult =
-                                ((theCardView as CardView).getChildAt(0) as LinearLayout).getChildAt(
-                                    1
-                                ) as TextView
+                            (theCardView?.getChildAt(0) as LinearLayout).getChildAt(
+                                1
+                            ) as TextView
                         val gradientSeparator =
-                            ((theCardView as CardView).getChildAt(0) as LinearLayout).getChildAt(0) as TextView
+                            (theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as TextView
                         val decimalFormatter = DecimalFormat("#.###")
                         val elapsed =
                             getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                         gradientSeparator.text = elapsed
                     } else {
                         textViewPreResult =
-                                ((theCardView as CardView).getChildAt(0) as LinearLayout).getChildAt(
-                                    0
-                                ) as TextView
+                            (theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as TextView
                     }
                     var preResult = textViewPreResult.text.toString()
                     preResult = preResult.substring(0, preResult.length - 4) + result

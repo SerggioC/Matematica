@@ -212,4 +212,17 @@
     <string name="application_title_image">Application Title image</string>
     <string name="primality">Primality Test</string>
     <string name="multiplosde">Multiples of</string>
+    <string name="algarismos">Digits</string>
+    <string name="ckeck">Check</string>
+    <string name="cancel_task">Cancel Task</string>
+    <string name="information_icon">Information Icon</string>
+    <string name="calc_mode">Calculation Mode</string>
+    <string name="pref_title_brute_force">Brute Force Mode</string>
+    <string name="pref_summary_brute_force">Brute Force Mode (Iterative) might be slower</string>
+    <string name="pref_title_probabilistic">Probabilistic Mode</string>
+    <string name="pref_summary_probabilistic">Advanced Probabilistic Algorithm is faster</string>
+    <string name="error_no_file_manager">Error. Please install a file manager.</string>
+    <string name="cancel_button_description">Cancel Button</string>
+    <string name="fill_this">Can\'t be empty</string>
+    <string name="invalid_number">Invalid Number</string>
 </resources>

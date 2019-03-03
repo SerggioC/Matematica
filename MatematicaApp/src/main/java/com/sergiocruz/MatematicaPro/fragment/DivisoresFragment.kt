@@ -382,7 +382,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 })
         )
 
-        val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false)
+        val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
         if (shouldShowPerformance) {
 
             val gradientSeparator = getGradientSeparator(context)

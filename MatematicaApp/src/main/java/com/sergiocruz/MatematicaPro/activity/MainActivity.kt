@@ -22,7 +22,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         mHandler = Handler()
 
@@ -55,7 +57,8 @@ class MainActivity : AppCompatActivity() {
         nav_view.menu.getItem(index).setActionView(R.layout.menu_dot)
 
         // set toolbar title
-        supportActionBar?.title = activityTitles[index]
+        //supportActionBar?.title = activityTitles[index]
+        toolbarTitle.text = activityTitles[index]
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer_layout

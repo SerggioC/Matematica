@@ -239,5 +239,18 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="multiplosde">Múltiplos de</string>
     <string name="primality">Teste de Primalidade</string>
     <string name="application_title_image">Imagem do Titulo da aplicação</string>
+    <string name="algarismos">Algarismos</string>
+    <string name="ckeck">Verificar</string>
+    <string name="cancel_task">Cancelar tarefa</string>
+    <string name="information_icon">Ícone de informação</string>
+    <string name="calc_mode">Modo de cálculo</string>
+    <string name="pref_title_brute_force">Modo de força bruta</string>
+    <string name="pref_summary_brute_force">Modo de Força Bruta (Iterativo) pode ser mais lento</string>
+    <string name="pref_title_probabilistic">Modo probabilístico</string>
+    <string name="pref_summary_probabilistic">Algoritmo Probabilístico Avançado é mais rápido</string>
+    <string name="error_no_file_manager">Erro. Por favor, instale um gerenciador de arquivos.</string>
+    <string name="cancel_button_description">Botão Cancelar</string>
+    <string name="fill_this">Não pode estar vazio</string>
+    <string name="invalid_number">Número inválido</string>
 
 </resources>

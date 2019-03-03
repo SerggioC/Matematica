@@ -1,14 +1,12 @@
 package com.sergiocruz.MatematicaPro.helper
 
 import android.app.Activity
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.CardView
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 

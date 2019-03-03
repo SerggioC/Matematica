@@ -223,4 +223,17 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="primality">Primalitätstest</string>
     <string name="multiplosde">Vielfache der</string>
     <string name="application_title_image">Titelbild der Anwendung</string>
+    <string name="algarismos">Ziffern</string>
+    <string name="ckeck">prüfen</string>
+    <string name="cancel_task">Aufgabe abbrechen</string>
+    <string name="information_icon">Informationssymbol</string>
+    <string name="calc_mode">Berechnungsmodus</string>
+    <string name="pref_title_brute_force">Brute-Force-Modus</string>
+    <string name="pref_summary_brute_force">Der Brute-Force-Modus (Iterativ) ist möglicherweise langsamer</string>
+    <string name="pref_title_probabilistic">Probabilistischer Modus</string>
+    <string name="pref_summary_probabilistic">Der erweiterte probabilistische Algorithmus ist schneller</string>
+    <string name="error_no_file_manager">Error. Bitte installieren Sie einen Dateimanager.</string>
+    <string name="cancel_button_description">Schaltfläche \"Abbrechen\"</string>
+    <string name="fill_this">Kann nicht leer sein</string>
+    <string name="invalid_number">Ungültige Nummer</string>
 </resources>

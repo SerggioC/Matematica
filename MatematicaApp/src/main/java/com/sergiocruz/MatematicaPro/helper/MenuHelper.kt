@@ -10,10 +10,6 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Environment
-import android.support.design.widget.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.CardView
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.util.Log
@@ -25,6 +21,10 @@ import android.view.animation.Transformation
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.R.id.history

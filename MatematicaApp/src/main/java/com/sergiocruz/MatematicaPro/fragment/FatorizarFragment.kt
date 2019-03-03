@@ -207,18 +207,18 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         )
         textView.setPadding(0, 0, 0, 0)
 
-        val ssb_fatores_top = SpannableStringBuilder(ssbFatores)
+        val ssbFatoresTop = SpannableStringBuilder(ssbFatores)
         val spans =
-            ssb_fatores_top.getSpans(0, ssb_fatores_top.length, ForegroundColorSpan::class.java)
+            ssbFatoresTop.getSpans(0, ssbFatoresTop.length, ForegroundColorSpan::class.java)
         for (i in spans.indices) {
-            ssb_fatores_top.removeSpan(spans[i])
+            ssbFatoresTop.removeSpan(spans[i])
         }
 
         //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
-        val str_num = getString(R.string.factorization_of) + " " + number + " = \n"
-        val ssb_num = SpannableStringBuilder(str_num)
-        ssb_num.append(ssb_fatores_top)
-        textView.text = ssb_num
+        val strNum = getString(R.string.factorization_of) + " " + number + " = \n"
+        val ssbNum = SpannableStringBuilder(strNum)
+        ssbNum.append(ssbFatoresTop)
+        textView.text = ssbNum
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
         textView.setTag(R.id.texto, "texto")
 
@@ -230,13 +230,13 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
 
-            val ll_vertical_expl = LinearLayout(activity)
-            ll_vertical_expl.layoutParams = LinearLayout.LayoutParams(
+            val llVerticalExpl = LinearLayout(activity)
+            llVerticalExpl.layoutParams = LinearLayout.LayoutParams(
                 LinearLayoutCompat.LayoutParams.MATCH_PARENT,
                 LinearLayoutCompat.LayoutParams.WRAP_CONTENT
             )
-            ll_vertical_expl.orientation = LinearLayout.VERTICAL
-            ll_vertical_expl.tag = "ll_vertical_expl"
+            llVerticalExpl.orientation = LinearLayout.VERTICAL
+            llVerticalExpl.tag = "ll_vertical_expl"
 
             val textView_expl1 = TextView(activity)
             textView_expl1.layoutParams = LinearLayoutCompat.LayoutParams(
@@ -251,7 +251,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             ssb_explain_1.setSpan(boldColorSpan, 0, ssb_explain_1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             textView_expl1.text = ssb_explain_1
             textView_expl1.setTag(R.id.texto, "texto")
-            ll_vertical_expl.addView(textView_expl1)
+            llVerticalExpl.addView(textView_expl1)
 
             val ll_horizontal = LinearLayout(activity)
             ll_horizontal.layoutParams = LinearLayout.LayoutParams(
@@ -371,11 +371,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val isExpanded = arrayOf(false)
 
             if (shouldShowExplanation == "-1") {  //Always show Explanation
-                ll_vertical_expl.visibility = View.VISIBLE
+                llVerticalExpl.visibility = View.VISIBLE
                 explainLink.text = ssb_hide_expl
                 isExpanded[0] = true
             } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
-                ll_vertical_expl.visibility = View.GONE
+                llVerticalExpl.visibility = View.GONE
                 explainLink.text = ssb_show_expl
                 isExpanded[0] = false
             }
@@ -419,7 +419,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             llVerticalRoot.addView(ll_horizontal_link)
 
-            ll_vertical_expl.addView(ll_horizontal)
+            llVerticalExpl.addView(ll_horizontal)
 
             val textView_fact_expanded = TextView(activity)
             textView_fact_expanded.layoutParams = LinearLayoutCompat.LayoutParams(
@@ -475,9 +475,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             textView_fact_expanded.text = ssb_explain_2
             textView_fact_expanded.setTag(R.id.texto, "texto")
 
-            ll_vertical_expl.addView(textView_fact_expanded)
+            llVerticalExpl.addView(textView_fact_expanded)
 
-            llVerticalRoot.addView(ll_vertical_expl)
+            llVerticalRoot.addView(llVerticalExpl)
 
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
@@ -500,17 +500,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // Create a generic swipe-to-dismiss touch listener.
         cardview.setOnTouchListener(
             SwipeToDismissTouchListener(
-
                 cardview,
                 activity as Activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?): Boolean {
-                        return true
-                    }
-
-                    override fun onDismiss(view: View?) {
-                        history.removeView(cardview)
-                    }
+                    override fun canDismiss(token: Boolean?) = true
+                    override fun onDismiss(view: View?) = history.removeView(cardview)
                 })
         )
 

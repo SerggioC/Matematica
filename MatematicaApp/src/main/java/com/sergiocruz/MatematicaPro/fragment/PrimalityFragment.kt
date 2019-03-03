@@ -3,8 +3,6 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.LinearLayoutCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem
@@ -12,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.InfoLevel
@@ -54,19 +54,18 @@ class PrimalityFragment : BaseFragment() {
 
     private fun checkIfProbablePrime(bigNumber: BigInteger) {
         val isPrime = bigNumber.isProbablePrime(100)
-        //showCustomToast(context, if (isPrime) "Prime Number!" else "Not a prime Number")
         hideKeyboard(activity)
         createCardView(bigNumber, isPrime)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return super.onOptionsItemSelected(item)
     }
 
     private fun createCardView(bigNumber: BigInteger, isPrime: Boolean) {
         //criar novo cardview
-        val cardView: ClickableCardView = ClickableCardView(activity as Activity)
+        val cardView = ClickableCardView(activity as Activity)
         cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
             ViewGroup.LayoutParams.WRAP_CONTENT // height

@@ -222,4 +222,17 @@
     <string name="application_title_image">Imagen del título de la aplicación</string>
     <string name="primality">Prueba de Primalidad</string>
     <string name="multiplosde">Múltiples de</string>
+    <string name="algarismos">algarismos</string>
+    <string name="ckeck">comprobar</string>
+    <string name="cancel_task">comprobar tarea</string>
+    <string name="information_icon">Icono de información</string>
+    <string name="calc_mode">Modo de cálculo</string>
+    <string name="pref_title_brute_force">Modo de fuerza bruta</string>
+    <string name="pref_summary_brute_force">El modo de fuerza bruta (iterativo) podría ser más lento</string>
+    <string name="pref_title_probabilistic">Modo probabilístico</string>
+    <string name="pref_summary_probabilistic">El algoritmo probabilístico avanzado es más rápido</string>
+    <string name="error_no_file_manager">Error. Por favor, instale un administrador de archivos.</string>
+    <string name="cancel_button_description">Botón de cancelar</string>
+    <string name="fill_this">No puede estar vacio</string>
+    <string name="invalid_number">No puede estar vacio</string>
 </resources>

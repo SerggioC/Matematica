@@ -213,6 +213,19 @@
     <string name="primality">Test de primalité</string>
     <string name="multiplosde">Multiples de</string>
     <string name="application_title_image">Image du titre de l\'application</string>
+    <string name="algarismos">Chiffres</string>
+    <string name="ckeck">vérifier</string>
+    <string name="cancel_task">Annuler la tâche</string>
+    <string name="information_icon">Icône d\'information</string>
+    <string name="calc_mode">Mode de calcul</string>
+    <string name="pref_title_brute_force">Mode de force brute</string>
+    <string name="pref_summary_brute_force">Le mode de force brute (itératif) pourrait être plus lent</string>
+    <string name="pref_title_probabilistic">Mode probabiliste</string>
+    <string name="pref_summary_probabilistic">L\'algorithme probabiliste avancé est plus rapide</string>
+    <string name="error_no_file_manager">Erreur. Veuillez installer un gestionnaire de fichiers.</string>
+    <string name="cancel_button_description">Bouton d\'annulation</string>
+    <string name="fill_this">Ne peut pas être vide</string>
+    <string name="invalid_number">Numéro invalide</string>
 
 </resources>
 

@@ -11,11 +11,6 @@ import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE
@@ -31,6 +26,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -112,7 +112,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         arrayOfEditTexts = emptyArray()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
         // Checks the orientation of the screen and keeps the view contents and state
@@ -440,10 +440,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 cardView,
                 activity as Activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?): Boolean {
-                        return true
-                    }
-
+                    override fun canDismiss(token: Boolean?) = true
                     override fun onDismiss(view: View?) {
                         //history.removeView(cardview);
                         checkBackgroudOperation(view)
@@ -747,7 +744,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         lateinit var f_colors: IntArray
         var f_colors_length: Int = 0
 
-
         public override fun onPreExecute() {
             percent_formatter = DecimalFormat("#.###%")
             theCardViewBG = cardTags.cardView
@@ -757,7 +753,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            val shouldShowColors = sharedPrefs.getBoolean("pref_show_colors", true)
+            val shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             f_colors = activity!!.resources.getIntArray(R.array.f_colors_xml)
             f_colors_length = f_colors.size
             fColors = ArrayList()
@@ -1064,7 +1060,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
                 progressBar.visibility = View.GONE
 
-                val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", false)
+                val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =

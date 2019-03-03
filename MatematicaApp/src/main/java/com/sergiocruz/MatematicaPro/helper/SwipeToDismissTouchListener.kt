@@ -10,14 +10,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.CardView
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*

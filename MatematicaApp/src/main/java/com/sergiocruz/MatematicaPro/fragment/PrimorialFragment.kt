@@ -6,17 +6,19 @@ import android.graphics.Color
 import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
-import android.view.*
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -40,7 +42,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private var num: Long = 0
     private var startTime: Long = 0
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_primorial)
+    override fun loadOptionsMenus() =
+        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_primorial)
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -63,7 +66,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val display = activity!!.windowManager.defaultDisplay
         val size = Point()
@@ -207,14 +210,16 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 })
         )
 
-        val shouldShowPerformance = sharedPrefs.getBoolean("pref_show_performance", true)
+        val shouldShowPerformance =
+            sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
         if (shouldShowPerformance) {
             val gradient_separator = getGradientSeparator(context)
             val decimalFormatter = DecimalFormat("#.###")
             val elapsed =
                 getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
             val numAlgarismos = bigIntegerResult.toString().length
-            gradient_separator.text = numAlgarismos.toString() + " Algarismos, " + elapsed
+            val algarismos = getString(R.string.algarismos)
+            gradient_separator.text = "$numAlgarismos $algarismos, $elapsed"
             llVerticalRoot.addView(gradient_separator)
         }
 
@@ -238,7 +243,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             progressBar.layoutParams = LinearLayout.LayoutParams(10, height_dip)
             progressBar.visibility = View.VISIBLE
         }
-        
+
         override fun doInBackground(vararg num: Long?): BigInteger {
             number = num[0]!!
             if (number == 1L) return BigInteger.ONE
@@ -266,7 +271,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 if (isPrime) {
                     primes.add(i)
                 }
-                progress = i.toDouble() / number as Double
+                progress = i.toDouble() / number!!.toDouble()
                 if (progress - oldProgress > 0.05) { // update a cada 5%
                     publishProgress(progress)
                     oldProgress = progress

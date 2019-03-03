@@ -3,14 +3,14 @@ package com.sergiocruz.MatematicaPro.helper
 import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
-import androidx.core.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.*
 
@@ -29,7 +29,7 @@ fun displayCancelDialogBox(context: Context, onCanceled: OnCancelBackgroundTask)
     alertDialogBuilder
         .setMessage(R.string.cancel_it)
         .setCancelable(true)
-        .setPositiveButton(R.string.sim) { dialog, id ->
+        .setPositiveButton(R.string.sim) { dialog, _ ->
             onCanceled.onOperationCanceled(true)
             dialog.cancel()
         }
@@ -97,11 +97,4 @@ fun showKeyboard(activity: Activity?) {
 
 fun getGradientSeparator(context: Context?): TextView {
     return LayoutInflater.from(context).inflate(R.layout.gradient_separator, null) as TextView
-}
-
-fun showToastNum(field: String, context: Context?) {
-    showCustomToast(
-        context,
-        context?.getString(R.string.number_in_field) + " " + field + " " + context?.getString(R.string.too_high)
-    )
 }

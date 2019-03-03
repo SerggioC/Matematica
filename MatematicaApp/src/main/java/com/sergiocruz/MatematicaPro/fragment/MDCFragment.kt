@@ -11,9 +11,6 @@ import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.LinearLayoutCompat
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE
@@ -28,6 +25,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -59,7 +59,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
     //private final static BigInteger mdc2(BigInteger a, BigInteger b) {
     //    return b.compareTo(ZERO) == 1 ? a : mdc(b, a.remainder(b));
     //}
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         hideKeyboard(activity as Activity)
     }
@@ -429,12 +429,12 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         // add the textview to the cardview
         llVerticalRoot.addView(textView)
 
-        val shouldShowExplanation = sharedPrefs.getString("preframe_show_explanation", "0")
+        val shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
             createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
         } else {
-            val shouldShowPerformance = sharedPrefs.getBoolean("preframe_show_performance", false)
+            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")
@@ -687,7 +687,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            val shouldShowColors = sharedPrefs.getBoolean("preframe_show_colors", true)
+            val shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             f_colors = resources.getIntArray(R.array.f_colors_xml)
             f_colors_length = f_colors.size
             fColors = ArrayList()
@@ -979,7 +979,7 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 progressBar.visibility = View.GONE
 
                 val shouldShowPerformance =
-                    sharedPrefs.getBoolean("preframe_show_performance", false)
+                    sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =
