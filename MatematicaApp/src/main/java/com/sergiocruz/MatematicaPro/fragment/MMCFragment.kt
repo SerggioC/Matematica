@@ -5,6 +5,7 @@ import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Point
 import android.graphics.Typeface.BOLD
@@ -92,6 +93,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         language = Locale.getDefault().displayLanguage
     }
 
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
     override fun onDestroy() {
         super.onDestroy()
 
@@ -476,14 +480,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         // add the textview to the cardview
         llVerticalRoot.addView(textView)
 
-        val shouldShowExplanation =
-            sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
             createExplanations(cardView, llVerticalRoot, shouldShowExplanation)
         } else {
-            val shouldShowPerformance =
-                sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")
@@ -752,7 +752,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            val shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             f_colors = activity!!.resources.getIntArray(R.array.f_colors_xml)
             f_colors_length = f_colors.size
             fColors = ArrayList()

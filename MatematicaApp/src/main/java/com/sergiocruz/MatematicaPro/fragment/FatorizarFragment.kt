@@ -2,6 +2,7 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
@@ -36,6 +37,10 @@ import java.util.*
 import java.util.Map
 
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
 
     private var BG_Operation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
@@ -212,8 +217,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // add the textview com os fatores multiplicados to the Linear layout vertical root
         llVerticalRoot.addView(textView)
 
-        val shouldShowExplanation =
-            sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
 
@@ -384,8 +387,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             val gradientSeparator = getGradientSeparator(context)
 
-            val shouldShowPerformance =
-                sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
@@ -469,8 +470,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
 
-            val shouldShowPerformance =
-                sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 //View separator with gradient
                 val gradientSeparator = getGradientSeparator(context)
@@ -617,8 +616,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val fColors: ArrayList<Int> = ArrayList()
             val f_colors = resources.getIntArray(R.array.f_colors_xml)
 
-            val shouldShowColors =
-                sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             if (shouldShowColors) {
                 for (f_color in f_colors) fColors.add(f_color)
                 fColors.shuffle() //randomizar as cores

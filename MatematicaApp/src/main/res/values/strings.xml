@@ -287,6 +287,7 @@
     <integer name="default_history_size">10</integer>
 
     <string-array name="pref_list_history_titles">
+        <item>5</item>
         <item>10</item>
         <item>20</item>
         <item>30</item>
@@ -295,6 +296,7 @@
         <item>100</item>
     </string-array>
     <string-array name="pref_list_history_values">
+        <item>5</item>
         <item>10</item>
         <item>20</item>
         <item>30</item>

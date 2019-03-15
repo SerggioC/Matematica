@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.text.DecimalFormat
+import androidx.constraintlayout.widget.ConstraintSet
 
 /*****
  * Project Matematica
@@ -42,8 +43,7 @@ import java.text.DecimalFormat
  * Created by Sergio on 11/11/2016 16:31
  */
 
-class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
     private var tableData = ArrayList<String>()
 
     companion object {
@@ -61,12 +61,12 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     private lateinit var layoutManager: GridLayoutManager
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
         getSharedPreferences()
         writeCalcMode()
     }
 
     private fun getSharedPreferences() {
-
         bruteForceMode = sharedPrefs.getBoolean(
             getString(R.string.pref_key_brute_force),
             resources.getBoolean(R.bool.pref_default_brute_force)
@@ -78,7 +78,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     override fun loadOptionsMenus() = listOf(R.menu.menu_primes_table, R.menu.menu_sub_main)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sharedPrefs.registerOnSharedPreferenceChangeListener(this)
         getSharedPreferences()
         writeCalcMode()
         heightDp = (4 * scale + 0.5f).toInt()
@@ -184,6 +183,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             historyGridRecyclerView.adapter = null
             min_pt.text = Editable.Factory().newEditable("1")
             max_pt.text = Editable.Factory().newEditable("50")
+            numPrimesTextView.visibility = GONE
+            performanceTextView.visibility = GONE
         }
         if (id == R.id.action_about) {
             startActivity(Intent(context, AboutActivity::class.java))
@@ -548,10 +549,19 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     private fun showPerformance(startTime: Long) {
         if (shouldShowPerformance) {
+//            performanceTextView.visibility = VISIBLE
+
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(cardViewMain)
+            constraintSet.connect(R.id.performanceTextView, ConstraintSet.TOP, R.id.numPrimesTextView, ConstraintSet.TOP, 0)
+            constraintSet.connect(R.id.performanceTextView, ConstraintSet.BOTTOM, R.id.numPrimesTextView, ConstraintSet.BOTTOM, 0)
+            constraintSet.setVisibility(R.id.performanceTextView, VISIBLE)
+            constraintSet.applyTo(cardViewMain)
+
             val decimalFormatter = DecimalFormat("#.###")
             val elapsed =
                 " " + decimalFormatter.format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
-            performanceTextView.visibility = VISIBLE
+
             performanceTextView.text = getString(R.string.performance) + " " + elapsed
         } else {
             performanceTextView.visibility = GONE

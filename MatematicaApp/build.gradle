@@ -14,8 +14,8 @@ android {
         applicationId 'com.sergiocruz.MatematicaPro'
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 16
-        versionName "3.6"
+        versionCode 17
+        versionName "4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

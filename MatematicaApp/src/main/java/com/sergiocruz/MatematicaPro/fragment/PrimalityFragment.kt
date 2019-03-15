@@ -3,8 +3,8 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem
@@ -23,6 +23,10 @@ import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 
 class PrimalityFragment : BaseFragment() {
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
@@ -96,7 +100,7 @@ class PrimalityFragment : BaseFragment() {
             cardView.setCardBackgroundColor(color)
         }
 
-        history.limit(historySize)
+        history.limit(historyLimit)
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardView, 0)

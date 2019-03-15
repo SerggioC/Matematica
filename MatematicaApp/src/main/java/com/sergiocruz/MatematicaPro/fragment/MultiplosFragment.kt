@@ -6,6 +6,7 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -63,6 +64,10 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -258,8 +263,6 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 } else {
                     theCardView?.tag = maxValue
                     val textViewPreResult: TextView
-                    val shouldShowPerformance =
-                        sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
                     if (shouldShowPerformance) {
                         textViewPreResult =
                             (theCardView?.getChildAt(0) as LinearLayout).getChildAt(

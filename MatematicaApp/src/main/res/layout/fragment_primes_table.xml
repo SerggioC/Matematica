@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardViewMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
@@ -47,7 +47,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/minInputLayout"
             android:layout_width="0dp"
-            android:layout_height="42dp"
+            android:layout_height="38dp"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
@@ -89,7 +89,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/maxInputLayout"
             android:layout_width="0dp"
-            android:layout_height="42dp"
+            android:layout_height="38dp"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:background="@drawable/edittext_statelist"
@@ -131,14 +131,14 @@
             android:id="@+id/createTableBtn"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/apptheme_btn_default_holo_light"
             android:text="@string/gerar"
             android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/minInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/minInputLayout"
-            app:layout_constraintVertical_bias="0.120000005" />
+            app:layout_constraintBottom_toBottomOf="@+id/calcMode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/switchPrimos" />
 
         <ImageView
             android:id="@+id/cancelButton"
@@ -161,10 +161,8 @@
             android:id="@+id/calcMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginTop="4dp"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/createTableBtn"
             app:layout_constraintEnd_toEndOf="@+id/switchPrimos"
             app:layout_constraintTop_toBottomOf="@+id/switchPrimos"
             tools:text="Probabilistic Mode" />
@@ -173,41 +171,33 @@
             android:id="@+id/switchPrimos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:checked="true"
             android:text="@string/mostrar_todos"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/createTableBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/maxInputLayout"/>
 
         <TextView
             android:id="@+id/numPrimesTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
             android:text="@string/cardinal_primos"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/performanceTextView"
-            app:layout_constraintStart_toStartOf="@+id/createTableBtn"
-            app:layout_constraintTop_toBottomOf="@+id/performanceTextView" />
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createTableBtn" />
 
         <TextView
             android:id="@+id/performanceTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:text="@string/performance"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="@+id/calcMode"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/calcMode" />
 
         <View

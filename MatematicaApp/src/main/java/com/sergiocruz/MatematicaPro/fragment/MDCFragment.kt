@@ -5,6 +5,7 @@ import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface.BOLD
@@ -43,7 +44,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class MDCFragment : BaseFragment(), OnEditorActions {
+class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedPreferenceChangeListener {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
     internal var heightDip: Int = 0
@@ -53,6 +54,9 @@ class MDCFragment : BaseFragment(), OnEditorActions {
     private lateinit var language: String
     private lateinit var arrayOfEditTexts: Array<EditText>
 
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
      */
@@ -427,7 +431,6 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         // add the textview to the cardview
         llVerticalRoot.addView(textView)
 
-        val shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
             createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
@@ -684,7 +687,6 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            val shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
             f_colors = resources.getIntArray(R.array.f_colors_xml)
             f_colors_length = f_colors.size
             fColors = ArrayList()
@@ -975,8 +977,6 @@ class MDCFragment : BaseFragment(), OnEditorActions {
 
                 progressBar.visibility = View.GONE
 
-                val shouldShowPerformance =
-                    sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =

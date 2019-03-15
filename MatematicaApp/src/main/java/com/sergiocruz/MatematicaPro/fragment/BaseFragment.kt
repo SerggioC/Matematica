@@ -12,30 +12,40 @@ import com.sergiocruz.MatematicaPro.R
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     lateinit var sharedPrefs: SharedPreferences
-    var historySize: Int = 0
-    var shouldShowPerformance: Boolean = true
+    var historyLimit: Int = 0
     var scale: Float = 0f
+    var shouldShowPerformance: Boolean = true
+    var shouldShowExplanation: String = "0"
+    var shouldShowColors: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .registerOnSharedPreferenceChangeListener(this)
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         scale = resources.displayMetrics.density
-        getPreferences()
+        getBasePreferences()
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getPreferences()
+    override fun onDestroy() {
+        super.onDestroy()
+        PreferenceManager.getDefaultSharedPreferences(context)
+            .unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    private fun getPreferences() {
+    fun getBasePreferences() {
         val default: Int = resources.getInteger(R.integer.default_history_size)
-        historySize = sharedPrefs.getString(
+        historyLimit = sharedPrefs.getString(
             getString(R.string.pref_key_history_size),
             default.toString()
         )?.toInt() ?: default
         shouldShowPerformance =
             sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
+        shouldShowExplanation =
+            sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
+        shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
+
     }
 
     override fun onCreateView(
@@ -51,11 +61,12 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        loadOptionsMenus().onEach { inflater.inflate(it, menu) }
+        loadOptionsMenus().forEach { inflater.inflate(it, menu) }
     }
 
-    fun LinearLayout.limit(historySize: Int) {
-        if (childCount >= historySize) removeViewAt(historySize - 1)
+    fun LinearLayout.limit(historyLimit: Int) {
+        if (childCount == 0 || historyLimit == 0) return
+        if (childCount >= historyLimit) removeViewAt(historyLimit - 1)
     }
 
 }

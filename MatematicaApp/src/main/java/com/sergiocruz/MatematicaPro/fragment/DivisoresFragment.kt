@@ -2,6 +2,7 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
@@ -30,6 +31,10 @@ import java.text.DecimalFormat
 import java.util.*
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
 
     private var asyncTask: AsyncTask<Long, Double, ArrayList<Long>> = BackGroundOperation()
     internal var cvWidth: Int = 0
@@ -350,7 +355,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Add cardview to history layout at the top (index 0)
         //val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
-        history.limit(historySize)
+        history.limit(historyLimit)
         history.addView(cardView, 0)
 
         // criar novo Textview

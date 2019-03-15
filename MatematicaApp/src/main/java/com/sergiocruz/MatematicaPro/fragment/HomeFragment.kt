@@ -1,6 +1,7 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,6 +11,11 @@ import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 
 class HomeFragment : BaseFragment() {
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)

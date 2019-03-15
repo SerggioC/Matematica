@@ -1,6 +1,7 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
@@ -63,6 +64,10 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
