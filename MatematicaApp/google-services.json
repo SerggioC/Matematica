@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "745880472271",
+    "firebase_url": "https://matematicapro-5150f.firebaseio.com",
+    "project_id": "matematicapro-5150f",
+    "storage_bucket": "matematicapro-5150f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745880472271:android:c0fd0477ff2d000e",
+        "android_client_info": {
+          "package_name": "com.sergiocruz.MatematicaPro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745880472271-84ilmde5qjpe903p7u8jc9bmu99hpv1l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sergiocruz.MatematicaPro",
+            "certificate_hash": "5380ffcafabe0dc06121ec673dcd165c9cab4a52"
+          }
+        },
+        {
+          "client_id": "745880472271-1f9fm8pdbm2713l8vsf43udfbfk69tos.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHjN2UIq-qHa8_bag60iDq1qe5esD0VV4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745880472271-1f9fm8pdbm2713l8vsf43udfbfk69tos.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

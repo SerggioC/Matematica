@@ -20,6 +20,7 @@
             android:src="@drawable/math_board_pro" />
 
         <TextView
+            android:elevation="16dp"
             android:id="@+id/primality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,8 +29,8 @@
             android:layout_marginTop="@dimen/default_gap"
             android:layout_marginRight="@dimen/default_gap"
             android:background="@drawable/intro_cards_background"
-            android:drawableStart="@mipmap/ic_mmc"
-            android:drawableLeft="@mipmap/ic_mmc"
+            android:drawableStart="@mipmap/ic_primes"
+            android:drawableLeft="@mipmap/ic_primes"
             android:drawablePadding="16dp"
             android:gravity="center_vertical"
             android:onClick="primality"
@@ -38,6 +39,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,6 +58,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/textmdc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,6 +77,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/textfactor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,6 +96,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/text_divisores"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -110,6 +115,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/text_primos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -128,6 +134,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/text_multiplos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -146,6 +153,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat" />
 
         <TextView
+            android:elevation="8dp"
             android:id="@+id/textViewPrimorial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

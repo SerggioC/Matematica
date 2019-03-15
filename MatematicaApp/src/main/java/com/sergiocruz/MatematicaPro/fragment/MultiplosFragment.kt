@@ -177,7 +177,6 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 })
         )
 
-        val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
         if (shouldShowPerformance) {
             val gradientSeparator = getGradientSeparator(context)
             val decimalFormatter = DecimalFormat("#.###")

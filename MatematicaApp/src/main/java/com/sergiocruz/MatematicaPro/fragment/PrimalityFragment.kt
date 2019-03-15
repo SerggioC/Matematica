@@ -2,7 +2,9 @@ package com.sergiocruz.MatematicaPro.fragment
 
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MenuItem
@@ -14,10 +16,9 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.helper.InfoLevel
-import com.sergiocruz.MatematicaPro.helper.SwipeToDismissTouchListener
-import com.sergiocruz.MatematicaPro.helper.hideKeyboard
-import com.sergiocruz.MatematicaPro.helper.showCustomToast
+import com.sergiocruz.MatematicaPro.activity.AboutActivity
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity
+import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 
@@ -59,7 +60,14 @@ class PrimalityFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
+        }
         return super.onOptionsItemSelected(item)
     }
 
@@ -88,7 +96,7 @@ class PrimalityFragment : BaseFragment() {
             cardView.setCardBackgroundColor(color)
         }
 
-        history.limit()
+        history.limit(historySize)
 
         // Add cardview to history layout at the top (index 0)
         history.addView(cardView, 0)
@@ -131,10 +139,7 @@ class PrimalityFragment : BaseFragment() {
     }
 
 
+
 }
 
-private fun LinearLayout.limit() {
-    if (childCount > 9) {
-        removeViewAt(9)
-    }
-}
+

@@ -53,31 +53,18 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-        if (id == R.id.action_save_history_images) {
-            MenuHelper.saveHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history_images) {
-            MenuHelper.shareHistoryImages(activity as Activity)
-        }
-        if (id == R.id.action_share_history) {
-            MenuHelper.shareHistory(activity as Activity)
-        }
-        if (id == R.id.action_clear_all_history) {
-            MenuHelper.removeHistory(activity as Activity)
-        }
-        if (id == R.id.action_ajuda) {
-            val history = activity!!.findViewById<View>(R.id.history) as ViewGroup
-            val helpDivisores = getString(R.string.help_text_fatores)
-            val ssb = SpannableStringBuilder(helpDivisores)
-            CreateCardView.create(history, ssb, activity as Activity)
-        }
-        if (id == R.id.action_about) {
-            startActivity(Intent(activity, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(activity, SettingsActivity::class.java))
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
+            R.id.action_ajuda -> {
+                val helpDivisores = getString(R.string.help_text_fatores)
+                val ssb = SpannableStringBuilder(helpDivisores)
+                CreateCardView.create(history, ssb, activity as Activity)
+            }
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

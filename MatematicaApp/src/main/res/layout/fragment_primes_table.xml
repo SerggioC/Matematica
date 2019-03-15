@@ -1,7 +1,7 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -47,7 +47,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/minInputLayout"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="42dp"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
@@ -89,7 +89,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/maxInputLayout"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="42dp"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:background="@drawable/edittext_statelist"
@@ -131,41 +131,42 @@
             android:id="@+id/createTableBtn"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/apptheme_btn_default_holo_light"
             android:text="@string/gerar"
             android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/minInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/minInputLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/minInputLayout"
+            app:layout_constraintVertical_bias="0.120000005" />
 
         <ImageView
             android:id="@+id/cancelButton"
             android:layout_width="29dp"
             android:layout_height="29dp"
             android:layout_centerVertical="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:contentDescription="@string/cancel_button_description"
             android:src="@drawable/stop_button"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/calcMode"
-            app:layout_constraintEnd_toStartOf="@+id/switchPrimos"
-            app:layout_constraintStart_toEndOf="@+id/calcMode"
-            app:layout_constraintTop_toTopOf="@+id/calcMode" />
+            app:layout_constraintBottom_toBottomOf="@+id/createTableBtn"
+            app:layout_constraintEnd_toStartOf="@+id/calcMode"
+            app:layout_constraintStart_toEndOf="@+id/createTableBtn"
+            app:layout_constraintTop_toTopOf="@+id/createTableBtn" />
 
         <TextView
             android:id="@+id/calcMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/createTableBtn"
-            app:layout_constraintStart_toEndOf="@+id/createTableBtn"
-            app:layout_constraintTop_toTopOf="@+id/createTableBtn"
+            app:layout_constraintEnd_toEndOf="@+id/switchPrimos"
+            app:layout_constraintTop_toBottomOf="@+id/switchPrimos"
             tools:text="Probabilistic Mode" />
 
         <Switch
@@ -179,9 +180,8 @@
             android:layout_marginRight="8dp"
             android:checked="true"
             android:text="@string/mostrar_todos"
-            app:layout_constraintBottom_toBottomOf="@+id/cancelButton"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/cancelButton" />
+            app:layout_constraintTop_toTopOf="@+id/createTableBtn" />
 
         <TextView
             android:id="@+id/numPrimesTextView"
@@ -193,9 +193,10 @@
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:text="@string/cardinal_primos"
-            android:visibility="gone"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/performanceTextView"
             app:layout_constraintStart_toStartOf="@+id/createTableBtn"
-            app:layout_constraintTop_toBottomOf="@+id/createTableBtn" />
+            app:layout_constraintTop_toBottomOf="@+id/performanceTextView" />
 
         <TextView
             android:id="@+id/performanceTextView"
@@ -204,23 +205,21 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:text="@string/performance"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/numPrimesTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/numPrimesTextView" />
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="@+id/calcMode"
+            app:layout_constraintTop_toBottomOf="@+id/calcMode" />
 
         <View
             android:id="@+id/progressBar"
             android:layout_width="0dp"
             android:layout_height="4dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
             android:background="@color/lightBlue"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/createTableBtn" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

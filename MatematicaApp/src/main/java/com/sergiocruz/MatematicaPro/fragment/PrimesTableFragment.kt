@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sergiocruz.MatematicaPro.BuildConfig
@@ -52,11 +53,10 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     private var asyncTask: AsyncTask<Long, Double, ResultWrapper> = LongOperation()
     private var cvWidth: Int = 0
-    private var heightDp: Int = (4 * scale + 0.5f).toInt()
+    private var heightDp: Int = 0
     private var numMin: Long? = 0L
     private var numMax: Long? = 50L
     private var bruteForceMode: Boolean = true
-    private var shouldShowPerformance: Boolean = true
     private lateinit var tableAdapter: TableAdapter
     private lateinit var layoutManager: GridLayoutManager
 
@@ -66,8 +66,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private fun getSharedPreferences() {
-        shouldShowPerformance =
-            sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
+
         bruteForceMode = sharedPrefs.getBoolean(
             getString(R.string.pref_key_brute_force),
             resources.getBoolean(R.bool.pref_default_brute_force)
@@ -82,6 +81,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         sharedPrefs.registerOnSharedPreferenceChangeListener(this)
         getSharedPreferences()
         writeCalcMode()
+        heightDp = (4 * scale + 0.5f).toInt()
 
         switchPrimos.setOnCheckedChangeListener { _, isChecked ->
             if (::tableAdapter.isInitialized)
@@ -413,6 +413,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         hideKeyboard(activity)
     }
 
+    private var progressBarParams = ViewGroup.LayoutParams(0,0)
+
     private fun lockButtons() {
         createTableBtn.isClickable = false
         createTableBtn.text = getString(R.string.working)
@@ -424,8 +426,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private fun resetButtons() {
-        cvWidth = (4 * scale + 0.5f).toInt()
-        progressBar.layoutParams = ConstraintLayout.LayoutParams(cvWidth, heightDp)
+        progressBarParams.width = 0
+        progressBar.layoutParams = progressBarParams
         progressBar.visibility = GONE
         cancelButton.visibility = GONE
         createTableBtn.isClickable = true
@@ -439,6 +441,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         public override fun onPreExecute() {
             lockButtons()
             cvWidth = cardViewMain.width
+            progressBarParams = progressBar.layoutParams
         }
 
         override fun doInBackground(vararg params: Long?): ResultWrapper {
@@ -502,11 +505,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         override fun onProgressUpdate(vararg values: Double?) {
             if (this@PrimesTableFragment.isVisible) {
                 val progress: Double = values[0] ?: 0.0
-                progressBar.layoutParams =
-                    ConstraintLayout.LayoutParams(
-                        Math.round(progress * cvWidth).toInt(),
-                        heightDp
-                    )
+                progressBarParams.width = Math.round(progress * cvWidth).toInt()
+                progressBar.layoutParams = progressBarParams
             }
         }
 

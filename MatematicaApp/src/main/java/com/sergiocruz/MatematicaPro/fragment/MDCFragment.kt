@@ -142,7 +142,6 @@ class MDCFragment : BaseFragment(), OnEditorActions {
                 arrayOfEditTexts.forEach { it.setText("") }
             }
             R.id.action_ajuda -> {
-                val history = activity!!.findViewById<View>(R.id.history) as ViewGroup
                 val helpDivisores = getString(R.string.help_text_mdc)
                 val ssb = SpannableStringBuilder(helpDivisores)
                 CreateCardView.create(history, ssb, activity as Activity)
@@ -433,7 +432,6 @@ class MDCFragment : BaseFragment(), OnEditorActions {
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
             createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
         } else {
-            val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
             if (shouldShowPerformance) {
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")

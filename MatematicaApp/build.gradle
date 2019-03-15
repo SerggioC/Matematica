@@ -72,7 +72,7 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.appcompat:appcompat:1.0.2"
     implementation "androidx.recyclerview:recyclerview:1.0.0"
-    implementation "com.google.android.material:material:1.1.0-alpha03"
+    implementation "com.google.android.material:material:1.1.0-alpha04"
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.gridlayout:gridlayout:1.0.0"
     implementation "androidx.vectordrawable:vectordrawable:1.0.1"
@@ -89,7 +89,20 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
+    // Timber logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // Crash reporting Crashlytics
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+
+
 }
 
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}

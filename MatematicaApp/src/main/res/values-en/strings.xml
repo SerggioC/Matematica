@@ -208,7 +208,7 @@
     <string name="action_share_history_pt">Share table text</string>
     <string name="open_folder">Open folder</string>
     <string name="empty_table">Empty table</string>
-    <string name="home_primality_description">▸ Primality Test Verify if a number is prime</string>
+    <string name="home_primality_description">▸ Primality Test - Verify if a number is prime</string>
     <string name="application_title_image">Application Title image</string>
     <string name="primality">Primality Test</string>
     <string name="multiplosde">Multiples of</string>

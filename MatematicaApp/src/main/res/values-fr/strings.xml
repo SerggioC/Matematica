@@ -209,7 +209,7 @@
     <string name="action_share_history_pt">Partager le texte de la table</string>
     <string name="open_folder">Ouvrir le dossier</string>
     <string name="empty_table">Table vide</string>
-    <string name="home_primality_description">Test de primalité Vérifier si un nombre est premier</string>
+    <string name="home_primality_description">Test de primalité - Vérifier si un nombre est premier</string>
     <string name="primality">Test de primalité</string>
     <string name="multiplosde">Multiples de</string>
     <string name="application_title_image">Image du titre de l\'application</string>

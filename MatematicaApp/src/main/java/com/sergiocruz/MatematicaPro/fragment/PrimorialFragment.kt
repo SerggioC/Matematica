@@ -57,7 +57,6 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             R.id.action_help_primorial -> {
                 val help = getString(R.string.help_text_primorial)
                 val ssb = SpannableStringBuilder(help)
-                val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
                 CreateCardView.create(history, ssb, activity!!)
             }
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
@@ -210,8 +209,6 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 })
         )
 
-        val shouldShowPerformance =
-            sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
         if (shouldShowPerformance) {
             val gradient_separator = getGradientSeparator(context)
             val decimalFormatter = DecimalFormat("#.###")

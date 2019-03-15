@@ -218,7 +218,7 @@
     <string name="action_share_history_pt">Compartir texto de la tabla</string>
     <string name="open_folder">Abrir carpeta</string>
     <string name="empty_table">Tabla vacía</string>
-    <string name="home_primality_description">▸ Test Prueba de primalidad Verificar si un número es primo</string>
+    <string name="home_primality_description">▸ Test Prueba de primalidad - Verificar si un número es primo</string>
     <string name="application_title_image">Imagen del título de la aplicación</string>
     <string name="primality">Prueba de Primalidad</string>
     <string name="multiplosde">Múltiples de</string>

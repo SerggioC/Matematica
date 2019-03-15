@@ -235,7 +235,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="action_share_history_images_pt">Partilhar imagem da tabela</string>
     <string name="open_folder">Abrir pasta</string>
     <string name="empty_table">Tabela vazia</string>
-    <string name="home_primality_description">▸ Teste de primalidade\nVerificar se um número é primo</string>
+    <string name="home_primality_description">▸ Teste de primalidade - Verificar se um número é primo</string>
     <string name="multiplosde">Múltiplos de</string>
     <string name="primality">Teste de Primalidade</string>
     <string name="application_title_image">Imagem do Titulo da aplicação</string>

@@ -6,7 +6,7 @@
              dismiss it. -->
         <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
         <ListPreference
-            android:defaultValue="0"
+            android:defaultValue="true"
             android:entries="@array/pref_list_titles"
             android:entryValues="@array/pref_list_values"
             android:icon="@mipmap/ic_info"
@@ -45,5 +45,18 @@
             android:summary="@string/pref_summary_probabilistic"/>
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/other">
+
+        <ListPreference
+            android:defaultValue="@integer/default_history_size"
+            android:entries="@array/pref_list_history_titles"
+            android:entryValues="@array/pref_list_history_values"
+            android:icon="@android:drawable/ic_menu_view"
+            android:key="@string/pref_key_history_size"
+            android:summary="@string/pref_summary_hisory_size"
+            android:title="@string/pref_title_history_size" />
+    </PreferenceCategory>
+
 
 </PreferenceScreen>
+

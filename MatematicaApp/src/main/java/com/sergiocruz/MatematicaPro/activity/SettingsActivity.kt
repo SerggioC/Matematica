@@ -28,19 +28,22 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         Preference.OnPreferenceChangeListener { preference, value ->
             val stringValue = value.toString()
             if (preference is ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                val index = preference.findIndexOfValue(stringValue)
+                if (preference.title == getString(R.string.pref_title_explanation)) {// For list preferences, look up the correct display value in
+                    // the preference's 'entries' list.
+                    val index = preference.findIndexOfValue(stringValue)
 
-                // Set the summary to reflect the new value.
-                preference.setSummary(if (index >= 0) preference.entries[index] else null)
+                    // Set the summary to reflect the new value.
+                    preference.setSummary(if (index >= 0) preference.entries[index] else null)
 
-                //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
-                val pref_show_colors = findPreference(getString(R.string.pref_key_show_colors))
-                if (index == 0 || index == 1) {
-                    pref_show_colors.isEnabled = true
-                } else if (index == 2) {
-                    pref_show_colors.isEnabled = false
+                    //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
+                    val pref_show_colors = findPreference(getString(R.string.pref_key_show_colors))
+                    if (index == 0 || index == 1) {
+                        pref_show_colors.isEnabled = true
+                    } else if (index == 2) {
+                        pref_show_colors.isEnabled = false
+                    }
+                } else if (preference.title == getString(R.string.pref_title_history_size)){
+                    preference.summary = "${getString(R.string.pref_summary_hisory_size)} ($stringValue)"
                 }
 
 
@@ -83,6 +86,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         setupActionBar()
         addPreferencesFromResource(R.xml.pref_general)
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_show_explanation)))
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_history_size)))
 
         val prefBruteForce = findPreference(getString(R.string.pref_key_brute_force)) as SwitchPreference
         val prefProbabilistic = findPreference(getString(R.string.pref_key_probabilistic)) as SwitchPreference

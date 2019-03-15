@@ -148,7 +148,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 arrayOfEditTexts.forEach { it.setText("") }
             }
             R.id.action_ajuda -> {
-                val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
                 val helpDivisores = getString(R.string.help_text_mmc)
                 val ssb = SpannableStringBuilder(helpDivisores)
                 create(history, ssb, activity!!)
@@ -1060,7 +1059,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
                 progressBar.visibility = View.GONE
 
-                val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =

@@ -254,13 +254,16 @@
     <string name="empty_table">Empty table</string>
     <string name="open_folder">Open folder</string>
     <string name="application_title_image">Application Title image</string>
-    <string name="home_primality_description">▸ Primality Test Verify if a number is prime</string>
+    <string name="home_primality_description">▸ Primality Test - Verify if a number is prime</string>
     <string name="primality">Primality Test</string>
     <string name="multiplosde">Multiples of</string>
+
     <string name="pref_key_show_explanation" translatable="false">pref_show_explanation</string>
     <string name="pref_key_show_colors" translatable="false">pref_show_colors</string>
     <string name="pref_key_brute_force" translatable="false">pref_brute_force</string>
     <string name="pref_key_probabilistic" translatable="false">pref_probabilistic</string>
+    <string name="pref_key_history_size" translatable="false">pref_history_size</string>
+
     <string name="ckeck">Check</string>
     <string name="cancel_task">Cancel Task</string>
     <string name="information_icon">Information Icon</string>
@@ -275,8 +278,29 @@
     <string name="fill_this">Can\'t be empty</string>
     <string name="invalid_number">Invalid Number</string>
     <string name="algarismos">Digits</string>
+    <string name="other">Other</string>
+    <string name="pref_title_history_size">History Size</string>
+    <string name="pref_summary_hisory_size">Limit the number of results to keep in history</string>
     <bool name="pref_default_brute_force">true</bool>
     <bool name="pref_default_probabilistic">false</bool>
 
+    <integer name="default_history_size">10</integer>
+
+    <string-array name="pref_list_history_titles">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="pref_list_history_values">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+    </string-array>
 
 </resources>

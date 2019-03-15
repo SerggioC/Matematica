@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="apptheme_color">#669900</color>
-    <color name="colorPrimary">#388e3c</color>
+    <color name="colorPrimary">#3EA343</color>
     <color name="colorPrimaryDark">#29712d</color>
     <color name="colorAccent">#2ac911</color>
     <color name="white">#FFFFFF</color>
@@ -9,6 +9,10 @@
     <color name="black">#000000</color>
     <color name="bgCardColor">#a959c934</color>
     <color name="bgCardColor2">#8BC34A</color>
+
+    <color name="introCardColor1">#79E022</color>
+    <color name="introCardColor2">#A3FD7F</color>
+
     <color name="lightGreen">#f1f8e9</color>
     <color name="cardsColor">#FFFFFF</color>
     <color name="greener">#dcedc8</color>

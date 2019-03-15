@@ -349,7 +349,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setCardBackgroundColor(color)
 
         // Add cardview to history layout at the top (index 0)
-        val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
+        //val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
+        history.limit(historySize)
         history.addView(cardView, 0)
 
         // criar novo Textview
@@ -382,7 +383,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 })
         )
 
-        val shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
         if (shouldShowPerformance) {
 
             val gradientSeparator = getGradientSeparator(context)
