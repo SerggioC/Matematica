@@ -1,13 +1,11 @@
 <resources>
 
-    <string name="app_version_date">August 2018</string>
-
+    <string name="app_version_date">March 2019</string>
     <string name="app_name" translatable="false">Primes PRO</string>
     <string name="app_long_description" translatable="false">Prime Number Tools Pro v</string>
     <string name="app_version_description">App version:</string>
+    <string name="app_email" translatable="false">mailto:sergiocrz@gmail.com</string>
 
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
-    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="openDrawer" translatable="false">open_drawer</string>
     <string name="closeDrawer" translatable="false">close_drawer</string>
 
@@ -46,9 +44,6 @@
     <string name="nav_primorial">Calculate Primorial n#</string>
     <string name="home_primorial_description">▸ Primorial - Calculate Primorial of a number n#</string>
     <string name="zeroPrimorial">Numbers > 0</string>
-
-
-    <string name="app_email" translatable="false">mailto:sergiocrz@gmail.com</string>
 
     <string name="has_email">Do you have an email APP installed?</string>
     <string name="action_ajuda_divisores">How to obtain divisors?</string>
@@ -281,6 +276,7 @@
     <string name="other">Other</string>
     <string name="pref_title_history_size">History Size</string>
     <string name="pref_summary_hisory_size">Limit the number of results to keep in history</string>
+    <string name="help">Help</string>
     <bool name="pref_default_brute_force">true</bool>
     <bool name="pref_default_probabilistic">false</bool>
 

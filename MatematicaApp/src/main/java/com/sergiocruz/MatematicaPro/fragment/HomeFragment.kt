@@ -1,14 +1,9 @@
 package com.sergiocruz.MatematicaPro.fragment
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.widget.LinearLayout
 import com.sergiocruz.MatematicaPro.R
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 
 class HomeFragment : BaseFragment() {
 
@@ -23,14 +18,12 @@ class HomeFragment : BaseFragment() {
 
     override fun getLayoutIdForFragment() = R.layout.fragment_home
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_sub_main)
+    override fun getHelpTextId(): Int? = null
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun getHelpMenuTitleId(): Int? = null
+
+    override fun getHistoryLayout(): LinearLayout? = null
+
+    override fun loadOptionsMenus() = listOf(R.menu.menu_sub_main)
 
 }

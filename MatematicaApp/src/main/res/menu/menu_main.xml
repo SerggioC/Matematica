@@ -17,5 +17,9 @@
         android:id="@+id/action_clear_all_history"
         android:title="@string/action_clear_all_history"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_help"
+        android:title="@string/help"
+        app:showAsAction="never"/>
 
 </menu>

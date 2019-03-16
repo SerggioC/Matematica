@@ -225,4 +225,5 @@
     <string name="cancel_button_description">Cancel Button</string>
     <string name="fill_this">Can\'t be empty</string>
     <string name="invalid_number">Invalid Number</string>
+    <string name="help">Help</string>
 </resources>

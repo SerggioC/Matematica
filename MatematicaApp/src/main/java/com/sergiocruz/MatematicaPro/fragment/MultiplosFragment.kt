@@ -4,8 +4,6 @@ package com.sergiocruz.MatematicaPro.fragment
  * Created by Sergio on 13/05/2017.
  */
 
-import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Paint
@@ -16,7 +14,6 @@ import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -25,8 +22,6 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_multiplos.*
 import java.math.BigInteger
@@ -43,28 +38,13 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     private var num: Long = 0
     internal var startTime: Long = 0
 
-    override fun loadOptionsMenus() =
-        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
+    override fun getHelpTextId() = R.string.help_text_multiplos
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
-            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
-            R.id.action_help_multiplos -> {
-                val help = getString(R.string.help_text_multiplos)
-                val ssb = SpannableStringBuilder(help)
-                CreateCardView.create(history, ssb, activity as Activity)
-            }
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun getHelpMenuTitleId() = R.string.action_ajuda_multiplos
+
+    override fun getHistoryLayout(): LinearLayout = history
+
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
@@ -141,6 +121,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
         cardview.setCardBackgroundColor(cvColor)
 
+        history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)
 

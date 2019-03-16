@@ -1,7 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
@@ -14,7 +13,6 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -23,14 +21,18 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_divisores.*
 import java.text.DecimalFormat
 import java.util.*
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+
+    override fun getHelpTextId(): Int? = R.string.help_text_divisores
+
+    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_divisores
+
+    override fun getHistoryLayout(): LinearLayout? = history
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
@@ -54,28 +56,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         inputEditText.watchThis(this)
     }
 
-    override fun loadOptionsMenus() =
-        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_divisores)
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
-            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
-            R.id.action_help_divisores -> {
-                val help = getString(R.string.help_text_divisores)
-                val ssb = SpannableStringBuilder(help)
-                CreateCardView.create(history, ssb, activity as Activity)
-            }
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -135,8 +116,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         if (editnumText == "0" || num == 0L) {
-            val ssb = SpannableStringBuilder(getString(R.string.zero_no_divisores))
-            CreateCardView.create(history, ssb, activity as Activity)
+            CreateCardView.create(history, R.string.zero_no_divisores, activity as Activity)
             return
         }
         asyncTask = BackGroundOperation().execute(num)

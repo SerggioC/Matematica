@@ -15,7 +15,8 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
@@ -35,7 +36,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.text.DecimalFormat
-import androidx.constraintlayout.widget.ConstraintSet
 
 /*****
  * Project Matematica
@@ -44,6 +44,13 @@ import androidx.constraintlayout.widget.ConstraintSet
  */
 
 class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+
+    override fun getHelpTextId(): Int? = null
+
+    override fun getHelpMenuTitleId(): Int? = null
+
+    override fun getHistoryLayout(): LinearLayout? = null
+
     private var tableData = ArrayList<String>()
 
     companion object {
@@ -414,7 +421,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         hideKeyboard(activity)
     }
 
-    private var progressBarParams = ViewGroup.LayoutParams(0,0)
+    private var progressBarParams = ViewGroup.LayoutParams(0, 0)
 
     private fun lockButtons() {
         createTableBtn.isClickable = false
@@ -549,19 +556,16 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     private fun showPerformance(startTime: Long) {
         if (shouldShowPerformance) {
-//            performanceTextView.visibility = VISIBLE
+            ConstraintSet().apply {
+                clone(cardViewMain)
+                connect(R.id.performanceTextView, ConstraintSet.TOP, R.id.numPrimesTextView, ConstraintSet.TOP, 0)
+                connect(R.id.performanceTextView, ConstraintSet.BOTTOM, R.id.numPrimesTextView, ConstraintSet.BOTTOM, 0)
+                setVisibility(R.id.performanceTextView, VISIBLE)
+                applyTo(cardViewMain)
+            }
 
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(cardViewMain)
-            constraintSet.connect(R.id.performanceTextView, ConstraintSet.TOP, R.id.numPrimesTextView, ConstraintSet.TOP, 0)
-            constraintSet.connect(R.id.performanceTextView, ConstraintSet.BOTTOM, R.id.numPrimesTextView, ConstraintSet.BOTTOM, 0)
-            constraintSet.setVisibility(R.id.performanceTextView, VISIBLE)
-            constraintSet.applyTo(cardViewMain)
-
-            val decimalFormatter = DecimalFormat("#.###")
             val elapsed =
-                " " + decimalFormatter.format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
-
+                " " + DecimalFormat("#.###").format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
             performanceTextView.text = getString(R.string.performance) + " " + elapsed
         } else {
             performanceTextView.visibility = GONE

@@ -23,6 +23,11 @@ import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 
 class PrimalityFragment : BaseFragment() {
+    override fun getHelpTextId(): Int? = null
+
+    override fun getHelpMenuTitleId(): Int? = null
+
+    override fun getHistoryLayout(): LinearLayout? = null
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
@@ -61,18 +66,6 @@ class PrimalityFragment : BaseFragment() {
         val isPrime = bigNumber.isProbablePrime(100)
         hideKeyboard(activity)
         createCardView(bigNumber, isPrime)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
-            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun createCardView(bigNumber: BigInteger, isPrime: Boolean) {

@@ -13,9 +13,7 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -43,28 +41,13 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private var num: Long = 0
     private var startTime: Long = 0
 
-    override fun loadOptionsMenus() =
-        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_primorial)
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity!!)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity!!)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity!!)
-            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity!!)
-            R.id.action_help_primorial -> {
-                val help = getString(R.string.help_text_primorial)
-                val ssb = SpannableStringBuilder(help)
-                CreateCardView.create(history, ssb, activity!!)
-            }
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun getHelpTextId() = R.string.help_text_primorial
+
+    override fun getHelpMenuTitleId() = R.string.action_ajuda_primorial
+
+    override fun getHistoryLayout(): LinearLayout = history
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
@@ -155,8 +138,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
         cardview.setCardBackgroundColor(cvColor)
 
+        history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
-        val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
         history.addView(cardview, 0)
 
 

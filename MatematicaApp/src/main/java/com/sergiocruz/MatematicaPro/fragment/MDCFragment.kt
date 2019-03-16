@@ -45,7 +45,9 @@ import java.text.NumberFormat
 import java.util.*
 
 class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedPreferenceChangeListener {
+
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
+
     internal lateinit var fColors: ArrayList<Int>
     internal var heightDip: Int = 0
     internal var cvWidth: Int = 0
@@ -53,10 +55,10 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
     internal var startTime: Long = 0
     private lateinit var language: String
     private lateinit var arrayOfEditTexts: Array<EditText>
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
     }
+
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
      */
@@ -67,7 +69,6 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         super.onConfigurationChanged(newConfig)
         hideKeyboard(activity as Activity)
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -80,6 +81,14 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
     }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_mdc
+
+    override fun getHelpTextId(): Int? = R.string.help_text_mdc
+
+    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_mdc
+
+    override fun getHistoryLayout(): LinearLayout? = history
+
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
     override fun onActionDone() = calculateMDC()
 
@@ -128,32 +137,6 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
             showCustomToast(context, getString(R.string.canceled_op), InfoLevel.WARNING)
         }
         arrayOfEditTexts = emptyArray()
-    }
-
-    override fun loadOptionsMenus() =
-        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mdc)
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
-            R.id.action_clear_all_history -> {
-                MenuHelper.removeHistory(activity as Activity)
-                arrayOfEditTexts.forEach { it.setText("") }
-            }
-            R.id.action_ajuda -> {
-                val helpDivisores = getString(R.string.help_text_mdc)
-                val ssb = SpannableStringBuilder(helpDivisores)
-                CreateCardView.create(history, ssb, activity as Activity)
-            }
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun addMdcField() {
@@ -406,6 +389,7 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         val tags = MyTags(cardview, longNumbers, resultMDC, false, false, "", null, taskNumber)
         cardview.tag = tags
 
+        history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
         history.addView(cardview, 0)
 

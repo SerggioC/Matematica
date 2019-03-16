@@ -23,9 +23,7 @@
     <color name="veryLightBlue">#7b42a5f5</color>
     <color name="separatorLineColor">#757575</color>
     <color name="boldColor">#424242</color>
-
     <color name="gridcolor">#9769bc4d</color>
-
     <color name="f_color1">#2196F3</color>
     <color name="f_color2">#4CAF50</color>
     <color name="f_color3">#ff1744</color>
@@ -43,6 +41,8 @@
     <color name="f_color15">#734d00</color>
     <color name="f_color16">#263238</color>
     <color name="shadow_color">#25424242</color>
+    <color name="home_color">#36424242</color>
+
 
     <array name="f_colors_xml">
         <item>@color/f_color1</item>

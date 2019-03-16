@@ -136,31 +136,13 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         hideKeyboard(activity as Activity)
     }
 
-    override fun loadOptionsMenus() =
-        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_mmc)
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity!!)
-            R.id.action_clear_all_history -> {
-                MenuHelper.removeHistory(activity!!)
-                arrayOfEditTexts.forEach { it.setText("") }
-            }
-            R.id.action_ajuda -> {
-                val helpDivisores = getString(R.string.help_text_mmc)
-                val ssb = SpannableStringBuilder(helpDivisores)
-                create(history, ssb, activity!!)
-            }
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun getHelpTextId(): Int? = R.string.help_text_mmc
+
+    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_mmc
+
+    override fun getHistoryLayout(): LinearLayout? = history
 
     override fun onActionDone() = calculateMMC()
 
@@ -454,7 +436,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         // Adicionar os números a fatorizar na tag do cardview
         cardView.tag = MyTags(cardView, longNumbers, resultMMC, false, false, "", null, taskNumber)
 
-        val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
+        history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
         history.addView(cardView, 0)
 

@@ -69,6 +69,11 @@
             android:name="com.sergiocruz.MatematicaPro.activity.SettingsActivity"
             android:label="@string/title_activity_settings">
         </activity>
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="${crashlyticsEnabled}" />
+
     </application>
 
 </manifest>

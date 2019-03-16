@@ -1,7 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
@@ -14,7 +13,6 @@ import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -25,8 +23,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
@@ -51,29 +47,13 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getLayoutIdForFragment() = R.layout.fragment_fatorizar
 
-    override fun loadOptionsMenus() =
-        listOf(R.menu.menu_main, R.menu.menu_sub_main, R.menu.menu_help_fatorizar)
+    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
-            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity as Activity)
-            R.id.action_ajuda -> {
-                val helpDivisores = getString(R.string.help_text_fatores)
-                val ssb = SpannableStringBuilder(helpDivisores)
-                CreateCardView.create(history, ssb, activity as Activity)
-            }
-            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
+    override fun getHelpTextId(): Int? = R.string.help_text_fatores
 
+    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_fatorizar
+
+    override fun getHistoryLayout(): LinearLayout? = history
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
@@ -605,7 +585,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 ssb_fatores.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             ) //verde
-            CreateCardView.create(history, ssb_fatores, activity as Activity)
+            CreateCardView.createWithSSB(history, ssb_fatores, activity as Activity)
 
         } else {
             str_fatores = ""

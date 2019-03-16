@@ -27,12 +27,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             proguardFile 'C:/Users/sergi/AndroidStudioProjects/Matematica/build/intermediates/proguard-files/proguard-android-optimize.txt-2.3.3'
+            manifestPlaceholders = [crashlyticsEnabled: true]
 
         }
         debug {
             minifyEnabled false
             shrinkResources false
             useProguard false
+            ext.enableCrashlytics = false
+            manifestPlaceholders = [crashlyticsEnabled: false]
         }
     }
     productFlavors {

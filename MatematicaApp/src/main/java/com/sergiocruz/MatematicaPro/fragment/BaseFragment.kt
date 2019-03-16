@@ -1,13 +1,19 @@
 package com.sergiocruz.MatematicaPro.fragment
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.*
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.activity.AboutActivity
+import com.sergiocruz.MatematicaPro.activity.SettingsActivity
+import com.sergiocruz.MatematicaPro.helper.CreateCardView
+import com.sergiocruz.MatematicaPro.helper.MenuHelper
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -27,6 +33,39 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         scale = resources.displayMetrics.density
         getBasePreferences()
     }
+
+    @StringRes
+    abstract fun getHelpTextId(): Int?
+
+    @StringRes
+    abstract fun getHelpMenuTitleId(): Int?
+
+    abstract fun getHistoryLayout(): LinearLayout?
+
+    abstract fun loadOptionsMenus(): List<Int>
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        loadOptionsMenus().forEach { inflater.inflate(it, menu) }
+        getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help).setTitle(it) }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        when (item.itemId) {
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity!!)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity!!)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity!!)
+            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity!!)
+            R.id.action_help -> CreateCardView.create(getHistoryLayout(), getHelpTextId(), activity!!)
+            R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -57,12 +96,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     @LayoutRes
     abstract fun getLayoutIdForFragment(): Int
 
-    abstract fun loadOptionsMenus(): List<Int>
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        loadOptionsMenus().forEach { inflater.inflate(it, menu) }
-    }
 
     fun LinearLayout.limit(historyLimit: Int) {
         if (childCount == 0 || historyLimit == 0) return
