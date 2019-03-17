@@ -571,10 +571,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Tamanho da lista de números primos
         val sizeList = fatoresPrimos.size
-
         var str_fatores = ""
         var str_results = ""
         val ssb_fatores: SpannableStringBuilder
+
+        history.limit(historyLimit)
 
         if (sizeList == 1) {
             str_fatores = resultadosDivisao[0].toString() + " " + getString(R.string.its_a_prime)
@@ -593,14 +594,14 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             var counter = 1
             var lastItem: Long? = fatoresPrimos[0]
 
+            val xmlColors = resources.getIntArray(R.array.f_colors_xml)
             val fColors: ArrayList<Int> = ArrayList()
-            val f_colors = resources.getIntArray(R.array.f_colors_xml)
 
             if (shouldShowColors) {
-                for (f_color in f_colors) fColors.add(f_color)
+                for (f_color in xmlColors) fColors.add(f_color)
                 fColors.shuffle() //randomizar as cores
             } else {
-                for (i in f_colors.indices) fColors.add(f_colors[f_colors.size - 1])
+                for (i in xmlColors.indices) fColors.add(xmlColors[xmlColors.size - 1])
             }
 
             val ssbFactExpanded = SpannableStringBuilder()
@@ -612,9 +613,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             //Contar os expoentes
             for (i in fatoresPrimos.indices) {
                 val fatori = fatoresPrimos[i]
-                if (lastItem != fatori) {
-                    colorIndex++
-                }
+
+                if (lastItem != fatori) colorIndex++
 
                 val fi = fatori.toString()
                 ssbFactExpanded.append(fi)
@@ -649,10 +649,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             var valueLength: Int
             colorIndex = 0
 
-            val mapValues =
-                dataSet.entries                             // Confusão para sacar o primeiro elemento
+            val mapValues = dataSet.entries
             val test = arrayOfNulls<Map.Entry<*, *>>(mapValues.size)    // (fator primo)
-            //mapValues.toTypedArray<Map.Entry<String, Int>>()
+
             var lastKey = test[0]?.key.toString()
 
             val iterator = dataSet.entries.iterator()
@@ -664,12 +663,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val key = pair.key.toString()
                 val value = pair.value.toString()
 
-                //if (lastkey != Integer.parseInt(pair.getKey().toString())) {
-                if (lastKey != key) {
-                    colorIndex++
-                }
-
-                if (Integer.parseInt(value) == 1) {
+                if (value.toInt() == 1) {
                     //Expoente 1
                     ssb_fatores.append(key)
                     ssb_fatores.setSpan(
@@ -678,7 +672,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
-                } else if (Integer.parseInt(value) > 1) {
+                } else if (value.toInt() > 1) {
                     //Expoente superior a 1 // pair.getkey = fator; pair.getvalue = expoente
 
                     ssb_fatores.append(key)
@@ -703,9 +697,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     )
                 }
 
-                if (iterator.hasNext()) {
-                    ssb_fatores.append("×")
-                }
+                if (iterator.hasNext()) ssb_fatores.append("×")
+
+                if (lastKey != key) colorIndex++
                 lastKey = key
 
                 iterator.remove() // avoids a ConcurrentModificationException

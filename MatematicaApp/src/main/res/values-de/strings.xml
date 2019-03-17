@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+    <resources>
+    <string name="app_version_date">März 2019</string>
     <string name="_incomplete_calc">Unvollständige Berechnung ...</string>
     <string name="_numero_primo">primzahlen</string>
-    <string name="about_app_description">- Berechnung der Kleinstes gemeinsames Vielfaches (kgV) zwischen bis zu 8 Zahlen mit detaillierten Farberklärungen\n
+    <string name="about_app_description">
+         - Ultraschneller Primalitätstest auch für sehr große Zahlen (NEU)\n
+         - Berechnung der Kleinstes gemeinsames Vielfaches (kgV) zwischen bis zu 8 Zahlen mit detaillierten Farberklärungen\n
          - Berechnung des Größter gemeinsamer Teiler (ggT) zwischen bis zu 8 Zahlen mit detaillierten Farberklärungen\n
          - Faktorisierung in Primzahlen mit detaillierten Farberklärungen\n
          - Bestimmen Sie, ob eine Zahl prim ist oder auch Primärprüfung genannt wird\n
@@ -10,7 +13,6 @@
          - Berechnen Sie alle Divisoren einer Ganzzahl\n
          - Prime Anzahl tabellen generator in einem gegebenen Bereich\n
          - Gesamtzahlen in Reichweite\n
-         * ZWEI NEUE WERKZEUGE *\n
          - Berechnen Sie das Primär einer Zahl n#\n
          - Vielfaches einer Zahl berechnen</string>
     <string name="action_ajuda_divisores">Wie erhält man Divisoren?</string>
@@ -40,7 +42,6 @@
     <string name="already_inclipboard">Ergebnis bereits in der Zwischenablage</string>
     <string name="and">und</string>
     <string name="app_inicio">Primes PRO - Zuhause</string>
-    <string name="app_version_date">Aug 2018</string>
     <string name="app_version_description">App Version:</string>
     <string name="calculate">Berechnen</string>
     <string name="calculate_divisors_title">Berechnen Sie die Divisoren einer Zahl</string>
@@ -236,4 +237,8 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="cancel_button_description">Schaltfläche \"Abbrechen\"</string>
     <string name="fill_this">Kann nicht leer sein</string>
     <string name="invalid_number">Ungültige Nummer</string>
+    <string name="other">Andere</string>
+    <string name="pref_title_history_size">Geschichte Größe</string>
+    <string name="pref_summary_hisory_size">Begrenzen Sie die Anzahl der Ergebnisse, die in der Historie bleiben sollen</string>
+    <string name="help">Hilfe</string>
 </resources>

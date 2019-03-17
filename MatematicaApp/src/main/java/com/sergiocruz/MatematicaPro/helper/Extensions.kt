@@ -3,6 +3,7 @@ package com.sergiocruz.MatematicaPro.helper
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import com.sergiocruz.MatematicaPro.R
@@ -47,4 +48,10 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
         false
     }
 
+}
+
+
+fun ViewGroup.limit(historyLimit: Int) {
+    if (childCount == 0 || historyLimit == 0) return
+    if (childCount >= historyLimit) removeViewAt(historyLimit - 1)
 }

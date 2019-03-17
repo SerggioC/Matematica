@@ -28,16 +28,6 @@ import java.util.*
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
-    override fun getHelpTextId(): Int? = R.string.help_text_divisores
-
-    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_divisores
-
-    override fun getHistoryLayout(): LinearLayout? = history
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
-
     private var asyncTask: AsyncTask<Long, Double, ArrayList<Long>> = BackGroundOperation()
     internal var cvWidth: Int = 0
     internal var heightDip: Int = 0
@@ -58,6 +48,15 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
+    override fun getHelpTextId(): Int? = R.string.help_text_divisores
+
+    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_divisores
+
+    override fun getHistoryLayout(): LinearLayout? = history
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         //         Checks the orientation of the screen
@@ -151,32 +150,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         override fun doInBackground(vararg num: Long?): ArrayList<Long> {
-            /*
-            Long numero = num[0];
-            long upperlimit = (long) (Math.sqrt(numero));
-            long elem;
-            ArrayList<Long> divisores = new ArrayList<Long>();
-            for (int i = 1; i <= upperlimit; i += 1) {
-                if (numero % i == 0) {
-                    divisores.add((long) i);
-                    if (i != numero / i) {
-                        elem = numero / i;
-                        divisores.add(elem);
-                    }
-                }
-                publishProgress((float) i / (float) upperlimit);
-                if (isCancelled()) break;
-            }
-            Collections.sort(divisores);
-            return divisores;
-
-*/
-
-            /*
-            *
+            /**
             * Performance update
             * Primeiro obtem os fatores primos depois multiplica-os
-            *
             * */
             val divisores = ArrayList<Long>()
             var number: Long? = num[0]
@@ -214,9 +190,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             for (i in divisores.indices) {
                 size = allDivisores.size
                 for (j in 0 until size) {
-                    val `val` = allDivisores[j] * divisores[i]
-                    if (!allDivisores.contains(`val`)) {
-                        allDivisores.add(`val`)
+                    val valor = allDivisores[j] * divisores[i]
+                    if (!allDivisores.contains(valor)) {
+                        allDivisores.add(valor)
                     }
                 }
             }

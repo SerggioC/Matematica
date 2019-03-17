@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">08/2018</string>
+    <string name="app_version_date">Mars 2019</string>
 
     <string name="_incomplete_calc">Calcul incomplet…</string>
     <string name="_numero_primo">Nombre premier</string>
     <string name="about_app_description">
+        - Test de primalité ultra rapide même pour de très grands nombres (NOUVEAU)\n
         - Calcul du Plus Petit Commun Multiple (PPCM) entre jusqu\'à 8 nombres avec des explications détaillées en couleur\n
         - Calcul du Plus Grand Commun Diviseur (PGCD) entre jusqu\'à 8 nombres avec des explications détaillées en couleur\n
         - Factorisation en nombres premiers avec des explications détaillées en couleur\n
@@ -13,7 +14,6 @@
         - Calculer tous les diviseurs d\'un entier\n
         - Générateur de tableaux de nombres premiers dans une gamme donnée\n
         - Total des nombres premiers dans la gamme\n
-        * DEUX NOUVEAUX OUTILS *\n
         - Calculer Primorial d\'un nombre n#\n
         - Calcul de multiples d\'un nombre
     </string>
@@ -226,6 +226,10 @@
     <string name="cancel_button_description">Bouton d\'annulation</string>
     <string name="fill_this">Ne peut pas être vide</string>
     <string name="invalid_number">Numéro invalide</string>
+    <string name="other">Autre</string>
+    <string name="pref_title_history_size">Taille de l\'historique</string>
+    <string name="pref_summary_hisory_size">Limiter le nombre de résultats à conserver dans l\'historique</string>
+    <string name="help">Aidez-moi</string>
 
 </resources>
 

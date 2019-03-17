@@ -96,11 +96,4 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     @LayoutRes
     abstract fun getLayoutIdForFragment(): Int
 
-
-
-    fun LinearLayout.limit(historyLimit: Int) {
-        if (childCount == 0 || historyLimit == 0) return
-        if (childCount >= historyLimit) removeViewAt(historyLimit - 1)
-    }
-
 }

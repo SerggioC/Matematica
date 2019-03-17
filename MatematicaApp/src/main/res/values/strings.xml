@@ -87,6 +87,7 @@
 
     <string name="desenvolvido_por">Developed by Sérgio C.</string>
     <string name="about_app_description">
+        - Ultra fast Primality Test even for very large numbers (NEW)\n
         - Calculation of the Least Common Multiple (LCM) between up to 8 numbers with detailed color explanations\n
         - Calculation of the Greatest Common Divisor (GCD) between up to 8 numbers with detailed color explanations\n
         - Factorization in Prime Numbers with detailed color explanations\n
@@ -95,7 +96,6 @@
         - Calculate all divisors of an integer\n
         - Prime number table generator in a given range\n
         - Total prime numbers in range\n
-        * TWO NEW TOOLS *\n
         - Calculate Primorial of a number n#\n
         - Calculate multiples of a number
     </string>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_version_date">Agosto 2018</string>
+    <string name="app_version_date">Março 2019</string>
 
     <string name="app_version_description">Versão da Aplicação:</string>
 
@@ -72,6 +72,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="divisors_of">Divisores de</string>
     <string name="_incomplete_calc">Cálculo incompleto…</string>
     <string name="about_app_description">
+        - Teste de Primalidade ultra rápido mesmo para números grandes (NOVO)\n
         - Cálculo do Mínimo Múltiplo Comum (MMC) entre até 8 números com explicação detalhada a cores\n
         - Cálculo do Máximo Divisor Comum (MDC) entre até 8 números com explicação detalhada a cores\n
         - Fatorização em Números Primos com explicação detalhada a cores\n
@@ -80,7 +81,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
         - Cálculo de todos os divisores de um número inteiro\n
         - Gerador de tabela de números primos num dado intervalo\n
         - Total de números primos no intervalo\n
-        * DUAS NOVAS FERRAMENTAS *\n
         - Calcular primorial de um número n#\n
         - Calcular múltiplos de um número
     </string>
@@ -252,5 +252,9 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="cancel_button_description">Botão Cancelar</string>
     <string name="fill_this">Não pode estar vazio</string>
     <string name="invalid_number">Número inválido</string>
+    <string name="other">Outros</string>
+    <string name="pref_title_history_size">Tamanho do histórico</string>
+    <string name="pref_summary_hisory_size">Limitar o número de resultados a manter no histórico</string>
+    <string name="help">Ajuda</string>
 
 </resources>

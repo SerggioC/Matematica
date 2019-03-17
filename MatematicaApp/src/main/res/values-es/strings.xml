@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">08/2018</string>
+    <string name="app_version_date">Marzo 2019</string>
 
     <string name="_incomplete_calc">Cálculo incompleto...</string>
     <string name="_numero_primo">Número primo</string>
     <string name="about_app_description">
+        - Prueba de primalidad ultra rápida incluso para números muy grandes (NUEVO)\n
         - Cálculo del mínimo común múltiplo (MCM) entre un máximo de 8 números con explicación detallada en color\n
         - Cálculo del máximo común divisor (MCD) entre un máximo de 8 números con explicación detallada en color\n
         - Factorización en números primos con explicación detallada en color\n
@@ -13,7 +14,6 @@
         - Calcular todos los divisores de un número entero\n
         - Generador de tabla de números primos en un rango dado\n
         - Números primos totales en el rango\n
-        * DOS NUEVAS HERRAMIENTAS *
         - Calcular Primorial de un número n#\n
         - Calcular múltiples de un número</string>
     <string name="action_ajuda_divisores">¿Cómo obtener divisores?</string>
@@ -235,4 +235,8 @@
     <string name="cancel_button_description">Botón de cancelar</string>
     <string name="fill_this">No puede estar vacio</string>
     <string name="invalid_number">No puede estar vacio</string>
+    <string name="other">Otro</string>
+    <string name="pref_title_history_size">Tamaño del historial</string>
+    <string name="pref_summary_hisory_size">Limita el número de resultados a mantener en el historial</string>
+    <string name="help">Ayudar</string>
 </resources>
