@@ -256,5 +256,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="pref_title_history_size">Tamanho do histórico</string>
     <string name="pref_summary_hisory_size">Limitar o número de resultados a manter no histórico</string>
     <string name="help">Ajuda</string>
+    <string name="prime_number">É um Número Primo!</string>
+    <string name="not_prime_number">Não é um Número Primo</string>
 
 </resources>

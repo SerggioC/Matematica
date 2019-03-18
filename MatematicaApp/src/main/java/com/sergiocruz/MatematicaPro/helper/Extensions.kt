@@ -6,11 +6,15 @@ import android.text.TextWatcher
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.LinearLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import com.sergiocruz.MatematicaPro.R
 
 interface OnEditorActions {
     fun onActionDone()
 }
+
+const val clearErrorDelayMillis: Long = 4000
 
 /** EditText Editor Action Extension Function */
 //fun EditText.watchThis(onActionDone : OnEditorActionDone, onActionError: OnEditorActionError) {
@@ -33,6 +37,8 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
                     this@watchThis.text?.length ?: 0
                 ) //Colocar o cursor no final do texto
                 this@watchThis.error = this@watchThis.context.getString(R.string.numero_alto)
+                // Remove error after 4 seconds
+                postDelayed({ this@watchThis.error = null }, clearErrorDelayMillis)
                 return
             }
         }
@@ -55,3 +61,14 @@ fun ViewGroup.limit(historyLimit: Int) {
     if (childCount == 0 || historyLimit == 0) return
     if (childCount >= historyLimit) removeViewAt(historyLimit - 1)
 }
+
+
+fun getMatchWrapParams() = LinearLayout.LayoutParams(
+    LinearLayoutCompat.LayoutParams.MATCH_PARENT,
+    LinearLayoutCompat.LayoutParams.WRAP_CONTENT
+)
+
+fun getWrapWrapParams() = LinearLayout.LayoutParams(
+    LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
+    LinearLayoutCompat.LayoutParams.WRAP_CONTENT
+)

@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Point
@@ -19,15 +18,12 @@ import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -35,10 +31,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.CreateCardView.create
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.expandIt
 import kotlinx.android.synthetic.main.fragment_mmc.*
@@ -96,6 +89,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
     }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -350,13 +344,19 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 val number = numString.toLongOrNull()
                 when (number) {
                     null -> {
-                        it.requestFocus()
-                        it.error = getString(R.string.numero_alto)
+                        it.apply {
+                            requestFocus()
+                            error = getString(R.string.numero_alto)
+                            postDelayed({ error = null }, clearErrorDelayMillis)
+                        }
                         showKeyboard(activity)
                     }
                     0L -> {
-                        it.requestFocus()
-                        it.error = getString(R.string.maiores_qzero)
+                        it.apply {
+                            requestFocus()
+                            error = getString(R.string.maiores_qzero)
+                            postDelayed({ error = null }, clearErrorDelayMillis)
+                        }
                         showKeyboard(activity)
                     }
                     else -> {
@@ -369,16 +369,17 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         if (bigNumbers.size < 2) {
-            emptyTextView[0].requestFocus()
-            emptyTextView[0].error = getString(R.string.add_number_pair)
+            emptyTextView[0].apply {
+                requestFocus()
+                error = getString(R.string.add_number_pair)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             showKeyboard(activity)
             return
         } else {
             hideKeyboard(activity)
             emptyTextView.clear()
-            arrayOfEditTexts.forEach {
-                it.error = null
-            }
+            arrayOfEditTexts.forEach { it.error = null }
         }
 
         var mmcString = getString(R.string.mmc_result_prefix)
@@ -396,10 +397,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
-        cardView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
+        cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
@@ -427,7 +425,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?) = true
                     override fun onDismiss(view: View?) {
-                        //history.removeView(cardview);
                         checkBackgroudOperation(view)
                     }
                 })
@@ -441,18 +438,12 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         history.addView(cardView, 0)
 
         val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, //largura
-            LinearLayout.LayoutParams.WRAP_CONTENT //altura
-        )
+        textView.layoutParams = getMatchWrapParams()
 
         //Adicionar o texto com o resultado
         textView.text = mmcString
@@ -503,16 +494,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         //Linearlayout horizontal com o explainlink e gradiente
         val ll_horizontal = LinearLayout(activity)
         ll_horizontal.orientation = HORIZONTAL
-        ll_horizontal.layoutParams = LinearLayoutCompat.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        ll_horizontal.layoutParams = getMatchWrapParams()
         val explainLink = TextView(activity)
         explainLink.tag = "explainLink"
-        explainLink.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, //largura
-            LinearLayout.LayoutParams.WRAP_CONTENT //altura
-        )
+        explainLink.layoutParams = getWrapWrapParams()
         explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
         explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
         explainLink.gravity = Gravity.CENTER_VERTICAL
@@ -544,10 +529,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         //LL vertical das explicações
         val ll_vertical_expl = LinearLayout(activity)
         ll_vertical_expl.tag = "ll_vertical_expl"
-        ll_vertical_expl.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        ll_vertical_expl.layoutParams = getMatchWrapParams()
         ll_vertical_expl.orientation = LinearLayout.VERTICAL
         ll_vertical_expl.layoutTransition = LayoutTransition()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

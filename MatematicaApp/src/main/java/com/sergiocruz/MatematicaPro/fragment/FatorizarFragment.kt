@@ -38,11 +38,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         getBasePreferences()
     }
 
-    private var BG_Operation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
+    private var bgOperation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
 
-    internal var cv_width: Int = 0
-    internal var height_dip: Int = 0
+    internal var cvWidth: Int = 0
+    internal var heightDip: Int = 0
     private var startTime: Long? = null
 
     override fun getLayoutIdForFragment() = R.layout.fragment_fatorizar
@@ -70,7 +70,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         val width = size.x
         //int height = size.y;
         val lrDip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lrDip
+        cvWidth = width - lrDip
 
         hideKeyboard(activity as Activity)
 
@@ -78,7 +78,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onDestroy() {
         super.onDestroy()
-        cancelAsyncTask(BG_Operation, context)
+        cancelAsyncTask(bgOperation, context)
     }
 
     private fun resetButtons() {
@@ -96,7 +96,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
-        if (cancelAsyncTask(BG_Operation, context)) resetButtons()
+        if (cancelAsyncTask(bgOperation, context)) resetButtons()
     }
 
     override fun onActionDone() {
@@ -128,7 +128,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             return
         }
 
-        BG_Operation = BackGroundOperation().execute(num)
+        bgOperation = BackGroundOperation().execute(num)
 
     }
 
@@ -144,10 +144,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         //criar novo cardview
         val cardview = ClickableCardView(activity as Activity)
-        cardview.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
+        cardview.layoutParams = getMatchWrapParams()
         cardview.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
@@ -165,18 +162,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         history.addView(cardview, 0)
 
         val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        )
+        llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // criar novo Textview para o resultado da fatorização
         val textView = TextView(activity)
-        textView.layoutParams = LinearLayoutCompat.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        )
+        textView.layoutParams = getMatchWrapParams()
         textView.setPadding(0, 0, 0, 0)
 
         val ssbFatoresTop = SpannableStringBuilder(ssbFatores)
@@ -201,140 +192,113 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
 
             val llVerticalExpl = LinearLayout(activity)
-            llVerticalExpl.layoutParams = LinearLayout.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
+            llVerticalExpl.layoutParams = getMatchWrapParams()
             llVerticalExpl.orientation = LinearLayout.VERTICAL
             llVerticalExpl.tag = "ll_vertical_expl"
 
-            val textView_expl1 = TextView(activity)
-            textView_expl1.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            textView_expl1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+            val textViewExplanations = TextView(activity)
+            textViewExplanations.layoutParams = getMatchWrapParams()
+            textViewExplanations.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
             val explain_text_1 = getString(R.string.expl_text_divisores_1)
             val ssb_explain_1 = SpannableStringBuilder(explain_text_1)
             val boldColorSpan =
                 ForegroundColorSpan(ContextCompat.getColor(activity!!, R.color.boldColor))
             ssb_explain_1.setSpan(boldColorSpan, 0, ssb_explain_1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            textView_expl1.text = ssb_explain_1
-            textView_expl1.setTag(R.id.texto, "texto")
-            llVerticalExpl.addView(textView_expl1)
+            textViewExplanations.text = ssb_explain_1
+            textViewExplanations.setTag(R.id.texto, "texto")
+            llVerticalExpl.addView(textViewExplanations)
 
-            val ll_horizontal = LinearLayout(activity)
-            ll_horizontal.layoutParams = LinearLayout.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            ll_horizontal.orientation = LinearLayout.HORIZONTAL
-            ll_horizontal.tag = "ll_horizontal_expl"
+            val llHorizontal = LinearLayout(activity)
+            llHorizontal.layoutParams = getMatchWrapParams()
+            llHorizontal.orientation = LinearLayout.HORIZONTAL
+            llHorizontal.tag = "ll_horizontal_expl"
 
-            val ll_vertical_results = LinearLayout(activity)
-            ll_vertical_results.layoutParams = LinearLayout.LayoutParams(
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            ll_vertical_results.orientation = LinearLayout.VERTICAL
-            ll_vertical_results.setPadding(0, 0, (4 * scale + 0.5f).toInt(), 0)
+            val llVerticalResults = LinearLayout(activity)
+            llVerticalResults.layoutParams = getWrapWrapParams()
+            llVerticalResults.orientation = LinearLayout.VERTICAL
+            llVerticalResults.setPadding(0, 0, (4 * scale + 0.5f).toInt(), 0)
 
-            val ll_vertical_separador = LinearLayout(activity)
-            ll_vertical_separador.layoutParams = LinearLayout.LayoutParams(
+            val verticalSeparador = LinearLayout(activity)
+            verticalSeparador.layoutParams = LinearLayout.LayoutParams(
                 LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
                 LinearLayoutCompat.LayoutParams.MATCH_PARENT
             )
-            ll_vertical_separador.orientation = LinearLayout.VERTICAL
-            ll_vertical_separador.setBackgroundColor(
+            verticalSeparador.orientation = LinearLayout.VERTICAL
+            verticalSeparador.setBackgroundColor(
                 ContextCompat.getColor(
                     activity!!,
                     R.color.separatorLineColor
                 )
             )
             val um_dip = (1.2 * scale + 0.5f).toInt()
-            ll_vertical_separador.setPadding(um_dip, 4, 0, um_dip)
+            verticalSeparador.setPadding(um_dip, 4, 0, um_dip)
 
-            val ll_vertical_divisores = LinearLayout(activity)
-            ll_vertical_divisores.layoutParams = LinearLayout.LayoutParams(
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            ll_vertical_divisores.orientation = LinearLayout.VERTICAL
-            ll_vertical_divisores.setPadding(
+            val llVerticalDivisores = LinearLayout(activity)
+            llVerticalDivisores.layoutParams = getWrapWrapParams()
+            llVerticalDivisores.orientation = LinearLayout.VERTICAL
+            llVerticalDivisores.setPadding(
                 (4 * scale + 0.5f).toInt(),
                 0,
                 (8 * scale + 0.5f).toInt(),
                 0
             )
 
-            val textView_results = TextView(activity)
-            textView_results.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            textView_results.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            textView_results.gravity = Gravity.RIGHT
-            val ssb_str_results = SpannableStringBuilder(str_results)
-            ssb_str_results.setSpan(
+            val textViewResults = TextView(activity)
+            textViewResults.layoutParams = getWrapWrapParams()
+            textViewResults.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+            textViewResults.gravity = Gravity.RIGHT
+            val ssbStrResults = SpannableStringBuilder(str_results)
+            ssbStrResults.setSpan(
                 RelativeSizeSpan(0.9f),
-                ssb_str_results.length - str_results.length,
-                ssb_str_results.length,
+                ssbStrResults.length - str_results.length,
+                ssbStrResults.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            textView_results.text = ssb_str_results
-            textView_results.setTag(R.id.texto, "texto")
+            textViewResults.text = ssbStrResults
+            textViewResults.setTag(R.id.texto, "texto")
 
-            ll_vertical_results.addView(textView_results)
+            llVerticalResults.addView(textViewResults)
 
-            val textView_divisores = TextView(activity)
-            textView_divisores.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            textView_divisores.setTextSize(
-                TypedValue.COMPLEX_UNIT_SP,
-                CARD_TEXT_SIZE
-            )
-            textView_divisores.gravity = Gravity.LEFT
+            val textViewDivisores = TextView(activity)
+            textViewDivisores.layoutParams = getWrapWrapParams()
+            textViewDivisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+            textViewDivisores.gravity = Gravity.LEFT
             ssb_str_divisores.setSpan(
                 RelativeSizeSpan(0.9f),
                 ssb_str_divisores.length - ssb_str_divisores.length,
                 ssb_str_divisores.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            textView_divisores.text = ssb_str_divisores
-            textView_divisores.setTag(R.id.texto, "texto")
+            textViewDivisores.text = ssb_str_divisores
+            textViewDivisores.setTag(R.id.texto, "texto")
 
-            ll_vertical_divisores.addView(textView_divisores)
+            llVerticalDivisores.addView(textViewDivisores)
 
             //Adicionar os LL Verticais ao Horizontal
-            ll_horizontal.addView(ll_vertical_results)
+            llHorizontal.addView(llVerticalResults)
 
-            ll_horizontal.addView(ll_vertical_separador)
+            llHorizontal.addView(verticalSeparador)
 
             //LinearLayout divisores
-            ll_horizontal.addView(ll_vertical_divisores)
+            llHorizontal.addView(llVerticalDivisores)
 
-            val ssb_hide_expl = SpannableStringBuilder(getString(R.string.hide_explain))
-            ssb_hide_expl.setSpan(
+            val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
+            ssbHideExpl.setSpan(
                 UnderlineSpan(),
                 0,
-                ssb_hide_expl.length - 2,
+                ssbHideExpl.length - 2,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            val ssb_show_expl = SpannableStringBuilder(getString(R.string.explain))
-            ssb_show_expl.setSpan(
+            val ssbShowExpl = SpannableStringBuilder(getString(R.string.explain))
+            ssbShowExpl.setSpan(
                 UnderlineSpan(),
                 0,
-                ssb_show_expl.length - 2,
+                ssbShowExpl.length - 2,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
             val explainLink = TextView(activity)
-            explainLink.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, //largura
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ) //altura
+            explainLink.layoutParams = getWrapWrapParams()
             explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
             explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
 
@@ -342,11 +306,11 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             if (shouldShowExplanation == "-1") {  //Always show Explanation
                 llVerticalExpl.visibility = View.VISIBLE
-                explainLink.text = ssb_hide_expl
+                explainLink.text = ssbHideExpl
                 isExpanded[0] = true
             } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
                 llVerticalExpl.visibility = View.GONE
-                explainLink.text = ssb_show_expl
+                explainLink.text = ssbShowExpl
                 isExpanded[0] = false
             }
 
@@ -354,12 +318,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val explView =
                     (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
                 if (!isExpanded[0]) {
-                    (view as TextView).text = ssb_hide_expl
+                    (view as TextView).text = ssbHideExpl
                     expandIt(explView)
                     isExpanded[0] = true
 
                 } else if (isExpanded[0]) {
-                    (view as TextView).text = ssb_show_expl
+                    (view as TextView).text = ssbShowExpl
                     collapseIt(explView)
                     isExpanded[0] = false
                 }
@@ -377,73 +341,68 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
 
             //Linearlayout horizontal com o explainlink e gradiente
-            val ll_horizontal_link = LinearLayout(activity)
-            ll_horizontal_link.orientation = HORIZONTAL
-            ll_horizontal_link.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            ll_horizontal_link.addView(explainLink)
-            ll_horizontal_link.addView(gradientSeparator)
+            val llHorizontalLink = LinearLayout(activity)
+            llHorizontalLink.orientation = HORIZONTAL
+            llHorizontalLink.layoutParams = getMatchWrapParams()
+            llHorizontalLink.addView(explainLink)
+            llHorizontalLink.addView(gradientSeparator)
 
-            llVerticalRoot.addView(ll_horizontal_link)
+            llVerticalRoot.addView(llHorizontalLink)
 
-            llVerticalExpl.addView(ll_horizontal)
+            llVerticalExpl.addView(llHorizontal)
 
-            val textView_fact_expanded = TextView(activity)
-            textView_fact_expanded.layoutParams = LinearLayoutCompat.LayoutParams(
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-            )
-            textView_fact_expanded.setTextSize(
+            val textViewFactExpanded = TextView(activity)
+            textViewFactExpanded.layoutParams = getMatchWrapParams()
+            textViewFactExpanded.setTextSize(
                 TypedValue.COMPLEX_UNIT_SP,
                 CARD_TEXT_SIZE
             )
-            textView_fact_expanded.gravity = Gravity.LEFT
-            val explain_text_2 = getString(R.string.explain_divisores2) + "\n"
-            val ssb_explain_2 = SpannableStringBuilder(explain_text_2)
-            ssb_explain_2.setSpan(
+            textViewFactExpanded.gravity = Gravity.LEFT
+            val explainText2 = getString(R.string.explain_divisores2) + "\n"
+            val ssbExplain2 = SpannableStringBuilder(explainText2)
+            ssbExplain2.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
                         activity!!,
                         R.color.boldColor
                     )
-                ), 0, ssb_explain_2.length, SPAN_EXCLUSIVE_EXCLUSIVE
+                ), 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            ssb_explain_2.append(str_fact_exp)
-            ssb_explain_2.setSpan(
+            ssbExplain2.append(str_fact_exp)
+            ssbExplain2.setSpan(
                 RelativeSizeSpan(0.9f),
-                ssb_explain_2.length - str_fact_exp.length,
-                ssb_explain_2.length,
+                ssbExplain2.length - str_fact_exp.length,
+                ssbExplain2.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
             if (hasExpoentes!!) {
-                val text_fact_repetidos = "\n" + getString(R.string.explain_divisores3) + "\n"
-                ssb_explain_2.append(text_fact_repetidos)
-                ssb_explain_2.setSpan(
+                val textFactRepetidos = "\n" + getString(R.string.explain_divisores3) + "\n"
+                ssbExplain2.append(textFactRepetidos)
+                ssbExplain2.setSpan(
                     boldColorSpan,
-                    ssb_explain_2.length - text_fact_repetidos.length,
-                    ssb_explain_2.length,
+                    ssbExplain2.length - textFactRepetidos.length,
+                    ssbExplain2.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                ssb_explain_2.append(ssbFatores)
-                ssb_explain_2.setSpan(
+                ssbExplain2.append(ssbFatores)
+                ssbExplain2.setSpan(
                     RelativeSizeSpan(0.9f),
-                    ssb_explain_2.length - ssbFatores.length,
-                    ssb_explain_2.length,
+                    ssbExplain2.length - ssbFatores.length,
+                    ssbExplain2.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                ssb_explain_2.setSpan(
+                ssbExplain2.setSpan(
                     StyleSpan(android.graphics.Typeface.BOLD),
-                    ssb_explain_2.length - ssbFatores.length,
-                    ssb_explain_2.length,
+                    ssbExplain2.length - ssbFatores.length,
+                    ssbExplain2.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
 
-            textView_fact_expanded.text = ssb_explain_2
-            textView_fact_expanded.setTag(R.id.texto, "texto")
+            textViewFactExpanded.text = ssbExplain2
+            textViewFactExpanded.setTag(R.id.texto, "texto")
 
-            llVerticalExpl.addView(textView_fact_expanded)
+            llVerticalExpl.addView(textViewFactExpanded)
 
             llVerticalRoot.addView(llVerticalExpl)
 
@@ -476,7 +435,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     }
 
-
     inner class BackGroundOperation : AsyncTask<Long, Float, ArrayList<ArrayList<Long>>>() {
 
         public override fun onPreExecute() {
@@ -484,9 +442,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             calculateButton.text = getString(R.string.working)
             cancelButton.visibility = View.VISIBLE
             hideKeyboard(activity as Activity)
-            cv_width = card_view_1.width
-            height_dip = (4 * scale + 0.5f).toInt()
-            progressBar.layoutParams = LinearLayout.LayoutParams(1, height_dip)
+            cvWidth = card_view_1.width
+            heightDip = (4 * scale + 0.5f).toInt()
+            progressBar.layoutParams = LinearLayout.LayoutParams(1, heightDip)
             progressBar.visibility = View.VISIBLE
         }
 
@@ -538,7 +496,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@FatorizarFragment.isVisible && values[0] != null) {
                 progressBar.layoutParams =
-                    LinearLayout.LayoutParams(Math.round(values[0]!! * cv_width), height_dip)
+                    LinearLayout.LayoutParams(Math.round(values[0]!! * cvWidth), heightDip)
             }
         }
 
@@ -571,25 +529,25 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Tamanho da lista de números primos
         val sizeList = fatoresPrimos.size
-        var str_fatores = ""
-        var str_results = ""
-        val ssb_fatores: SpannableStringBuilder
+        var strFatores = ""
+        var strResults = ""
+        val ssbFatores: SpannableStringBuilder
 
         history.limit(historyLimit)
 
         if (sizeList == 1) {
-            str_fatores = resultadosDivisao[0].toString() + " " + getString(R.string.its_a_prime)
-            ssb_fatores = SpannableStringBuilder(str_fatores)
-            ssb_fatores.setSpan(
+            strFatores = resultadosDivisao[0].toString() + " " + getString(R.string.its_a_prime)
+            ssbFatores = SpannableStringBuilder(strFatores)
+            ssbFatores.setSpan(
                 ForegroundColorSpan(Color.parseColor("#29712d")),
                 0,
-                ssb_fatores.length,
+                ssbFatores.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             ) //verde
-            CreateCardView.createWithSSB(history, ssb_fatores, activity as Activity)
+            CreateCardView.createCardViewWithSSB(history, ssbFatores, activity as Activity)
 
         } else {
-            str_fatores = ""
+            strFatores = ""
             var hasExpoentes: Boolean? = false
             var counter = 1
             var lastItem: Long? = fatoresPrimos[0]
@@ -644,7 +602,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
             ssbFactExpanded.delete(ssbFactExpanded.length - 1, ssbFactExpanded.length)
 
-            ssb_fatores = SpannableStringBuilder(str_fatores)
+            ssbFatores = SpannableStringBuilder(strFatores)
 
             var valueLength: Int
             colorIndex = 0
@@ -665,39 +623,39 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
                 if (value.toInt() == 1) {
                     //Expoente 1
-                    ssb_fatores.append(key)
-                    ssb_fatores.setSpan(
+                    ssbFatores.append(key)
+                    ssbFatores.setSpan(
                         ForegroundColorSpan(fColors[colorIndex]),
-                        ssb_fatores.length - key.length, ssb_fatores.length,
+                        ssbFatores.length - key.length, ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
                 } else if (value.toInt() > 1) {
                     //Expoente superior a 1 // pair.getkey = fator; pair.getvalue = expoente
 
-                    ssb_fatores.append(key)
-                    ssb_fatores.setSpan(
+                    ssbFatores.append(key)
+                    ssbFatores.setSpan(
                         ForegroundColorSpan(fColors[colorIndex]),
-                        ssb_fatores.length - key.length, ssb_fatores.length,
+                        ssbFatores.length - key.length, ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     valueLength = value.length
-                    ssb_fatores.append(value)
-                    ssb_fatores.setSpan(
+                    ssbFatores.append(value)
+                    ssbFatores.setSpan(
                         SuperscriptSpan(),
-                        ssb_fatores.length - valueLength,
-                        ssb_fatores.length,
+                        ssbFatores.length - valueLength,
+                        ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    ssb_fatores.setSpan(
+                    ssbFatores.setSpan(
                         RelativeSizeSpan(0.8f),
-                        ssb_fatores.length - valueLength,
-                        ssb_fatores.length,
+                        ssbFatores.length - valueLength,
+                        ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
 
-                if (iterator.hasNext()) ssb_fatores.append("×")
+                if (iterator.hasNext()) ssbFatores.append("×")
 
                 if (lastKey != key) colorIndex++
                 lastKey = key
@@ -707,17 +665,17 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             if (wasCanceled) {
                 val incompleteCalc = "\n" + getString(R.string._incomplete_calc)
-                ssb_fatores.append(incompleteCalc)
-                ssb_fatores.setSpan(
+                ssbFatores.append(incompleteCalc)
+                ssbFatores.setSpan(
                     ForegroundColorSpan(Color.RED),
-                    ssb_fatores.length - incompleteCalc.length,
-                    ssb_fatores.length,
+                    ssbFatores.length - incompleteCalc.length,
+                    ssbFatores.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                ssb_fatores.setSpan(
+                ssbFatores.setSpan(
                     RelativeSizeSpan(0.8f),
-                    ssb_fatores.length - incompleteCalc.length,
-                    ssb_fatores.length,
+                    ssbFatores.length - incompleteCalc.length,
+                    ssbFatores.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
@@ -760,16 +718,16 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             )
 
             for (i in 0 until resultadosDivisao.size - 1) {
-                str_results += resultadosDivisao[i].toString() + "\n"
+                strResults += resultadosDivisao[i].toString() + "\n"
             }
-            str_results += resultadosDivisao[resultadosDivisao.size - 1].toString()
+            strResults += resultadosDivisao[resultadosDivisao.size - 1].toString()
 
             createCardViewLayout(
                 resultadosDivisao[0],
                 history,
-                str_results,
+                strResults,
                 ssbDivisores,
-                ssb_fatores,
+                ssbFatores,
                 ssbFactExpanded,
                 hasExpoentes
             )

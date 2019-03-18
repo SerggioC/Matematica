@@ -230,6 +230,8 @@
     <string name="pref_title_history_size">Taille de l\'historique</string>
     <string name="pref_summary_hisory_size">Limiter le nombre de résultats à conserver dans l\'historique</string>
     <string name="help">Aidez-moi</string>
+    <string name="not_prime_number">N\'est-ce pas un nombre premier</string>
+    <string name="prime_number">Nombre premier!</string>
 
 </resources>
 

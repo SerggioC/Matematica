@@ -292,10 +292,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     fun createCardView(ssb: SpannableStringBuilder) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
-        cardView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
+        cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
@@ -316,10 +313,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT //altura
-        )
+        textView.layoutParams = getMatchWrapParams()
 
         //Adicionar o texto com o resultado
         textView.text = ssb
@@ -327,10 +321,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         textView.setTag(R.id.texto, "texto")
 
         val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        )
+        llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
@@ -345,7 +336,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         )
 
         if (shouldShowPerformance) {
-
             val gradientSeparator = getGradientSeparator(context)
             val formatter1 = DecimalFormat("#.###")
             val elapsed =
@@ -353,6 +343,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             gradientSeparator.text = elapsed
             llVerticalRoot.addView(gradientSeparator)
         }
+
         llVerticalRoot.addView(textView)
 
         // add the textview to the cardview

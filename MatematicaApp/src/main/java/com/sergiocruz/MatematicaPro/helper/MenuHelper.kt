@@ -139,7 +139,7 @@ class MenuHelper : ActivityCompat.OnRequestPermissionsResultCallback {
             return pathname
         }
 
-        fun openFolderSnackbar(mActivity: Activity, toastText: String) {
+        fun openFolderSnackBar(mActivity: Activity, toastText: String) {
             val snack = Snackbar.make(
                 mActivity.findViewById(android.R.id.content),
                 toastText,
@@ -170,9 +170,10 @@ class MenuHelper : ActivityCompat.OnRequestPermissionsResultCallback {
         }
 
         fun removeHistory(activity: Activity) {
-            val history = activity.findViewById<ViewGroup>(R.id.history)
-            if (history.childCount > 0) {
-                history.removeAllViews()
+            val history: ViewGroup? = activity.findViewById(R.id.history)
+            val childCount = history?.childCount
+            if (childCount != null && childCount > 0) {
+                history?.removeAllViews()
                 showCustomToast(activity, activity.getString(R.string.history_deleted))
             }
         }
@@ -180,7 +181,7 @@ class MenuHelper : ActivityCompat.OnRequestPermissionsResultCallback {
         fun shareHistory(activity: Activity) {
             val historyView = activity.findViewById<ViewGroup>(history)
             val textViewsTagTexto = getViewsByTag(historyView, "texto")
-            if (textViewsTagTexto.size > 0) {
+            if (textViewsTagTexto?.size > 0) {
                 var finalText = ""
                 for (i in textViewsTagTexto.indices) {
                     if (textViewsTagTexto[i] is TextView) {
@@ -223,55 +224,56 @@ class MenuHelper : ActivityCompat.OnRequestPermissionsResultCallback {
             }
         }
 
-        // Partilhar todas as imagens
+        // Partilhar tudo como imagens
         fun shareHistoryImages(mActivity: Activity) {
             verifyStoragePermissions(mActivity)
             val historyView = mActivity.findViewById<ViewGroup>(history)
-            val childCount = historyView.childCount
+            val childCount = historyView?.childCount
 
-            if (childCount > 0) {
-                val fileUris = ArrayList<Uri>(childCount)
-                for (i in 0 until childCount) {
-                    val cardAtIndex = historyView.getChildAt(i) as CardView
-                    cardAtIndex.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            mActivity,
-                            R.color.cardsColor
+            if (childCount != null && childCount > 0) {
+                    val fileUris = ArrayList<Uri>(childCount)
+                    for (i in 0 until childCount) {
+                        val cardAtIndex = historyView.getChildAt(i) as CardView
+                        cardAtIndex.setCardBackgroundColor(
+                            ContextCompat.getColor(
+                                mActivity,
+                                R.color.cardsColor
+                            )
+                        )
+                        val imgagePath = saveViewToImage(cardAtIndex, i, false)
+                        fileUris.add(Uri.parse(imgagePath))
+                    }
+
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND_MULTIPLE
+                    sendIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        mActivity.resources.getString(R.string.app_long_description) +
+                                BuildConfig.VERSION_NAME + "\n"
+                    )
+                    sendIntent.type = "image/jpeg"
+                    sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
+                    mActivity.startActivity(
+                        Intent.createChooser(
+                            sendIntent,
+                            mActivity.resources.getString(R.string.app_name)
                         )
                     )
-                    val imgagePath = saveViewToImage(cardAtIndex, i, false)
-                    fileUris.add(Uri.parse(imgagePath))
+                } else {
+                    val thetoast =
+                        Toast.makeText(mActivity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
+                    thetoast.setGravity(Gravity.CENTER, 0, 0)
+                    thetoast.show()
                 }
 
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_SEND_MULTIPLE
-                sendIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    mActivity.resources.getString(R.string.app_long_description) +
-                            BuildConfig.VERSION_NAME + "\n"
-                )
-                sendIntent.type = "image/jpeg"
-                sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
-                mActivity.startActivity(
-                    Intent.createChooser(
-                        sendIntent,
-                        mActivity.resources.getString(R.string.app_name)
-                    )
-                )
-            } else {
-                val thetoast =
-                    Toast.makeText(mActivity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
-                thetoast.setGravity(Gravity.CENTER, 0, 0)
-                thetoast.show()
-            }
         }
 
         // Guardar todas as imagens
         fun saveHistoryImages(mActivity: Activity) {
             verifyStoragePermissions(mActivity)
             val historyView = mActivity.findViewById<ViewGroup>(history)
-            val childCount = historyView.childCount
-            if (childCount > 0) {
+            val childCount = historyView?.childCount
+            if (childCount!= null && childCount > 0) {
                 var imgagePath: String? = null
                 for (i in 0 until childCount) {
                     val cardAtIndex = historyView.getChildAt(i) as CardView
@@ -284,26 +286,26 @@ class MenuHelper : ActivityCompat.OnRequestPermissionsResultCallback {
                     imgagePath = saveViewToImage(cardAtIndex, i, false)
                 }
                 if (imgagePath != null) {
-                    MenuHelper.openFolderSnackbar(
+                    MenuHelper.openFolderSnackBar(
                         mActivity,
                         mActivity.getString(R.string.all_images_saved)
                     )
                 } else {
-                    val thetoast = Toast.makeText(
+                    val theToast = Toast.makeText(
                         mActivity,
                         mActivity.getString(R.string.errorsavingimg),
                         Toast.LENGTH_SHORT
                     )
-                    thetoast.setGravity(Gravity.CENTER, 0, 0)
-                    thetoast.show()
+                    theToast.setGravity(Gravity.CENTER, 0, 0)
+                    theToast.show()
                 }
 
 
             } else {
-                val thetoast =
+                val theToast =
                     Toast.makeText(mActivity, R.string.nothing_tosave, Toast.LENGTH_SHORT)
-                thetoast.setGravity(Gravity.CENTER, 0, 0)
-                thetoast.show()
+                theToast.setGravity(Gravity.CENTER, 0, 0)
+                theToast.show()
             }
         }
 

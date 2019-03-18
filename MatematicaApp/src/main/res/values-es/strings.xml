@@ -239,4 +239,6 @@
     <string name="pref_title_history_size">Tamaño del historial</string>
     <string name="pref_summary_hisory_size">Limita el número de resultados a mantener en el historial</string>
     <string name="help">Ayudar</string>
+    <string name="prime_number">¡Número primo!</string>
+    <string name="not_prime_number">No es un número primo</string>
 </resources>

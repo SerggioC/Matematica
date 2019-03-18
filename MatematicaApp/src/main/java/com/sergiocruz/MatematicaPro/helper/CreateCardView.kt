@@ -4,7 +4,6 @@ import android.app.Activity
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -23,16 +22,13 @@ object CreateCardView {
         if (history == null || helpStringRes == null) return
         val helpString = activity.getString(helpStringRes)
         val helpSSB = SpannableStringBuilder(helpString)
-        createWithSSB(history, helpSSB, activity)
+        createCardViewWithSSB(history, helpSSB, activity)
     }
 
-    fun createWithSSB(history: LinearLayout, helpSSB: SpannableStringBuilder,activity: Activity) {
+    fun createCardViewWithSSB(history: LinearLayout, helpSSB: SpannableStringBuilder, activity: Activity) {
         //criar novo cardview
         val cardView = ClickableCardView(activity)
-        cardView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
+        cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
@@ -52,10 +48,7 @@ object CreateCardView {
 
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) //altura
+        textView.layoutParams = getMatchWrapParams()
 
         //Adicionar o texto com o resultado
         textView.text = helpSSB

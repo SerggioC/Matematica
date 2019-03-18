@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
@@ -18,7 +17,6 @@ import android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE
 import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -26,14 +24,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
@@ -44,7 +39,8 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 
-class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedPreferenceChangeListener {
+class MDCFragment : BaseFragment(), OnEditorActions,
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
 
@@ -69,6 +65,7 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         super.onConfigurationChanged(newConfig)
         hideKeyboard(activity as Activity)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -289,13 +286,19 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
                 val number = numString.toLongOrNull()
                 when (number) {
                     null -> {
-                        it.requestFocus()
-                        it.error = getString(R.string.numero_alto)
+                        it.apply {
+                            requestFocus()
+                            error = getString(R.string.numero_alto)
+                            postDelayed({ error = null }, clearErrorDelayMillis)
+                        }
                         showKeyboard(activity)
                     }
                     0L -> {
-                        it.requestFocus()
-                        it.error = getString(R.string.maiores_qzero)
+                        it.apply {
+                            requestFocus()
+                            error = getString(R.string.maiores_qzero)
+                            postDelayed({ error = null }, clearErrorDelayMillis)
+                        }
                         showKeyboard(activity)
                     }
                     else -> {
@@ -307,8 +310,11 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         }
 
         if (bigNumbers.size < 2) {
-            emptyTextView[0].requestFocus()
-            emptyTextView[0].error = getString(R.string.add_number_pair)
+            emptyTextView[0].apply {
+                requestFocus()
+                error = getString(R.string.add_number_pair)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             showKeyboard(activity)
             return
         } else {
@@ -347,10 +353,7 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
 
         //criar novo cardview
         val cardview = ClickableCardView(context!!)
-        cardview.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
+        cardview.layoutParams = getMatchWrapParams()
         cardview.preventCornerOverlap = true
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
@@ -394,18 +397,12 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         history.addView(cardview, 0)
 
         val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT //altura
-        )
+        textView.layoutParams = getMatchWrapParams()
 
         //Adicionar o texto com o resultado ao TextView
         textView.text = ssb
@@ -454,17 +451,11 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         //Linearlayout
         val ll_horizontal = LinearLayout(activity)
         ll_horizontal.orientation = HORIZONTAL
-        ll_horizontal.layoutParams = LinearLayoutCompat.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        ll_horizontal.layoutParams = getMatchWrapParams()
 
         val explainLink = TextView(activity)
         explainLink.tag = "explainLink"
-        explainLink.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) //altura
+        explainLink.layoutParams = getWrapWrapParams()
         explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
         explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
         //explainLink.setGravity(Gravity.CENTER_VERTICAL);
@@ -494,10 +485,7 @@ class MDCFragment : BaseFragment(), OnEditorActions, SharedPreferences.OnSharedP
         //LL vertical das explicações
         val ll_vertical_expl = LinearLayout(activity)
         ll_vertical_expl.tag = "ll_vertical_expl"
-        ll_vertical_expl.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        ll_vertical_expl.layoutParams = getMatchWrapParams()
         ll_vertical_expl.orientation = LinearLayout.VERTICAL
 
         //ProgressBar

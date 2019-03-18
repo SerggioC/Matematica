@@ -241,4 +241,6 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="pref_title_history_size">Geschichte Größe</string>
     <string name="pref_summary_hisory_size">Begrenzen Sie die Anzahl der Ergebnisse, die in der Historie bleiben sollen</string>
     <string name="help">Hilfe</string>
+    <string name="prime_number">Primzahl!</string>
+    <string name="not_prime_number">Ist keine Primzahl</string>
 </resources>

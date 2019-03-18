@@ -1,23 +1,18 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
@@ -68,13 +63,11 @@ class PrimalityFragment : BaseFragment() {
         createCardView(bigNumber, isPrime)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun createCardView(bigNumber: BigInteger, isPrime: Boolean) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
-        cardView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT // height
-        )
+        cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
@@ -100,22 +93,19 @@ class PrimalityFragment : BaseFragment() {
 
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT //altura
-        )
+        textView.layoutParams = getMatchWrapParams()
 
         //Adicionar o texto com o resultado
-        textView.text = "$bigNumber \n ${if (isPrime) "Prime Number!" else "Not a prime number"}"
+        textView.text = "$bigNumber \n ${
+        if (isPrime)
+            getString(R.string.prime_number) else
+            getString(R.string.not_prime_number)}"
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
         textView.gravity = Gravity.CENTER_HORIZONTAL
 
         val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        )
+        llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
@@ -135,8 +125,4 @@ class PrimalityFragment : BaseFragment() {
         cardView.addView(llVerticalRoot)
     }
 
-
-
 }
-
-

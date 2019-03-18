@@ -14,8 +14,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sergiocruz.MatematicaPro.BuildConfig
@@ -26,7 +26,7 @@ import com.sergiocruz.MatematicaPro.adapter.TableAdapter
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.ERROR
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.WARNING
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.openFolderSnackbar
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.openFolderSnackBar
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.saveViewToImage
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.verifyStoragePermissions
 import kotlinx.android.synthetic.main.fragment_primes_table.*
@@ -130,7 +130,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             if (childCount > 0) {
                 val img_path = saveViewToImage(historyGridRecyclerView, 0, true)
                 if (img_path != null) {
-                    openFolderSnackbar(activity!!, getString(R.string.image_saved))
+                    openFolderSnackBar(activity!!, getString(R.string.image_saved))
                 } else {
                     showCustomToast(this.context, getString(R.string.errorsavingimg), ERROR)
                 }
@@ -199,7 +199,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         if (id == R.id.action_settings) {
             startActivity(Intent(context, SettingsActivity::class.java))
         }
-        return super.onOptionsItemSelected(item)
+        return true
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
@@ -212,21 +212,31 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         val maxString = max_pt.text.toString().replace("[^\\d]".toRegex(), "")
 
         if (TextUtils.isEmpty(minString)) {
-            min_pt.requestFocus()
-            min_pt.error = getString(R.string.fill_this)
+            min_pt.apply {
+                requestFocus()
+                error = getString(R.string.fill_this)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             showKeyboard(activity)
             return
         }
         if (TextUtils.isEmpty(maxString)) {
-            max_pt.requestFocus()
-            max_pt.error = getString(R.string.fill_this)
+            max_pt.apply {
+                requestFocus()
+                error = getString(R.string.fill_this)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             showKeyboard(activity)
             return
         }
 
         var minValue = minString.toLongOrNull(10)
         if (minValue == null) {
-            min_pt.error = getString(R.string.numero_alto)
+            min_pt.apply {
+                requestFocus()
+                error = getString(R.string.numero_alto)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             return
         } else if (minValue < 1) {
             min_pt.setText("1")
@@ -236,7 +246,11 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
         var maxValue = maxString.toLongOrNull(10)
         if (maxValue == null) {
-            max_pt.error = getString(R.string.numero_alto)
+            max_pt.apply {
+                requestFocus()
+                error = getString(R.string.numero_alto)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             return
         } else if (maxValue < 1) {
             max_pt.setText("1")
@@ -254,11 +268,11 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             return
         }
 
+        lockButtons()
         if (bruteForceMode) {
             setUpAdapter(maxValue)
             asyncTask = LongOperation().execute(minValue, maxValue)
         } else {
-            lockButtons()
             status = OperationStatus.Running
             // launch coroutine in the Default thread
             GlobalScope.launch(Dispatchers.Default) {
@@ -421,7 +435,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         hideKeyboard(activity)
     }
 
-    private var progressBarParams = ViewGroup.LayoutParams(0, 0)
+    private var progressBarParams = ConstraintLayout.LayoutParams(0, 0)
 
     private fun lockButtons() {
         createTableBtn.isClickable = false
@@ -447,9 +461,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         private var startTime: Long = System.currentTimeMillis()
 
         public override fun onPreExecute() {
-            lockButtons()
             cvWidth = cardViewMain.width
-            progressBarParams = progressBar.layoutParams
+            progressBarParams = progressBar.layoutParams as ConstraintLayout.LayoutParams
         }
 
         override fun doInBackground(vararg params: Long?): ResultWrapper {
@@ -558,8 +571,20 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         if (shouldShowPerformance) {
             ConstraintSet().apply {
                 clone(cardViewMain)
-                connect(R.id.performanceTextView, ConstraintSet.TOP, R.id.numPrimesTextView, ConstraintSet.TOP, 0)
-                connect(R.id.performanceTextView, ConstraintSet.BOTTOM, R.id.numPrimesTextView, ConstraintSet.BOTTOM, 0)
+                connect(
+                    R.id.performanceTextView,
+                    ConstraintSet.TOP,
+                    R.id.numPrimesTextView,
+                    ConstraintSet.TOP,
+                    0
+                )
+                connect(
+                    R.id.performanceTextView,
+                    ConstraintSet.BOTTOM,
+                    R.id.numPrimesTextView,
+                    ConstraintSet.BOTTOM,
+                    0
+                )
                 setVisibility(R.id.performanceTextView, VISIBLE)
                 applyTo(cardViewMain)
             }

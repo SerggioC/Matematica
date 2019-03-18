@@ -229,4 +229,6 @@
     <string name="other">Other</string>
     <string name="pref_title_history_size">History Size</string>
     <string name="pref_summary_hisory_size">Limit the number of results to keep in history</string>
+    <string name="prime_number">Prime Number!</string>
+    <string name="not_prime_number">Not a prime number</string>
 </resources>

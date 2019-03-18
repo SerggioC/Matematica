@@ -15,10 +15,8 @@ import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -80,7 +78,11 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         val editnumText = editNumMultiplos.text.toString()
         if (TextUtils.isEmpty(editnumText)) {
             showCustomToast(context, getString(R.string.add_num_inteiro), InfoLevel.WARNING)
-            editNumMultiplos.error = getString(R.string.add_num_inteiro)
+            editNumMultiplos.apply {
+                requestFocus()
+                error = getString(R.string.add_num_inteiro)
+                postDelayed({ error = null }, clearErrorDelayMillis)
+            }
             return
         }
         if (editnumText == "0") {
@@ -99,38 +101,32 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         asyncTask = BackGroundOperation(false, null).execute(num, 0L, spinnerMaxMultiplos)
     }
 
-    fun createCardView(number: Long?, multiplos: String, min_multiplos: Long?, showMore: Boolean?) {
+    fun createCardView(number: Long?, multiplos: String, min_multiplos: Long?, showMore: Boolean) {
         //criar novo cardview
-        val cardview = ClickableCardView(activity!!)
-        cardview.tag = min_multiplos
+        val cardView = ClickableCardView(activity!!)
+        cardView.tag = min_multiplos
 
-        cardview.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
-        cardview.preventCornerOverlap = true
+        cardView.layoutParams = getMatchWrapParams()
+        cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardview.useCompatPadding = true
+        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
+        cardView.useCompatPadding = true
 
         val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cvColor)
+        cardView.setCardBackgroundColor(cvColor)
 
         history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
-        history.addView(cardview, 0)
+        history.addView(cardView, 0)
 
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, //largura
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ) //altura
+        textView.layoutParams = getMatchWrapParams()
 
         val text = getString(R.string.multiplosde) + " " + number + "=\n" + multiplos
         val ssb = SpannableStringBuilder(text)
@@ -141,16 +137,13 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         textView.setTag(R.id.texto, "texto")
 
         val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        )
+        llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardview.setOnTouchListener(
+        cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
-                cardview,
+                cardView,
                 activity!!,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?): Boolean {
@@ -158,7 +151,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     }
 
                     override fun onDismiss(view: View?) {
-                        history.removeView(cardview)
+                        history.removeView(cardView)
                     }
                 })
         )
@@ -174,13 +167,10 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
         llVerticalRoot.addView(textView)
 
-        if (showMore!!) {
+        if (showMore) {
             // criar novo Textview com link para mostrar mais números múltiplos
             val showMoreTextView = TextView(activity)
-            showMoreTextView.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, //largura
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ) //altura
+            showMoreTextView.layoutParams = getMatchWrapParams()
             showMoreTextView.gravity = Gravity.RIGHT
             showMoreTextView.setText(R.string.show_more)
             showMoreTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
@@ -191,9 +181,9 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 startTime = System.nanoTime()
                 val spinner =
                     java.lang.Long.parseLong(spinner_multiplos.selectedItem.toString())
-                asyncTask = BackGroundOperation(true, cardview).execute(
+                asyncTask = BackGroundOperation(true, cardView).execute(
                     num,
-                    cardview.tag as Long,
+                    cardView.tag as Long,
                     spinner
                 )
             }
@@ -202,7 +192,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         }
 
         // add the root layout to the cardview
-        cardview.addView(llVerticalRoot)
+        cardView.addView(llVerticalRoot)
     }
 
     inner class BackGroundOperation internal constructor(

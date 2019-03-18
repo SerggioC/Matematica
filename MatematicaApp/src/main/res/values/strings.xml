@@ -277,6 +277,8 @@
     <string name="pref_title_history_size">History Size</string>
     <string name="pref_summary_hisory_size">Limit the number of results to keep in history</string>
     <string name="help">Help</string>
+    <string name="prime_number">Prime Number!</string>
+    <string name="not_prime_number">Not a prime number</string>
     <bool name="pref_default_brute_force">true</bool>
     <bool name="pref_default_probabilistic">false</bool>
 

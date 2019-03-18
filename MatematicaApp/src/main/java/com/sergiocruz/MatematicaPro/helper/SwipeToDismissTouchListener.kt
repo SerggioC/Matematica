@@ -196,7 +196,7 @@ class SwipeToDismissTouchListener(
             )
             val imgageFilePath = MenuHelper.saveViewToImage(theCardView, 0, false)
             if (imgageFilePath != null) {
-                MenuHelper.openFolderSnackbar(mActivity, mActivity.getString(R.string.image_saved))
+                MenuHelper.openFolderSnackBar(mActivity, mActivity.getString(R.string.image_saved))
             } else {
                 showCustomToast(
                     mView.context,
