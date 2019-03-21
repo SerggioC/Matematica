@@ -5,8 +5,6 @@ import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
 import android.content.SharedPreferences
-import android.content.res.Configuration
-import android.graphics.Point
 import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
@@ -19,6 +17,7 @@ import android.text.style.*
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -32,8 +31,8 @@ import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.expandIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import kotlinx.android.synthetic.main.fragment_mmc.*
 import java.math.BigInteger
 import java.text.DecimalFormat
@@ -44,8 +43,6 @@ import java.util.Map
 class MMCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
     internal lateinit var fColors: ArrayList<Int>
-    private var height_dip: Int = 0
-    private var cv_width: Int = 0
     private var taskNumber = 0
     internal var startTime: Long = 0
     private lateinit var language: String
@@ -108,26 +105,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         arrayOfEditTexts = emptyArray()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-        // Checks the orientation of the screen and keeps the view contents and state
-        //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        //            Toast.makeText(activity, "landscape", Toast.LENGTH_SHORT).show();
-        //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-        //            Toast.makeText(activity, "portrait", Toast.LENGTH_SHORT).show();
-        //        }
-
-        val display = activity?.windowManager?.defaultDisplay
-        val size = Point()
-        display?.getSize(size)
-        val width = size.x  //int height = size.y;
-        val lrDip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lrDip
-
-        hideKeyboard(activity as Activity)
     }
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
@@ -539,11 +516,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             ll_vertical_expl.layoutTransition = lt
         }
         //ProgressBar
-        cv_width = activity!!.findViewById<View>(R.id.card_view_1).width
-        height_dip = (3 * scale + 0.5f).toInt()
+        val heightDp = (3 * scale + 0.5f).toInt()
         val progressBar = View(activity)
         progressBar.tag = "progressBar"
-        val layoutParams = LinearLayout.LayoutParams(1, height_dip) //Largura, Altura
+        val layoutParams = LinearLayout.LayoutParams(1, heightDp) //Largura, Altura
         progressBar.layoutParams = layoutParams
 
         //Ponto 1
@@ -695,7 +671,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     // Asynctask <Params, Progress, Result>
     inner class BackGroundOperationMMC internal constructor(private var cardTags: MyTags) :
-        AsyncTask<Void, Double, Void>() {
+        AsyncTask<Void, Float, Void>() {
         lateinit var theCardViewBG: CardView
         lateinit var mmc_numbers: ArrayList<Long>
         lateinit var result_mmc: BigInteger
@@ -706,12 +682,14 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         lateinit var percent_formatter: NumberFormat
         lateinit var f_colors: IntArray
         var f_colors_length: Int = 0
+        private lateinit var progressParams: ViewGroup.LayoutParams
 
         public override fun onPreExecute() {
             percent_formatter = DecimalFormat("#.###%")
             theCardViewBG = cardTags.cardView
             progressBar = theCardViewBG.findViewWithTag("progressBar")
             progressBar.visibility = View.VISIBLE
+            progressParams = progressBar.layoutParams
             gradient_separator =
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
@@ -738,8 +716,8 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
             val numbersSize = mmc_numbers.size
             for (i in 0 until numbersSize) { // fatorizar todos os números inseridos em MMC
-                var oldProgress = 0.0
-                var progress: Double
+                var oldProgress = 0.0f
+                var progress: Float
                 val fatores_ix = ArrayList<Long>()
 
                 var number_i: Long? = mmc_numbers[i]
@@ -758,9 +736,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                         fatores_ix.add(j)
                         number_i /= j
                     }
-                    progress = j.toDouble() / (number_i.toDouble() / j.toDouble())
+                    progress = j.toFloat() / (number_i.toFloat() / j.toFloat())
                     if (progress - oldProgress > 0.1) {
-                        publishProgress(progress, i.toDouble())
+                        publishProgress(progress, i.toFloat())
                         oldProgress = progress
                     }
                     j += 2
@@ -775,15 +753,16 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             return null
         }
 
-        override fun onProgressUpdate(vararg values: Double?) {
+        override fun onProgressUpdate(vararg values: Float?) {
 
             if (this@MMCFragment.isVisible) {
-                val color = fColors[Math.round(values[1]!!).toInt()]
+                val color = fColors[Math.round(values[1]!!)]
                 progressBar.setBackgroundColor(color)
                 var value0 = values[0]
-                if (value0!! > 1f) value0 = 1.0
-                progressBar.layoutParams =
-                    LinearLayout.LayoutParams(Math.round(value0 * cv_width).toInt(), height_dip)
+                if (value0!! > 1f) value0 = 1.0f
+                progressParams.width = Math.round(value0 * card_view_1.width)
+                progressBar.layoutParams = progressParams
+
                 val text =
                     " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0)
                 val ssb = SpannableStringBuilder(text)

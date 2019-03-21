@@ -2,9 +2,7 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -25,8 +23,8 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.expandIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import kotlinx.android.synthetic.main.fragment_fatorizar.*
 import java.text.DecimalFormat
 import java.util.*
@@ -41,8 +39,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private var bgOperation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
 
-    internal var cvWidth: Int = 0
-    internal var heightDip: Int = 0
     private var startTime: Long? = null
 
     override fun getLayoutIdForFragment() = R.layout.fragment_fatorizar
@@ -54,27 +50,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_fatorizar
 
     override fun getHistoryLayout(): LinearLayout? = history
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        //         Checks the orientation of the screen
-        //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        //            Toast.makeText(activity, "landscape", Toast.LENGTH_SHORT).show();
-        //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-        //            Toast.makeText(activity, "portrait", Toast.LENGTH_SHORT).show();
-        //        }
-
-        val display = activity?.windowManager?.defaultDisplay
-        val size = Point()
-        display?.getSize(size)
-        val width = size.x
-        //int height = size.y;
-        val lrDip = (4 * scale + 0.5f).toInt() * 2
-        cvWidth = width - lrDip
-
-        hideKeyboard(activity as Activity)
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -435,6 +410,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     }
 
+    lateinit var progressParams: ViewGroup.LayoutParams
+
     inner class BackGroundOperation : AsyncTask<Long, Float, ArrayList<ArrayList<Long>>>() {
 
         public override fun onPreExecute() {
@@ -442,9 +419,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             calculateButton.text = getString(R.string.working)
             cancelButton.visibility = View.VISIBLE
             hideKeyboard(activity as Activity)
-            cvWidth = card_view_1.width
-            heightDip = (4 * scale + 0.5f).toInt()
-            progressBar.layoutParams = LinearLayout.LayoutParams(1, heightDip)
+            progressParams = progressBar.layoutParams
+            progressParams.width = 1
+            progressBar.layoutParams = progressParams
             progressBar.visibility = View.VISIBLE
         }
 
@@ -495,8 +472,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@FatorizarFragment.isVisible && values[0] != null) {
-                progressBar.layoutParams =
-                    LinearLayout.LayoutParams(Math.round(values[0]!! * cvWidth), heightDip)
+                progressParams.width = Math.round(values[0]!! * card_view_1.width)
+                progressBar.layoutParams = progressParams
             }
         }
 

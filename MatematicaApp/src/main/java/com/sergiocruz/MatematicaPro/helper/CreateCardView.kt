@@ -25,7 +25,11 @@ object CreateCardView {
         createCardViewWithSSB(history, helpSSB, activity)
     }
 
-    fun createCardViewWithSSB(history: LinearLayout, helpSSB: SpannableStringBuilder, activity: Activity) {
+    fun createCardViewWithSSB(
+        history: LinearLayout,
+        helpSSB: SpannableStringBuilder,
+        activity: Activity
+    ) {
         //criar novo cardview
         val cardView = ClickableCardView(activity)
         cardView.layoutParams = getMatchWrapParams()

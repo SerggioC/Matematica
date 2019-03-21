@@ -1,19 +1,22 @@
 package com.sergiocruz.MatematicaPro.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.allPermissionsGranted
 import com.sergiocruz.MatematicaPro.fragment.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.verifyStoragePermissions
+import com.sergiocruz.MatematicaPro.getRuntimePermissions
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
     // toolbar titles respected to selected nav menu item
     private lateinit var activityTitles: Array<String>
     private lateinit var mHandler: Handler
@@ -34,12 +37,26 @@ class MainActivity : AppCompatActivity() {
         // initializing navigation menu
         setUpNavigationView()
 
-        if (savedInstanceState == null) {
-            loadFragment(0)
-        } else {
-            return
+        if (allPermissionsGranted(this).not()) getRuntimePermissions(this)
+
+        when (savedInstanceState) {
+            null -> loadFragment(0)
+            else -> return
         }
-        verifyStoragePermissions(this)
+
+    }
+
+    interface PermissionResultInterface {
+        fun onPermissionResult(permitted: Boolean)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionResultInterface?.onPermissionResult(grantResults[0] == PackageManager.PERMISSION_GRANTED)
     }
 
     /***
@@ -71,19 +88,14 @@ class MainActivity : AppCompatActivity() {
         // when switching between navigation menus
         // So using runnable, the fragment is loaded with cross fade effect
         // This effect can be seen in GMail app
-
         mHandler.post {
             // update the main content by replacing fragments
             val fragment = FRAGMENTS[index]
             val fragmentTransaction = supportFragmentManager.beginTransaction()
-            fragmentTransaction.setCustomAnimations(
-                android.R.anim.fade_in,
-                android.R.anim.fade_out
-            )
+            fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
             fragmentTransaction.replace(R.id.frame, fragment, FRAGMENT_TAGS[index])
             fragmentTransaction.commitAllowingStateLoss()
         }
-
 
         //Closing drawer_layout on item click
         drawer_layout.closeDrawers()
@@ -91,7 +103,6 @@ class MainActivity : AppCompatActivity() {
         // refresh toolbar menu
         invalidateOptionsMenu()
     }
-
 
     private fun setUpNavigationView() {
 
@@ -106,6 +117,8 @@ class MainActivity : AppCompatActivity() {
             nav_view.menu.getItem(navItemIndex).actionView = null
 
             //Check to see which item was being clicked and perform appropriate action
+            // launch new intent instead of loading fragment
+            // launch new intent instead of loading fragment
             when (menuItem.itemId) {
                 //Replacing the main content with ContentFragment Which is our Inbox View;
                 R.id.home -> navItemIndex = 0
@@ -117,20 +130,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_prime_table -> navItemIndex = 6
                 R.id.nav_multiplos -> navItemIndex = 7
                 R.id.nav_primorial -> navItemIndex = 8
-                R.id.nav_settings -> {
-                    startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
-                    drawer_layout.closeDrawers()
-                }
-                R.id.nav_about -> {
-                    // launch new intent instead of loading fragment
-                    startActivity(Intent(this@MainActivity, AboutActivity::class.java))
-                    drawer_layout.closeDrawers()
-                }
-                R.id.nav_send -> {
-                    // launch new intent instead of loading fragment
-                    startActivity(Intent(this@MainActivity, SendMailActivity::class.java))
-                    drawer_layout.closeDrawers()
-                }
+                R.id.nav_settings -> startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+                R.id.nav_about -> startActivity(Intent(this@MainActivity, AboutActivity::class.java))
+                R.id.nav_send -> startActivity(Intent(this@MainActivity, SendMailActivity::class.java))
                 else -> navItemIndex = 0
             }
 
@@ -232,6 +234,8 @@ class MainActivity : AppCompatActivity() {
         )
         // index to identify current nav menu item
         var navItemIndex = 0
+
+        var permissionResultInterface: PermissionResultInterface? = null
     }
 
 }

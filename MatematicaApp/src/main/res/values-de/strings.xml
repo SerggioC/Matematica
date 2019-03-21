@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <resources>
+<resources>
     <string name="app_version_date">März 2019</string>
     <string name="_incomplete_calc">Unvollständige Berechnung ...</string>
     <string name="_numero_primo">primzahlen</string>

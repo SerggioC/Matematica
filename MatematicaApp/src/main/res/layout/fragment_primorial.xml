@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,8 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,7 +47,7 @@
                         android:text="@string/calculate_primorial_title"
                         android:textAlignment="center"
                         android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -69,14 +67,14 @@
                             android:inputType="number"
                             android:maxLines="1"
                             android:textAlignment="center"
-                            android:imeOptions="actionDone"/>
+                            android:imeOptions="actionDone" />
 
                         <Button
                             android:id="@+id/clearButton"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
                             android:layout_gravity="center_vertical|right"
-                            android:background="@drawable/ic_clear_text"/>
+                            android:background="@drawable/ic_clear_text" />
 
                     </FrameLayout>
 
@@ -93,7 +91,7 @@
                             android:background="@drawable/apptheme_btn_default_holo_light"
                             android:elevation="4dp"
                             android:text="@string/calculate"
-                            android:textAllCaps="false"/>
+                            android:textAllCaps="false" />
 
                         <ImageView
                             android:id="@+id/cancelButton"
@@ -110,11 +108,10 @@
 
                     <View
                         android:id="@+id/progressBar"
-                        android:layout_width="0dp"
+                        android:layout_width="1dp"
                         android:layout_height="4dp"
                         android:background="@color/lightBlue"
-                        android:visibility="gone">
-                    </View>
+                        android:visibility="gone"></View>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -128,8 +125,7 @@
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="8dp"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

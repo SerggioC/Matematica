@@ -5,7 +5,6 @@ import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
@@ -18,7 +17,6 @@ import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -31,8 +29,8 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.collapseIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.Companion.expandIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import kotlinx.android.synthetic.main.fragment_mdc.*
 import java.math.BigInteger
 import java.text.DecimalFormat
@@ -61,10 +59,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     //private final static BigInteger mdc2(BigInteger a, BigInteger b) {
     //    return b.compareTo(ZERO) == 1 ? a : mdc(b, a.remainder(b));
     //}
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        hideKeyboard(activity as Activity)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

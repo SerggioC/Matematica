@@ -36,13 +36,13 @@
             android:defaultValue="@bool/pref_default_brute_force"
             android:key="@string/pref_key_brute_force"
             android:title="@string/pref_title_brute_force"
-            android:summary="@string/pref_summary_brute_force"/>
+            android:summary="@string/pref_summary_brute_force" />
         <SwitchPreference
             android:icon="@drawable/probabilistic"
             android:defaultValue="@bool/pref_default_probabilistic"
             android:key="@string/pref_key_probabilistic"
             android:title="@string/pref_title_probabilistic"
-            android:summary="@string/pref_summary_probabilistic"/>
+            android:summary="@string/pref_summary_probabilistic" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/other">

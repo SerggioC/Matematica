@@ -13,7 +13,10 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.CreateCardView
-import com.sergiocruz.MatematicaPro.helper.MenuHelper
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.removeHistory
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveHistoryImages
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistory
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistoryImages
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -55,11 +58,15 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity!!)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity!!)
-            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity!!)
-            R.id.action_clear_all_history -> MenuHelper.removeHistory(activity!!)
-            R.id.action_help -> CreateCardView.create(getHistoryLayout(), getHelpTextId(), activity!!)
+            R.id.action_save_history_images -> saveHistoryImages(activity!!)
+            R.id.action_share_history -> shareHistory(activity!!)
+            R.id.action_share_history_images -> shareHistoryImages(activity!!)
+            R.id.action_clear_all_history -> removeHistory(activity!!)
+            R.id.action_help -> CreateCardView.create(
+                getHistoryLayout(),
+                getHelpTextId(),
+                activity!!
+            )
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
@@ -80,7 +87,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             default.toString()
         )?.toInt() ?: default
         shouldShowPerformance =
-            sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), false)
+            sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
         shouldShowExplanation =
             sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
         shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)

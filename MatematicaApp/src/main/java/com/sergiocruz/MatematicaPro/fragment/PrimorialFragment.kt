@@ -1,10 +1,7 @@
 package com.sergiocruz.MatematicaPro.fragment
 
-import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -13,15 +10,14 @@ import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.TypedValue
-import android.view.*
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
-import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_primorial.*
 import java.math.BigInteger
@@ -35,9 +31,7 @@ import java.util.*
  */
 
 class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
-    var BG_Operation: AsyncTask<Long, Double, BigInteger> = BackGroundOperation()
-    internal var cv_width: Int = 0
-    internal var height_dip: Int = 0
+    var BG_Operation: AsyncTask<Long, Float, BigInteger> = BackGroundOperation()
     private var num: Long = 0
     private var startTime: Long = 0
 
@@ -51,18 +45,6 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        val display = activity!!.windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        val width = size.x
-        //int height = size.y;
-        val lrDip = (4 * scale + 0.5f).toInt() * 2
-        cv_width = width - lrDip
-        hideKeyboard(activity)
     }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_primorial
@@ -120,27 +102,27 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean?) {
         //criar novo cardview
-        val cardview = ClickableCardView(activity!!)
-        cardview.layoutParams = ViewGroup.LayoutParams(
+        val cardView = ClickableCardView(activity!!)
+        cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
             ViewGroup.LayoutParams.WRAP_CONTENT
         ) // height
-        cardview.preventCornerOverlap = true
+        cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardview.useCompatPadding = true
+        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
+        cardView.useCompatPadding = true
 
         val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cvColor)
+        cardView.setCardBackgroundColor(cvColor)
 
         history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
-        history.addView(cardview, 0)
+        history.addView(cardView, 0)
 
 
         // criar novo Textview
@@ -153,17 +135,17 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         val text = number.toString() + "#=\n" + bigIntegerResult
         val ssb = SpannableStringBuilder(text)
         if (wasCanceled!!) {
-            val incomplete_calc = "\n" + getString(R.string._incomplete_calc)
-            ssb.append(incomplete_calc)
+            val incomplete = "\n" + getString(R.string._incomplete_calc)
+            ssb.append(incomplete)
             ssb.setSpan(
                 ForegroundColorSpan(Color.RED),
-                ssb.length - incomplete_calc.length,
+                ssb.length - incomplete.length,
                 ssb.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
             ssb.setSpan(
                 RelativeSizeSpan(0.8f),
-                ssb.length - incomplete_calc.length,
+                ssb.length - incomplete.length,
                 ssb.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -182,9 +164,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardview.setOnTouchListener(
+        cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
-                cardview,
+                cardView,
                 activity!!,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?): Boolean {
@@ -192,29 +174,31 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     }
 
                     override fun onDismiss(view: View?) {
-                        history.removeView(cardview)
+                        history.removeView(cardView)
                     }
                 })
         )
 
         if (shouldShowPerformance) {
-            val gradient_separator = getGradientSeparator(context)
+            val gradientSeparator = getGradientSeparator(context)
             val decimalFormatter = DecimalFormat("#.###")
             val elapsed =
                 getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
             val numAlgarismos = bigIntegerResult.toString().length
             val algarismos = getString(R.string.algarismos)
-            gradient_separator.text = "$numAlgarismos $algarismos, $elapsed"
-            llVerticalRoot.addView(gradient_separator)
+            gradientSeparator.text = "$numAlgarismos $algarismos, $elapsed"
+            llVerticalRoot.addView(gradientSeparator)
         }
 
         llVerticalRoot.addView(textView)
 
         // add the root layout to the cardview
-        cardview.addView(llVerticalRoot)
+        cardView.addView(llVerticalRoot)
     }
 
-    private inner class BackGroundOperation : AsyncTask<Long, Double, BigInteger>() {
+    lateinit var progressParams: ViewGroup.LayoutParams
+
+    private inner class BackGroundOperation : AsyncTask<Long, Float, BigInteger>() {
         internal var number: Long? = null
         internal var primes = ArrayList<Long>()
 
@@ -223,9 +207,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             button_calc_primorial.setText(R.string.working)
             cancelButton.visibility = View.VISIBLE
             hideKeyboard(activity)
-            cv_width = card_view_1.width
-            height_dip = (4 * scale + 0.5f).toInt()
-            progressBar.layoutParams = LinearLayout.LayoutParams(10, height_dip)
+            progressParams = progressBar.layoutParams
+            progressParams.width = 1
+            progressBar.layoutParams = progressParams
             progressBar.visibility = View.VISIBLE
         }
 
@@ -237,8 +221,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             primes.add(1L)
             primes.add(2L)
 
-            var progress: Double
-            var oldProgress = 0.0
+            var progress: Float
+            var oldProgress = 0.0f
 
             for (i in 3L..number!!) {
                 var isPrime = true
@@ -256,7 +240,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 if (isPrime) {
                     primes.add(i)
                 }
-                progress = i.toDouble() / number!!.toDouble()
+                progress = i.toFloat() / number!!.toFloat()
                 if (progress - oldProgress > 0.05) { // update a cada 5%
                     publishProgress(progress)
                     oldProgress = progress
@@ -273,13 +257,10 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         }
 
-        override fun onProgressUpdate(vararg values: Double?) {
+        override fun onProgressUpdate(vararg values: Float?) {
             if (this@PrimorialFragment.isVisible) {
-                progressBar.layoutParams =
-                    LinearLayout.LayoutParams(
-                        Math.round(values[0]!! * cv_width).toInt(),
-                        height_dip
-                    )
+                progressParams.width = Math.round(values[0]!! * card_view_1.width)
+                progressBar.layoutParams = progressParams
             }
         }
 

@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,8 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,7 +47,7 @@
                         android:text="@string/calculate_multiplos_title"
                         android:textAlignment="center"
                         android:textAllCaps="false"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -68,14 +66,14 @@
                             android:hint="@string/introduzir_numero"
                             android:inputType="number"
                             android:maxLines="1"
-                            android:textAlignment="center"/>
+                            android:textAlignment="center" />
 
                         <Button
                             android:id="@+id/clearButton"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
                             android:layout_gravity="center_vertical|right"
-                            android:background="@drawable/ic_clear_text"/>
+                            android:background="@drawable/ic_clear_text" />
 
                     </FrameLayout>
 
@@ -89,29 +87,29 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginLeft="4dp"
-                            android:layout_centerVertical="true"
-                            >
+                            android:layout_centerVertical="true">
 
 
-                        <TextView
-                            android:id="@+id/text1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="4dp"
-                            android:text="@string/multpl_apresentar"/>
+                            <TextView
+                                android:id="@+id/text1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/multpl_apresentar" />
 
-                        <Spinner
-                            android:id="@+id/spinner_multiplos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAlignment="center"
-                            android:layout_below="@+id/text1"
-                            android:layout_alignParentLeft="true"
-                            android:entries="@array/multiplos_size">
+                            <Spinner
+                                android:id="@+id/spinner_multiplos"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:layout_below="@+id/text1"
+                                android:layout_alignParentLeft="true"
+                                android:entries="@array/multiplos_size">
 
-                        </Spinner>
+                            </Spinner>
                         </LinearLayout>
+
                         <Button
                             android:id="@+id/button_calc_multiplos"
                             android:layout_width="wrap_content"
@@ -121,7 +119,7 @@
                             android:background="@drawable/apptheme_btn_default_holo_light"
                             android:elevation="4dp"
                             android:text="@string/calculate"
-                            android:textAllCaps="false"/>
+                            android:textAllCaps="false" />
 
                     </RelativeLayout>
 
@@ -134,8 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

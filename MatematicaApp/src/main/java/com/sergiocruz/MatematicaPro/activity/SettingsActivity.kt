@@ -42,8 +42,9 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     } else if (index == 2) {
                         pref_show_colors.isEnabled = false
                     }
-                } else if (preference.title == getString(R.string.pref_title_history_size)){
-                    preference.summary = "${getString(R.string.pref_summary_hisory_size)} ($stringValue)"
+                } else if (preference.title == getString(R.string.pref_title_history_size)) {
+                    preference.summary =
+                        "${getString(R.string.pref_summary_hisory_size)} ($stringValue)"
                 }
 
 
@@ -88,8 +89,10 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_show_explanation)))
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_history_size)))
 
-        val prefBruteForce = findPreference(getString(R.string.pref_key_brute_force)) as SwitchPreference
-        val prefProbabilistic = findPreference(getString(R.string.pref_key_probabilistic)) as SwitchPreference
+        val prefBruteForce =
+            findPreference(getString(R.string.pref_key_brute_force)) as SwitchPreference
+        val prefProbabilistic =
+            findPreference(getString(R.string.pref_key_probabilistic)) as SwitchPreference
 
         prefBruteForce.setOnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
             prefBruteForce.isChecked = !prefBruteForce.isChecked

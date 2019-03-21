@@ -2,9 +2,7 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Point
 import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -17,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -28,9 +25,7 @@ import java.util.*
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
-    private var asyncTask: AsyncTask<Long, Double, ArrayList<Long>> = BackGroundOperation()
-    internal var cvWidth: Int = 0
-    internal var heightDip: Int = 0
+    private var asyncTask: AsyncTask<Long, Float, ArrayList<Long>> = BackGroundOperation()
     internal var num: Long = 0
     private var startTime: Long = 0
 
@@ -56,25 +51,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
-    }
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        //         Checks the orientation of the screen
-
-        //        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        //            Toast.makeText(activity, "landscape", Toast.LENGTH_SHORT).show();
-        //        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-        //            Toast.makeText(activity, "portrait", Toast.LENGTH_SHORT).show();
-        //        }
-
-        val display = activity?.windowManager?.defaultDisplay
-        val size = Point()
-        display?.getSize(size)
-        val width = size.x
-        //int height = size.y;
-        val lrDip = (4 * scale + 0.5f).toInt() * 2
-        cvWidth = width - lrDip
-        hideKeyboard(activity as Activity)
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
@@ -139,25 +115,27 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         return divisores
     }
 
-    inner class BackGroundOperation : AsyncTask<Long, Double, ArrayList<Long>>() {
+    lateinit var progressParams: ViewGroup.LayoutParams
+
+    inner class BackGroundOperation : AsyncTask<Long, Float, ArrayList<Long>>() {
 
         public override fun onPreExecute() {
             lockInput()
-            cvWidth = card_view_1.width
-            heightDip = (4 * scale + 0.5f).toInt()
-            progressBar.layoutParams = LinearLayout.LayoutParams(10, heightDip)
+            progressParams = progressBar.layoutParams
+            progressParams.width = 1
+            progressBar.layoutParams = progressParams
             progressBar.visibility = View.VISIBLE
         }
 
         override fun doInBackground(vararg num: Long?): ArrayList<Long> {
             /**
-            * Performance update
-            * Primeiro obtem os fatores primos depois multiplica-os
-            * */
+             * Performance update
+             * Primeiro obtem os fatores primos depois multiplica-os
+             * */
             val divisores = ArrayList<Long>()
             var number: Long? = num[0]
-            var progress: Double
-            var oldProgress = 0.0
+            var progress: Float
+            var oldProgress = 0.0f
 
             while (number!! % 2L == 0L) {
                 divisores.add(2L)
@@ -171,9 +149,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                         divisores.add(i)
                         number /= i
                     }
-                    progress = i.toDouble() / (number.toDouble() / i.toDouble())
+                    progress = i.toFloat() / (number.toFloat() / i.toFloat())
                     if (progress - oldProgress > 0.1) {
-                        publishProgress(progress, i.toDouble())
+                        publishProgress(progress)
                         oldProgress = progress
                     }
                     if (isCancelled) break
@@ -200,13 +178,10 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             return allDivisores
         }
 
-        override fun onProgressUpdate(vararg values: Double?) {
+        override fun onProgressUpdate(vararg values: Float?) {
             if (this@DivisoresFragment.isVisible) {
-                progressBar.layoutParams =
-                    LinearLayout.LayoutParams(
-                        Math.round(values[0]!! * cvWidth).toInt(),
-                        heightDip
-                    )
+                progressParams.width = Math.round(values[0]!! * card_view_1.width)
+                progressBar.layoutParams = progressParams
             }
         }
 

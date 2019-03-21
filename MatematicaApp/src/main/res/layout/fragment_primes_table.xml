@@ -176,7 +176,7 @@
             android:checked="true"
             android:text="@string/mostrar_todos"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/maxInputLayout"/>
+            app:layout_constraintTop_toBottomOf="@+id/maxInputLayout" />
 
         <TextView
             android:id="@+id/numPrimesTextView"
@@ -202,14 +202,16 @@
 
         <View
             android:id="@+id/progressBar"
-            android:layout_width="0dp"
+            android:layout_width="1dp"
             android:layout_height="4dp"
             android:layout_marginStart="2dp"
             android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
             android:background="@color/lightBlue"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createTableBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

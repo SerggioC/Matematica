@@ -5,12 +5,11 @@
             <gradient
                 android:angle="0"
                 android:startColor="@color/cardsColor"
-                android:endColor="@color/lightBlue"
-                />
+                android:endColor="@color/lightBlue" />
         </shape>
     </item>
     <item android:bottom="1dp">
-        <shape android:shape="rectangle" >
+        <shape android:shape="rectangle">
             <solid android:color="@color/cardsColor" />
         </shape>
     </item>

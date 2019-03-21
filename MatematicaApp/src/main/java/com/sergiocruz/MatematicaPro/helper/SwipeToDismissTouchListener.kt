@@ -20,6 +20,9 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.openFolderSnackBar
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveViewToImage
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
 import java.util.*
 
@@ -187,25 +190,25 @@ class SwipeToDismissTouchListener(
         }
 
         popup_layout.findViewById<View>(R.id.action_save_image).setOnClickListener {
-            MenuHelper.verifyStoragePermissions(mActivity)
-            theCardView.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    mActivity,
-                    R.color.cardsColor
+            checkPermissionsWithCallback(mActivity) {
+                theCardView.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        mActivity,
+                        R.color.cardsColor
+                    )
                 )
-            )
-            val imgageFilePath = MenuHelper.saveViewToImage(theCardView, 0, false)
-            if (imgageFilePath != null) {
-                MenuHelper.openFolderSnackBar(mActivity, mActivity.getString(R.string.image_saved))
-            } else {
-                showCustomToast(
-                    mView.context,
-                    mView.context.getString(R.string.errorsavingimg),
-                    InfoLevel.ERROR
-                )
-                customPopUp.dismiss()
+                val imageFilePath = saveViewToImage(theCardView, 0, false)
+                if (imageFilePath != null) {
+                    openFolderSnackBar(mActivity, mActivity.getString(R.string.image_saved))
+                } else {
+                    showCustomToast(
+                        mView.context,
+                        mView.context.getString(R.string.errorsavingimg),
+                        InfoLevel.ERROR
+                    )
+                }
             }
-
+            customPopUp.dismiss()
         }
     }
 

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/llPopup"
-              android:layout_width="200dp"
-              android:layout_height="wrap_content"
-              android:background="@drawable/bg_popup_style"
-              android:orientation="vertical"
-              android:paddingLeft="8dp"
-              android:paddingRight="16dp"
-              android:paddingTop="8dp"
-              android:paddingBottom="8dp">
+    android:id="@+id/llPopup"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_popup_style"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
         android:id="@+id/action_clipboard"
@@ -33,7 +33,7 @@
             android:layout_marginLeft="11dp"
             android:text="@string/action_clipboard_result"
             android:textColor="@color/cardview_dark_background"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -61,7 +61,7 @@
             android:layout_marginLeft="11dp"
             android:text="@string/action_save_image"
             android:textColor="@color/cardview_dark_background"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -90,7 +90,7 @@
             android:layout_marginLeft="11dp"
             android:text="@string/action_clear_result"
             android:textColor="@color/cardview_dark_background"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -119,7 +119,7 @@
             android:layout_marginLeft="11dp"
             android:text="@string/action_share_result"
             android:textColor="@color/cardview_dark_background"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 

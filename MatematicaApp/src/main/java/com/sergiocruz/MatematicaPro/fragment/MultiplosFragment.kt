@@ -5,7 +5,6 @@ package com.sergiocruz.MatematicaPro.fragment
  */
 
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.AsyncTask
@@ -46,11 +45,6 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        hideKeyboard(activity)
     }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_multiplos

@@ -26,6 +26,6 @@
         android:textColor="@color/black"
         android:textAlignment="center"
         android:layout_gravity="center"
-        android:textIsSelectable="true"/>
+        android:textIsSelectable="true" />
 
 </androidx.cardview.widget.CardView>
