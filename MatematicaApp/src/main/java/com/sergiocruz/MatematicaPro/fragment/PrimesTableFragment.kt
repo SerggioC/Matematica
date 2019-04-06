@@ -18,6 +18,10 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.*
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks
+import com.github.ksoichiro.android.observablescrollview.ScrollState
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -27,6 +31,8 @@ import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.ERROR
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.WARNING
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
+import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.openFolderSnackBar
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveViewToImage
 import kotlinx.android.synthetic.main.fragment_primes_table.*
@@ -103,6 +109,48 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         btn_clear_max.setOnClickListener { max_pt.setText("") }
         min_pt.watchThis(this)
         max_pt.watchThis(this)
+
+        historyGridRecyclerView.setScrollViewCallbacks(object: ObservableScrollViewCallbacks {
+            override fun onUpOrCancelMotionEvent(scrollState: ScrollState?) {
+                if (scrollState == ScrollState.UP) {
+                    collapseIt(cardViewMain)
+                }
+
+            }
+
+            override fun onScrollChanged(scrollY: Int, firstScroll: Boolean, dragging: Boolean) {
+
+            }
+
+            override fun onDownMotionEvent() {
+                expandIt(cardViewMain)
+
+            }
+        })
+
+//        historyGridRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            var state = SCROLL_STATE_IDLE
+//            var locked = false
+//
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//                if (dy > 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
+//                    collapseIt(cardViewMain)
+//                    locked = true
+//                } else if (dy < 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
+//                    expandIt(cardViewMain)
+//                    locked = true
+//                } else if (state == SCROLL_STATE_SETTLING) {
+//                    locked = false
+//                }
+//            }
+//
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                this.state = newState
+//            }
+//        })
+
     }
 
     private fun writeCalcMode() {
@@ -168,17 +216,19 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         }
         // Partilhar tabela como texto
         if (id == R.id.action_share_history) {
-            if (tableData?.primesTable?.isNotEmpty()) {
-                val primesString =
-                    "${getString(R.string.table_between)} $minValue ${getString(R.string.and)} $maxValue:\n${tableData.primesTable}"
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(
-                    Intent.EXTRA_TEXT, getString(R.string.app_long_description) +
-                            BuildConfig.VERSION_NAME + "\n" + primesString
-                )
-                sendIntent.type = "text/plain"
-                startActivity(sendIntent)
+            if (::tableData.isInitialized) {
+                if (tableData.primesTable.isNotEmpty()) {
+                    val primesString =
+                        "${getString(R.string.table_between)} $minValue ${getString(R.string.and)} $maxValue:\n${tableData.primesTable}"
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(
+                        Intent.EXTRA_TEXT, getString(R.string.app_long_description) +
+                                BuildConfig.VERSION_NAME + "\n" + primesString
+                    )
+                    sendIntent.type = "text/plain"
+                    startActivity(sendIntent)
+                }
             } else {
                 showCustomToast(context, getString(R.string.no_data))
             }
@@ -273,6 +323,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             asyncTask = LongOperation().execute(minValue, maxValue)
         } else {
             status = OperationStatus.Running
+
             // launch coroutine in the Default thread
             GlobalScope.launch(Dispatchers.Default) {
                 val startTime = System.currentTimeMillis()
@@ -336,7 +387,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             }
         }
     }
-
 
     private var status: OperationStatus = OperationStatus.Idle
 
@@ -436,8 +486,10 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         //Quando altera a orientação do ecrã
-        if (tableData?.fullTable?.isNotEmpty()) {
-            layoutManager.spanCount = getNumColumns(maxValue!!)
+        if (::tableData.isInitialized) {
+            if (tableData.fullTable.isNotEmpty()) {
+                layoutManager.spanCount = getNumColumns(maxValue!!)
+            }
         }
         hideKeyboard(activity)
     }

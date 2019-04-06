@@ -232,6 +232,7 @@
     <string name="help">Aidez-moi</string>
     <string name="not_prime_number">N\'est-ce pas un nombre premier</string>
     <string name="prime_number">Nombre premier!</string>
+    <string name="privacy_policy">Politique de Confidentialité</string>
 
 </resources>
 

@@ -241,4 +241,5 @@
     <string name="help">Ayudar</string>
     <string name="prime_number">¡Número primo!</string>
     <string name="not_prime_number">No es un número primo</string>
+    <string name="privacy_policy">Política de Privacidad</string>
 </resources>

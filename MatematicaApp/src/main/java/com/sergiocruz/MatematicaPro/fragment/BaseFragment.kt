@@ -1,5 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -26,6 +27,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var shouldShowPerformance: Boolean = true
     var shouldShowExplanation: String = "0"
     var shouldShowColors: Boolean = true
+    var acceptCrashlyticse: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,21 +60,20 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_save_history_images -> saveHistoryImages(activity!!)
-            R.id.action_share_history -> shareHistory(activity!!)
-            R.id.action_share_history_images -> shareHistoryImages(activity!!)
-            R.id.action_clear_all_history -> removeHistory(activity!!)
+            R.id.action_save_history_images -> saveHistoryImages(activity as Activity)
+            R.id.action_share_history -> shareHistory(activity as Activity)
+            R.id.action_share_history_images -> shareHistoryImages(activity as Activity)
+            R.id.action_clear_all_history -> removeHistory(activity as Activity)
             R.id.action_help -> CreateCardView.create(
                 getHistoryLayout(),
                 getHelpTextId(),
-                activity!!
+                activity as Activity
             )
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -91,7 +92,6 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         shouldShowExplanation =
             sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
         shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
-
     }
 
     override fun onCreateView(

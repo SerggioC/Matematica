@@ -4,7 +4,7 @@
     <string name="app_name" translatable="false">Primes PRO</string>
     <string name="app_long_description" translatable="false">Prime Number Tools Pro v</string>
     <string name="app_version_description">App version:</string>
-    <string name="app_email" translatable="false">mailto:sergiocrz@gmail.com</string>
+    <string name="app_email" translatable="false">sergiocrz@gmail.com</string>
 
     <string name="openDrawer" translatable="false">open_drawer</string>
     <string name="closeDrawer" translatable="false">close_drawer</string>
@@ -279,6 +279,8 @@
     <string name="help">Help</string>
     <string name="prime_number">Prime Number!</string>
     <string name="not_prime_number">Not a prime number</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_url" translatable="false">https://sergiocrz.wordpress.com/privacy-policy/</string>
     <bool name="pref_default_brute_force">true</bool>
     <bool name="pref_default_probabilistic">false</bool>
 

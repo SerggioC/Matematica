@@ -4,7 +4,6 @@ package com.sergiocruz.MatematicaPro.activity
 import android.os.Bundle
 import android.preference.*
 import android.view.MenuItem
-
 import com.sergiocruz.MatematicaPro.R
 
 
@@ -36,11 +35,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     preference.setSummary(if (index >= 0) preference.entries[index] else null)
 
                     //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
-                    val pref_show_colors = findPreference(getString(R.string.pref_key_show_colors))
+                    val showColors = findPreference(getString(R.string.pref_key_show_colors))
                     if (index == 0 || index == 1) {
-                        pref_show_colors.isEnabled = true
+                        showColors.isEnabled = true
                     } else if (index == 2) {
-                        pref_show_colors.isEnabled = false
+                        showColors.isEnabled = false
                     }
                 } else if (preference.title == getString(R.string.pref_title_history_size)) {
                     preference.summary =
@@ -108,8 +107,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        if (id == android.R.id.home) {
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
@@ -120,9 +118,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * Set up the [android.app.ActionBar], if the API is available.
      */
     private fun setupActionBar() {
-        val actionBar = supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
-
 
 }

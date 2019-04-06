@@ -2,6 +2,7 @@ package com.sergiocruz.MatematicaPro.helper
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -107,7 +108,7 @@ class SwipeToDismissTouchListener(
         // Inflate the popup_menu_layout.xml
         val layoutInflater =
             mView.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val popup_layout = layoutInflater.inflate(R.layout.popup_menu_layout, null)
+        val popupLayout = layoutInflater.inflate(R.layout.popup_menu_layout, null)
 
         val scale = mView.context.resources.displayMetrics.density
 
@@ -116,7 +117,7 @@ class SwipeToDismissTouchListener(
 
         // Creating the PopupWindow
         val customPopUp = PopupWindow(mView.context)
-        customPopUp.contentView = popup_layout
+        customPopUp.contentView = popupLayout
         customPopUp.width = LinearLayout.LayoutParams.WRAP_CONTENT
         customPopUp.height = LinearLayout.LayoutParams.WRAP_CONTENT
         //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -126,7 +127,7 @@ class SwipeToDismissTouchListener(
         customPopUp.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) //Clear the default translucent background
         customPopUp.animationStyle = R.style.popup_animation
         customPopUp.showAtLocation(
-            popup_layout,
+            popupLayout,
             Gravity.NO_GRAVITY,
             mDownX.toInt() - offsetX,
             mDownY.toInt() - offsetY
@@ -140,7 +141,7 @@ class SwipeToDismissTouchListener(
             val color = ContextCompat.getColor(mActivity, R.color.cardsColor)
             theCardView.setCardBackgroundColor(color)
         }
-        popup_layout.action_clipboard.setOnClickListener {
+        popupLayout.action_clipboard.setOnClickListener {
             // aceder ao clipboard manager
             val clipboard =
                 mActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -166,13 +167,13 @@ class SwipeToDismissTouchListener(
             customPopUp.dismiss()
         }
 
-        popup_layout.action_clear_result.setOnClickListener {
+        popupLayout.action_clear_result.setOnClickListener {
             val history = theCardView.parent as ViewGroup
             animateRemoving(theCardView, history)
             customPopUp.dismiss()
         }
 
-        popup_layout.findViewById<View>(R.id.action_share_result).setOnClickListener {
+        popupLayout.findViewById<View>(R.id.action_share_result).setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(
@@ -189,7 +190,7 @@ class SwipeToDismissTouchListener(
             customPopUp.dismiss()
         }
 
-        popup_layout.findViewById<View>(R.id.action_save_image).setOnClickListener {
+        popupLayout.findViewById<View>(R.id.action_save_image).setOnClickListener {
             checkPermissionsWithCallback(mActivity) {
                 theCardView.setCardBackgroundColor(
                     ContextCompat.getColor(
@@ -212,6 +213,7 @@ class SwipeToDismissTouchListener(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View?, motionEvent: MotionEvent?): Boolean {
         // offset because the view is translated during swipe
         motionEvent?.offsetLocation(mTranslationX, 0f)
@@ -227,7 +229,7 @@ class SwipeToDismissTouchListener(
                 mDownY = motionEvent.rawY
 
                 mVelocityTracker = VelocityTracker.obtain()
-                mVelocityTracker!!.addMovement(motionEvent)
+                mVelocityTracker?.addMovement(motionEvent)
 
                 // Execute your Runnable after 600 milliseconds = 0.5 second
                 handler.postDelayed(runnable, 600)

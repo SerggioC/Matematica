@@ -231,4 +231,6 @@
     <string name="pref_summary_hisory_size">Limit the number of results to keep in history</string>
     <string name="prime_number">Prime Number!</string>
     <string name="not_prime_number">Not a prime number</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="cralytics_title_settings">Enable Error Reporting</string>
 </resources>

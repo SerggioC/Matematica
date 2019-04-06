@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.LinearLayoutCompat
 import com.sergiocruz.MatematicaPro.R
 
+/** onActionDone() */
 interface OnEditorActions {
     fun onActionDone()
 }
@@ -56,12 +57,10 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
 
 }
 
-
-fun ViewGroup.limit(historyLimit: Int) {
+infix fun ViewGroup.limit(historyLimit: Int) {
     if (childCount == 0 || historyLimit == 0) return
     if (childCount >= historyLimit) removeViewAt(historyLimit - 1)
 }
-
 
 fun getMatchWrapParams() = LinearLayout.LayoutParams(
     LinearLayoutCompat.LayoutParams.MATCH_PARENT,

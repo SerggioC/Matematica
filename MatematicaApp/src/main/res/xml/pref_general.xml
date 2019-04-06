@@ -32,17 +32,17 @@
     <PreferenceCategory android:title="@string/calc_mode">
 
         <SwitchPreference
-            android:icon="@drawable/force"
             android:defaultValue="@bool/pref_default_brute_force"
+            android:icon="@drawable/force"
             android:key="@string/pref_key_brute_force"
-            android:title="@string/pref_title_brute_force"
-            android:summary="@string/pref_summary_brute_force" />
+            android:summary="@string/pref_summary_brute_force"
+            android:title="@string/pref_title_brute_force" />
         <SwitchPreference
-            android:icon="@drawable/probabilistic"
             android:defaultValue="@bool/pref_default_probabilistic"
+            android:icon="@drawable/probabilistic"
             android:key="@string/pref_key_probabilistic"
-            android:title="@string/pref_title_probabilistic"
-            android:summary="@string/pref_summary_probabilistic" />
+            android:summary="@string/pref_summary_probabilistic"
+            android:title="@string/pref_title_probabilistic" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/other">
@@ -55,8 +55,8 @@
             android:key="@string/pref_key_history_size"
             android:summary="@string/pref_summary_hisory_size"
             android:title="@string/pref_title_history_size" />
-    </PreferenceCategory>
 
+    </PreferenceCategory>
 
 </PreferenceScreen>
 
