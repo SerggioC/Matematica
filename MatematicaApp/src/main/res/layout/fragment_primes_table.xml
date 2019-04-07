@@ -1,7 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraintLayout"
+    android:id="@+id/primesTableRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -92,8 +92,11 @@
             android:layout_height="38dp"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
             android:background="@drawable/edittext_statelist"
             android:hint="@string/valor_maximo"
+            android:paddingStart="4dp"
             android:paddingLeft="4dp"
             app:errorEnabled="true"
             app:hintEnabled="true"
@@ -215,7 +218,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/historyGridRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"

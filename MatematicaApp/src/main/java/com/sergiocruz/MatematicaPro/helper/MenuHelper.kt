@@ -110,7 +110,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
                         mActivity.getString(R.string.open_folder)
                     )
                 )
-            } catch (e: android.content.ActivityNotFoundException) {
+            } catch (e: java.lang.Exception) {
                 showCustomToast(
                     mActivity,
                     mActivity.getString(R.string.error_no_file_manager),
@@ -287,37 +287,54 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         return views
     }
 
-    fun expandIt(view: View) {
+    fun expandIt(view: View, newHeight: Int?) {
         view.measure(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val targetHeight = view.measuredHeight
+
+        val targetHeight = newHeight ?: view.measuredHeight
+
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         view.layoutParams.height = 1
         view.visibility = View.VISIBLE
-        val a = object : Animation() {
+        val animation = object : Animation() {
+
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                view.layoutParams.height = if (interpolatedTime == 1f)
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                else
-                    (targetHeight * interpolatedTime).toInt()
+                view.layoutParams.height = (targetHeight * interpolatedTime).toInt() + 1
                 view.requestLayout()
             }
 
-            override fun willChangeBounds(): Boolean {
-                return true
-            }
+            override fun willChangeBounds() = true
         }
-        // 1dp/ms
-        a.duration =
-            (targetHeight / view.context.resources.displayMetrics.density).toInt().toLong()
-        view.startAnimation(a)
+
+        var animating = false
+
+        animation.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                animating = false
+                view.setTag(R.id.expanded, true)
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+                animating = true
+            }
+        })
+
+        animation.duration =
+            (targetHeight / view.context.resources.displayMetrics.density).toLong() * 3
+        if (animating.not()) {
+            view.startAnimation(animation)
+        }
     }
 
     fun collapseIt(view: View) {
         val initialHeight = view.measuredHeight
         val animation = object : Animation() {
+
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
                 if (interpolatedTime == 1f) {
                     view.visibility = View.GONE
@@ -328,14 +345,29 @@ object MenuHelper : MainActivity.PermissionResultInterface {
                 }
             }
 
-            override fun willChangeBounds(): Boolean {
-                return true
-            }
+            override fun willChangeBounds() = true
         }
-        // 1dp/ms
+        var animating = false
+
         animation.duration =
-            (initialHeight / view.context.resources.displayMetrics.density).toInt().toLong()
-        view.startAnimation(animation)
+            (initialHeight / view.context.resources.displayMetrics.density).toLong() * 3
+        animation.setAnimationListener(object: Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                animating = false
+                view.setTag(R.id.expanded, false)
+            }
+
+            override fun onAnimationStart(animation: Animation?) {
+                animating = true
+            }
+        })
+
+        if (animating.not()) {
+            view.startAnimation(animation)
+        }
     }
 }
 

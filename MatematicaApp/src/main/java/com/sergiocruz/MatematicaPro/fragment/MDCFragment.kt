@@ -463,7 +463,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                 (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
             if (!isExpanded[0]) {
                 (view as TextView).text = ssb_hide_expl
-                expandIt(explView)
+                expandIt(explView, null)
                 isExpanded[0] = true
 
             } else if (isExpanded[0]) {

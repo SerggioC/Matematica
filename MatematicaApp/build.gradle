@@ -14,8 +14,8 @@ android {
         applicationId 'com.sergiocruz.MatematicaPro'
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 19
-        versionName "4.0"
+        versionCode 20
+        versionName "4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -75,22 +75,14 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
+    // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
 
     implementation 'com.google.android.gms:play-services-location:16.0.0'
 
-    // Stetho
-    implementation 'com.facebook.stetho:stetho:1.5.0'
-
-    // LeakCanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
-
     // Timber logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
-    implementation "com.github.ksoichiro:android-observablescrollview:1.6.0"
 
 }
 

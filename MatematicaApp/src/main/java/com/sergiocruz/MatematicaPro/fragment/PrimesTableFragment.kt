@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.net.Uri
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -14,14 +15,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.*
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks
-import com.github.ksoichiro.android.observablescrollview.ScrollState
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
@@ -40,6 +40,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.math.BigInteger
 import java.text.DecimalFormat
 
@@ -110,46 +111,46 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         min_pt.watchThis(this)
         max_pt.watchThis(this)
 
-        historyGridRecyclerView.setScrollViewCallbacks(object: ObservableScrollViewCallbacks {
-            override fun onUpOrCancelMotionEvent(scrollState: ScrollState?) {
-                if (scrollState == ScrollState.UP) {
-                    collapseIt(cardViewMain)
+        var initialHeight = cardViewMain.height
+
+        primesTableRoot.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                initialHeight = cardViewMain.measuredHeight
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    primesTableRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
-
-            }
-
-            override fun onScrollChanged(scrollY: Int, firstScroll: Boolean, dragging: Boolean) {
-
-            }
-
-            override fun onDownMotionEvent() {
-                expandIt(cardViewMain)
-
             }
         })
 
-//        historyGridRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            var state = SCROLL_STATE_IDLE
-//            var locked = false
-//
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//                if (dy > 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
-//                    collapseIt(cardViewMain)
-//                    locked = true
-//                } else if (dy < 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
-//                    expandIt(cardViewMain)
-//                    locked = true
-//                } else if (state == SCROLL_STATE_SETTLING) {
-//                    locked = false
-//                }
-//            }
-//
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                this.state = newState
-//            }
-//        })
+        cardViewMain.setTag(R.id.expanded, true)
+
+        historyGridRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var state = SCROLL_STATE_IDLE
+            var locked = false
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
+                    if ((cardViewMain.getTag(R.id.expanded) as Boolean?) == true) {
+                        Timber.i("collapsing")
+                        collapseIt(cardViewMain)
+                        locked = true
+                    }
+                } else if (dy < 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
+                    if ((cardViewMain.getTag(R.id.expanded) as Boolean?) == false) {
+                        Timber.d("expanding")
+                        expandIt(cardViewMain, initialHeight)
+                        locked = true
+                    }
+                } else if (state == SCROLL_STATE_SETTLING) {
+                    locked = false
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                this.state = newState
+            }
+        })
 
     }
 

@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
-    // toolbar titles respected to selected nav menu item
     private lateinit var activityTitles: Array<String>
     private lateinit var mHandler: Handler
 
@@ -176,37 +175,21 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         super.onBackPressed()
     }
 
-    fun primality(view: View) {
-        loadFragment(1)
-    }
+    fun primality(view: View) = loadFragment(1)
 
-    fun mmc(view: View) {
-        loadFragment(2)
-    }
+    fun mmc(view: View) = loadFragment(2)
 
-    fun mdc(view: View) {
-        loadFragment(3)
-    }
+    fun mdc(view: View) = loadFragment(3)
 
-    fun fatorizar(view: View) {
-        loadFragment(4)
-    }
+    fun fatorizar(view: View) = loadFragment(4)
 
-    fun divisores(view: View) {
-        loadFragment(5)
-    }
+    fun divisores(view: View) = loadFragment(5)
 
-    fun primesTable(view: View) {
-        loadFragment(6)
-    }
+    fun primesTable(view: View) = loadFragment(6)
 
-    fun multiplos(view: View) {
-        loadFragment(7)
-    }
+    fun multiplos(view: View) = loadFragment(7)
 
-    fun primorial(view: View) {
-        loadFragment(8)
-    }
+    fun primorial(view: View) = loadFragment(8)
 
     companion object {
         // tags used to attach the fragments

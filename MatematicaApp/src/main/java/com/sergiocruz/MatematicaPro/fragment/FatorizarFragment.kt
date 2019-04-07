@@ -294,7 +294,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
                 if (!isExpanded[0]) {
                     (view as TextView).text = ssbHideExpl
-                    expandIt(explView)
+                    expandIt(explView, null)
                     isExpanded[0] = true
 
                 } else if (isExpanded[0]) {
