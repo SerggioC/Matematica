@@ -37,6 +37,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
+    override var title: Int = R.string.nav_primorial
+    override var index: Int = 8
+
     override fun getHelpTextId() = R.string.help_text_primorial
 
     override fun getHelpMenuTitleId() = R.string.action_ajuda_primorial

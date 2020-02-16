@@ -58,7 +58,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private var asyncTask: AsyncTask<Long, Float, ResultWrapper> = LongOperation()
-    private var heightDp: Int = 0
     private var minValue: Long? = 0L
     private var maxValue: Long? = 50L
     private var bruteForceMode: Boolean = true
@@ -66,6 +65,9 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var progressBarParams: ConstraintLayout.LayoutParams
     private lateinit var tableData: ResultWrapper
+
+    override var title: Int = R.string.primetable_title
+    override var index: Int = 6
 
     override fun getHelpTextId(): Int? = null
 
@@ -93,7 +95,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getSharedPreferences()
         writeCalcMode()
-        heightDp = (4 * scale + 0.5f).toInt()
 
         switchPrimos.setOnCheckedChangeListener { _, isChecked ->
             if (::tableAdapter.isInitialized)
@@ -111,12 +112,17 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         min_pt.watchThis(this)
         max_pt.watchThis(this)
 
-        var initialHeight = cardViewMain.height
+        var initialHeight = 0
+
+        numPrimesTextView.visibility = View.VISIBLE
+        performanceTextView.visibility = View.VISIBLE
 
         primesTableRoot.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 initialHeight = cardViewMain.measuredHeight
+                numPrimesTextView.visibility = View.GONE
+                performanceTextView.visibility = View.GONE
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     primesTableRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
@@ -155,24 +161,15 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private fun writeCalcMode() {
-        calcMode.setText(
-            if (bruteForceMode)
-                R.string.pref_title_brute_force
-            else
-                R.string.pref_title_probabilistic
-        )
+        calcMode.setText(if (bruteForceMode) R.string.pref_title_brute_force else R.string.pref_title_probabilistic)
     }
 
     override fun onActionDone() = makePrimesTable()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
         val childCount = historyGridRecyclerView.childCount
-        if (id == R.id.action_save_image_pt) {
-            if (childCount > 0) {
+        when (item.itemId) {
+            R.id.action_save_image_pt -> if (childCount > 0) {
                 checkPermissionsWithCallback(activity as Activity) {
                     val imgPath = saveViewToImage(historyGridRecyclerView, 0, true)
                     if (imgPath != null) {
@@ -184,9 +181,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             } else {
                 showCustomToast(context, getString(R.string.empty_table), WARNING)
             }
-        }
-        if (id == R.id.action_share_history_image_pt) {
-            if (childCount > 0) {
+            R.id.action_share_history_image_pt -> if (childCount > 0) {
                 checkPermissionsWithCallback(activity as Activity) {
                     val fileUris = ArrayList<Uri>(1)
                     val imgPath = saveViewToImage(historyGridRecyclerView, 0, true)
@@ -195,8 +190,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                         val sendIntent = Intent()
                         sendIntent.action = Intent.ACTION_SEND_MULTIPLE
                         sendIntent.putExtra(
-                            Intent.EXTRA_TEXT, getString(R.string.app_long_description) +
-                                    BuildConfig.VERSION_NAME + "\n"
+                            Intent.EXTRA_TEXT,
+                            getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n"
                         )
                         sendIntent.type = "image/jpeg"
                         sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
@@ -206,7 +201,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                                 resources.getString(R.string.app_name)
                             )
                         )
-
                     } else {
                         showCustomToast(context, getString(R.string.errorsavingimg), ERROR)
                     }
@@ -214,10 +208,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             } else {
                 showCustomToast(context, getString(R.string.empty_table), WARNING)
             }
-        }
-        // Partilhar tabela como texto
-        if (id == R.id.action_share_history) {
-            if (::tableData.isInitialized) {
+            // Partilhar tabela como texto
+            R.id.action_share_history -> if (::tableData.isInitialized) {
                 if (tableData.primesTable.isNotEmpty()) {
                     val primesString =
                         "${getString(R.string.table_between)} $minValue ${getString(R.string.and)} $maxValue:\n${tableData.primesTable}"
@@ -233,20 +225,15 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             } else {
                 showCustomToast(context, getString(R.string.no_data))
             }
-        }
-
-        if (id == R.id.action_clear_all_history) {
-            historyGridRecyclerView.adapter = null
-            min_pt.text = Editable.Factory().newEditable("1")
-            max_pt.text = Editable.Factory().newEditable("50")
-            numPrimesTextView.visibility = GONE
-            performanceTextView.visibility = GONE
-        }
-        if (id == R.id.action_about) {
-            startActivity(Intent(context, AboutActivity::class.java))
-        }
-        if (id == R.id.action_settings) {
-            startActivity(Intent(context, SettingsActivity::class.java))
+            R.id.action_clear_all_history -> {
+                historyGridRecyclerView.adapter = null
+                min_pt.text = Editable.Factory().newEditable("1")
+                max_pt.text = Editable.Factory().newEditable("50")
+                numPrimesTextView.visibility = GONE
+                performanceTextView.visibility = GONE
+            }
+            R.id.action_about -> startActivity(Intent(context, AboutActivity::class.java))
+            R.id.action_settings -> startActivity(Intent(context, SettingsActivity::class.java))
         }
         return true
     }
@@ -580,7 +567,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@PrimesTableFragment.isVisible) {
                 val progress: Float = values[0] ?: 0.0f
-                progressBarParams.width = Math.round(progress * cardViewMain.width).toInt()
+                progressBarParams.width = Math.round(progress * cardViewMain.width)
                 progressBar.layoutParams = progressBarParams
             }
         }

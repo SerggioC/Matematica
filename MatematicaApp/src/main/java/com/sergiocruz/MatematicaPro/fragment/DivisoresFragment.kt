@@ -29,6 +29,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     internal var num: Long = 0
     private var startTime: Long = 0
 
+    override var title: Int = R.string.divisors
+    override var index: Int = 5
+
     override fun getLayoutIdForFragment() = R.layout.fragment_divisores
 
     override fun onActionDone() = calcDivisors()

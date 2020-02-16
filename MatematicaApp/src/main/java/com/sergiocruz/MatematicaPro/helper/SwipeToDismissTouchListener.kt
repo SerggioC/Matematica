@@ -143,13 +143,12 @@ class SwipeToDismissTouchListener(
         }
         popupLayout.action_clipboard.setOnClickListener {
             // aceder ao clipboard manager
-            val clipboard =
-                mActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboard = mActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             var hasEqualItem = false
             if (clipboard.hasPrimaryClip()) {
-                val clipItems = clipboard.primaryClip!!.itemCount
+                val clipItems = clipboard.primaryClip?.itemCount ?: 0
                 for (i in 0 until clipItems) {
-                    if (clipboard.primaryClip!!.getItemAt(i).text.toString() == formatedTextFromTextView) {
+                    if (clipboard.primaryClip?.getItemAt(i)?.text?.toString() == formatedTextFromTextView) {
                         hasEqualItem = true
                     }
                 }
@@ -161,7 +160,7 @@ class SwipeToDismissTouchListener(
                 )
             } else {
                 val clip = ClipData.newPlainText("Clipboard", formatedTextFromTextView)
-                clipboard.primaryClip = clip
+                clipboard.setPrimaryClip(clip)
                 showCustomToast(mView.context, mView.context.getString(R.string.copied_toclipboard))
             }
             customPopUp.dismiss()
@@ -176,17 +175,9 @@ class SwipeToDismissTouchListener(
         popupLayout.findViewById<View>(R.id.action_share_result).setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(
-                Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) +
-                        BuildConfig.VERSION_NAME + "\n" + formatedTextFromTextView
-            )
+            sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n" + formatedTextFromTextView)
             sendIntent.type = "text/plain"
-            mActivity.startActivity(
-                Intent.createChooser(
-                    sendIntent,
-                    mActivity.resources.getString(R.string.app_name)
-                )
-            )
+            mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
             customPopUp.dismiss()
         }
 

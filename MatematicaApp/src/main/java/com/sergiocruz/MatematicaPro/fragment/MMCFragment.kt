@@ -48,6 +48,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     private lateinit var language: String
     private lateinit var arrayOfEditTexts: Array<EditText>
 
+    override var title: Int = R.string.mmc_title
+    override var index: Int = 2
+
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
      */
@@ -77,9 +80,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     //    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val f_colors = resources.getIntArray(R.array.f_colors_xml)
+        val xmlColors = resources.getIntArray(R.array.f_colors_xml)
         fColors = ArrayList()
-        for (f_color in f_colors) fColors.add(f_color)
+        for (color in xmlColors) fColors.add(color)
         language = Locale.getDefault().displayLanguage
     }
 
@@ -170,28 +173,28 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     }
 
     private fun addMMC() {
-        val ll_34_visibe = linear_layout_34.visibility == View.VISIBLE
-        val f3_visible = frame_3.visibility == View.VISIBLE
-        val f4_visible = frame_4.visibility == View.VISIBLE
-        val ll_56_visibe = linear_layout_56.visibility == View.VISIBLE
-        val f5_visible = frame_5.visibility == View.VISIBLE
-        val f6_visible = frame_6.visibility == View.VISIBLE
-        val ll_78_visibe = linear_layout_78.visibility == View.VISIBLE
-        val f7_visible = frame_7.visibility == View.VISIBLE
-        val f8_visible = frame_8.visibility == View.VISIBLE
+        val ll34visible = linear_layout_34.visibility == View.VISIBLE
+        val f3visible = frame_3.visibility == View.VISIBLE
+        val f4visible = frame_4.visibility == View.VISIBLE
+        val ll56visible = linear_layout_56.visibility == View.VISIBLE
+        val f5visible = frame_5.visibility == View.VISIBLE
+        val f6visible = frame_6.visibility == View.VISIBLE
+        val ll78visible = linear_layout_78.visibility == View.VISIBLE
+        val f7visible = frame_7.visibility == View.VISIBLE
+        val f8visible = frame_8.visibility == View.VISIBLE
 
 
-        if (!ll_34_visibe || f3_visible || f4_visible) {
+        if (!ll34visible || f3visible || f4visible) {
             linear_layout_34.visibility = View.VISIBLE
 
-            if (!f3_visible) {
+            if (!f3visible) {
                 frame_3.visibility = View.VISIBLE
                 button_remove_mmc.visibility = View.VISIBLE
                 mmc_num_2.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mmc_num_3.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (!f4_visible) {
+            if (!f4visible) {
                 frame_4.visibility = View.VISIBLE
                 mmc_num_3.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mmc_num_4.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -199,32 +202,32 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             }
         }
 
-        if (!ll_56_visibe || f5_visible || f6_visible) {
+        if (!ll56visible || f5visible || f6visible) {
             linear_layout_56.visibility = View.VISIBLE
 
-            if (!f5_visible) {
+            if (!f5visible) {
                 frame_5.visibility = View.VISIBLE
                 mmc_num_4.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mmc_num_5.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (!f6_visible) {
+            if (!f6visible) {
                 frame_6.visibility = View.VISIBLE
                 mmc_num_5.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mmc_num_6.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
         }
-        if (!ll_78_visibe || f7_visible || f8_visible) {
+        if (!ll78visible || f7visible || f8visible) {
             linear_layout_78.visibility = View.VISIBLE
 
-            if (!f7_visible) {
+            if (!f7visible) {
                 frame_7.visibility = View.VISIBLE
                 mmc_num_6.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mmc_num_7.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (!f8_visible) {
+            if (!f8visible) {
                 frame_8.visibility = View.VISIBLE
                 mmc_num_7.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mmc_num_8.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -237,17 +240,17 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     private fun removeMMC() {
         val ll34Visibe = linear_layout_34.visibility == View.VISIBLE
-        val f3_visible = frame_3.visibility == View.VISIBLE
-        val f4_visible = frame_4.visibility == View.VISIBLE
+        val f3visible = frame_3.visibility == View.VISIBLE
+        val f4visible = frame_4.visibility == View.VISIBLE
         val ll56Visible = linear_layout_56.visibility == View.VISIBLE
-        val f5_visible = frame_5.visibility == View.VISIBLE
-        val f6_visible = frame_6.visibility == View.VISIBLE
+        val f5visible = frame_5.visibility == View.VISIBLE
+        val f6visible = frame_6.visibility == View.VISIBLE
         val ll78Visible = linear_layout_78.visibility == View.VISIBLE
-        val f7_visible = frame_7.visibility == View.VISIBLE
-        val f8_visible = frame_8.visibility == View.VISIBLE
+        val f7visible = frame_7.visibility == View.VISIBLE
+        val f8visible = frame_8.visibility == View.VISIBLE
 
         if (ll78Visible) {
-            if (f8_visible) {
+            if (f8visible) {
                 mmc_num_8.setText("")
                 frame_8.visibility = View.GONE
                 mmc_num_7.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -255,7 +258,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 button_add_mmc.visibility = View.VISIBLE
                 return
             }
-            if (f7_visible) {
+            if (f7visible) {
                 mmc_num_7.setText("")
                 linear_layout_78.visibility = View.GONE
                 frame_7.visibility = View.GONE
@@ -266,14 +269,14 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         if (ll56Visible) {
-            if (f6_visible) {
+            if (f6visible) {
                 mmc_num_6.setText("")
                 frame_6.visibility = View.GONE
                 mmc_num_5.imeOptions = EditorInfo.IME_ACTION_DONE
                 mmc_num_6.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (f5_visible) {
+            if (f5visible) {
                 mmc_num_5.setText("")
                 linear_layout_56.visibility = View.GONE
                 frame_5.visibility = View.GONE
@@ -284,7 +287,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         if (ll34Visibe) {
-            if (f4_visible) {
+            if (f4visible) {
                 mmc_num_4.setText("")
                 frame_4.visibility = View.GONE
                 frame_4.alpha = 0f
@@ -292,7 +295,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 mmc_num_4.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (f3_visible) {
+            if (f3visible) {
                 mmc_num_3.setText("")
                 frame_3.visibility = View.GONE
                 frame_3.alpha = 0f
@@ -453,25 +456,25 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         shouldShowExplanation: String?
     ) {
 
-        val ssb_hide_expl = SpannableStringBuilder(getString(R.string.hide_explain))
-        ssb_hide_expl.setSpan(
+        val hideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
+        hideExpl.setSpan(
             UnderlineSpan(),
             0,
-            ssb_hide_expl.length - 2,
+            hideExpl.length - 2,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        val ssb_show_expl = SpannableStringBuilder(getString(R.string.explain))
-        ssb_show_expl.setSpan(
+        val showExpl = SpannableStringBuilder(getString(R.string.explain))
+        showExpl.setSpan(
             UnderlineSpan(),
             0,
-            ssb_show_expl.length - 2,
+            showExpl.length - 2,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
         //Linearlayout horizontal com o explainlink e gradiente
-        val ll_horizontal = LinearLayout(activity)
-        ll_horizontal.orientation = HORIZONTAL
-        ll_horizontal.layoutParams = getMatchWrapParams()
+        val llHorizontal = LinearLayout(activity)
+        llHorizontal.orientation = HORIZONTAL
+        llHorizontal.layoutParams = getMatchWrapParams()
         val explainLink = TextView(activity)
         explainLink.tag = "explainLink"
         explainLink.layoutParams = getWrapWrapParams()
@@ -482,38 +485,38 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         //View separator with gradient
         val gradientSeparator = getGradientSeparator(context)
 
-        ll_horizontal.gravity = Gravity.CENTER_VERTICAL
+        llHorizontal.gravity = Gravity.CENTER_VERTICAL
 
         val isExpanded = arrayOf(false)
         explainLink.setOnClickListener { view ->
             val explView =
                 (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
             if (!isExpanded[0]) {
-                (view as TextView).text = ssb_hide_expl
+                (view as TextView).text = hideExpl
                 expandIt(explView, null)
                 isExpanded[0] = true
 
             } else if (isExpanded[0]) {
-                (view as TextView).text = ssb_show_expl
+                (view as TextView).text = showExpl
                 collapseIt(explView)
                 isExpanded[0] = false
             }
         }
 
-        ll_horizontal.addView(explainLink)
-        ll_horizontal.addView(gradientSeparator)
+        llHorizontal.addView(explainLink)
+        llHorizontal.addView(gradientSeparator)
 
         //LL vertical das explicações
-        val ll_vertical_expl = LinearLayout(activity)
-        ll_vertical_expl.tag = "ll_vertical_expl"
-        ll_vertical_expl.layoutParams = getMatchWrapParams()
-        ll_vertical_expl.orientation = LinearLayout.VERTICAL
-        ll_vertical_expl.layoutTransition = LayoutTransition()
+        val verticalExpl = LinearLayout(activity)
+        verticalExpl.tag = "ll_vertical_expl"
+        verticalExpl.layoutParams = getMatchWrapParams()
+        verticalExpl.orientation = LinearLayout.VERTICAL
+        verticalExpl.layoutTransition = LayoutTransition()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             val lt = LayoutTransition()
             lt.enableTransitionType(CHANGE_APPEARING)
             lt.enableTransitionType(CHANGE_DISAPPEARING)
-            ll_vertical_expl.layoutTransition = lt
+            verticalExpl.layoutTransition = lt
         }
         //ProgressBar
         val heightDp = (3 * scale + 0.5f).toInt()
@@ -523,83 +526,83 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         progressBar.layoutParams = layoutParams
 
         //Ponto 1
-        val explainTextView_1 = TextView(activity)
-        explainTextView_1.tag = "explainTextView_1"
+        val explainTextView1 = TextView(activity)
+        explainTextView1.tag = "explainTextView_1"
         val fp = getString(R.string.fatores_primos)
-        val explain_text_1 = getString(R.string.decompor_num) + " " + fp + "\n"
-        val ssb_explain_1 = SpannableStringBuilder(explain_text_1)
-        ssb_explain_1.setSpan(
+        val explainText1 = getString(R.string.decompor_num) + " " + fp + "\n"
+        val ssbExplain1 = SpannableStringBuilder(explainText1)
+        ssbExplain1.setSpan(
             UnderlineSpan(),
-            explain_text_1.length - fp.length - 1,
-            explain_text_1.length - 1,
+            explainText1.length - fp.length - 1,
+            explainText1.length - 1,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        ssb_explain_1.setSpan(
+        ssbExplain1.setSpan(
             ForegroundColorSpan(
                 ContextCompat.getColor(
                     activity!!,
                     R.color.boldColor
                 )
-            ), 0, ssb_explain_1.length, SPAN_EXCLUSIVE_EXCLUSIVE
+            ), 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
-        explainTextView_1.text = ssb_explain_1
-        explainTextView_1.setTag(R.id.texto, "texto")
+        explainTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
+        explainTextView1.text = ssbExplain1
+        explainTextView1.setTag(R.id.texto, "texto")
 
         //Ponto 2
-        val explainTextView_2 = TextView(activity)
-        explainTextView_2.tag = "explainTextView_2"
+        val explainTextView2 = TextView(activity)
+        explainTextView2.tag = "explainTextView_2"
         val comuns = getString(R.string.comuns)
         val ncomuns = getString(R.string.nao_comuns)
         val uma_vez = getString(R.string.uma_vez)
         val maior_exps = getString(R.string.maior_exps)
-        val explain_text_2: String
+        val explainText2: String
         if (language == "português" || language == "español" || language == "français") {
-            explain_text_2 = getString(R.string.escolher) + " " + getString(R.string.os_fatores) +
+            explainText2 = getString(R.string.escolher) + " " + getString(R.string.os_fatores) +
                     " " + comuns + " " + getString(R.string.and) + " " + ncomuns + ", " + uma_vez +
                     ", " + getString(R.string.with_the) + " " + maior_exps + ":\n"
         } else {
-            explain_text_2 = getString(R.string.escolher) + " " + comuns + " " +
+            explainText2 = getString(R.string.escolher) + " " + comuns + " " +
                     getString(R.string.and) + " " + ncomuns + " " + getString(R.string.os_fatores) +
                     ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n"
         }
-        val ssb_explain_2 = SpannableStringBuilder(explain_text_2)
-        ssb_explain_2.setSpan(
+        val ssbExplain2 = SpannableStringBuilder(explainText2)
+        ssbExplain2.setSpan(
             UnderlineSpan(),
-            explain_text_2.indexOf(comuns),
-            explain_text_2.indexOf(comuns) + comuns.length,
+            explainText2.indexOf(comuns),
+            explainText2.indexOf(comuns) + comuns.length,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        ssb_explain_2.setSpan(
+        ssbExplain2.setSpan(
             UnderlineSpan(),
-            explain_text_2.indexOf(ncomuns),
-            explain_text_2.indexOf(ncomuns) + ncomuns.length,
+            explainText2.indexOf(ncomuns),
+            explainText2.indexOf(ncomuns) + ncomuns.length,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        ssb_explain_2.setSpan(
+        ssbExplain2.setSpan(
             UnderlineSpan(),
-            explain_text_2.indexOf(uma_vez),
-            explain_text_2.indexOf(uma_vez) + uma_vez.length,
+            explainText2.indexOf(uma_vez),
+            explainText2.indexOf(uma_vez) + uma_vez.length,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        ssb_explain_2.setSpan(
+        ssbExplain2.setSpan(
             UnderlineSpan(),
-            explain_text_2.indexOf(maior_exps),
-            explain_text_2.indexOf(maior_exps) + maior_exps.length,
+            explainText2.indexOf(maior_exps),
+            explainText2.indexOf(maior_exps) + maior_exps.length,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
         //ssb_explain_2.setSpan(new StyleSpan(BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb_explain_2.setSpan(
+        ssbExplain2.setSpan(
             ForegroundColorSpan(
                 ContextCompat.getColor(
                     activity!!,
                     R.color.boldColor
                 )
-            ), 0, ssb_explain_2.length, SPAN_EXCLUSIVE_EXCLUSIVE
+            ), 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
-        explainTextView_2.text = ssb_explain_2
-        explainTextView_2.setTag(R.id.texto, "texto")
+        explainTextView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
+        explainTextView2.text = ssbExplain2
+        explainTextView2.setTag(R.id.texto, "texto")
 
         //Ponto 3
         val explainTextView_3 = TextView(activity)
@@ -627,20 +630,20 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         explainTextView_3.text = ssb_explain_3
         explainTextView_3.setTag(R.id.texto, "texto")
 
-        ll_vertical_expl.addView(explainTextView_1)
-        ll_vertical_expl.addView(explainTextView_2)
-        ll_vertical_expl.addView(explainTextView_3)
-        llVerticalRoot.addView(ll_horizontal)
+        verticalExpl.addView(explainTextView1)
+        verticalExpl.addView(explainTextView2)
+        verticalExpl.addView(explainTextView_3)
+        llVerticalRoot.addView(llHorizontal)
         llVerticalRoot.addView(progressBar)
-        llVerticalRoot.addView(ll_vertical_expl)
+        llVerticalRoot.addView(verticalExpl)
 
         if (shouldShowExplanation == "-1") {  //Always show Explanation
-            ll_vertical_expl.visibility = View.VISIBLE
-            explainLink.text = ssb_hide_expl
+            verticalExpl.visibility = View.VISIBLE
+            explainLink.text = hideExpl
             isExpanded[0] = true
         } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
-            ll_vertical_expl.visibility = View.GONE
-            explainLink.text = ssb_show_expl
+            verticalExpl.visibility = View.GONE
+            explainLink.text = showExpl
             isExpanded[0] = false
         }
         cardview.addView(llVerticalRoot)

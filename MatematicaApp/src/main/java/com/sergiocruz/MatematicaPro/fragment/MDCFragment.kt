@@ -53,6 +53,9 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         getBasePreferences()
     }
 
+    override var title: Int = R.string.mdc_title
+    override var index: Int = 3
+
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
      */

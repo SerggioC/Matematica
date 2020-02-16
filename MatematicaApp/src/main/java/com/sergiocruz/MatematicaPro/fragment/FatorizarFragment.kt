@@ -45,6 +45,10 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
+    override var title = R.string.factorize
+
+    override var index = 4
+
     override fun getHelpTextId(): Int? = R.string.help_text_fatores
 
     override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_fatorizar

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="com.sergiocruz.MatematicaPro.activity.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -38,8 +37,8 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="@string/app_name" />
-        </androidx.appcompat.widget.Toolbar>
 
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

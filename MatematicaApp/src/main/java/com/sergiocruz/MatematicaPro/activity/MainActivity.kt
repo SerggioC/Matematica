@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         if (allPermissionsGranted(this).not()) getRuntimePermissions(this)
 
         when (savedInstanceState) {
-            null -> loadFragment(0)
+            null -> loadFragment(HomeFragment())
             else -> return
         }
 
@@ -62,23 +62,20 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
      * Returns respected fragment that user
      * selected from navigation menu
      */
-    private fun loadFragment(index: Int) {
+    private fun loadFragment(fragment: BaseFragment) {
         //remove dot in menu
-        nav_view.menu.getItem(navItemIndex).actionView = null
-
-        navItemIndex = index
+        nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
         // selecting appropriate nav menu item
-        nav_view.menu.getItem(index).isChecked = true
-        nav_view.menu.getItem(index).setActionView(R.layout.menu_dot)
+        nav_view.menu.getItem(fragment.index).isChecked = true
+        nav_view.menu.getItem(fragment.index).setActionView(R.layout.menu_dot)
 
         // set toolbar title
-        //supportActionBar?.title = activityTitles[index]
-        toolbarTitle.text = activityTitles[index]
+        toolbarTitle.setText(fragment.title)
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer_layout
-        if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAGS[index]) != null) {
+        if (supportFragmentManager.findFragmentByTag(fragment::class.java.simpleName) != null) {
             drawer_layout.closeDrawers()
             return
         }
@@ -89,10 +86,9 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         // This effect can be seen in GMail app
         mHandler.post {
             // update the main content by replacing fragments
-            val fragment = FRAGMENTS[index]
             val fragmentTransaction = supportFragmentManager.beginTransaction()
             fragmentTransaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-            fragmentTransaction.replace(R.id.frame, fragment, FRAGMENT_TAGS[index])
+            fragmentTransaction.replace(R.id.frame, fragment, fragment::class.java.simpleName)
             fragmentTransaction.commitAllowingStateLoss()
         }
 
@@ -101,6 +97,12 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         // refresh toolbar menu
         invalidateOptionsMenu()
+    }
+
+    private fun getCurrentFragmentIndex(): Int {
+        val fragmentList = supportFragmentManager.fragments
+        val stackSize = fragmentList.size
+        return (fragmentList.getOrNull(stackSize - 1) as? BaseFragment)?.index ?: 0
     }
 
     private fun setUpNavigationView() {
@@ -113,41 +115,31 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         nav_view.setNavigationItemSelectedListener { menuItem ->
 
             //remove dot in menu
-            nav_view.menu.getItem(navItemIndex).actionView = null
+            nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
-            //Check to see which item was being clicked and perform appropriate action
-            // launch new intent instead of loading fragment
-            // launch new intent instead of loading fragment
             when (menuItem.itemId) {
-                //Replacing the main content with ContentFragment Which is our Inbox View;
-                R.id.home -> navItemIndex = 0
-                R.id.nav_primality -> navItemIndex = 1
-                R.id.nav_mmc -> navItemIndex = 2
-                R.id.nav_mdc -> navItemIndex = 3
-                R.id.nav_fatorizar -> navItemIndex = 4
-                R.id.nav_divisores -> navItemIndex = 5
-                R.id.nav_prime_table -> navItemIndex = 6
-                R.id.nav_multiplos -> navItemIndex = 7
-                R.id.nav_primorial -> navItemIndex = 8
+                R.id.home -> loadFragment(HomeFragment())
+                R.id.nav_primality -> loadFragment(PrimalityFragment())
+                R.id.nav_mmc -> loadFragment(MMCFragment())
+                R.id.nav_mdc -> loadFragment(MDCFragment())
+                R.id.nav_fatorizar -> loadFragment(FatorizarFragment())
+                R.id.nav_divisores -> loadFragment(DivisoresFragment())
+                R.id.nav_prime_table -> loadFragment(PrimesTableFragment())
+                R.id.nav_multiplos -> loadFragment(MultiplosFragment())
+                R.id.nav_primorial -> loadFragment(PrimorialFragment())
                 R.id.nav_settings -> startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
                 R.id.nav_about -> startActivity(Intent(this@MainActivity, AboutActivity::class.java))
                 R.id.nav_send -> startActivity(Intent(this@MainActivity, SendMailActivity::class.java))
-                else -> navItemIndex = 0
+                else -> loadFragment(HomeFragment())
             }
 
             //Checking if the item is in checked state or not, if not make it in checked state
             menuItem.isChecked = menuItem.isChecked.not()
 
-            loadFragment(navItemIndex)
-
             true
         }
 
-        val actionBarDrawerToggle =
-            ActionBarDrawerToggle(
-                this,
-                drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer
-            )
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer)
 
         //Setting the actionbarToggle to drawer_layout layout
         drawer_layout.addDrawerListener(actionBarDrawerToggle)
@@ -163,62 +155,37 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         }
 
         //remove dot from selected item menu
-        nav_view.menu.getItem(navItemIndex).actionView = null
+        nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
         // checking if user is on other navigation menu
         // rather than home
-        if (navItemIndex != 0) {
-            loadFragment(0)
+        if (getCurrentFragmentIndex() != 0) {
+            loadFragment(HomeFragment())
             return
         }
 
         super.onBackPressed()
     }
 
-    fun primality(view: View) = loadFragment(1)
+    fun primality(view: View) = loadFragment(PrimalityFragment())
 
-    fun mmc(view: View) = loadFragment(2)
+    fun mmc(view: View) = loadFragment(MMCFragment())
 
-    fun mdc(view: View) = loadFragment(3)
+    fun mdc(view: View) = loadFragment(MDCFragment())
 
-    fun fatorizar(view: View) = loadFragment(4)
+    fun fatorizar(view: View) = loadFragment(FatorizarFragment())
 
-    fun divisores(view: View) = loadFragment(5)
+    fun divisores(view: View) = loadFragment(DivisoresFragment())
 
-    fun primesTable(view: View) = loadFragment(6)
+    fun primesTable(view: View) = loadFragment(PrimesTableFragment())
 
-    fun multiplos(view: View) = loadFragment(7)
+    fun multiplos(view: View) = loadFragment(MultiplosFragment())
 
-    fun primorial(view: View) = loadFragment(8)
+    fun primorial(view: View) = loadFragment(PrimorialFragment())
 
     companion object {
-        // tags used to attach the fragments
-        private val FRAGMENT_TAGS = arrayOf(
-            "home",
-            "primality",
-            "mmc",
-            "mdc",
-            "fatorizar",
-            "divisores",
-            "primesTable",
-            "multiplos",
-            "primorial"
-        )
-        private val FRAGMENTS = arrayOf(
-            HomeFragment(),
-            PrimalityFragment(),
-            MMCFragment(),
-            MDCFragment(),
-            FatorizarFragment(),
-            DivisoresFragment(),
-            PrimesTableFragment(),
-            MultiplosFragment(),
-            PrimorialFragment()
-        )
-        // index to identify current nav menu item
-        var navItemIndex = 0
-
         var permissionResultInterface: PermissionResultInterface? = null
     }
 
 }
+

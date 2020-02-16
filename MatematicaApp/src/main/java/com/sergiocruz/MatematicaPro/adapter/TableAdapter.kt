@@ -12,6 +12,10 @@ import kotlinx.android.synthetic.main.table_item.view.*
 
 class TableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var fullTableData: Map<Int, Pair<String, Boolean>>? = null
+    private var primesTableData: Map<Int, Pair<String, Boolean>>? = null
+    private var showAll: Boolean = true
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.table_item, parent, false)
@@ -49,10 +53,6 @@ class TableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemId(position: Int) = position.toLong()
 
     override fun getItemViewType(position: Int) = position
-
-    private var fullTableData: Map<Int, Pair<String, Boolean>>? = null
-    private var primesTableData: Map<Int, Pair<String, Boolean>>? = null
-    private var showAll: Boolean = true
 
     fun swap(
         full: Map<Int, Pair<String, Boolean>>,

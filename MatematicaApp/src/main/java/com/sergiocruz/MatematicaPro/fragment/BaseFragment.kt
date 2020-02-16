@@ -27,7 +27,9 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var shouldShowPerformance: Boolean = true
     var shouldShowExplanation: String = "0"
     var shouldShowColors: Boolean = true
-    var acceptCrashlyticse: Boolean = false
+
+    abstract var title: Int
+    abstract var index: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,11 +66,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             R.id.action_share_history -> shareHistory(activity as Activity)
             R.id.action_share_history_images -> shareHistoryImages(activity as Activity)
             R.id.action_clear_all_history -> removeHistory(activity as Activity)
-            R.id.action_help -> CreateCardView.create(
-                getHistoryLayout(),
-                getHelpTextId(),
-                activity as Activity
-            )
+            R.id.action_help -> CreateCardView.create(getHistoryLayout(), getHelpTextId(), activity as Activity)
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
         }

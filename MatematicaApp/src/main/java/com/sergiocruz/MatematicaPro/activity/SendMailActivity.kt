@@ -11,6 +11,8 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.helper.InfoLevel
 import com.sergiocruz.MatematicaPro.helper.showCustomToast
 import kotlinx.android.synthetic.main.activity_send_mail.*
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 /**
  * Created by sergi on 21/10/2016.
@@ -27,6 +29,15 @@ class SendMailActivity : AppCompatActivity() {
         sendMailButton.setOnClickListener { sendMeMail() }
     }
 
+    var numberOfHits: Int by Delegates.observable(1) { property: KProperty<*>, oldValue: Int, newValue: Int ->
+
+    }
+
+    var numberOfCenas: Double by Delegates.observable(10.1, { property: KProperty<*>, oldValue: Double, newValue: Double ->
+
+    })
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -39,7 +50,7 @@ class SendMailActivity : AppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
-    fun sendMeMail() {
+    private fun sendMeMail() {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.type = "text/plain"
         intent.data = Uri.parse(getString(R.string.app_email)) // only email apps should handle this
@@ -67,7 +78,7 @@ class SendMailActivity : AppCompatActivity() {
         alertDialogBuilder
             .setMessage(R.string.send_it)
             .setCancelable(true)
-            .setPositiveButton(R.string.sim) { dialog, id ->
+            .setPositiveButton(R.string.sim) { dialog, _ ->
                 startActivity(intent)
                 dialog.cancel()
             }

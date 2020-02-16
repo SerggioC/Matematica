@@ -35,6 +35,9 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     private var num: Long = 0
     internal var startTime: Long = 0
 
+    override var title = R.string.nav_multiplos
+    override var index: Int = 7
+
     override fun getHelpTextId() = R.string.help_text_multiplos
 
     override fun getHelpMenuTitleId() = R.string.action_ajuda_multiplos

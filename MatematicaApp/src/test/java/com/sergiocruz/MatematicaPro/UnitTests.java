@@ -16,7 +16,7 @@ import org.junit.Test;
  **/
 public class UnitTests {
 
-
+    @Test
     public int[] gradingStudents(int[] grades) {
         int[] result = new int[grades.length - 1];
 

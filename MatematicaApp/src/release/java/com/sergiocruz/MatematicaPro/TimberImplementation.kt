@@ -4,15 +4,11 @@ import timber.log.Timber
 
 object TimberImplementation {
 
-    private var releaseTree: ReleaseTree? = null
+    private val releaseTree: ReleaseTree by lazy { ReleaseTree() }
 
     fun init() {
-        if (releaseTree == null) {
-            releaseTree = ReleaseTree()
-        } else {
-            Timber.uprootAll()
-        }
-        Timber.plant(releaseTree!!)
+        Timber.uprootAll()
+        Timber.plant(releaseTree)
     }
 
 }

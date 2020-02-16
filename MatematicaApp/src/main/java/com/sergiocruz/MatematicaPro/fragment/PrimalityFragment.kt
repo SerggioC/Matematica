@@ -18,6 +18,9 @@ import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 
 class PrimalityFragment : BaseFragment() {
+    override var title = R.string.primality
+    override var index: Int = 1
+
     override fun getHelpTextId(): Int? = null
 
     override fun getHelpMenuTitleId(): Int? = null
@@ -38,7 +41,7 @@ class PrimalityFragment : BaseFragment() {
         clearButton.setOnClickListener { inputEditText.setText("") }
 
         val imeOptions: Int = inputEditText.imeOptions
-        inputEditText.setOnEditorActionListener { v, actionId, event ->
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == imeOptions) {
                 checkNumberFromInput()
                 return@setOnEditorActionListener true

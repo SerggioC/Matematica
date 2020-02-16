@@ -93,12 +93,12 @@ class SettingsActivity : AppCompatPreferenceActivity() {
         val prefProbabilistic =
             findPreference(getString(R.string.pref_key_probabilistic)) as SwitchPreference
 
-        prefBruteForce.setOnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
+        prefBruteForce.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
             prefBruteForce.isChecked = !prefBruteForce.isChecked
             prefProbabilistic.isChecked = !prefBruteForce.isChecked
             true
         }
-        prefProbabilistic.setOnPreferenceChangeListener { preference: Preference?, newValue: Any? ->
+        prefProbabilistic.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
             prefProbabilistic.isChecked = !prefProbabilistic.isChecked
             prefBruteForce.isChecked = !prefBruteForce.isChecked
             true
