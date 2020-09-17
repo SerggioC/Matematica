@@ -4,7 +4,7 @@ import androidx.cardview.widget.CardView
 import java.math.BigInteger
 import java.util.*
 
-class MyTags internal constructor(
+class MyTags(
     internal var cardView: CardView,
     internal var longNumbers: ArrayList<Long>,
     internal var resultMDC: BigInteger?,

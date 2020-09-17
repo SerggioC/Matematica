@@ -5,6 +5,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -16,10 +19,16 @@ import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
+import java.text.NumberFormat
+import java.util.*
 
+@SuppressLint("LogNotTimber")
 class PrimalityFragment : BaseFragment() {
+
     override var title = R.string.primality
-    override var index: Int = 1
+    override var pageIndex: Int = 1
+
+    private var textWatcher: TextWatcher? = null
 
     override fun getHelpTextId(): Int? = null
 
@@ -40,19 +49,20 @@ class PrimalityFragment : BaseFragment() {
         calculateButton.setOnClickListener { checkNumberFromInput() }
         clearButton.setOnClickListener { inputEditText.setText("") }
 
-        val imeOptions: Int = inputEditText.imeOptions
-        inputEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == imeOptions) {
+        val onEditor = object : OnEditorActions {
+            override fun onActionDone() {
                 checkNumberFromInput()
-                return@setOnEditorActionListener true
             }
-            false
         }
+
+        textWatcher = NumberFormatterTextWatcher(inputEditText, shouldFormatNumbers, onEditor)
+        inputEditText.addTextChangedListener(textWatcher)
+
     }
 
     private fun checkNumberFromInput() {
-        val number = inputEditText.text.toString()
-        val bigNumber = number.toBigIntegerOrNull(10)
+        val number = inputEditText.text.filter { it.isDigit() }.toString()
+        val bigNumber = number.toBigIntegerOrNull()
         if (bigNumber != null) {
             checkIfProbablePrime(bigNumber)
         } else {
@@ -82,7 +92,7 @@ class PrimalityFragment : BaseFragment() {
         cardView.useCompatPadding = true
 
         if (isPrime) {
-            val color = ContextCompat.getColor(context!!, R.color.greener)
+            val color = ContextCompat.getColor(requireContext(), R.color.greener)
             cardView.setCardBackgroundColor(color)
         } else {
             val color = ContextCompat.getColor(requireContext(), R.color.cardsColor)
@@ -98,11 +108,20 @@ class PrimalityFragment : BaseFragment() {
         val textView = TextView(activity)
         textView.layoutParams = getMatchWrapParams()
 
+        val theNumber = if (shouldFormatNumbers) {
+            NumberFormat
+                    .getNumberInstance(Locale.getDefault())
+                    .format(bigNumber)
+        } else {
+            bigNumber.toString()
+        }
+
         //Adicionar o texto com o resultado
-        textView.text = "$bigNumber \n ${
-        if (isPrime)
-            getString(R.string.prime_number) else
-            getString(R.string.not_prime_number)}"
+        textView.text = "$theNumber \n ${
+            if (isPrime)
+                getString(R.string.prime_number) else
+                getString(R.string.not_prime_number)
+        }"
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
         textView.gravity = Gravity.CENTER_HORIZONTAL
@@ -113,19 +132,25 @@ class PrimalityFragment : BaseFragment() {
 
         // Create a generic swipe-to-dismiss touch listener.
         cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardView,
-                activity as Activity,
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?) = true
-                    override fun onDismiss(view: View?) = history.removeView(cardView)
-                })
+                SwipeToDismissTouchListener(
+                        cardView,
+                        activity as Activity,
+                        object : SwipeToDismissTouchListener.DismissCallbacks {
+                            override fun canDismiss(token: Boolean?) = true
+                            override fun onDismiss(view: View?) = history.removeView(cardView)
+                        })
         )
 
         llVerticalRoot.addView(textView)
 
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        inputEditText?.removeTextChangedListener(textWatcher)
     }
 
 }

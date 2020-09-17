@@ -26,15 +26,22 @@ import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import kotlinx.android.synthetic.main.fragment_fatorizar.*
+import kotlinx.android.synthetic.main.fragment_fatorizar.calculateButton
+import kotlinx.android.synthetic.main.fragment_fatorizar.cancelButton
+import kotlinx.android.synthetic.main.fragment_fatorizar.card_view_1
+import kotlinx.android.synthetic.main.fragment_fatorizar.clearButton
+import kotlinx.android.synthetic.main.fragment_fatorizar.history
+import kotlinx.android.synthetic.main.fragment_fatorizar.progressBar
 import java.text.DecimalFormat
 import java.util.*
-import java.util.Map
 
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         getBasePreferences()
     }
+
+    private lateinit var textWatcher: BigNumbersTextWatcher
 
     private var bgOperation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
@@ -47,7 +54,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override var title = R.string.factorize
 
-    override var index = 4
+    override var pageIndex = 4
 
     override fun getHelpTextId(): Int? = R.string.help_text_fatores
 
@@ -55,23 +62,14 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHistoryLayout(): LinearLayout? = history
 
-    override fun onDestroy() {
-        super.onDestroy()
-        cancelAsyncTask(bgOperation, context)
-    }
-
-    private fun resetButtons() {
-        calculateButton.setText(R.string.calculate)
-        calculateButton.isClickable = true
-        cancelButton.visibility = View.GONE
-        progressBar.visibility = View.GONE
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
+        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), this) }
         calculateButton.setOnClickListener { calculatePrimeFactors() }
         clearButton.setOnClickListener { factorizeTextView.setText("") }
-        factorizeTextView.watchThis(this)
+
+        textWatcher = BigNumbersTextWatcher(factorizeTextView, shouldFormatNumbers, this)
+        factorizeTextView.addTextChangedListener(textWatcher)
     }
 
     override fun onOperationCanceled(canceled: Boolean) {
@@ -84,7 +82,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     private fun calculatePrimeFactors() {
         startTime = System.nanoTime()
-        val editnumText = factorizeTextView.text.toString()
+        val editnumText = factorizeTextView.text.digitsOnly()
         val num: Long
 
         if (TextUtils.isEmpty(editnumText)) {
@@ -122,23 +120,23 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     ) {
 
         //criar novo cardview
-        val cardview = ClickableCardView(activity as Activity)
-        cardview.layoutParams = getMatchWrapParams()
-        cardview.preventCornerOverlap = true
+        val cardView = ClickableCardView(activity as Activity)
+        cardView.layoutParams = getMatchWrapParams()
+        cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardview.useCompatPadding = true
+        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
+        cardView.useCompatPadding = true
 
-        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cvColor)
+        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
+        cardView.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
-        history.addView(cardview, 0)
+        history.addView(cardView, 0)
 
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = getMatchWrapParams()
@@ -178,12 +176,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val textViewExplanations = TextView(activity)
             textViewExplanations.layoutParams = getMatchWrapParams()
             textViewExplanations.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            val explain_text_1 = getString(R.string.expl_text_divisores_1)
-            val ssb_explain_1 = SpannableStringBuilder(explain_text_1)
+            val explainText1 = getString(R.string.expl_text_divisores_1)
+            val ssbExplain1 = SpannableStringBuilder(explainText1)
             val boldColorSpan =
-                ForegroundColorSpan(ContextCompat.getColor(activity!!, R.color.boldColor))
-            ssb_explain_1.setSpan(boldColorSpan, 0, ssb_explain_1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            textViewExplanations.text = ssb_explain_1
+                ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor))
+            ssbExplain1.setSpan(boldColorSpan, 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            textViewExplanations.text = ssbExplain1
             textViewExplanations.setTag(R.id.texto, "texto")
             llVerticalExpl.addView(textViewExplanations)
 
@@ -205,7 +203,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             verticalSeparador.orientation = LinearLayout.VERTICAL
             verticalSeparador.setBackgroundColor(
                 ContextCompat.getColor(
-                    activity!!,
+                    requireActivity(),
                     R.color.separatorLineColor
                 )
             )
@@ -279,7 +277,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val explainLink = TextView(activity)
             explainLink.layoutParams = getWrapWrapParams()
             explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
+            explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
 
             val isExpanded = arrayOf(false)
 
@@ -342,7 +340,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             ssbExplain2.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        activity!!,
+                        requireActivity(),
                         R.color.boldColor
                     )
                 ), 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE
@@ -399,16 +397,16 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
         }
 
-        cardview.addView(llVerticalRoot)
+        cardView.addView(llVerticalRoot)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardview.setOnTouchListener(
+        cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
-                cardview,
+                cardView,
                 activity as Activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?) = true
-                    override fun onDismiss(view: View?) = history.removeView(cardview)
+                    override fun onDismiss(view: View?) = history.removeView(cardView)
                 })
         )
 
@@ -435,7 +433,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val divisores = ArrayList<Long>()
             var number: Long = num[0]!!
             var progress: Float?
-            var oldProgress: Float? = 0f
+            var oldProgress = 0f
 
             results.add(number)
 
@@ -453,7 +451,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     results.add(number)
                 }
                 progress = i.toFloat() / (number / i)
-                if (progress - oldProgress!! > 0.1f) {
+                if (progress - oldProgress > 0.1f) {
                     publishProgress(progress, i.toFloat())
                     oldProgress = progress
                 }
@@ -487,9 +485,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
         }
 
-        override fun onCancelled(parcial: ArrayList<ArrayList<Long>>) {
+        override fun onCancelled(parcial: ArrayList<ArrayList<Long>>?) {
             super.onCancelled(parcial)
-            if (this@FatorizarFragment.isVisible) {
+            if (this@FatorizarFragment.isVisible && parcial != null) {
                 processData(parcial, true)
             }
         }
@@ -716,6 +714,23 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         resetButtons()
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        factorizeTextView.removeTextChangedListener(textWatcher)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancelAsyncTask(bgOperation, context)
+    }
+
+    private fun resetButtons() {
+        calculateButton.setText(R.string.calculate)
+        calculateButton.isClickable = true
+        cancelButton.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
 }

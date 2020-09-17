@@ -87,12 +87,12 @@ fun showCustomToast(
 //Hide the keyboard
 fun hideKeyboard(activity: Activity?) {
     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm?.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+    imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
 }
 
 fun showKeyboard(activity: Activity?) {
     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm?.showSoftInput(activity.currentFocus, 0)
+    imm.showSoftInput(activity.currentFocus, 0)
 }
 
 fun getGradientSeparator(context: Context?): TextView {

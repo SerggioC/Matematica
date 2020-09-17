@@ -233,4 +233,7 @@
     <string name="not_prime_number">Not a prime number</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="cralytics_title_settings">Enable Error Reporting</string>
+    <string name="no_common_factors">No factors in common</string>
+    <string name="pref_summary_format_numbers">Format numbers with thousands separator</string>
+    <string name="pref_title_format_numbers">Number formatting</string>
 </resources>

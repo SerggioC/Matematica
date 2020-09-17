@@ -233,6 +233,9 @@
     <string name="not_prime_number">N\'est-ce pas un nombre premier</string>
     <string name="prime_number">Nombre premier!</string>
     <string name="privacy_policy">Politique de Confidentialité</string>
+    <string name="no_common_factors">Aucun facteur en commun</string>
+    <string name="pref_summary_format_numbers">Formater les nombres avec un séparateur de milliers</string>
+    <string name="pref_title_format_numbers">Formatage des nombres</string>
 
 </resources>
 

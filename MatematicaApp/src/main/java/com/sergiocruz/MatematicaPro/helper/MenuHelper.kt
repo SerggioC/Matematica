@@ -81,6 +81,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
             pathname = Environment.getExternalStorageDirectory().toString() + File.separator +
                     IMAGES_FOLDER + File.separator + "img" + timeStamp + "_" + index + ".jpg"
             val imageFile = File(pathname)
+            imageFile.parentFile.mkdirs()
             imageFile.createNewFile()
             val fileOutputStream = FileOutputStream(imageFile)
             fileOutputStream.write(byteArrayOutputStream.toByteArray())
@@ -126,7 +127,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         val history: ViewGroup? = activity.findViewById(R.id.history)
         val childCount = history?.childCount
         if (childCount != null && childCount > 0) {
-            history?.removeAllViews()
+            history.removeAllViews()
             showCustomToast(activity, activity.getString(R.string.history_deleted))
         }
     }
@@ -134,7 +135,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
     fun shareHistory(activity: Activity) {
         val historyView = activity.findViewById<ViewGroup>(history)
         val textViewsTagTexto = getViewsByTag(historyView, "texto")
-        if (textViewsTagTexto?.size > 0) {
+        if (textViewsTagTexto.size > 0) {
             var finalText = ""
             for (i in textViewsTagTexto.indices) {
                 if (textViewsTagTexto[i] is TextView) {

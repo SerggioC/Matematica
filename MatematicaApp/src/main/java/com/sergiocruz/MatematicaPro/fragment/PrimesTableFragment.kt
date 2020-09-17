@@ -4,12 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.Point
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
@@ -25,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView.*
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.adapter.TableAdapter
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.ERROR
@@ -43,6 +40,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.math.BigInteger
 import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 /*****
  * Project Matematica
@@ -57,6 +55,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         private const val certainty = 100
     }
 
+    private lateinit var bigNumbersTextWatcherMin: BigNumbersTextWatcher
+    private lateinit var bigNumbersTextWatcherMax: BigNumbersTextWatcher
     private var asyncTask: AsyncTask<Long, Float, ResultWrapper> = LongOperation()
     private var minValue: Long? = 0L
     private var maxValue: Long? = 50L
@@ -67,7 +67,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     private lateinit var tableData: ResultWrapper
 
     override var title: Int = R.string.primetable_title
-    override var index: Int = 6
+    override var pageIndex: Int = 6
 
     override fun getHelpTextId(): Int? = null
 
@@ -103,26 +103,30 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
         cancelButton.setOnClickListener {
             if (asyncTask.status == AsyncTask.Status.RUNNING || status == OperationStatus.Running) {
-                displayCancelDialogBox(context!!, this)
+                displayCancelDialogBox(requireContext(), this)
             }
         }
         createTableBtn.setOnClickListener { makePrimesTable() }
         btn_clear_min.setOnClickListener { min_pt.setText("") }
         btn_clear_max.setOnClickListener { max_pt.setText("") }
-        min_pt.watchThis(this)
-        max_pt.watchThis(this)
+
+        bigNumbersTextWatcherMin = BigNumbersTextWatcher(min_pt, shouldFormatNumbers, this)
+        min_pt.addTextChangedListener(bigNumbersTextWatcherMin)
+
+        bigNumbersTextWatcherMax = BigNumbersTextWatcher(max_pt, shouldFormatNumbers, this)
+        max_pt.addTextChangedListener(bigNumbersTextWatcherMax)
 
         var initialHeight = 0
 
-        numPrimesTextView.visibility = View.VISIBLE
-        performanceTextView.visibility = View.VISIBLE
+        numPrimesTextView.visibility = VISIBLE
+        performanceTextView.visibility = VISIBLE
 
         primesTableRoot.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 initialHeight = cardViewMain.measuredHeight
-                numPrimesTextView.visibility = View.GONE
-                performanceTextView.visibility = View.GONE
+                numPrimesTextView.visibility = GONE
+                performanceTextView.visibility = GONE
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     primesTableRoot.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
@@ -173,7 +177,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 checkPermissionsWithCallback(activity as Activity) {
                     val imgPath = saveViewToImage(historyGridRecyclerView, 0, true)
                     if (imgPath != null) {
-                        openFolderSnackBar(activity!!, getString(R.string.image_saved))
+                        openFolderSnackBar(requireActivity(), getString(R.string.image_saved))
                     } else {
                         showCustomToast(this.context, getString(R.string.errorsavingimg), ERROR)
                     }
@@ -227,13 +231,13 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             }
             R.id.action_clear_all_history -> {
                 historyGridRecyclerView.adapter = null
-                min_pt.text = Editable.Factory().newEditable("1")
-                max_pt.text = Editable.Factory().newEditable("50")
+                min_pt.setText("1")
+                max_pt.setText("50")
                 numPrimesTextView.visibility = GONE
                 performanceTextView.visibility = GONE
             }
             R.id.action_about -> startActivity(Intent(context, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(context, SettingsActivity::class.java))
+            R.id.action_settings -> activity?.openSettingsFragment()
         }
         return true
     }
@@ -247,8 +251,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     private fun makePrimesTable() {
         hideKeyboard(activity)
-        val minString = min_pt.text.toString().replace("[^\\d]".toRegex(), "")
-        val maxString = max_pt.text.toString().replace("[^\\d]".toRegex(), "")
+        val minString = min_pt.text.digitsOnly()
+        val maxString = max_pt.text.digitsOnly()
 
         if (TextUtils.isEmpty(minString)) {
             min_pt.apply {
@@ -269,7 +273,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             return
         }
 
-        minValue = minString.toLongOrNull(10)
+        minValue = minString.digitsOnly().toLongOrNull()
         if (minValue == null) {
             min_pt.apply {
                 requestFocus()
@@ -282,7 +286,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             minValue = 1
         }
 
-        maxValue = maxString.toLongOrNull(10)
+        maxValue = maxString.digitsOnly().toLongOrNull()
         if (maxValue == null) {
             max_pt.apply {
                 requestFocus()
@@ -370,7 +374,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     private suspend fun updateProgress(progress: Float) {
         if (this@PrimesTableFragment.isVisible) {
             withContext(Dispatchers.Main) {
-                progressBarParams.width = Math.round(progress * cardViewMain.width)
+                progressBarParams.width = (progress * cardViewMain.width).roundToInt()
                 progressBar.layoutParams = progressBarParams
             }
         }
@@ -404,7 +408,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             indexPrimes++
         }
         val start = BigInteger.valueOf(minValue).nextProbablePrime().toLong()
-        for (i in (minValue + index)..(start - 1)) {
+        for (i in (minValue + index) until start) {
             fullTable[index] = Pair(i.toString(), false)
             index++
         }
@@ -431,7 +435,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 }
                 break
             }
-            for (i in (tracker + 1)..(nextTracker - 1)) {
+            for (i in (tracker + 1) until nextTracker) {
                 fullTable[index] = Pair(i.toString(), false)
                 index++
             }
@@ -456,19 +460,22 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     }
 
     private fun getNumColumns(maxValue: Long): Int {
-        val display = activity?.windowManager?.defaultDisplay
-        val size = Point()
-        display?.getSize(size)
-        val width = size.x  //int height = size.y;
+        val width = resources.displayMetrics.widthPixels
         val numMaxLength = maxValue.toString().length
         val scale = resources.displayMetrics.density
         val numLength = numMaxLength * (18 * scale + 0.5f).toInt() + 8
-        return Math.round((width / numLength).toFloat())
+        return (width / numLength).toFloat().roundToInt()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         cancelAsyncTask(asyncTask, context)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        min_pt.removeTextChangedListener(bigNumbersTextWatcherMin)
+        max_pt.removeTextChangedListener(bigNumbersTextWatcherMax)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -490,7 +497,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         progressBarParams.width = 1
         progressBar.layoutParams = progressBarParams
         progressBar.visibility = VISIBLE
-        hideKeyboard(activity as Activity)
+        hideKeyboard(activity)
         numPrimesTextView.visibility = GONE
         performanceTextView.visibility = GONE
     }
@@ -567,7 +574,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@PrimesTableFragment.isVisible) {
                 val progress: Float = values[0] ?: 0.0f
-                progressBarParams.width = Math.round(progress * cardViewMain.width)
+                progressBarParams.width = (progress * cardViewMain.width).roundToInt()
                 progressBar.layoutParams = progressBarParams
             }
         }
@@ -633,7 +640,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
             val elapsed =
                 " " + DecimalFormat("#.###").format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
-            performanceTextView.text = getString(R.string.performance) + " " + elapsed
+            performanceTextView.text = "${getString(R.string.performance)} $elapsed"
         } else {
             performanceTextView.visibility = GONE
         }

@@ -281,8 +281,10 @@
     <string name="not_prime_number">Not a prime number</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="privacy_policy_url" translatable="false">https://sergiocrz.wordpress.com/privacy-policy/</string>
-    <bool name="pref_default_brute_force">true</bool>
-    <bool name="pref_default_probabilistic">false</bool>
+    <string name="no_common_factors">Sem fatores em comum</string>
+    <string name="pref_key_format_numbers" translatable="false">pref_key_format_numbers</string>
+    <string name="pref_summary_format_numbers">Formatar números com separador de milhares</string>
+    <string name="pref_title_format_numbers">Formatação de números</string>
 
     <integer name="default_history_size">10</integer>
 

@@ -36,7 +36,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     internal var startTime: Long = 0
 
     override var title = R.string.nav_multiplos
-    override var index: Int = 7
+    override var pageIndex: Int = 7
 
     override fun getHelpTextId() = R.string.help_text_multiplos
 
@@ -54,11 +54,21 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     override fun onActionDone() = calculateMultiples()
 
+    private var bigNumbersTextWatcher: BigNumbersTextWatcher? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        editNumMultiplos.watchThis(this)
+
+        bigNumbersTextWatcher = BigNumbersTextWatcher(editNumMultiplos, shouldFormatNumbers, this)
+        editNumMultiplos.addTextChangedListener(bigNumbersTextWatcher)
+
         clearButton.setOnClickListener { editNumMultiplos.setText("") }
         button_calc_multiplos.setOnClickListener { calculateMultiples() }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        editNumMultiplos.removeTextChangedListener(bigNumbersTextWatcher)
     }
 
     override fun onDestroy() {
@@ -72,7 +82,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     private fun calculateMultiples() {
         startTime = System.nanoTime()
         hideKeyboard(activity)
-        val editnumText = editNumMultiplos.text.toString()
+        val editnumText = editNumMultiplos.text.digitsOnly()
         if (TextUtils.isEmpty(editnumText)) {
             showCustomToast(context, getString(R.string.add_num_inteiro), InfoLevel.WARNING)
             editNumMultiplos.apply {
@@ -100,7 +110,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     fun createCardView(number: Long?, multiplos: String, min_multiplos: Long?, showMore: Boolean) {
         //criar novo cardview
-        val cardView = ClickableCardView(activity!!)
+        val cardView = ClickableCardView(requireActivity())
         cardView.tag = min_multiplos
 
         cardView.layoutParams = getMatchWrapParams()
@@ -114,7 +124,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
-        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
+        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
         cardView.setCardBackgroundColor(cvColor)
 
         history.limit(historyLimit)
@@ -141,7 +151,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
                 cardView,
-                activity!!,
+                requireActivity(),
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?): Boolean {
                         return true
@@ -172,7 +182,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             showMoreTextView.setText(R.string.show_more)
             showMoreTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
             showMoreTextView.setTypeface(null, Typeface.BOLD)
-            showMoreTextView.setTextColor(ContextCompat.getColor(activity!!, R.color.bgCardColor))
+            showMoreTextView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.bgCardColor))
             showMoreTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             showMoreTextView.setOnClickListener {
                 startTime = System.nanoTime()

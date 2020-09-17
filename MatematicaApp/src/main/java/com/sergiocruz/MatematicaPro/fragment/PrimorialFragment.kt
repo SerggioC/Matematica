@@ -38,7 +38,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
     override var title: Int = R.string.nav_primorial
-    override var index: Int = 8
+    override var pageIndex: Int = 8
 
     override fun getHelpTextId() = R.string.help_text_primorial
 
@@ -58,13 +58,23 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onActionDone() = calculatePrimorial()
 
+    private lateinit var bigNumbersTextWatcher: BigNumbersTextWatcher
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         button_calc_primorial.setOnClickListener { calculatePrimorial() }
-        inputEditText.watchThis(this)
-        cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
+
+        bigNumbersTextWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, this)
+        inputEditText.addTextChangedListener(bigNumbersTextWatcher)
+
+        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), this) }
         clearButton.setOnClickListener { inputEditText.setText("") }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        inputEditText.removeTextChangedListener(bigNumbersTextWatcher)
     }
 
     override fun onDestroy() {
@@ -105,7 +115,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean?) {
         //criar novo cardview
-        val cardView = ClickableCardView(activity!!)
+        val cardView = ClickableCardView(requireActivity())
         cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -120,7 +130,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
-        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
+        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
         cardView.setCardBackgroundColor(cvColor)
 
         history.limit(historyLimit)
@@ -170,7 +180,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
                 cardView,
-                activity!!,
+                requireActivity(),
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?): Boolean {
                         return true
@@ -274,9 +284,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
         }
 
-        override fun onCancelled(parcial: BigInteger) {
+        override fun onCancelled(parcial: BigInteger?) {
             super.onCancelled(parcial)
-            if (this@PrimorialFragment.isVisible) {
+            if (this@PrimorialFragment.isVisible && parcial != null) {
                 createCardView(primes[primes.size - 1], parcial, true)
                 resetButtons()
             }

@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "745880472271-84ilmde5qjpe903p7u8jc9bmu99hpv1l.apps.googleusercontent.com",
+          "client_id": "745880472271-j7teeqijqg5hnhapaisppulsu548hbpf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.sergiocruz.MatematicaPro",
-            "certificate_hash": "5380ffcafabe0dc06121ec673dcd165c9cab4a52"
+            "certificate_hash": "9cba70e17052217f77207e26db7d3042944c7585"
           }
         },
         {
@@ -33,20 +33,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "745880472271-1f9fm8pdbm2713l8vsf43udfbfk69tos.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

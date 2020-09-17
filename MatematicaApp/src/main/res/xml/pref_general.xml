@@ -1,10 +1,7 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#FFFFFF">
 
     <PreferenceCategory android:layout="@layout/settings_textview">
-
-        <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
-             dismiss it. -->
-        <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/pref_list_titles"
@@ -29,15 +26,15 @@
             android:title="@string/pref_perform_title" />
 
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/calc_mode">
 
-        <SwitchPreference
+    <PreferenceCategory android:title="@string/calc_mode">
+        <SwitchPreferenceCompat
             android:defaultValue="@bool/pref_default_brute_force"
             android:icon="@drawable/force"
             android:key="@string/pref_key_brute_force"
             android:summary="@string/pref_summary_brute_force"
             android:title="@string/pref_title_brute_force" />
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="@bool/pref_default_probabilistic"
             android:icon="@drawable/probabilistic"
             android:key="@string/pref_key_probabilistic"
@@ -46,7 +43,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/other">
-
         <ListPreference
             android:defaultValue="@integer/default_history_size"
             android:entries="@array/pref_list_history_titles"
@@ -56,6 +52,12 @@
             android:summary="@string/pref_summary_hisory_size"
             android:title="@string/pref_title_history_size" />
 
+        <SwitchPreferenceCompat
+            android:defaultValue="@bool/pref_default_format_numbers"
+            android:icon="@drawable/numbers"
+            android:key="@string/pref_key_format_numbers"
+            android:summary="@string/pref_summary_format_numbers"
+            android:title="@string/pref_title_format_numbers" />
     </PreferenceCategory>
 
 </PreferenceScreen>

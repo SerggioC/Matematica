@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sergiocruz.MatematicaPro">
 
-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
+     <uses-permission android:name="android.permission.INTERNET" />
     <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -66,9 +66,6 @@
         <activity
             android:name="com.sergiocruz.MatematicaPro.activity.SendMailActivity"
             android:label="@string/activity_title_send_mail" />
-        <activity
-            android:name="com.sergiocruz.MatematicaPro.activity.SettingsActivity"
-            android:label="@string/title_activity_settings" />
 
     </application>
 

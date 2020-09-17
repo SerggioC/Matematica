@@ -20,17 +20,23 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_divisores.*
+import kotlinx.android.synthetic.main.fragment_divisores.calculateButton
+import kotlinx.android.synthetic.main.fragment_divisores.cancelButton
+import kotlinx.android.synthetic.main.fragment_divisores.clearButton
+import kotlinx.android.synthetic.main.fragment_divisores.history
+import kotlinx.android.synthetic.main.fragment_divisores.inputEditText
 import java.text.DecimalFormat
 import java.util.*
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
+    private var textWatcher: BigNumbersTextWatcher? = null
     private var asyncTask: AsyncTask<Long, Float, ArrayList<Long>> = BackGroundOperation()
     internal var num: Long = 0
     private var startTime: Long = 0
 
     override var title: Int = R.string.divisors
-    override var index: Int = 5
+    override var pageIndex: Int = 5
 
     override fun getLayoutIdForFragment() = R.layout.fragment_divisores
 
@@ -38,10 +44,12 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cancelButton.setOnClickListener { displayCancelDialogBox(context!!, this) }
+        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), this) }
         calculateButton.setOnClickListener { calcDivisors() }
         clearButton.setOnClickListener { inputEditText.setText("") }
-        inputEditText.watchThis(this)
+
+        textWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, this)
+        inputEditText.addTextChangedListener(textWatcher)
     }
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
@@ -58,6 +66,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onOperationCanceled(canceled: Boolean) {
         cancelAsyncTask()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        inputEditText.removeTextChangedListener(textWatcher)
     }
 
     override fun onDestroy() {
@@ -79,7 +92,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private fun calcDivisors() {
         startTime = System.nanoTime()
         hideKeyboard(activity as Activity)
-        val editnumText = inputEditText.text.toString()
+        val editnumText = inputEditText.text.digitsOnly()
         if (TextUtils.isEmpty(editnumText)) {
             showCustomToast(context, getString(R.string.add_num_inteiro))
             return
@@ -221,9 +234,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
         }
 
-        override fun onCancelled(parcial: ArrayList<Long>) {
+        override fun onCancelled(parcial: ArrayList<Long>?) {
             super.onCancelled(parcial)
-            if (this@DivisoresFragment.isVisible) {
+            if (this@DivisoresFragment.isVisible && parcial != null) {
                 var str = ""
                 for (i in parcial) {
                     str = "$str, $i"
@@ -285,7 +298,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setCardBackgroundColor(color)
 
         // Add cardview to history layout at the top (index 0)
-        //val history = activity!!.findViewById<View>(R.id.history) as LinearLayout
+        //val history = requireActivity().findViewById<View>(R.id.history) as LinearLayout
         history.limit(historyLimit)
         history.addView(cardView, 0)
 
@@ -327,5 +340,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
     }
+
+
 
 }

@@ -36,13 +36,14 @@ import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class MDCFragment : BaseFragment(), OnEditorActions,
-    SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
 
-    internal lateinit var fColors: ArrayList<Int>
+    internal lateinit var fColors: MutableList<Int>
     internal var heightDip: Int = 0
     internal var cvWidth: Int = 0
     private var taskNumber = 0
@@ -54,7 +55,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     }
 
     override var title: Int = R.string.mdc_title
-    override var index: Int = 3
+    override var pageIndex: Int = 3
 
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v1
@@ -66,11 +67,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val fColors = resources.getIntArray(R.array.f_colors_xml)
-        this.fColors = ArrayList()
-        for (i in fColors.indices) {
-            this.fColors.add(fColors[i])
-        }
+        fColors = resources.getIntArray(R.array.f_colors_xml).toMutableList()
         language = Locale.getDefault().displayLanguage
     }
 
@@ -89,16 +86,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        arrayOfEditTexts = arrayOf(
-            mdc_num_1,
-            mdc_num_2,
-            mdc_num_3,
-            mdc_num_4,
-            mdc_num_5,
-            mdc_num_6,
-            mdc_num_7,
-            mdc_num_8
-        )
+        arrayOfEditTexts = arrayOf(mdc_num_1, mdc_num_2, mdc_num_3, mdc_num_4, mdc_num_5, mdc_num_6, mdc_num_7, mdc_num_8)
 
         calculateButton.setOnClickListener { calculateMDC() }
 
@@ -114,7 +102,9 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         button_add_mdc.setOnClickListener { addMdcField() }
         button_remove_mdc.setOnClickListener { removeMdcField() }
 
-        arrayOfEditTexts.forEach { it.watchThis(this) }
+        arrayOfEditTexts.forEach {
+            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, this))
+        }
 
     }
 
@@ -134,28 +124,28 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     }
 
     private fun addMdcField() {
-        val ll_34_visibe = linear_layout_34.visibility == View.VISIBLE
-        val f3_visible = frame_3.visibility == View.VISIBLE
-        val f4_visible = frame_4.visibility == View.VISIBLE
-        val linear_layout_56_visibe = linear_layout_56.visibility == View.VISIBLE
-        val f5_visible = frame_5.visibility == View.VISIBLE
-        val f6_visible = frame_6.visibility == View.VISIBLE
-        val linear_layout_78_visibe = linear_layout_78.visibility == View.VISIBLE
-        val f7_visible = frame_7.visibility == View.VISIBLE
-        val f8_visible = frame_8.visibility == View.VISIBLE
+        val ll34Visible = linear_layout_34.visibility == View.VISIBLE
+        val f3Visible = frame_3.visibility == View.VISIBLE
+        val f4Visible = frame_4.visibility == View.VISIBLE
+        val linearLayout56Visibe = linear_layout_56.visibility == View.VISIBLE
+        val f5Visible = frame_5.visibility == View.VISIBLE
+        val f6Visible = frame_6.visibility == View.VISIBLE
+        val linearLayout78Visibe = linear_layout_78.visibility == View.VISIBLE
+        val f7Visible = frame_7.visibility == View.VISIBLE
+        val f8Visible = frame_8.visibility == View.VISIBLE
 
 
-        if (!ll_34_visibe || f3_visible || f4_visible) {
+        if (!ll34Visible || f3Visible || f4Visible) {
             linear_layout_34.visibility = View.VISIBLE
 
-            if (!f3_visible) {
+            if (!f3Visible) {
                 frame_3.visibility = View.VISIBLE
                 button_remove_mdc.visibility = View.VISIBLE
                 mdc_num_2.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mdc_num_3.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (!f4_visible) {
+            if (!f4Visible) {
                 frame_4.visibility = View.VISIBLE
                 mdc_num_3.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mdc_num_4.imeOptions = EditorInfo.IME_ACTION_DONE
@@ -163,32 +153,32 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             }
         }
 
-        if (!linear_layout_56_visibe || f5_visible || f6_visible) {
+        if (!linearLayout56Visibe || f5Visible || f6Visible) {
             linear_layout_56.visibility = View.VISIBLE
 
-            if (!f5_visible) {
+            if (!f5Visible) {
                 frame_5.visibility = View.VISIBLE
                 mdc_num_4.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mdc_num_5.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (!f6_visible) {
+            if (!f6Visible) {
                 frame_6.visibility = View.VISIBLE
                 mdc_num_5.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mdc_num_6.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
         }
-        if (!linear_layout_78_visibe || f7_visible || f8_visible) {
+        if (!linearLayout78Visibe || f7Visible || f8Visible) {
             linear_layout_78.visibility = View.VISIBLE
 
-            if (!f7_visible) {
+            if (!f7Visible) {
                 frame_7.visibility = View.VISIBLE
                 mdc_num_6.imeOptions = EditorInfo.IME_ACTION_NEXT
                 mdc_num_7.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (!f8_visible) {
+            if (!f8Visible) {
                 frame_8.visibility = View.VISIBLE
                 button_add_mdc.visibility = View.INVISIBLE
                 mdc_num_7.imeOptions = EditorInfo.IME_ACTION_NEXT
@@ -200,18 +190,18 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     }
 
     private fun removeMdcField() {
-        val ll_34_visibe = linear_layout_34.visibility == View.VISIBLE
-        val f3_visible = frame_3.visibility == View.VISIBLE
-        val f4_visible = frame_4.visibility == View.VISIBLE
-        val linear_layout_56_visibe = linear_layout_56.visibility == View.VISIBLE
-        val f5_visible = frame_5.visibility == View.VISIBLE
-        val f6_visible = frame_6.visibility == View.VISIBLE
-        val linear_layout_78_visibe = linear_layout_78.visibility == View.VISIBLE
-        val f7_visible = frame_7.visibility == View.VISIBLE
-        val f8_visible = frame_8.visibility == View.VISIBLE
+        val ll34Visibe = linear_layout_34.visibility == View.VISIBLE
+        val f3Visible = frame_3.visibility == View.VISIBLE
+        val f4Visible = frame_4.visibility == View.VISIBLE
+        val linearLayout56Visibe = linear_layout_56.visibility == View.VISIBLE
+        val f5Visible = frame_5.visibility == View.VISIBLE
+        val f6Visible = frame_6.visibility == View.VISIBLE
+        val linearLayout78Visibe = linear_layout_78.visibility == View.VISIBLE
+        val f7Visible = frame_7.visibility == View.VISIBLE
+        val f8Visible = frame_8.visibility == View.VISIBLE
 
-        if (linear_layout_78_visibe) {
-            if (f8_visible) {
+        if (linearLayout78Visibe) {
+            if (f8Visible) {
                 mdc_num_8.setText("")
                 frame_8.visibility = View.GONE
                 button_add_mdc.visibility = View.VISIBLE
@@ -219,7 +209,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                 mdc_num_8.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (f7_visible) {
+            if (f7Visible) {
                 mdc_num_7.setText("")
                 frame_7.visibility = View.GONE
                 linear_layout_78.visibility = View.GONE
@@ -229,15 +219,15 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             }
         }
 
-        if (linear_layout_56_visibe) {
-            if (f6_visible) {
+        if (linearLayout56Visibe) {
+            if (f6Visible) {
                 mdc_num_6.setText("")
                 frame_6.visibility = View.GONE
                 mdc_num_5.imeOptions = EditorInfo.IME_ACTION_DONE
                 mdc_num_6.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (f5_visible) {
+            if (f5Visible) {
                 mdc_num_5.setText("")
                 frame_5.visibility = View.GONE
                 linear_layout_56.visibility = View.GONE
@@ -247,15 +237,15 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             }
         }
 
-        if (ll_34_visibe) {
-            if (f4_visible) {
+        if (ll34Visibe) {
+            if (f4Visible) {
                 mdc_num_4.setText("")
                 frame_4.visibility = View.GONE
                 mdc_num_3.imeOptions = EditorInfo.IME_ACTION_DONE
                 mdc_num_4.imeOptions = EditorInfo.IME_ACTION_DONE
                 return
             }
-            if (f3_visible) {
+            if (f3Visible) {
                 mdc_num_3.setText("")
                 frame_3.visibility = View.GONE
                 linear_layout_34.visibility = View.GONE
@@ -276,12 +266,11 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         val longNumbers = ArrayList<Long>()
 
         arrayOfEditTexts.forEach {
-            val numString = it.text.toString().replace("[^\\d]".toRegex(), "")
+            val numString = it.text.digitsOnly()
             if (TextUtils.isEmpty(numString)) {
                 emptyTextView.add(it)
             } else {
-                val number = numString.toLongOrNull()
-                when (number) {
+                when (val number = numString.toLongOrNull()) {
                     null -> {
                         it.apply {
                             requestFocus()
@@ -335,63 +324,63 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         if (resultMDC.toString() == "1") {
             ssb.append("\n" + getString(R.string.primos_si))
             ssb.setSpan(
-                ForegroundColorSpan(Color.parseColor("#29712d")),
-                ssb.length - 24,
-                ssb.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(Color.parseColor("#29712d")),
+                    ssb.length - 24,
+                    ssb.length,
+                    SPAN_EXCLUSIVE_EXCLUSIVE
             )
             ssb.setSpan(
-                RelativeSizeSpan(0.9f),
-                ssb.length - 24,
-                ssb.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
+                    RelativeSizeSpan(0.9f),
+                    ssb.length - 24,
+                    ssb.length,
+                    SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
 
-        //criar novo cardview
-        val cardview = ClickableCardView(context!!)
-        cardview.layoutParams = getMatchWrapParams()
-        cardview.preventCornerOverlap = true
+        // criar novo cardview
+        val cardView = ClickableCardView(requireContext())
+        cardView.layoutParams = getMatchWrapParams()
+        cardView.preventCornerOverlap = true
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardview.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
-        cardview.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardview.useCompatPadding = true
-        cardview.layoutTransition = LayoutTransition()
+        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
+        cardView.useCompatPadding = true
+        cardView.layoutTransition = LayoutTransition()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             val lt = LayoutTransition()
             lt.enableTransitionType(CHANGE_APPEARING)
             lt.enableTransitionType(CHANGE_DISAPPEARING)
         }
 
-        val cvColor = ContextCompat.getColor(activity!!, R.color.cardsColor)
-        cardview.setCardBackgroundColor(cvColor)
+        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
+        cardView.setCardBackgroundColor(cvColor)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardview.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardview,
-                activity as Activity,
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?): Boolean {
-                        return true
-                    }
+        cardView.setOnTouchListener(
+                SwipeToDismissTouchListener(
+                        cardView,
+                        activity as Activity,
+                        object : SwipeToDismissTouchListener.DismissCallbacks {
+                            override fun canDismiss(token: Boolean?): Boolean {
+                                return true
+                            }
 
-                    override fun onDismiss(view: View?) {
-                        //history.removeView(cardview);
-                        checkBackgroundOperation(view)
-                    }
-                })
+                            override fun onDismiss(view: View?) {
+                                //history.removeView(cardview);
+                                checkBackgroundOperation(view)
+                            }
+                        })
         )
 
-        val tags = MyTags(cardview, longNumbers, resultMDC, false, false, "", null, taskNumber)
-        cardview.tag = tags
+        val tags = MyTags(cardView, longNumbers, resultMDC, hasExplanation = false, hasBGOperation = false, texto = "", bGfatores = null, taskNumber = taskNumber)
+        cardView.tag = tags
 
         history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
-        history.addView(cardview, 0)
+        history.addView(cardView, 0)
 
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = getMatchWrapParams()
@@ -411,79 +400,68 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(cardview, llVerticalRoot, shouldShowExplanation)
+            createExplanations(cardView, llVerticalRoot, shouldShowExplanation)
         } else {
             if (shouldShowPerformance) {
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
-                    getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                        getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 gradientSeparator.text = elapsed
                 llVerticalRoot.addView(gradientSeparator, 0)
             }
-            cardview.addView(llVerticalRoot) //Só o resultado sem explicações
+            cardView.addView(llVerticalRoot) //Só o resultado sem explicações
         }
     }
 
     private fun createExplanations(
-        cardview: CardView,
-        llVerticalRoot: LinearLayout,
-        shouldShowExplanation: String?
+            cardView: CardView,
+            llVerticalRoot: LinearLayout,
+            shouldShowExplanation: String?
     ) {
-        val ssb_hide_expl = SpannableStringBuilder(getString(R.string.hide_explain))
-        ssb_hide_expl.setSpan(
-            UnderlineSpan(),
-            0,
-            ssb_hide_expl.length - 2,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        val ssb_show_expl = SpannableStringBuilder(getString(R.string.explain))
-        ssb_show_expl.setSpan(
-            UnderlineSpan(),
-            0,
-            ssb_show_expl.length - 2,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
+        ssbHideExpl.setSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
+        val ssbShowExpl = SpannableStringBuilder(getString(R.string.explain))
+        ssbShowExpl.setSpan(UnderlineSpan(), 0, ssbShowExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        //Linearlayout
-        val ll_horizontal = LinearLayout(activity)
-        ll_horizontal.orientation = HORIZONTAL
-        ll_horizontal.layoutParams = getMatchWrapParams()
+        // Linearlayout
+        val llHorizontal = LinearLayout(activity)
+        llHorizontal.orientation = HORIZONTAL
+        llHorizontal.layoutParams = getMatchWrapParams()
 
         val explainLink = TextView(activity)
         explainLink.tag = "explainLink"
         explainLink.layoutParams = getWrapWrapParams()
         explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
+        explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
         //explainLink.setGravity(Gravity.CENTER_VERTICAL);
 
         //View separator with gradient
         val gradientSeparator = getGradientSeparator(context)
 
-        val isExpanded = arrayOf(false)
+        var isExpanded = false
         explainLink.setOnClickListener { view ->
-            val explView =
-                (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
-            if (!isExpanded[0]) {
-                (view as TextView).text = ssb_hide_expl
+            val explView = (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
+            if (isExpanded.not()) {
+                (view as TextView).text = ssbHideExpl
                 expandIt(explView, null)
-                isExpanded[0] = true
+                isExpanded = true
 
-            } else if (isExpanded[0]) {
-                (view as TextView).text = ssb_show_expl
+            } else if (isExpanded) {
+                (view as TextView).text = ssbShowExpl
                 collapseIt(explView)
-                isExpanded[0] = false
+                isExpanded = false
             }
         }
 
-        ll_horizontal.addView(explainLink)
-        ll_horizontal.addView(gradientSeparator)
+        llHorizontal.addView(explainLink)
+        llHorizontal.addView(gradientSeparator)
 
         //LL vertical das explicações
-        val ll_vertical_expl = LinearLayout(activity)
-        ll_vertical_expl.tag = "ll_vertical_expl"
-        ll_vertical_expl.layoutParams = getMatchWrapParams()
-        ll_vertical_expl.orientation = LinearLayout.VERTICAL
+        val llVerticalExpl = LinearLayout(activity)
+        llVerticalExpl.tag = "ll_vertical_expl"
+        llVerticalExpl.layoutParams = getMatchWrapParams()
+        llVerticalExpl.orientation = LinearLayout.VERTICAL
 
         //ProgressBar
         cvWidth = card_view_1.width
@@ -494,127 +472,92 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         progressBar.layoutParams = layoutParams
 
         //Ponto 1
-        val explainTextView_1 = TextView(activity)
-        explainTextView_1.tag = "explainTextView_1"
+        val explaintextview1 = TextView(activity)
+        explaintextview1.tag = "explainTextView_1"
         val fp = getString(R.string.fatores_primos)
-        val explain_text_1 = getString(R.string.decompor_num) + " " + fp + "\n"
-        val ssb_explain_1 = SpannableStringBuilder(explain_text_1)
-        //ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb_explain_1.setSpan(
-            UnderlineSpan(),
-            explain_text_1.length - fp.length - 1,
-            explain_text_1.length - 1,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssb_explain_1.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    activity!!,
-                    R.color.boldColor
-                )
-            ), 0, ssb_explain_1.length, SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        explainTextView_1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explainTextView_1.text = ssb_explain_1
-        explainTextView_1.setTag(R.id.texto, "texto")
+        val explainText1 = getString(R.string.decompor_num) + " " + fp + "\n"
+        val ssbExplain1 = SpannableStringBuilder(explainText1).apply {
+            //ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            setSpan(UnderlineSpan(), explainText1.length - fp.length - 1, explainText1.length - 1, SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor)), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        explaintextview1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+        explaintextview1.text = ssbExplain1
+        explaintextview1.setTag(R.id.texto, "texto")
 
         //Ponto 2
-        val explainTextView_2 = TextView(activity)
-        explainTextView_2.tag = "explainTextView_2"
+        val explaintextview2 = TextView(activity)
+        explaintextview2.tag = "explainTextView_2"
         val comuns = getString(R.string.comuns)
-        val uma_vez = getString(R.string.uma_vez)
-        val menor_exps = getString(R.string.menor_exps)
-        val explain_text_2: String
-        if (language == "português" || language == "español" || language == "français") {
-            explain_text_2 = getString(R.string.escolher) + " " + getString(R.string.os_fatores) +
-                    " " + comuns + ", " + uma_vez + ", " + getString(R.string.with_the) + " " +
-                    menor_exps + ":\n"
+        val once = getString(R.string.uma_vez)
+        val menorExps = getString(R.string.menor_exps)
+        val explainText2 = if (language == "português" || language == "español" || language == "français") {
+            getString(R.string.escolher) + " " + getString(R.string.os_fatores) +
+                    " " + comuns + ", " + once + ", " + getString(R.string.with_the) + " " +
+                    menorExps + ":\n"
         } else {
-            explain_text_2 = getString(R.string.escolher) + " " + comuns + " " +
-                    getString(R.string.os_fatores) + ", " + uma_vez + ", " +
-                    getString(R.string.with_the) + " " + menor_exps + ":\n"
+            getString(R.string.escolher) + " " + comuns + " " +
+                    getString(R.string.os_fatores) + ", " + once + ", " +
+                    getString(R.string.with_the) + " " + menorExps + ":\n"
         }
-        val ssb_explain_2 = SpannableStringBuilder(explain_text_2)
+        val ssbExplain2 = SpannableStringBuilder(explainText2).apply {
+            setSpan(UnderlineSpan(), explainText2.indexOf(comuns), explainText2.indexOf(comuns) + comuns.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(UnderlineSpan(), explainText2.indexOf(once), explainText2.indexOf(once) + once.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(UnderlineSpan(), explainText2.indexOf(menorExps), explainText2.indexOf(menorExps) + menorExps.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor)), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
         //ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb_explain_2.setSpan(
-            UnderlineSpan(),
-            explain_text_2.indexOf(comuns),
-            explain_text_2.indexOf(comuns) + comuns.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssb_explain_2.setSpan(
-            UnderlineSpan(),
-            explain_text_2.indexOf(uma_vez),
-            explain_text_2.indexOf(uma_vez) + uma_vez.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssb_explain_2.setSpan(
-            UnderlineSpan(),
-            explain_text_2.indexOf(menor_exps),
-            explain_text_2.indexOf(menor_exps) + menor_exps.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssb_explain_2.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    activity!!,
-                    R.color.boldColor
-                )
-            ), 0, ssb_explain_2.length, SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        explainTextView_2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explainTextView_2.text = ssb_explain_2
-        explainTextView_2.setTag(R.id.texto, "texto")
+
+        explaintextview2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+        explaintextview2.text = ssbExplain2
+        explaintextview2.setTag(R.id.texto, "texto")
 
         //Ponto 3
-        val explainTextView_3 = TextView(activity)
-        explainTextView_3.tag = "explainTextView_3"
+        val explaintextview3 = TextView(activity)
+        explaintextview3.tag = "explainTextView_3"
         val multipl = getString(R.string.multiply)
-        val explain_text_3 = multipl + " " + getString(R.string.to_obtain_mdc) + "\n"
-        val ssb_explain_3 = SpannableStringBuilder(explain_text_3)
-        ssb_explain_3.setSpan(
-            UnderlineSpan(),
-            explain_text_3.indexOf(multipl) + 1,
-            explain_text_3.indexOf(multipl) + multipl.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
+        val explainText3 = multipl + " " + getString(R.string.to_obtain_mdc) + "\n"
+        val ssbExplain3 = SpannableStringBuilder(explainText3)
+        ssbExplain3.setSpan(
+                UnderlineSpan(),
+                explainText3.indexOf(multipl) + 1,
+                explainText3.indexOf(multipl) + multipl.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        ssb_explain_3.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    activity!!,
-                    R.color.boldColor
-                )
-            ), 0, ssb_explain_3.length, SPAN_EXCLUSIVE_EXCLUSIVE
+        ssbExplain3.setSpan(
+                ForegroundColorSpan(
+                        ContextCompat.getColor(requireActivity(), R.color.boldColor)
+                ), 0, ssbExplain3.length, SPAN_EXCLUSIVE_EXCLUSIVE
         )
         //ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explainTextView_3.text = ssb_explain_3
-        explainTextView_3.setTag(R.id.texto, "texto")
+        explaintextview3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+        explaintextview3.text = ssbExplain3
+        explaintextview3.setTag(R.id.texto, "texto")
 
-        ll_vertical_expl.addView(explainTextView_1)
-        ll_vertical_expl.addView(explainTextView_2)
-        ll_vertical_expl.addView(explainTextView_3)
-        llVerticalRoot.addView(ll_horizontal)
+        llVerticalExpl.addView(explaintextview1)
+        llVerticalExpl.addView(explaintextview2)
+        llVerticalExpl.addView(explaintextview3)
+        llVerticalRoot.addView(llHorizontal)
         llVerticalRoot.addView(progressBar)
-        llVerticalRoot.addView(ll_vertical_expl)
+        llVerticalRoot.addView(llVerticalExpl)
 
-        if (shouldShowExplanation == "-1") {  //Always show Explanation
-            ll_vertical_expl.visibility = View.VISIBLE
-            explainLink.text = ssb_hide_expl
-            isExpanded[0] = true
+        if (shouldShowExplanation == "-1") {  // Always show Explanation
+            llVerticalExpl.visibility = View.VISIBLE
+            explainLink.text = ssbHideExpl
+            isExpanded = true
         } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
-            ll_vertical_expl.visibility = View.GONE
-            explainLink.text = ssb_show_expl
-            isExpanded[0] = false
+            llVerticalExpl.visibility = View.GONE
+            explainLink.text = ssbShowExpl
+            isExpanded = false
         }
 
-        cardview.addView(llVerticalRoot)
+        cardView.addView(llVerticalRoot)
 
-        val thisCardTags = cardview.tag as MyTags
+        val thisCardTags = cardView.tag as MyTags
 
         thisCardTags.taskNumber = taskNumber
         val asyncTask = BackGroundOperation_MDC(thisCardTags)
-            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         asyncTaskQueue.add(asyncTask)
         taskNumber++
     }
@@ -635,41 +578,33 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
     // Asynctask <Params, Progress, Result>
     inner class BackGroundOperation_MDC internal constructor(private var cardTags: MyTags) :
-        AsyncTask<Void, Double, Void>() {
+            AsyncTask<Void, Double, Void>() {
         private lateinit var theCardViewBG: CardView
         private lateinit var mdcNumbers: ArrayList<Long>
-        private lateinit var result_mdc: BigInteger
-        private lateinit var bgfatores: ArrayList<ArrayList<Long>>
+        private lateinit var resultMdc: BigInteger
+        private var bgFactors: ArrayList<ArrayList<Long>>? = null
 
-        private lateinit var gradient_separator: TextView
+        private lateinit var gradientSeparator: TextView
         private lateinit var progressBar: View
-        private lateinit var percent_formatter: NumberFormat
-        private lateinit var f_colors: IntArray
-        private var f_colors_length: Int = 0
+        private var percentFormatter: NumberFormat = DecimalFormat("#.###%")
 
         public override fun onPreExecute() {
-            percent_formatter = DecimalFormat("#.###%")
             theCardViewBG = cardTags.cardView
             progressBar = theCardViewBG.findViewWithTag("progressBar")
             progressBar.visibility = View.VISIBLE
-            gradient_separator =
-                theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
+            gradientSeparator = theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            f_colors = resources.getIntArray(R.array.f_colors_xml)
-            f_colors_length = f_colors.size
-            fColors = ArrayList()
             if (shouldShowColors) {
-                for (i in 0 until f_colors_length) fColors.add(f_colors[i])
                 fColors.shuffle() //randomizar as cores
             } else {
-                for (i in 0 until f_colors_length) fColors.add(f_colors[f_colors_length - 1])
+                fColors = MutableList(fColors.size) { fColors.last() } // just a list with always the same color
             }
 
             val text = " " + getString(R.string.factorizing) + " 0%"
             val ssb = SpannableStringBuilder(text)
             ssb.setSpan(ForegroundColorSpan(fColors[0]), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            gradient_separator.text = ssb
+            gradientSeparator.text = ssb
         }
 
         override fun doInBackground(vararg voids: Void): Void? {
@@ -679,22 +614,22 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             for (i in 0 until numbersSize) { // fatorizar todos os números inseridos em MMC
                 var oldProgress = 0.0
                 var progress: Double
-                val fatores_ix = ArrayList<Long>()
-                var number_i: Long? = mdcNumbers[i]
+                val fatoresIx = ArrayList<Long>()
+                var numberI: Long = mdcNumbers[i]
                 //if (number_i == 1L) { //adicionar o fator 1 para calibrar em baixo a contagem....
-                fatores_ix.add(1L)
+                fatoresIx.add(1L)
                 //}
-                while (number_i!! % 2L == 0L) {
-                    fatores_ix.add(2L)
-                    number_i /= 2L
+                while (numberI % 2L == 0L) {
+                    fatoresIx.add(2L)
+                    numberI /= 2L
                 }
                 var j: Long = 3
-                while (j <= number_i / j) {
-                    while (number_i % j == 0L) {
-                        fatores_ix.add(j)
-                        number_i /= j
+                while (j <= numberI / j) {
+                    while (numberI % j == 0L) {
+                        fatoresIx.add(j)
+                        numberI /= j
                     }
-                    progress = j.toDouble() / (number_i.toDouble() / j.toDouble())
+                    progress = j.toDouble() / (numberI.toDouble() / j.toDouble())
                     if (progress - oldProgress > 0.1) {
                         publishProgress(progress, i.toDouble())
                         oldProgress = progress
@@ -702,10 +637,10 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                     if (isCancelled) break
                     j += 2
                 }
-                if (number_i > 1) {
-                    fatores_ix.add(number_i)
+                if (numberI > 1) {
+                    fatoresIx.add(numberI)
                 }
-                fatores.add(fatores_ix)
+                fatores.add(fatoresIx)
             }
             cardTags.bGfatores = fatores
             return null
@@ -713,246 +648,234 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
         override fun onProgressUpdate(vararg values: Double?) {
             if (this@MDCFragment.isVisible) {
-                val color = fColors[Math.round(values[1]!!).toInt()]
+                val color = fColors[(values.getOrNull(1) ?: 0.0).roundToInt()]
                 progressBar.setBackgroundColor(color)
-                var value0 = values[0]
-                if (value0!! > 1f) value0 = 1.0
-                progressBar.layoutParams =
-                    LinearLayout.LayoutParams(Math.round(value0 * cvWidth).toInt(), heightDip)
-                val text =
-                    " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0)
+                val value0 = (values[0] ?: 0.0).coerceAtMost(1.0)
+                progressBar.layoutParams = LinearLayout.LayoutParams((value0 * cvWidth).roundToInt(), heightDip)
+                val text = " " + getString(R.string.factorizing) + " " + percentFormatter.format(value0)
                 val ssb = SpannableStringBuilder(text)
                 ssb.setSpan(ForegroundColorSpan(color), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                gradient_separator.text = ssb
+                gradientSeparator.text = ssb
             }
         }
 
         override fun onPostExecute(result: Void?) {
             if (this@MDCFragment.isVisible) {
-                bgfatores = cardTags.bGfatores!!
+                bgFactors = cardTags.bGfatores
                 val datasets = ArrayList<ArrayList<Long>>()
-
-                for (k in bgfatores.indices) {
+                bgFactors?.forEachIndexed { outerIndex, outerList ->
                     val bases = ArrayList<Long>()
                     val exps = ArrayList<Long>()
 
-                    val str_fatores = mdcNumbers[k].toString() + "="
-                    val ssb_fatores = SpannableStringBuilder(str_fatores)
-                    ssb_fatores.setSpan(
-                        ForegroundColorSpan(fColors[k]),
-                        0,
-                        ssb_fatores.length,
-                        SPAN_EXCLUSIVE_INCLUSIVE
-                    )
+                    val strFatores = mdcNumbers[outerIndex].toString() + "="
+                    val ssbFatores = SpannableStringBuilder(strFatores)
+                    ssbFatores.setSpan(ForegroundColorSpan(fColors[outerIndex]), 0, ssbFatores.length, SPAN_EXCLUSIVE_INCLUSIVE)
 
-                    var counter = 1
+                    var counter = 1L
                     var nextFactor = 0
-                    var lastItem: Long = bgfatores[k][0]
+                    var lastItem: Long = outerList[0]
 
-                    //TreeMap
-                    val dataSet = LinkedHashMap<String, Int>()
-
-                    //Contar os expoentes  (sem comentários....)
-                    for (i in 0 until bgfatores[k].size) {
-                        if (i == 0) {
-                            dataSet[bgfatores[k][0].toString()] = 1
-                            bases.add(bgfatores[k][0])
+                    val dataSet = LinkedHashMap<Long, Long>()
+                    outerList.forEachIndexed { innerIndex, innerValue ->
+                        if (innerIndex == 0) {
+                            dataSet[outerList[0]] = 1L
+                            bases.add(outerList[0])
                             exps.add(1L)
-                        } else if (bgfatores[k][i] == lastItem && i > 0) {
+                        } else if (innerValue == lastItem && innerIndex > 0L) {
                             counter++
-                            dataSet[bgfatores[k][i].toString()] = counter
-                            bases[nextFactor] = bgfatores[k][i]
-                            exps[nextFactor] = counter.toLong()
-                        } else if (bgfatores[k][i] != lastItem && i > 0) {
-                            counter = 1
+                            dataSet[innerValue] = counter
+                            bases[nextFactor] = innerValue
+                            exps[nextFactor] = counter
+                        } else if (innerValue != lastItem && innerIndex > 0L) {
+                            counter = 1L
                             nextFactor++
-                            dataSet[bgfatores[k][i].toString()] = counter
-                            bases.add(bgfatores[k][i])
-                            exps.add(counter.toLong())
+                            dataSet[innerValue] = counter
+                            bases.add(innerValue)
+                            exps.add(counter)
                         }
-                        lastItem = bgfatores[k][i]
+                        lastItem = innerValue
                     }
 
                     datasets.add(bases)
                     datasets.add(exps)
 
-                    //Criar os expoentes
+                    // Criar os expoentes
                     var valueLength: Int
-                    val iterator = dataSet.entries.iterator()
-                    while (iterator.hasNext()) {
-                        val pair = iterator.next() as Map.Entry<*, *>
-
-                        if (Integer.parseInt(pair.value.toString()) == 1) {
+                    val dataCount = dataSet.entries.count()
+                    dataSet.entries.forEachIndexed { index, pair: Map.Entry<Long, Long> ->
+                        if (pair.value == 1L) {
                             //Expoente 1
-                            ssb_fatores.append(pair.key.toString())
+                            if (pair.key > 1L) {
+                                ssbFatores.append(pair.key.toString())
+                            }
 
-                        } else if (Integer.parseInt(pair.value.toString()) > 1) {
+                        } else if (pair.value > 1L) {
                             //Expoente superior a 1
                             valueLength = pair.value.toString().length
-                            ssb_fatores.append(pair.key.toString() + pair.value.toString())
-                            ssb_fatores.setSpan(
-                                SuperscriptSpan(),
-                                ssb_fatores.length - valueLength,
-                                ssb_fatores.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
+                            ssbFatores.append(pair.key.toString() + pair.value.toString())
+                            ssbFatores.setSpan(
+                                    SuperscriptSpan(),
+                                    ssbFatores.length - valueLength,
+                                    ssbFatores.length,
+                                    SPAN_EXCLUSIVE_EXCLUSIVE
                             )
-                            ssb_fatores.setSpan(
-                                RelativeSizeSpan(0.8f),
-                                ssb_fatores.length - valueLength,
-                                ssb_fatores.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
+                            ssbFatores.setSpan(
+                                    RelativeSizeSpan(0.8f),
+                                    ssbFatores.length - valueLength,
+                                    ssbFatores.length,
+                                    SPAN_EXCLUSIVE_EXCLUSIVE
                             )
                         }
 
-                        if (iterator.hasNext()) {
-                            ssb_fatores.append("×")
+                        if (index in 1 until dataCount - 1) {
+                            ssbFatores.append("×")
                         }
-
-                        iterator.remove() // avoids a ConcurrentModificationException
                     }
-                    if (k < bgfatores.size - 1) ssb_fatores.append("\n")
+                    if (outerIndex < (bgFactors?.size ?: 0) - 1) ssbFatores.append("\n")
 
-                    ssb_fatores.setSpan(
-                        StyleSpan(BOLD),
-                        0,
-                        ssb_fatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                    ssbFatores.setSpan(
+                            StyleSpan(BOLD),
+                            0,
+                            ssbFatores.length,
+                            SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    ssb_fatores.setSpan(
-                        RelativeSizeSpan(0.9f),
-                        0,
-                        ssb_fatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                    ssbFatores.setSpan(
+                            RelativeSizeSpan(0.9f),
+                            0,
+                            ssbFatores.length,
+                            SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     //explainTextView_1;
                     (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(
-                        ssb_fatores
+                            ssbFatores
                     )
                 }
 
-                val bases_comuns = ArrayList<Long>()
-                val exps_comuns = ArrayList<Long>()
+                val basesComuns = ArrayList<Long>()
+                val expsComuns = ArrayList<Long>()
                 val colors = ArrayList<Int>()
                 val bases = datasets[0]
                 val exps = datasets[1]
                 currentBaseLoop@ for (cb in bases.indices) {
-                    val current_base = bases[cb]
-                    val current_exp = exps[cb]
-                    val temp_bases = ArrayList<Long>()
-                    val temp_exps = ArrayList<Long>()
-                    val temp_colors = ArrayList<Long>()
-                    temp_bases.add(current_base)
-                    temp_exps.add(current_exp)
-                    temp_colors.add(0)
+                    val currentBase = bases[cb]
+                    val currentExp = exps[cb]
+                    val tempBases = ArrayList<Long>()
+                    val tempExps = ArrayList<Long>()
+                    val tempColors = ArrayList<Long>()
+                    tempBases.add(currentBase)
+                    tempExps.add(currentExp)
+                    tempColors.add(0)
                     var j = 2
                     nextBasesLoop@ while (j < datasets.size) {
-                        val next_bases = datasets[j]
-                        if (!next_bases.contains(current_base)) {
+                        val nextBases = datasets[j]
+                        if (!nextBases.contains(currentBase)) {
                             break@nextBasesLoop
                         }
-                        val next_exps = datasets[j + 1]
-                        innerLoop@ for (nb in next_bases.indices) {
-                            val next_base = next_bases[nb]
-                            val next_exp = next_exps[nb]
-                            if (next_base == current_base) {
-                                temp_bases.add(next_base)
-                                temp_exps.add(next_exp)
-                                temp_colors.add((j / 2).toLong())
+                        val nextExps = datasets[j + 1]
+                        innerLoop@ for (nb in nextBases.indices) {
+                            val nextBase = nextBases[nb]
+                            val nextExp = nextExps[nb]
+                            if (nextBase == currentBase) {
+                                tempBases.add(nextBase)
+                                tempExps.add(nextExp)
+                                tempColors.add((j / 2).toLong())
                             }
                         }
                         j += 2
                     }
-                    var lower_exp: Long = temp_exps.get(0)
+                    var lowerExp: Long = tempExps[0]
                     var lowerIndex = 0
-                    if (Collections.frequency(temp_bases, current_base) == datasets.size / 2) {
-                        for (i in temp_exps.indices) {
-                            if (temp_exps[i] < lower_exp) {
-                                lower_exp = temp_exps[i]
+                    if (Collections.frequency(tempBases, currentBase) == datasets.size / 2) {
+                        for (i in tempExps.indices) {
+                            if (tempExps[i] < lowerExp) {
+                                lowerExp = tempExps[i]
                                 lowerIndex = i
                             }
                         }
-                        bases_comuns.add(temp_bases[lowerIndex])
-                        exps_comuns.add(lower_exp)
-                        colors.add(temp_colors[lowerIndex].toInt())
+                        basesComuns.add(tempBases[lowerIndex])
+                        expsComuns.add(lowerExp)
+                        colors.add(tempColors[lowerIndex].toInt())
                     }
                 }
 
-                val ssb_mdc = SpannableStringBuilder()
+                val ssbMdc = SpannableStringBuilder()
 
                 //Criar os expoentes do MDC com os maiores fatores com cores e a negrito
-                for (i in bases_comuns.indices) {
-                    val base_length = bases_comuns[i].toString().length
+                for (i in basesComuns.indices) {
+                    val baseLength = basesComuns[i].toString().length
 
-                    if (exps_comuns[i] == 1L) {
+                    if (expsComuns[i] == 1L) {
                         //Expoente 1
-                        ssb_mdc.append(bases_comuns[i].toString())
-                        ssb_mdc.setSpan(
-                            ForegroundColorSpan(fColors[colors[i]]),
-                            ssb_mdc.length - base_length, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
+                        if (basesComuns[i] > 1) {
+                            ssbMdc.append(basesComuns[i].toString())
+                            ssbMdc.setSpan(
+                                    ForegroundColorSpan(fColors[colors[i]]),
+                                    ssbMdc.length - baseLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        }
+
                         //ssb_mdc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mdc.length() - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                    } else if (exps_comuns[i] > 1L) {
+                    } else if (expsComuns[i] > 1L) {
                         //Expoente superior a 1
-                        val exp_length = exps_comuns[i].toString().length
-                        ssb_mdc.append(bases_comuns[i].toString() + exps_comuns[i].toString())
-                        ssb_mdc.setSpan(
-                            SuperscriptSpan(),
-                            ssb_mdc.length - exp_length,
-                            ssb_mdc.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
+                        val expLength = expsComuns[i].toString().length
+                        ssbMdc.append(basesComuns[i].toString() + expsComuns[i].toString())
+                        ssbMdc.setSpan(
+                                SuperscriptSpan(),
+                                ssbMdc.length - expLength,
+                                ssbMdc.length,
+                                SPAN_EXCLUSIVE_EXCLUSIVE
                         )
-                        ssb_mdc.setSpan(
-                            RelativeSizeSpan(0.8f),
-                            ssb_mdc.length - exp_length,
-                            ssb_mdc.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
+                        ssbMdc.setSpan(
+                                RelativeSizeSpan(0.8f),
+                                ssbMdc.length - expLength,
+                                ssbMdc.length,
+                                SPAN_EXCLUSIVE_EXCLUSIVE
                         )
-                        ssb_mdc.setSpan(
-                            ForegroundColorSpan(fColors[colors[i]]),
-                            ssb_mdc.length - exp_length - base_length,
-                            ssb_mdc.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
+                        ssbMdc.setSpan(
+                                ForegroundColorSpan(fColors[colors[i]]),
+                                ssbMdc.length - expLength - baseLength,
+                                ssbMdc.length,
+                                SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                     }
-                    ssb_mdc.append("×")
+                    if (ssbMdc.isNotEmpty()) {
+                        ssbMdc.append("×")
+                    }
                 }
-                ssb_mdc.replace(ssb_mdc.length - 1, ssb_mdc.length, "")
+                if (ssbMdc.isNotEmpty()) {
+                    ssbMdc.replace(ssbMdc.length - 1, ssbMdc.length, "")
+                } else {
+                    ssbMdc.append(getString(R.string.no_common_factors))
+                }
 
-                ssb_mdc.setSpan(StyleSpan(BOLD), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb_mdc.setSpan(RelativeSizeSpan(0.9f), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSpan(StyleSpan(BOLD), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSpan(RelativeSizeSpan(0.9f), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 //explainTextView_2
                 (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(
-                    ssb_mdc
+                        ssbMdc
                 )
 
-                ssb_mdc.delete(0, ssb_mdc.length)
-                result_mdc = cardTags.resultMDC!!
-                ssb_mdc.append(result_mdc.toString())
+                ssbMdc.delete(0, ssbMdc.length)
+                resultMdc = cardTags.resultMDC!!
+                ssbMdc.append(resultMdc.toString())
 
-                ssb_mdc.setSpan(StyleSpan(BOLD), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb_mdc.setSpan(RelativeSizeSpan(0.9f), 0, ssb_mdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb_mdc.setSpan(
-                    ForegroundColorSpan(f_colors[f_colors.size - 1]),
-                    0,
-                    ssb_mdc.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                ssbMdc.setSpan(StyleSpan(BOLD), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSpan(RelativeSizeSpan(0.9f), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSpan(ForegroundColorSpan(fColors.last()), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 //explainTextView_3
-                (theCardViewBG.findViewWithTag<View>("explainTextView_3") as TextView).append(
-                    ssb_mdc
-                )
+                (theCardViewBG.findViewWithTag<View>("explainTextView_3") as TextView).append(ssbMdc)
 
                 progressBar.visibility = View.GONE
 
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =
-                        getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                    gradient_separator.text = elapsed
+                            getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                    gradientSeparator.text = elapsed
                 } else {
-                    gradient_separator.text = ""
+                    gradientSeparator.text = ""
                 }
 
                 cardTags.hasBGOperation = false
@@ -960,7 +883,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                 asyncTaskQueue[cardTags.taskNumber] = null
 
                 datasets.clear()
-                bgfatores.clear()
+                bgFactors?.clear()
             }
         }
     }

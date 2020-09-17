@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.*
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
@@ -12,12 +12,12 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
-import com.sergiocruz.MatematicaPro.activity.SettingsActivity
 import com.sergiocruz.MatematicaPro.helper.CreateCardView
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.removeHistory
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveHistoryImages
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistory
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistoryImages
+import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -27,9 +27,10 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var shouldShowPerformance: Boolean = true
     var shouldShowExplanation: String = "0"
     var shouldShowColors: Boolean = true
+    var shouldFormatNumbers: Boolean = false
 
     abstract var title: Int
-    abstract var index: Int
+    abstract var pageIndex: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +69,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             R.id.action_clear_all_history -> removeHistory(activity as Activity)
             R.id.action_help -> CreateCardView.create(getHistoryLayout(), getHelpTextId(), activity as Activity)
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
-            R.id.action_settings -> startActivity(Intent(activity, SettingsActivity::class.java))
+            R.id.action_settings -> activity?.openSettingsFragment()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -90,6 +91,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         shouldShowExplanation =
             sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
         shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
+        shouldFormatNumbers = sharedPrefs.getBoolean(getString(R.string.pref_key_format_numbers), false)
     }
 
     override fun onCreateView(

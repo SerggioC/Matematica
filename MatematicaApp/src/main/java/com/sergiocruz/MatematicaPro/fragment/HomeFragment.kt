@@ -15,7 +15,7 @@ class HomeFragment : BaseFragment() {
     @StringRes
     override var title: Int = R.string.app_inicio
 
-    override var index: Int = 0
+    override var pageIndex: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

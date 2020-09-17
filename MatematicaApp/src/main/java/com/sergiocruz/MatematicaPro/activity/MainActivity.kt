@@ -13,6 +13,7 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.allPermissionsGranted
 import com.sergiocruz.MatematicaPro.fragment.*
 import com.sergiocruz.MatematicaPro.getRuntimePermissions
+import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -67,15 +68,15 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
         // selecting appropriate nav menu item
-        nav_view.menu.getItem(fragment.index).isChecked = true
-        nav_view.menu.getItem(fragment.index).setActionView(R.layout.menu_dot)
+        nav_view.menu.getItem(fragment.pageIndex).isChecked = true
+        nav_view.menu.getItem(fragment.pageIndex).setActionView(R.layout.menu_dot)
 
         // set toolbar title
         toolbarTitle.setText(fragment.title)
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer_layout
-        if (supportFragmentManager.findFragmentByTag(fragment::class.java.simpleName) != null) {
+        if (supportFragmentManager.fragments.getOrNull(0)?.tag == fragment::class.java.simpleName) {
             drawer_layout.closeDrawers()
             return
         }
@@ -102,7 +103,16 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     private fun getCurrentFragmentIndex(): Int {
         val fragmentList = supportFragmentManager.fragments
         val stackSize = fragmentList.size
-        return (fragmentList.getOrNull(stackSize - 1) as? BaseFragment)?.index ?: 0
+        return (fragmentList.getOrNull(stackSize - 1) as? BaseFragment)?.pageIndex ?: 0
+    }
+
+
+    private fun goToSettingsFragment() {
+        nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
+        nav_view.menu.getItem(SettingsFragment.index).isChecked = true
+        nav_view.menu.getItem(SettingsFragment.index).setActionView(R.layout.menu_dot)
+        openSettingsFragment()
+        drawer_layout.closeDrawers()
     }
 
     private fun setUpNavigationView() {
@@ -127,7 +137,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                 R.id.nav_prime_table -> loadFragment(PrimesTableFragment())
                 R.id.nav_multiplos -> loadFragment(MultiplosFragment())
                 R.id.nav_primorial -> loadFragment(PrimorialFragment())
-                R.id.nav_settings -> startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
+                R.id.nav_settings -> goToSettingsFragment()
                 R.id.nav_about -> startActivity(Intent(this@MainActivity, AboutActivity::class.java))
                 R.id.nav_send -> startActivity(Intent(this@MainActivity, SendMailActivity::class.java))
                 else -> loadFragment(HomeFragment())

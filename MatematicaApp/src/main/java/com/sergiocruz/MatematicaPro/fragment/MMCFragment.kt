@@ -38,7 +38,6 @@ import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
-import java.util.Map
 
 class MMCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
@@ -49,7 +48,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     private lateinit var arrayOfEditTexts: Array<EditText>
 
     override var title: Int = R.string.mmc_title
-    override var index: Int = 2
+    override var pageIndex: Int = 2
 
     /****************************************************************
      * MDC: Máximo divisor comum (gcd: Greatest Common Divisor) v2
@@ -108,6 +107,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         arrayOfEditTexts = emptyArray()
+
     }
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
@@ -140,16 +140,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             return@setOnApplyWindowInsetsListener insets?.consumeSystemWindowInsets()
         }
 
-        arrayOfEditTexts = arrayOf(
-            mmc_num_1,
-            mmc_num_2,
-            mmc_num_3,
-            mmc_num_4,
-            mmc_num_5,
-            mmc_num_6,
-            mmc_num_7,
-            mmc_num_8
-        )
+        arrayOfEditTexts = arrayOf(mmc_num_1, mmc_num_2, mmc_num_3, mmc_num_4, mmc_num_5, mmc_num_6, mmc_num_7, mmc_num_8)
 
         calculateButton.setOnClickListener { calculateMMC() }
 
@@ -166,7 +157,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         button_remove_mmc.setOnClickListener { removeMMC() }
 
         arrayOfEditTexts.forEach {
-            it.watchThis(this)
+            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, this))
             it.error = null
         }
 
@@ -317,7 +308,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         val longNumbers = ArrayList<Long>()
 
         arrayOfEditTexts.forEach {
-            val numString = it.text.toString().replace("[^\\d]".toRegex(), "")
+            val numString = it.text.digitsOnly()
             if (TextUtils.isEmpty(numString)) {
                 emptyTextView.add(it)
             } else {
@@ -394,7 +385,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             cardView.layoutTransition = lt
         }
 
-        val cvColor = ContextCompat.getColor(context!!, R.color.cardsColor)
+        val cvColor = ContextCompat.getColor(requireContext(), R.color.cardsColor)
         cardView.setCardBackgroundColor(cvColor)
 
         // Create a generic swipe-to-dismiss touch listener.
@@ -405,7 +396,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 object : SwipeToDismissTouchListener.DismissCallbacks {
                     override fun canDismiss(token: Boolean?) = true
                     override fun onDismiss(view: View?) {
-                        checkBackgroudOperation(view)
+                        checkBackgroundOperation(view)
                     }
                 })
         )
@@ -457,19 +448,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     ) {
 
         val hideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
-        hideExpl.setSpan(
-            UnderlineSpan(),
-            0,
-            hideExpl.length - 2,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        hideExpl.setSpan(UnderlineSpan(), 0, hideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
         val showExpl = SpannableStringBuilder(getString(R.string.explain))
-        showExpl.setSpan(
-            UnderlineSpan(),
-            0,
-            showExpl.length - 2,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        showExpl.setSpan(UnderlineSpan(), 0, showExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
         //Linearlayout horizontal com o explainlink e gradiente
         val llHorizontal = LinearLayout(activity)
@@ -479,7 +460,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         explainLink.tag = "explainLink"
         explainLink.layoutParams = getWrapWrapParams()
         explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explainLink.setTextColor(ContextCompat.getColor(activity!!, R.color.linkBlue))
+        explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
         explainLink.gravity = Gravity.CENTER_VERTICAL
 
         //View separator with gradient
@@ -540,7 +521,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         ssbExplain1.setSpan(
             ForegroundColorSpan(
                 ContextCompat.getColor(
-                    activity!!,
+                    requireActivity(),
                     R.color.boldColor
                 )
             ), 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE
@@ -595,7 +576,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         ssbExplain2.setSpan(
             ForegroundColorSpan(
                 ContextCompat.getColor(
-                    activity!!,
+                    requireActivity(),
                     R.color.boldColor
                 )
             ), 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE
@@ -605,8 +586,8 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         explainTextView2.setTag(R.id.texto, "texto")
 
         //Ponto 3
-        val explainTextView_3 = TextView(activity)
-        explainTextView_3.tag = "explainTextView_3"
+        val explaintextview3 = TextView(activity)
+        explaintextview3.tag = "explainTextView_3"
         val multipl = getString(R.string.multiply)
         val explain_text_3 = multipl + " " +
                 getString(R.string.to_obtain_mmc) + "\n"
@@ -621,18 +602,18 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         ssb_explain_3.setSpan(
             ForegroundColorSpan(
                 ContextCompat.getColor(
-                    activity!!,
+                    requireActivity(),
                     R.color.boldColor
                 )
             ), 0, ssb_explain_3.length, SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        explainTextView_3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
-        explainTextView_3.text = ssb_explain_3
-        explainTextView_3.setTag(R.id.texto, "texto")
+        explaintextview3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
+        explaintextview3.text = ssb_explain_3
+        explaintextview3.setTag(R.id.texto, "texto")
 
         verticalExpl.addView(explainTextView1)
         verticalExpl.addView(explainTextView2)
-        verticalExpl.addView(explainTextView_3)
+        verticalExpl.addView(explaintextview3)
         llVerticalRoot.addView(llHorizontal)
         llVerticalRoot.addView(progressBar)
         llVerticalRoot.addView(verticalExpl)
@@ -658,7 +639,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     }
 
-    fun checkBackgroudOperation(view: View?) {
+    fun checkBackgroundOperation(view: View?) {
         val theTags = view?.tag as MyTags
         if (theTags.hasBGOperation == true) {
             val taskNumber = theTags.taskNumber
@@ -697,7 +678,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            f_colors = activity!!.resources.getIntArray(R.array.f_colors_xml)
+            f_colors = requireActivity().resources.getIntArray(R.array.f_colors_xml)
             f_colors_length = f_colors.size
             fColors = ArrayList()
             if (shouldShowColors) {

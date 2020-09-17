@@ -1,9 +1,9 @@
-package com.sergiocruz.MatematicaPro.activity
+package com.sergiocruz.MatematicaPro.fragment
 
 
 import android.os.Bundle
-import android.preference.*
 import android.view.MenuItem
+import androidx.preference.*
 import com.sergiocruz.MatematicaPro.R
 
 
@@ -18,12 +18,37 @@ import com.sergiocruz.MatematicaPro.R
  * Android Design: Settings](http://developer.android.com/design/patterns/settings.html) for design guidelines and the [Settings
  * API Guide](http://developer.android.com/guide/topics/ui/settings.html) for more information on developing a Settings UI.
  */
-class SettingsActivity : AppCompatPreferenceActivity() {
+class SettingsFragment : PreferenceFragmentCompat() {
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        addPreferencesFromResource(R.xml.pref_general)
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_show_explanation)))
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_history_size)))
+
+        val prefBruteForce =
+            findPreference<SwitchPreferenceCompat>(getString(R.string.pref_key_brute_force))
+        val prefProbabilistic =
+            findPreference<SwitchPreferenceCompat>(getString(R.string.pref_key_probabilistic))
+
+        prefBruteForce?.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
+            prefBruteForce.isChecked = prefBruteForce.isChecked.not()
+            prefProbabilistic?.isChecked = prefBruteForce.isChecked.not()
+            true
+        }
+        prefProbabilistic?.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
+            prefProbabilistic.isChecked = prefProbabilistic.isChecked.not()
+            prefBruteForce?.isChecked = prefBruteForce?.isChecked?.not() ?: false
+            true
+        }
+
+    }
+
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
      */
-    private val sBindPreferenceSummaryToValueListener =
+    private val sBindPreferenceSummaryToValueListenerr =
         Preference.OnPreferenceChangeListener { preference, value ->
             val stringValue = value.toString()
             if (preference is ListPreference) {
@@ -35,11 +60,11 @@ class SettingsActivity : AppCompatPreferenceActivity() {
                     preference.setSummary(if (index >= 0) preference.entries[index] else null)
 
                     //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
-                    val showColors = findPreference(getString(R.string.pref_key_show_colors))
+                    val showColors = findPreference<CheckBoxPreference>(getString(R.string.pref_key_show_colors))
                     if (index == 0 || index == 1) {
-                        showColors.isEnabled = true
+                        showColors?.isEnabled = true
                     } else if (index == 2) {
-                        showColors.isEnabled = false
+                        showColors?.isEnabled = false
                     }
                 } else if (preference.title == getString(R.string.pref_title_history_size)) {
                     preference.summary =
@@ -65,60 +90,34 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      *
      * @see .sBindPreferenceSummaryToValueListener
      */
-    private fun bindPreferenceSummaryToValue(preference: Preference) {
+    private fun bindPreferenceSummaryToValue(preference: ListPreference?) {
         // Set the listener to watch for value changes.
         //preference.setOnPreferenceChangeListener(this);
-        preference.onPreferenceChangeListener = sBindPreferenceSummaryToValueListener
+        preference?.onPreferenceChangeListener = sBindPreferenceSummaryToValueListenerr
+
+        PreferenceManager.getDefaultSharedPreferences(context)
 
         // Trigger the listener immediately with the preference's
         // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(
+        sBindPreferenceSummaryToValueListenerr.onPreferenceChange(
             preference,
             PreferenceManager
-                .getDefaultSharedPreferences(preference.context)
-                .getString(preference.key, "")
+                .getDefaultSharedPreferences(context)
+                .getString(preference?.key, "")
         )
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupActionBar()
-        addPreferencesFromResource(R.xml.pref_general)
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_show_explanation)))
-        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_history_size)))
-
-        val prefBruteForce =
-            findPreference(getString(R.string.pref_key_brute_force)) as SwitchPreference
-        val prefProbabilistic =
-            findPreference(getString(R.string.pref_key_probabilistic)) as SwitchPreference
-
-        prefBruteForce.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
-            prefBruteForce.isChecked = !prefBruteForce.isChecked
-            prefProbabilistic.isChecked = !prefBruteForce.isChecked
-            true
-        }
-        prefProbabilistic.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
-            prefProbabilistic.isChecked = !prefProbabilistic.isChecked
-            prefBruteForce.isChecked = !prefBruteForce.isChecked
-            true
-        }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            onBackPressed()
+            activity?.onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
-    /**
-     * Set up the [android.app.ActionBar], if the API is available.
-     */
-    private fun setupActionBar() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    companion object {
+        var index = 9
+        var title = R.string.action_settings
     }
 
 }
