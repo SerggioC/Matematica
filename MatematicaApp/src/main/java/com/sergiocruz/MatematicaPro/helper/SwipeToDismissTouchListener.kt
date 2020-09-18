@@ -11,6 +11,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Handler
+import android.os.Looper
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.view.*
@@ -26,6 +27,9 @@ import com.sergiocruz.MatematicaPro.helper.MenuHelper.openFolderSnackBar
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveViewToImage
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /*****
  * Project Matematica
@@ -46,7 +50,7 @@ class SwipeToDismissTouchListener(
     private val mCallbacks: DismissCallbacks
 ) : View.OnTouchListener {
 
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private var mBooleanIsPressed = false
     // Cached ViewConfiguration and system-wide constant values
     private val mSlop: Int
@@ -71,7 +75,8 @@ class SwipeToDismissTouchListener(
 
     private val formatedTextFromTextView: String
         get() {
-            val viewsWithTAGTexto = getViewsByTag((mView as ViewGroup?)!!, "texto")
+            val root = mView as? ViewGroup ?: return ""
+            val viewsWithTAGTexto = getViewsByTag(root, "texto")
             var finalText = ""
             for (i in viewsWithTAGTexto.indices) {
                 if (viewsWithTAGTexto[i] is TextView) {
@@ -240,14 +245,14 @@ class SwipeToDismissTouchListener(
                     return true
                 }
                 val deltaX = motionEvent.rawX - mDownX
-                mVelocityTracker!!.addMovement(motionEvent)
-                mVelocityTracker!!.computeCurrentVelocity(1000)
-                val velocityX = mVelocityTracker!!.xVelocity
-                val absVelocityX = Math.abs(velocityX)
-                val absVelocityY = Math.abs(mVelocityTracker!!.yVelocity)
+                mVelocityTracker?.addMovement(motionEvent)
+                mVelocityTracker?.computeCurrentVelocity(1000)
+                val velocityX = mVelocityTracker?.xVelocity ?: 0f
+                val absVelocityX = abs(velocityX)
+                val absVelocityY = abs(mVelocityTracker?.yVelocity ?: 0f)
                 var dismiss = false
                 var dismissRight = false
-                if (Math.abs(deltaX) > mViewWidth / 2 && mSwiping) {
+                if (abs(deltaX) > mViewWidth / 2 && mSwiping) {
                     dismiss = true
                     dismissRight = deltaX > 0
                 } else if (mMinFlingVelocity <= absVelocityX && absVelocityX <= mMaxFlingVelocity
@@ -256,7 +261,7 @@ class SwipeToDismissTouchListener(
                 ) {
                     // dismiss only if flinging in the same direction as dragging
                     dismiss = velocityX < 0 == deltaX < 0
-                    dismissRight = mVelocityTracker!!.xVelocity > 0
+                    dismissRight = (mVelocityTracker?.xVelocity ?: 0f) > 0
                 }
                 if (dismiss) {
 
@@ -267,11 +272,9 @@ class SwipeToDismissTouchListener(
                         .setDuration(mAnimationTime)
                         .setListener(object : AnimatorListenerAdapter() {
                             override fun onAnimationEnd(animation: Animator) {
-                                if (mView != null) {
-                                    val history = mView.parent as ViewGroup
-                                    history.removeView(mView)
-                                    mCallbacks.onDismiss(mView)
-                                }
+                                val history = mView.parent as ViewGroup
+                                history.removeView(mView)
+                                mCallbacks.onDismiss(mView)
                                 //performDismiss();
                             }
                         })
@@ -284,7 +287,7 @@ class SwipeToDismissTouchListener(
                         .setListener(null)
                 }
                 try {
-                    mVelocityTracker!!.recycle()
+                    mVelocityTracker?.recycle()
                 } catch (e: Exception) {
                 }
 
@@ -317,7 +320,7 @@ class SwipeToDismissTouchListener(
                         .setDuration(mAnimationTime)
                         .setListener(null)
                     try {
-                        mVelocityTracker!!.recycle()
+                        mVelocityTracker?.recycle()
                     } catch (e: Exception) {
                     }
 
@@ -341,7 +344,7 @@ class SwipeToDismissTouchListener(
                 mView.animate().translationX(0f).alpha(1f).setDuration(mAnimationTime)
                     .setListener(null)
                 try {
-                    mVelocityTracker!!.recycle()
+                    mVelocityTracker?.recycle()
                 } catch (e: Exception) {
                 }
 
@@ -358,7 +361,7 @@ class SwipeToDismissTouchListener(
                     return true
                 }
 
-                mVelocityTracker!!.addMovement(motionEvent)
+                mVelocityTracker?.addMovement(motionEvent)
                 val deltaX = motionEvent.rawX - mDownX
                 val deltaY = motionEvent.rawY - mDownY
 
@@ -371,7 +374,7 @@ class SwipeToDismissTouchListener(
                     }
                 }
 
-                if (Math.abs(deltaX) > mSlop && Math.abs(deltaY) < Math.abs(deltaX) / 2) {
+                if (abs(deltaX) > mSlop && abs(deltaY) < abs(deltaX) / 2) {
                     mSwiping = true
                     mSwipingSlop = if (deltaX > 0) mSlop else -mSlop
                     mView.parent.requestDisallowInterceptTouchEvent(true)
@@ -400,7 +403,7 @@ class SwipeToDismissTouchListener(
                     mView.translationX = deltaX - mSwipingSlop
                     // TODO: use an ease-out interpolator or such
                     mView.alpha =
-                        Math.max(0f, Math.min(1f, 1f - 2f * Math.abs(deltaX) / mViewWidth))
+                        max(0f, min(1f, 1f - 2f * abs(deltaX) / mViewWidth))
                     return true
                 }
             }

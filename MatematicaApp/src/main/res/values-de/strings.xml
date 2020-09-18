@@ -51,9 +51,7 @@
     <string name="canceled_noprimes">Operation abgebrochen. Es wurden keine Primzahlen im Bereich gefunden.</string>
     <string name="canceled_op">Operation abgebrochen.</string>
     <string name="cardinal_primos">Anzahl der Primzahlen:</string>
-    <string name="comuns">verbreitet</string>
     <string name="copied_toclipboard">In die Zwischenablage kopiert</string>
-    <string name="decompor_num">▻Verwenden Sie die Zahlen in</string>
     <string name="desenvolvido_por">Entwickelt von Sérgio C.</string>
     <string name="divisores_">Divisoren:</string>
     <string name="divisores_number">Divisoren einer Zahl</string>
@@ -61,7 +59,6 @@
     <string name="divisors_of">Divisoren von</string>
     <string name="empty_table">Leeren Tisch</string>
     <string name="errorsavingimg">Fehler beim Speichern des Bildes. Bitte erlauben Sie der App, Dateien zu speichern.</string>
-    <string name="escolher">▻Wählen Sie</string>
     <string name="existem">Es gibt</string>
     <string name="expl_text_divisores_1">▻ Teilen Sie die Nummer nacheinander durch die niedrigste Primzahl, um eine genaue Teilung zu erhalten, bis Sie 1:</string>
     <string name="explain">[+] Erläuterung anzeigen ▾</string>
@@ -70,7 +67,15 @@
     <string name="factorization_of">Faktorisierung von</string>
     <string name="factorize">Faktorisierungsnummer</string>
     <string name="factorizing">Faktorisierung ...</string>
-    <string name="fatores_primos">Hauptfaktoren:</string>
+
+    <string name="explainMMC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
+    <string name="explainMMC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> und <u>nicht gemeinsamen</u> Faktoren, <u>nur einmal</u> mit dem <u>größte Exponenten</u>:<br/>]]></string>
+    <string name="explainMMC3html"><![CDATA[▻<u>Multiplizieren Sie</u> die Faktoren, um das kleinste gemeinsame Vielfache zu erhalten:<br/>]]></string>
+
+    <string name="explainMDC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
+    <string name="explainMDC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> Faktoren, <u>nur einmal</u> mit den <u>niedrigsten Exponenten</u>:<br/>]]></string>
+    <string name="explainMDC3html"><![CDATA[▻<u>Multiplizieren Sie</u> Faktoren, um den größten gemeinsamen Teiler zu erhalten:<br/>]]></string>
+
     <string name="fatorizar_btn">Faktorisieren</string>
     <string name="fatorizcao">Faktorisieren</string>
     <string name="fatorize_title">Primzahlfaktorisierung</string>

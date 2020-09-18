@@ -46,7 +46,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private var bgOperation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
         BackGroundOperation()
 
-    private var startTime: Long? = null
+    private var startTime: Long = 0L
 
     override fun getLayoutIdForFragment() = R.layout.fragment_fatorizar
 
@@ -98,10 +98,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         if (num == 0L || num == 1L) {
-            showCustomToast(
-                context,
-                getString(R.string.the_number) + " " + num + " " + getString(R.string.has_no_factors)
-            )
+            showCustomToast(context, getString(R.string.the_number) + " " + num + " " + getString(R.string.has_no_factors))
             return
         }
 
@@ -116,7 +113,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         ssb_str_divisores: SpannableStringBuilder,
         ssbFatores: SpannableStringBuilder,
         str_fact_exp: SpannableStringBuilder,
-        hasExpoentes: Boolean?
+        hasExpoentes: Boolean
     ) {
 
         //criar novo cardview
@@ -180,7 +177,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val ssbExplain1 = SpannableStringBuilder(explainText1)
             val boldColorSpan =
                 ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor))
-            ssbExplain1.setSpan(boldColorSpan, 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            ssbExplain1.setSafeSpan(boldColorSpan, 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             textViewExplanations.text = ssbExplain1
             textViewExplanations.setTag(R.id.texto, "texto")
             llVerticalExpl.addView(textViewExplanations)
@@ -207,47 +204,37 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     R.color.separatorLineColor
                 )
             )
-            val um_dip = (1.2 * scale + 0.5f).toInt()
-            verticalSeparador.setPadding(um_dip, 4, 0, um_dip)
+            val oneDp = (1.2 * scale + 0.5f).toInt()
+            verticalSeparador.setPadding(oneDp, 4, 0, oneDp)
 
             val llVerticalDivisores = LinearLayout(activity)
             llVerticalDivisores.layoutParams = getWrapWrapParams()
             llVerticalDivisores.orientation = LinearLayout.VERTICAL
-            llVerticalDivisores.setPadding(
-                (4 * scale + 0.5f).toInt(),
-                0,
-                (8 * scale + 0.5f).toInt(),
-                0
-            )
+            llVerticalDivisores.setPadding((4 * scale + 0.5f).toInt(), 0, (8 * scale + 0.5f).toInt(), 0)
 
             val textViewResults = TextView(activity)
             textViewResults.layoutParams = getWrapWrapParams()
+            textViewResults.setTag(R.id.texto, "texto")
             textViewResults.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
             textViewResults.gravity = Gravity.RIGHT
             val ssbStrResults = SpannableStringBuilder(str_results)
-            ssbStrResults.setSpan(
-                RelativeSizeSpan(0.9f),
-                ssbStrResults.length - str_results.length,
-                ssbStrResults.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            ssbStrResults.setSafeSpan(RelativeSizeSpan(0.9f), ssbStrResults.length - str_results.length, ssbStrResults.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             textViewResults.text = ssbStrResults
-            textViewResults.setTag(R.id.texto, "texto")
 
             llVerticalResults.addView(textViewResults)
 
             val textViewDivisores = TextView(activity)
             textViewDivisores.layoutParams = getWrapWrapParams()
+            textViewDivisores.setTag(R.id.texto, "texto")
             textViewDivisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
             textViewDivisores.gravity = Gravity.LEFT
-            ssb_str_divisores.setSpan(
+            ssb_str_divisores.setSafeSpan(
                 RelativeSizeSpan(0.9f),
                 ssb_str_divisores.length - ssb_str_divisores.length,
                 ssb_str_divisores.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
             textViewDivisores.text = ssb_str_divisores
-            textViewDivisores.setTag(R.id.texto, "texto")
 
             llVerticalDivisores.addView(textViewDivisores)
 
@@ -260,19 +247,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             llHorizontal.addView(llVerticalDivisores)
 
             val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
-            ssbHideExpl.setSpan(
-                UnderlineSpan(),
-                0,
-                ssbHideExpl.length - 2,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            ssbHideExpl.setSafeSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
             val ssbShowExpl = SpannableStringBuilder(getString(R.string.explain))
-            ssbShowExpl.setSpan(
-                UnderlineSpan(),
-                0,
-                ssbShowExpl.length - 2,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            ssbShowExpl.setSafeSpan(UnderlineSpan(), 0, ssbShowExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
             val explainLink = TextView(activity)
             explainLink.layoutParams = getWrapWrapParams()
@@ -311,7 +288,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             if (shouldShowPerformance) {
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
-                    "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime!!) / 1000000000.0) + "s"
+                    "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 gradientSeparator.text = elapsed
             } else {
                 gradientSeparator.text = ""
@@ -330,50 +307,20 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             val textViewFactExpanded = TextView(activity)
             textViewFactExpanded.layoutParams = getMatchWrapParams()
-            textViewFactExpanded.setTextSize(
-                TypedValue.COMPLEX_UNIT_SP,
-                CARD_TEXT_SIZE
-            )
+            textViewFactExpanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
             textViewFactExpanded.gravity = Gravity.LEFT
             val explainText2 = getString(R.string.explain_divisores2) + "\n"
             val ssbExplain2 = SpannableStringBuilder(explainText2)
-            ssbExplain2.setSpan(
-                ForegroundColorSpan(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.boldColor
-                    )
-                ), 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            ssbExplain2.setSafeSpan(boldColorSpan, 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             ssbExplain2.append(str_fact_exp)
-            ssbExplain2.setSpan(
-                RelativeSizeSpan(0.9f),
-                ssbExplain2.length - str_fact_exp.length,
-                ssbExplain2.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            if (hasExpoentes!!) {
+            ssbExplain2.setSafeSpan(RelativeSizeSpan(0.9f), ssbExplain2.length - str_fact_exp.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (hasExpoentes) {
                 val textFactRepetidos = "\n" + getString(R.string.explain_divisores3) + "\n"
                 ssbExplain2.append(textFactRepetidos)
-                ssbExplain2.setSpan(
-                    boldColorSpan,
-                    ssbExplain2.length - textFactRepetidos.length,
-                    ssbExplain2.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                ssbExplain2.setSafeSpan(boldColorSpan, ssbExplain2.length - textFactRepetidos.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssbExplain2.append(ssbFatores)
-                ssbExplain2.setSpan(
-                    RelativeSizeSpan(0.9f),
-                    ssbExplain2.length - ssbFatores.length,
-                    ssbExplain2.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ssbExplain2.setSpan(
-                    StyleSpan(android.graphics.Typeface.BOLD),
-                    ssbExplain2.length - ssbFatores.length,
-                    ssbExplain2.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                ssbExplain2.setSafeSpan(RelativeSizeSpan(0.9f), ssbExplain2.length - ssbFatores.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbExplain2.setSafeSpan(StyleSpan(android.graphics.Typeface.BOLD), ssbExplain2.length - ssbFatores.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
             textViewFactExpanded.text = ssbExplain2
@@ -391,7 +338,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val gradientSeparator = getGradientSeparator(context)
                 val decimalFormatter = DecimalFormat("#.###")
                 val elapsed =
-                    getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime!!) / 1000000000.0) + "s"
+                    getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 gradientSeparator.text = elapsed
                 llVerticalRoot.addView(gradientSeparator, 0)
             }
@@ -431,7 +378,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             val factoresPrimos = ArrayList<ArrayList<Long>>()
             val results = ArrayList<Long>()
             val divisores = ArrayList<Long>()
-            var number: Long = num[0]!!
+            var number: Long = num[0] ?: 0L
             var progress: Float?
             var oldProgress = 0f
 
@@ -517,29 +464,16 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (sizeList == 1) {
             strFatores = resultadosDivisao[0].toString() + " " + getString(R.string.its_a_prime)
             ssbFatores = SpannableStringBuilder(strFatores)
-            ssbFatores.setSpan(
-                ForegroundColorSpan(Color.parseColor("#29712d")),
-                0,
-                ssbFatores.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            ) //verde
-            CreateCardView.createCardViewWithSSB(history, ssbFatores, activity as Activity)
+            ssbFatores.setSafeSpan(ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE) //verde
+            CreateCardView.viewWithSSB(history, ssbFatores, activity as Activity)
 
         } else {
             strFatores = ""
-            var hasExpoentes: Boolean? = false
+            var hasExpoentes = false
             var counter = 1
             var lastItem: Long? = fatoresPrimos[0]
 
-            val xmlColors = resources.getIntArray(R.array.f_colors_xml)
-            val fColors: ArrayList<Int> = ArrayList()
-
-            if (shouldShowColors) {
-                for (f_color in xmlColors) fColors.add(f_color)
-                fColors.shuffle() //randomizar as cores
-            } else {
-                for (i in xmlColors.indices) fColors.add(xmlColors[xmlColors.size - 1])
-            }
+            val fColors = getRandomFactorsColors()
 
             val ssbFactExpanded = SpannableStringBuilder()
             var colorIndex = 0
@@ -555,12 +489,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
                 val fi = fatori.toString()
                 ssbFactExpanded.append(fi)
-                ssbFactExpanded.setSpan(
+                ssbFactExpanded.setSafeSpan(
                     ForegroundColorSpan(fColors[colorIndex]),
                     ssbFactExpanded.length - fi.length, ssbFactExpanded.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                ssbFactExpanded.setSpan(
+                ssbFactExpanded.setSafeSpan(
                     StyleSpan(android.graphics.Typeface.BOLD),
                     ssbFactExpanded.length - fi.length, ssbFactExpanded.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
@@ -603,7 +537,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 if (value.toInt() == 1) {
                     //Expoente 1
                     ssbFatores.append(key)
-                    ssbFatores.setSpan(
+                    ssbFatores.setSafeSpan(
                         ForegroundColorSpan(fColors[colorIndex]),
                         ssbFatores.length - key.length, ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
@@ -613,20 +547,20 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     //Expoente superior a 1 // pair.getkey = fator; pair.getvalue = expoente
 
                     ssbFatores.append(key)
-                    ssbFatores.setSpan(
+                    ssbFatores.setSafeSpan(
                         ForegroundColorSpan(fColors[colorIndex]),
                         ssbFatores.length - key.length, ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     valueLength = value.length
                     ssbFatores.append(value)
-                    ssbFatores.setSpan(
+                    ssbFatores.setSafeSpan(
                         SuperscriptSpan(),
                         ssbFatores.length - valueLength,
                         ssbFatores.length,
                         SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    ssbFatores.setSpan(
+                    ssbFatores.setSafeSpan(
                         RelativeSizeSpan(0.8f),
                         ssbFatores.length - valueLength,
                         ssbFatores.length,
@@ -645,13 +579,13 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             if (wasCanceled) {
                 val incompleteCalc = "\n" + getString(R.string._incomplete_calc)
                 ssbFatores.append(incompleteCalc)
-                ssbFatores.setSpan(
+                ssbFatores.setSafeSpan(
                     ForegroundColorSpan(Color.RED),
                     ssbFatores.length - incompleteCalc.length,
                     ssbFatores.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-                ssbFatores.setSpan(
+                ssbFatores.setSafeSpan(
                     RelativeSizeSpan(0.8f),
                     ssbFatores.length - incompleteCalc.length,
                     ssbFatores.length,
@@ -664,32 +598,32 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             colorIndex = 0
             var currentLong: Long? = fatoresPrimos[0]
             for (i in 0 until sizeList - 1) {
-                val fator_i = fatoresPrimos[i]
-                if (currentLong != fator_i) {
+                val fatorI = fatoresPrimos[i]
+                if (currentLong != fatorI) {
                     colorIndex++
                 }
-                currentLong = fator_i
+                currentLong = fatorI
 
-                val fa = fator_i.toString() + "\n"
+                val fa = fatorI.toString() + "\n"
                 ssbDivisores.append(fa)
-                ssbDivisores.setSpan(
+                ssbDivisores.setSafeSpan(
                     ForegroundColorSpan(fColors[colorIndex]),
                     ssbDivisores.length - fa.length, ssbDivisores.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
 
-            val fator_i = fatoresPrimos[sizeList - 1]
-            if (currentLong != fator_i) {
+            val fatorI2 = fatoresPrimos[sizeList - 1]
+            if (currentLong != fatorI2) {
                 colorIndex++
             }
-            ssbDivisores.append(fator_i.toString())
-            ssbDivisores.setSpan(
+            ssbDivisores.append(fatorI2.toString())
+            ssbDivisores.setSafeSpan(
                 ForegroundColorSpan(fColors[colorIndex]),
-                ssbDivisores.length - fator_i.toString().length, ssbDivisores.length,
+                ssbDivisores.length - fatorI2.toString().length, ssbDivisores.length,
                 SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            ssbDivisores.setSpan(
+            ssbDivisores.setSafeSpan(
                 StyleSpan(android.graphics.Typeface.BOLD),
                 0,
                 ssbDivisores.length,

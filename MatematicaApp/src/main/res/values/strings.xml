@@ -158,14 +158,21 @@
     <string name="hide_explain">[-] Hide Explanation ◂</string>
     <string name="pref_description_title">Application Preferences</string>
     <string name="action_settings">Preferences</string>
-    <string name="comuns">common</string>
-    <string name="decompor_num">▻Decompose the numbers in</string>
-    <string name="escolher">▻Choose</string>
+
+    <string name="explainMMC1html"><![CDATA[▻Decompose the numbers in <u>prime factors</u>:<br/>]]></string>
+    <string name="explainMMC2html"><![CDATA[▻Choose the <u>common</u> and <u>non common</u> factors, <u>just once</u> with the <u>greatest exponents</u>:<br/>]]></string>
+    <string name="explainMMC3html"><![CDATA[▻<u>Multiply</u> the factors to obtain the Least Common Multiple:<br/>]]></string>
+
+    <string name="explainMDC1html"><![CDATA[▻Decompose the numbers in <u>prime factors</u>:<br/>]]></string>
+    <string name="explainMDC2html"><![CDATA[▻Choose the <u>common</u> factors, <u>just once</u> with the <u>lowest exponents</u>:<br/>]]></string>
+    <string name="explainMDC3html"><![CDATA[▻<u>Multiply</u> factors to obtain the Greatest Common Divisor:<br/>]]></string>
+
     <string name="factorizing">Factorizing…</string>
-    <string name="fatores_primos">prime factors:</string>
+
     <string name="maior_exps">greatest exponents</string>
     <string name="multiply">▻Multiply</string>
     <string name="nao_comuns">not common</string>
+
     <string name="performance">Performance:</string>
     <string name="pref_colors_title">Show colors</string>
     <string name="pref_description_colors">Display distinct colors for easy explanations</string>

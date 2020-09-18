@@ -17,8 +17,7 @@ class TableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var showAll: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.table_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.table_item, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -62,6 +61,7 @@ class TableAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         this.fullTableData = full
         this.primesTableData = primes
         this.showAll = showAll
+        notifyDataSetChanged()
     }
 
     fun reloadAdapter(showAll: Boolean) {

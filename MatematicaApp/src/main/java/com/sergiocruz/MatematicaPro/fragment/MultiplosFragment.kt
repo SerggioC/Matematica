@@ -31,7 +31,7 @@ import java.text.DecimalFormat
  */
 
 class MultiplosFragment : BaseFragment(), OnEditorActions {
-    private var asyncTask: AsyncTask<Long, Double, String> = BackGroundOperation(null, null)
+    private var asyncTask: AsyncTask<Long, Double, String> = BackGroundOperation(false, null)
     private var num: Long = 0
     internal var startTime: Long = 0
 
@@ -108,7 +108,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         asyncTask = BackGroundOperation(false, null).execute(num, 0L, spinnerMaxMultiplos)
     }
 
-    fun createCardView(number: Long?, multiplos: String, min_multiplos: Long?, showMore: Boolean) {
+    fun createCardView(number: Long, multiplos: String, min_multiplos: Long?, showMore: Boolean) {
         //criar novo cardview
         val cardView = ClickableCardView(requireActivity())
         cardView.tag = min_multiplos
@@ -135,7 +135,13 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         val textView = TextView(activity)
         textView.layoutParams = getMatchWrapParams()
 
-        val text = getString(R.string.multiplosde) + " " + number + "=\n" + multiplos
+        val text =
+                if (shouldFormatNumbers) {
+                    getString(R.string.multiplosde) + " " + number.formatForLocale() + "=\n" + multiplos
+                } else {
+                    getString(R.string.multiplosde) + " " + number + "=\n" + multiplos
+                }
+
         val ssb = SpannableStringBuilder(text)
 
         //Adicionar o texto com o resultado
@@ -203,14 +209,14 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     }
 
     inner class BackGroundOperation internal constructor(
-        private var expandResult: Boolean?,
+        private var expandResult: Boolean,
         private var theCardView: ClickableCardView?
     ) : AsyncTask<Long, Double, String>() {
-        internal var number: Long? = null
-        private var maxValue: Long? = null
+        internal var number: Long = 0
+        private var maxValue: Long = 0
 
         public override fun onPreExecute() {
-            if (!expandResult!!) {
+            if (expandResult.not()) {
                 button_calc_multiplos.isClickable = false
                 button_calc_multiplos.setText(R.string.working)
                 hideKeyboard(activity)
@@ -218,15 +224,18 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         }
 
         override fun doInBackground(vararg num: Long?): String {
-            number = num[0]
-            val minValue = num[1]
-            maxValue = num[2]!! + num[1]!!
+            number = num[0] ?: 0
+            val minValue = num[1] ?: 0
+            maxValue = (num[2] ?: 0) + (num[1] ?: 0)
 
             var stringMultiples = ""
-
-            for (i in minValue!! until maxValue!!) {
-                val bigNumber = BigInteger.valueOf(number!!).multiply(BigInteger.valueOf(i))
-                stringMultiples += "$bigNumber, "
+            for (i in minValue until maxValue) {
+                val bigNumber = BigInteger.valueOf(number).multiply(BigInteger.valueOf(i))
+                stringMultiples += if (shouldFormatNumbers) {
+                    "${bigNumber.formatForLocale()}, "
+                } else {
+                    "$bigNumber, "
+                }
             }
             stringMultiples += "...}"
             return stringMultiples
@@ -234,7 +243,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
         override fun onPostExecute(result: String) {
             if (this@MultiplosFragment.isVisible) {
-                if (!expandResult!!) {
+                if (expandResult.not()) {
                     createCardView(number, "{$result", maxValue, true)
                     button_calc_multiplos.setText(R.string.calculate)
                     button_calc_multiplos.isClickable = true

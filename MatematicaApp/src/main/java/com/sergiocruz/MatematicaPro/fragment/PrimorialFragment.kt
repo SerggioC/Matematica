@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_primorial.*
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 /*****
  * Project MatematicaFree
@@ -31,7 +32,8 @@ import java.util.*
  */
 
 class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
-    var BG_Operation: AsyncTask<Long, Float, BigInteger> = BackGroundOperation()
+
+    private var backgroundTask: AsyncTask<Long, Float, BigInteger> = BackGroundOperation()
     private var num: Long = 0
     private var startTime: Long = 0
 
@@ -53,7 +55,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun getLayoutIdForFragment() = R.layout.fragment_primorial
 
     override fun onOperationCanceled(canceled: Boolean) {
-        if (cancelAsyncTask(BG_Operation, context)) resetButtons()
+        if (cancelAsyncTask(backgroundTask, context)) resetButtons()
     }
 
     override fun onActionDone() = calculatePrimorial()
@@ -79,7 +81,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onDestroy() {
         super.onDestroy()
-        cancelAsyncTask(BG_Operation, context)
+        cancelAsyncTask(backgroundTask, context)
     }
 
     fun calculatePrimorial() {
@@ -103,7 +105,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             return
         }
 
-        BG_Operation = BackGroundOperation().execute(num)
+        backgroundTask = BackGroundOperation().execute(num)
     }
 
     private fun resetButtons() {
@@ -113,7 +115,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cancelButton.visibility = View.GONE
     }
 
-    fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean?) {
+    fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean) {
         //criar novo cardview
         val cardView = ClickableCardView(requireActivity())
         cardView.layoutParams = ViewGroup.LayoutParams(
@@ -137,31 +139,23 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // Add cardview to history layout at the top (index 0)
         history.addView(cardView, 0)
 
-
         // criar novo Textview
         val textView = TextView(activity)
-        textView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, //largura
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) //altura
+        textView.layoutParams = getMatchWrapParams()
 
-        val text = number.toString() + "#=\n" + bigIntegerResult
+        val text =
+                if (shouldFormatNumbers) {
+                    number.toString() + "#=\n" + bigIntegerResult.formatForLocale()
+                } else {
+                    number.toString() + "#=\n" + bigIntegerResult
+                }
+
         val ssb = SpannableStringBuilder(text)
-        if (wasCanceled!!) {
+        if (wasCanceled) {
             val incomplete = "\n" + getString(R.string._incomplete_calc)
             ssb.append(incomplete)
-            ssb.setSpan(
-                ForegroundColorSpan(Color.RED),
-                ssb.length - incomplete.length,
-                ssb.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            ssb.setSpan(
-                RelativeSizeSpan(0.8f),
-                ssb.length - incomplete.length,
-                ssb.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         //Adicionar o texto com o resultado
@@ -227,7 +221,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         override fun doInBackground(vararg num: Long?): BigInteger {
-            number = num[0]!!
+            number = num[0] ?: return BigInteger.ONE
             if (number == 1L) return BigInteger.ONE
             if (number == 2L) return BigInteger.valueOf(2L)
 
@@ -272,7 +266,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@PrimorialFragment.isVisible) {
-                progressParams.width = Math.round(values[0]!! * card_view_1.width)
+                val fl = values[0] ?: 0f
+                progressParams.width = (fl * card_view_1.width).roundToInt()
                 progressBar.layoutParams = progressParams
             }
         }

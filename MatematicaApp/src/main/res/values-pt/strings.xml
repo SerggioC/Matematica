@@ -154,19 +154,16 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="pref_colors_title">Mostrar cores</string>
     <string name="pref_perform_title">Mostrar performance</string>
     <string name="performance">Performance:</string>
-    <string name="fatores_primos">fatores primos:</string>
-    <string name="decompor_num">▻Decompor os números em</string>
-    <string name="comuns">comuns</string>
-    <string name="nao_comuns">não comuns</string>
-    <string name="uma_vez">apenas uma vez</string>
-    <string name="maior_exps">maiores expoentes</string>
-    <string name="menor_exps">menores expoentes</string>
-    <string name="escolher">▻Escolher</string>
-    <string name="os_fatores">os fatores</string>
-    <string name="with_the">com os</string>
-    <string name="multiply">▻Multiplicar</string>
-    <string name="to_obtain_mmc">os fatores para obter o Mínimo Multiplo Comum:</string>
-    <string name="to_obtain_mdc">os fatores para obter o Máximo Divisor Comum:</string>
+
+    <string name="explainMMC1html"><![CDATA[▻Decompor os números em <u>fatores primos</u>:<br/>]]></string>
+    <string name="explainMMC2html"><![CDATA[▻Escolher os fatores <u>comuns</u> e <u>não comuns</u>, <u>apenas uma vez</u>, com os <u>maiores expoentes</u>:<br/>]]></string>
+    <string name="explainMMC3html"><![CDATA[▻<u>Multiplicar</u> os fatores para obter o Mínimo Multiplo Comum:<br/>]]></string>
+
+    <string name="explainMDC1html"><![CDATA[▻Decompor os números em <u>fatores primos</u>:<br/>]]></string>
+    <string name="explainMDC2html"><![CDATA[▻Escolher os fatores <u>comuns</u>, <u>apenas uma vez</u> com os <u>menores expoentes</u>:<br/>]]></string>
+    <string name="explainMDC3html"><![CDATA[▻<u>Multiplicar</u> os fatores para obter o Máximo Divisor Comum:<br/>]]></string>
+
+
     <string name="factorizing">A fatorizar...</string>
     <string name="expl_text_divisores_1">▻Dividir o número sucessivamente pelo menor número primo, de maneira a obter uma divisão exata, até obter 1:</string>
     <string name="explain_divisores2">▻O número é igual ao produto dos fatores primos obtidos:</string>

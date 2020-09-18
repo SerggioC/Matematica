@@ -24,6 +24,7 @@ import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -42,8 +43,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
-
-    internal lateinit var fColors: MutableList<Int>
+    private var fColors: MutableList<Int> = mutableListOf()
     internal var heightDip: Int = 0
     internal var cvWidth: Int = 0
     private var taskNumber = 0
@@ -66,8 +66,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        fColors = resources.getIntArray(R.array.f_colors_xml).toMutableList()
         language = Locale.getDefault().displayLanguage
     }
 
@@ -323,13 +321,13 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         val ssb = SpannableStringBuilder(mdcString)
         if (resultMDC.toString() == "1") {
             ssb.append("\n" + getString(R.string.primos_si))
-            ssb.setSpan(
+            ssb.setSafeSpan(
                     ForegroundColorSpan(Color.parseColor("#29712d")),
                     ssb.length - 24,
                     ssb.length,
                     SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            ssb.setSpan(
+            ssb.setSafeSpan(
                     RelativeSizeSpan(0.9f),
                     ssb.length - 24,
                     ssb.length,
@@ -410,7 +408,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                 gradientSeparator.text = elapsed
                 llVerticalRoot.addView(gradientSeparator, 0)
             }
-            cardView.addView(llVerticalRoot) //Só o resultado sem explicações
+            cardView.addView(llVerticalRoot) // Só o resultado sem explicações
         }
     }
 
@@ -420,9 +418,9 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             shouldShowExplanation: String?
     ) {
         val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
-        ssbHideExpl.setSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
+        ssbHideExpl.setSafeSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
         val ssbShowExpl = SpannableStringBuilder(getString(R.string.explain))
-        ssbShowExpl.setSpan(UnderlineSpan(), 0, ssbShowExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
+        ssbShowExpl.setSafeSpan(UnderlineSpan(), 0, ssbShowExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
         // Linearlayout
         val llHorizontal = LinearLayout(activity)
@@ -471,68 +469,29 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         val layoutParams = LinearLayout.LayoutParams(1, heightDip) //Largura, Altura
         progressBar.layoutParams = layoutParams
 
-        //Ponto 1
+        // Ponto 1
         val explaintextview1 = TextView(activity)
         explaintextview1.tag = "explainTextView_1"
-        val fp = getString(R.string.fatores_primos)
-        val explainText1 = getString(R.string.decompor_num) + " " + fp + "\n"
-        val ssbExplain1 = SpannableStringBuilder(explainText1).apply {
-            //ssb_explain_1.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_1.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-            setSpan(UnderlineSpan(), explainText1.length - fp.length - 1, explainText1.length - 1, SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor)), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
         explaintextview1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explaintextview1.text = ssbExplain1
+        explaintextview1.setTextColor(ContextCompat.getColor(requireActivity(), R.color.boldColor))
+        explaintextview1.text = HtmlCompat.fromHtml(getString(R.string.explainMDC1html), 0)
         explaintextview1.setTag(R.id.texto, "texto")
 
-        //Ponto 2
+        // Ponto 2
         val explaintextview2 = TextView(activity)
         explaintextview2.tag = "explainTextView_2"
-        val comuns = getString(R.string.comuns)
-        val once = getString(R.string.uma_vez)
-        val menorExps = getString(R.string.menor_exps)
-        val explainText2 = if (language == "português" || language == "español" || language == "français") {
-            getString(R.string.escolher) + " " + getString(R.string.os_fatores) +
-                    " " + comuns + ", " + once + ", " + getString(R.string.with_the) + " " +
-                    menorExps + ":\n"
-        } else {
-            getString(R.string.escolher) + " " + comuns + " " +
-                    getString(R.string.os_fatores) + ", " + once + ", " +
-                    getString(R.string.with_the) + " " + menorExps + ":\n"
-        }
-        val ssbExplain2 = SpannableStringBuilder(explainText2).apply {
-            setSpan(UnderlineSpan(), explainText2.indexOf(comuns), explainText2.indexOf(comuns) + comuns.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(UnderlineSpan(), explainText2.indexOf(once), explainText2.indexOf(once) + once.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(UnderlineSpan(), explainText2.indexOf(menorExps), explainText2.indexOf(menorExps) + menorExps.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor)), 0, length, SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        //ssb_explain_2.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        explaintextview2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explaintextview2.text = ssbExplain2
         explaintextview2.setTag(R.id.texto, "texto")
+        explaintextview2.text = HtmlCompat.fromHtml(getString(R.string.explainMDC2html), 0)
+        explaintextview2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
+        explaintextview2.setTextColor(ContextCompat.getColor(requireActivity(), R.color.boldColor))
 
-        //Ponto 3
+        // Ponto 3
         val explaintextview3 = TextView(activity)
         explaintextview3.tag = "explainTextView_3"
-        val multipl = getString(R.string.multiply)
-        val explainText3 = multipl + " " + getString(R.string.to_obtain_mdc) + "\n"
-        val ssbExplain3 = SpannableStringBuilder(explainText3)
-        ssbExplain3.setSpan(
-                UnderlineSpan(),
-                explainText3.indexOf(multipl) + 1,
-                explainText3.indexOf(multipl) + multipl.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssbExplain3.setSpan(
-                ForegroundColorSpan(
-                        ContextCompat.getColor(requireActivity(), R.color.boldColor)
-                ), 0, ssbExplain3.length, SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        //ssb_explain_3.setSpan(new StyleSpan(Typeface.BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        explaintextview3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explaintextview3.text = ssbExplain3
         explaintextview3.setTag(R.id.texto, "texto")
+        explaintextview3.text = HtmlCompat.fromHtml(getString(R.string.explainMDC3html), 0)
+        explaintextview3.setTextColor(ContextCompat.getColor(requireActivity(), R.color.boldColor))
+        explaintextview3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
 
         llVerticalExpl.addView(explaintextview1)
         llVerticalExpl.addView(explaintextview2)
@@ -581,7 +540,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             AsyncTask<Void, Double, Void>() {
         private lateinit var theCardViewBG: CardView
         private lateinit var mdcNumbers: ArrayList<Long>
-        private lateinit var resultMdc: BigInteger
         private var bgFactors: ArrayList<ArrayList<Long>>? = null
 
         private lateinit var gradientSeparator: TextView
@@ -595,15 +553,11 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             gradientSeparator = theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            if (shouldShowColors) {
-                fColors.shuffle() //randomizar as cores
-            } else {
-                fColors = MutableList(fColors.size) { fColors.last() } // just a list with always the same color
-            }
+            fColors = getRandomFactorsColors()
 
             val text = " " + getString(R.string.factorizing) + " 0%"
             val ssb = SpannableStringBuilder(text)
-            ssb.setSpan(ForegroundColorSpan(fColors[0]), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            ssb.setSafeSpan(ForegroundColorSpan(fColors[0]), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             gradientSeparator.text = ssb
         }
 
@@ -654,7 +608,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                 progressBar.layoutParams = LinearLayout.LayoutParams((value0 * cvWidth).roundToInt(), heightDip)
                 val text = " " + getString(R.string.factorizing) + " " + percentFormatter.format(value0)
                 val ssb = SpannableStringBuilder(text)
-                ssb.setSpan(ForegroundColorSpan(color), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.setSafeSpan(ForegroundColorSpan(color), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 gradientSeparator.text = ssb
             }
         }
@@ -669,7 +623,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
                     val strFatores = mdcNumbers[outerIndex].toString() + "="
                     val ssbFatores = SpannableStringBuilder(strFatores)
-                    ssbFatores.setSpan(ForegroundColorSpan(fColors[outerIndex]), 0, ssbFatores.length, SPAN_EXCLUSIVE_INCLUSIVE)
+                    ssbFatores.setSafeSpan(ForegroundColorSpan(fColors[outerIndex]), 0, ssbFatores.length, SPAN_EXCLUSIVE_INCLUSIVE)
 
                     var counter = 1L
                     var nextFactor = 0
@@ -713,13 +667,13 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                             //Expoente superior a 1
                             valueLength = pair.value.toString().length
                             ssbFatores.append(pair.key.toString() + pair.value.toString())
-                            ssbFatores.setSpan(
+                            ssbFatores.setSafeSpan(
                                     SuperscriptSpan(),
                                     ssbFatores.length - valueLength,
                                     ssbFatores.length,
                                     SPAN_EXCLUSIVE_EXCLUSIVE
                             )
-                            ssbFatores.setSpan(
+                            ssbFatores.setSafeSpan(
                                     RelativeSizeSpan(0.8f),
                                     ssbFatores.length - valueLength,
                                     ssbFatores.length,
@@ -727,28 +681,15 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                             )
                         }
 
-                        if (index in 1 until dataCount - 1) {
+                        if (index in 1 until (dataCount - 1)) {
                             ssbFatores.append("×")
                         }
                     }
                     if (outerIndex < (bgFactors?.size ?: 0) - 1) ssbFatores.append("\n")
 
-                    ssbFatores.setSpan(
-                            StyleSpan(BOLD),
-                            0,
-                            ssbFatores.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    ssbFatores.setSpan(
-                            RelativeSizeSpan(0.9f),
-                            0,
-                            ssbFatores.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    //explainTextView_1;
-                    (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(
-                            ssbFatores
-                    )
+                    ssbFatores.setSafeSpan(StyleSpan(BOLD), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    ssbFatores.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(ssbFatores)
                 }
 
                 val basesComuns = ArrayList<Long>()
@@ -798,7 +739,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                     }
                 }
 
-                val ssbMdc = SpannableStringBuilder()
+                var ssbMdc = SpannableStringBuilder()
 
                 //Criar os expoentes do MDC com os maiores fatores com cores e a negrito
                 for (i in basesComuns.indices) {
@@ -808,61 +749,38 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         //Expoente 1
                         if (basesComuns[i] > 1) {
                             ssbMdc.append(basesComuns[i].toString())
-                            ssbMdc.setSpan(
-                                    ForegroundColorSpan(fColors[colors[i]]),
-                                    ssbMdc.length - baseLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
+                            ssbMdc.setSafeSpan(ForegroundColorSpan(fColors[colors[i]]), ssbMdc.length - baseLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
-
-                        //ssb_mdc.setSpan(new StyleSpan(Typeface.BOLD), ssb_mdc.length() - base_length, ssb_mdc.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-
                     } else if (expsComuns[i] > 1L) {
                         //Expoente superior a 1
                         val expLength = expsComuns[i].toString().length
                         ssbMdc.append(basesComuns[i].toString() + expsComuns[i].toString())
-                        ssbMdc.setSpan(
-                                SuperscriptSpan(),
-                                ssbMdc.length - expLength,
-                                ssbMdc.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        ssbMdc.setSpan(
-                                RelativeSizeSpan(0.8f),
-                                ssbMdc.length - expLength,
-                                ssbMdc.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        ssbMdc.setSpan(
-                                ForegroundColorSpan(fColors[colors[i]]),
-                                ssbMdc.length - expLength - baseLength,
-                                ssbMdc.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
+                        ssbMdc.setSafeSpan(SuperscriptSpan(), ssbMdc.length - expLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbMdc.setSafeSpan(RelativeSizeSpan(0.8f), ssbMdc.length - expLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbMdc.setSafeSpan(ForegroundColorSpan(fColors[colors[i]]), ssbMdc.length - expLength - baseLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                     if (ssbMdc.isNotEmpty()) {
                         ssbMdc.append("×")
                     }
                 }
                 if (ssbMdc.isNotEmpty()) {
-                    ssbMdc.replace(ssbMdc.length - 1, ssbMdc.length, "")
+                    ssbMdc = ssbMdc.replace(ssbMdc.length - 1, ssbMdc.length, "")
                 } else {
                     ssbMdc.append(getString(R.string.no_common_factors))
                 }
 
-                ssbMdc.setSpan(StyleSpan(BOLD), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssbMdc.setSpan(RelativeSizeSpan(0.9f), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSafeSpan(StyleSpan(BOLD), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 //explainTextView_2
-                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(
-                        ssbMdc
-                )
+                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(ssbMdc)
 
                 ssbMdc.delete(0, ssbMdc.length)
-                resultMdc = cardTags.resultMDC!!
+                val resultMdc = cardTags.resultMDC ?: return
                 ssbMdc.append(resultMdc.toString())
 
-                ssbMdc.setSpan(StyleSpan(BOLD), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssbMdc.setSpan(RelativeSizeSpan(0.9f), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssbMdc.setSpan(ForegroundColorSpan(fColors.last()), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSafeSpan(StyleSpan(BOLD), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMdc.setSafeSpan(ForegroundColorSpan(fColors.last()), 0, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 //explainTextView_3
                 (theCardViewBG.findViewWithTag<View>("explainTextView_3") as TextView).append(ssbMdc)

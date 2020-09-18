@@ -43,21 +43,26 @@
     <string name="cancel_it">¿Cancelar la operación?</string>
     <string name="canceled_noprimes">Operación cancelada. No se encontraron números primos en el rango.</string>
     <string name="canceled_op">Operación cancelada.</string>
-    <string name="comuns">comunes</string>
     <string name="copied_toclipboard">Copiado al portapapeles</string>
-    <string name="decompor_num">▻Decomponer los números en</string>
     <string name="desenvolvido_por">Desarrollado por Sérgio C.</string>
     <string name="divisores_">divisores</string>
     <string name="divisores_number">Divisores de un número</string>
     <string name="divisors">Divisores</string>
     <string name="divisors_of">Divisores de</string>
-    <string name="escolher">▻Elegir</string>
     <string name="existem">Existen</string>
     <string name="explain">Mostrar explicación ▾</string>
     <string name="factorization_of">Factorización de</string>
     <string name="factorize">Factorizar el número</string>
     <string name="factorizing">Factorizando...</string>
-    <string name="fatores_primos">factores primos:</string>
+
+    <string name="explainMMC1html"><![CDATA[▻Descomponer los números en <u>factores primos</u>:<br/>]]></string>
+    <string name="explainMMC2html"><![CDATA[▻Elija los factores <u>comunes</u> y <u>no comunes</u>, <u>solo una vez</u> con los <u>mayores exponentes</u>:<br/>]]> </string>
+    <string name="explainMMC3html"><![CDATA[▻<u>Multiplica</u> los factores para obtener el mínimo común múltiplo:<br/>]]> </string>
+
+    <string name="explainMDC1html"><![CDATA[▻Descomponga los números en <u>factores primos</u>:<br/>]]> </string>
+    <string name="explainMDC2html"><![CDATA[▻Elija los factores <u>comunes</u>, <u>solo una vez</u> con los <u>exponentes más bajos</u>:<br/>]]> </string>
+    <string name="explainMDC3html"><![CDATA[▻<u>Multiplica</u> factores para obtener el máximo divisor común:<br/>]]> </string>
+
     <string name="fatorizar_btn">Factorizar</string>
     <string name="fatorizcao">Factorización</string>
     <string name="fatorize_title">Factorización de números primos</string>
@@ -169,7 +174,6 @@
     <string name="explain_divisores2">▻ El número es igual al producto de los factores primos obtenidos:</string>
     <string name="explain_divisores3">▻ Los factores repetidos se cuentan y este valor se coloca como un exponente:</string>
     <string name="image_saved">Imagen guardada</string>
-    <string name="menor_exps">exponentes más pequeños</string>
     <string name="to_obtain_mdc">Factores para obtener el Máximo Común Divisor:</string>
     <string name="os_fatores">los factores</string>
     <string name="action_ajuda_primorial">Como calcular n#</string>

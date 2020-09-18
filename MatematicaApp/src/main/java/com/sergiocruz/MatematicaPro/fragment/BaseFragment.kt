@@ -29,6 +29,18 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var shouldShowColors: Boolean = true
     var shouldFormatNumbers: Boolean = false
 
+    private var privateFColors: MutableList<Int> = mutableListOf()
+
+    fun getRandomFactorsColors(): MutableList<Int> {
+        privateFColors = resources.getIntArray(R.array.f_colors_xml).toMutableList()
+        if (shouldShowColors) {
+            privateFColors.shuffle() // randomizar as cores
+        } else {
+            privateFColors = MutableList(privateFColors.size) { privateFColors.last() } // just a list with always the same color
+        }
+        return privateFColors
+    }
+
     abstract var title: Int
     abstract var pageIndex: Int
 
@@ -67,7 +79,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             R.id.action_share_history -> shareHistory(activity as Activity)
             R.id.action_share_history_images -> shareHistoryImages(activity as Activity)
             R.id.action_clear_all_history -> removeHistory(activity as Activity)
-            R.id.action_help -> CreateCardView.create(getHistoryLayout(), getHelpTextId(), activity as Activity)
+            R.id.action_help -> CreateCardView.withStringRes(getHistoryLayout(), getHelpTextId(), activity as Activity)
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> activity?.openSettingsFragment()
         }

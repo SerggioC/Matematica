@@ -10,8 +10,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-import android.text.Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+import android.text.Spanned.*
 import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
@@ -38,10 +37,10 @@ import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class MMCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
-    internal lateinit var fColors: ArrayList<Int>
     private var taskNumber = 0
     internal var startTime: Long = 0
     private lateinit var language: String
@@ -79,9 +78,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     //    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val xmlColors = resources.getIntArray(R.array.f_colors_xml)
-        fColors = ArrayList()
-        for (color in xmlColors) fColors.add(color)
         language = Locale.getDefault().displayLanguage
     }
 
@@ -448,9 +444,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     ) {
 
         val hideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
-        hideExpl.setSpan(UnderlineSpan(), 0, hideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
+        hideExpl.setSafeSpan(UnderlineSpan(), 0, hideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
         val showExpl = SpannableStringBuilder(getString(R.string.explain))
-        showExpl.setSpan(UnderlineSpan(), 0, showExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
+        showExpl.setSafeSpan(UnderlineSpan(), 0, showExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
         //Linearlayout horizontal com o explainlink e gradiente
         val llHorizontal = LinearLayout(activity)
@@ -487,7 +483,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         llHorizontal.addView(explainLink)
         llHorizontal.addView(gradientSeparator)
 
-        //LL vertical das explicações
+        // LL vertical das explicações
         val verticalExpl = LinearLayout(activity)
         verticalExpl.tag = "ll_vertical_expl"
         verticalExpl.layoutParams = getMatchWrapParams()
@@ -499,121 +495,24 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             lt.enableTransitionType(CHANGE_DISAPPEARING)
             verticalExpl.layoutTransition = lt
         }
-        //ProgressBar
+
+        // ProgressBar
         val heightDp = (3 * scale + 0.5f).toInt()
         val progressBar = View(activity)
         progressBar.tag = "progressBar"
         val layoutParams = LinearLayout.LayoutParams(1, heightDp) //Largura, Altura
         progressBar.layoutParams = layoutParams
 
-        //Ponto 1
-        val explainTextView1 = TextView(activity)
-        explainTextView1.tag = "explainTextView_1"
-        val fp = getString(R.string.fatores_primos)
-        val explainText1 = getString(R.string.decompor_num) + " " + fp + "\n"
-        val ssbExplain1 = SpannableStringBuilder(explainText1)
-        ssbExplain1.setSpan(
-            UnderlineSpan(),
-            explainText1.length - fp.length - 1,
-            explainText1.length - 1,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssbExplain1.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.boldColor
-                )
-            ), 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        explainTextView1.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
-        explainTextView1.text = ssbExplain1
-        explainTextView1.setTag(R.id.texto, "texto")
 
-        //Ponto 2
-        val explainTextView2 = TextView(activity)
-        explainTextView2.tag = "explainTextView_2"
-        val comuns = getString(R.string.comuns)
-        val ncomuns = getString(R.string.nao_comuns)
-        val uma_vez = getString(R.string.uma_vez)
-        val maior_exps = getString(R.string.maior_exps)
-        val explainText2: String
-        if (language == "português" || language == "español" || language == "français") {
-            explainText2 = getString(R.string.escolher) + " " + getString(R.string.os_fatores) +
-                    " " + comuns + " " + getString(R.string.and) + " " + ncomuns + ", " + uma_vez +
-                    ", " + getString(R.string.with_the) + " " + maior_exps + ":\n"
-        } else {
-            explainText2 = getString(R.string.escolher) + " " + comuns + " " +
-                    getString(R.string.and) + " " + ncomuns + " " + getString(R.string.os_fatores) +
-                    ", " + uma_vez + ", " + getString(R.string.with_the) + " " + maior_exps + ":\n"
-        }
-        val ssbExplain2 = SpannableStringBuilder(explainText2)
-        ssbExplain2.setSpan(
-            UnderlineSpan(),
-            explainText2.indexOf(comuns),
-            explainText2.indexOf(comuns) + comuns.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssbExplain2.setSpan(
-            UnderlineSpan(),
-            explainText2.indexOf(ncomuns),
-            explainText2.indexOf(ncomuns) + ncomuns.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssbExplain2.setSpan(
-            UnderlineSpan(),
-            explainText2.indexOf(uma_vez),
-            explainText2.indexOf(uma_vez) + uma_vez.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ssbExplain2.setSpan(
-            UnderlineSpan(),
-            explainText2.indexOf(maior_exps),
-            explainText2.indexOf(maior_exps) + maior_exps.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        //ssb_explain_2.setSpan(new StyleSpan(BOLD), 0, ssb_explain_2.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssbExplain2.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.boldColor
-                )
-            ), 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        explainTextView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
-        explainTextView2.text = ssbExplain2
-        explainTextView2.setTag(R.id.texto, "texto")
-
-        //Ponto 3
-        val explaintextview3 = TextView(activity)
-        explaintextview3.tag = "explainTextView_3"
-        val multipl = getString(R.string.multiply)
-        val explain_text_3 = multipl + " " +
-                getString(R.string.to_obtain_mmc) + "\n"
-        val ssb_explain_3 = SpannableStringBuilder(explain_text_3)
-        ssb_explain_3.setSpan(
-            UnderlineSpan(),
-            explain_text_3.indexOf(multipl) + 1,
-            explain_text_3.indexOf(multipl) + multipl.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        //ssb_explain_3.setSpan(new StyleSpan(BOLD), 0, ssb_explain_3.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
-        ssb_explain_3.setSpan(
-            ForegroundColorSpan(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.boldColor
-                )
-            ), 0, ssb_explain_3.length, SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        explaintextview3.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE.toFloat())
-        explaintextview3.text = ssb_explain_3
-        explaintextview3.setTag(R.id.texto, "texto")
+        // Ponto 1
+        val explainTextView1 = requireActivity().getNewTextView("explainTextView_1", R.string.explainMMC1html)
+        val explainTextView2 = requireActivity().getNewTextView("explainTextView_2", R.string.explainMMC2html)
+        val explaintextView3 = requireActivity().getNewTextView("explainTextView_3", R.string.explainMMC3html)
 
         verticalExpl.addView(explainTextView1)
         verticalExpl.addView(explainTextView2)
-        verticalExpl.addView(explaintextview3)
+        verticalExpl.addView(explaintextView3)
+
         llVerticalRoot.addView(llHorizontal)
         llVerticalRoot.addView(progressBar)
         llVerticalRoot.addView(verticalExpl)
@@ -653,85 +552,77 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
     }
 
+    private var fColors: MutableList<Int> = mutableListOf()
+
     // Asynctask <Params, Progress, Result>
     inner class BackGroundOperationMMC internal constructor(private var cardTags: MyTags) :
         AsyncTask<Void, Float, Void>() {
-        lateinit var theCardViewBG: CardView
-        lateinit var mmc_numbers: ArrayList<Long>
-        lateinit var result_mmc: BigInteger
-        lateinit var bgfatores: ArrayList<ArrayList<Long>>
+        private lateinit var theCardViewBG: CardView
+        private lateinit var mmcNumbers: ArrayList<Long>
+        private lateinit var bgfatores: ArrayList<ArrayList<Long>>
 
-        lateinit var gradient_separator: TextView
+        private lateinit var gradientSeparator: TextView
         lateinit var progressBar: View
-        lateinit var percent_formatter: NumberFormat
-        lateinit var f_colors: IntArray
-        var f_colors_length: Int = 0
+        private lateinit var percentFormatter: NumberFormat
+
         private lateinit var progressParams: ViewGroup.LayoutParams
 
         public override fun onPreExecute() {
-            percent_formatter = DecimalFormat("#.###%")
+            percentFormatter = DecimalFormat("#.###%")
             theCardViewBG = cardTags.cardView
             progressBar = theCardViewBG.findViewWithTag("progressBar")
             progressBar.visibility = View.VISIBLE
             progressParams = progressBar.layoutParams
-            gradient_separator =
+            gradientSeparator =
                 theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
-            f_colors = requireActivity().resources.getIntArray(R.array.f_colors_xml)
-            f_colors_length = f_colors.size
-            fColors = ArrayList()
-            if (shouldShowColors) {
-                for (i in 0 until f_colors_length) fColors.add(f_colors[i])
-                fColors.shuffle() //randomizar as cores
-            } else {
-                for (i in 0 until f_colors_length) fColors.add(f_colors[f_colors_length - 1])
-            }
+            fColors = getRandomFactorsColors()
 
             val text = " " + getString(R.string.factorizing) + " 0%"
             val ssb = SpannableStringBuilder(text)
-            ssb.setSpan(ForegroundColorSpan(fColors[0]), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            gradient_separator.text = ssb
+            ssb.setSafeSpan(ForegroundColorSpan(fColors[0]), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            gradientSeparator.text = ssb
         }
 
         override fun doInBackground(vararg voids: Void): Void? {
             val fatores = ArrayList<ArrayList<Long>>()
-            mmc_numbers = cardTags.longNumbers
+            mmcNumbers = cardTags.longNumbers
 
-            val numbersSize = mmc_numbers.size
+            val numbersSize = mmcNumbers.size
             for (i in 0 until numbersSize) { // fatorizar todos os números inseridos em MMC
                 var oldProgress = 0.0f
                 var progress: Float
-                val fatores_ix = ArrayList<Long>()
+                val fatoresIx = ArrayList<Long>()
 
-                var number_i: Long? = mmc_numbers[i]
-                if (number_i == 1L) {
-                    fatores_ix.add(1L)
+                var number: Long = mmcNumbers[i]
+                if (number == 1L) {
+                    fatoresIx.add(1L)
                 }
-                while (number_i!! % 2L == 0L) {
-                    fatores_ix.add(2L)
-                    number_i /= 2L
+                while (number % 2L == 0L) {
+                    fatoresIx.add(2L)
+                    number /= 2L
                 }
 
                 var j: Long = 3
-                while (j <= number_i / j) {
+                while (j <= number / j) {
                     if (isCancelled) break
-                    while (number_i % j == 0L) {
-                        fatores_ix.add(j)
-                        number_i /= j
+                    while (number % j == 0L) {
+                        fatoresIx.add(j)
+                        number /= j
                     }
-                    progress = j.toFloat() / (number_i.toFloat() / j.toFloat())
+                    progress = j.toFloat() / (number.toFloat() / j.toFloat())
                     if (progress - oldProgress > 0.1) {
                         publishProgress(progress, i.toFloat())
                         oldProgress = progress
                     }
                     j += 2
                 }
-                if (number_i > 1) {
-                    fatores_ix.add(number_i)
+                if (number > 1) {
+                    fatoresIx.add(number)
                 }
 
-                fatores.add(fatores_ix)
+                fatores.add(fatoresIx)
             }
             cardTags.bGfatores = fatores
             return null
@@ -740,18 +631,17 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         override fun onProgressUpdate(vararg values: Float?) {
 
             if (this@MMCFragment.isVisible) {
-                val color = fColors[Math.round(values[1]!!)]
+                val color = fColors[(values[1] ?: 0f).roundToInt()]
                 progressBar.setBackgroundColor(color)
-                var value0 = values[0]
-                if (value0!! > 1f) value0 = 1.0f
-                progressParams.width = Math.round(value0 * card_view_1.width)
+                var value0 = values[0] ?: 0f
+                if (value0 > 1f) value0 = 1.0f
+                progressParams.width = (value0 * card_view_1.width).roundToInt()
                 progressBar.layoutParams = progressParams
 
-                val text =
-                    " " + getString(R.string.factorizing) + " " + percent_formatter.format(value0)
+                val text = " " + getString(R.string.factorizing) + " " + percentFormatter.format(value0)
                 val ssb = SpannableStringBuilder(text)
-                ssb.setSpan(ForegroundColorSpan(color), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                gradient_separator.text = ssb
+                ssb.setSafeSpan(ForegroundColorSpan(color), 0, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                gradientSeparator.text = ssb
             }
         }
 
@@ -766,15 +656,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                     val bases = ArrayList<Long>()
                     val exps = ArrayList<Long>()
 
-                    val str_fatores = mmc_numbers[k].toString() + "="
-                    val ssb_fatores: SpannableStringBuilder
-                    ssb_fatores = SpannableStringBuilder(str_fatores)
-                    ssb_fatores.setSpan(
-                        ForegroundColorSpan(fColors[k]),
-                        0,
-                        ssb_fatores.length,
-                        SPAN_EXCLUSIVE_INCLUSIVE
-                    )
+                    val strFatores = mmcNumbers[k].toString() + "="
+                    val ssbFatores: SpannableStringBuilder
+                    ssbFatores = SpannableStringBuilder(strFatores)
+                    ssbFatores.setSafeSpan(ForegroundColorSpan(fColors[k]), 0, ssbFatores.length, SPAN_EXCLUSIVE_INCLUSIVE)
 
                     var counter = 1
                     var nextFactor = 0
@@ -808,63 +693,43 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                     datasets.add(exps)
 
                     //Criar os expoentes
-                    var value_length: Int
+                    var valueLength: Int
                     val iterator = dataset.entries.iterator()
                     while (iterator.hasNext()) {
                         val pair = iterator.next() as Map.Entry<*, *>
 
                         if (Integer.parseInt(pair.value.toString()) == 1) {
                             //Expoente 1
-                            ssb_fatores.append(pair.key.toString())
+                            ssbFatores.append(pair.key.toString())
 
                         } else if (Integer.parseInt(pair.value.toString()) > 1) {
                             //Expoente superior a 1
-                            value_length = pair.value.toString().length
-                            ssb_fatores.append(pair.key.toString() + pair.value.toString())
-                            ssb_fatores.setSpan(
-                                SuperscriptSpan(),
-                                ssb_fatores.length - value_length,
-                                ssb_fatores.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                            ssb_fatores.setSpan(
-                                RelativeSizeSpan(0.8f),
-                                ssb_fatores.length - value_length,
-                                ssb_fatores.length,
-                                SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
+                            valueLength = pair.value.toString().length
+                            ssbFatores.append(pair.key.toString() + pair.value.toString())
+                            ssbFatores.setSafeSpan(SuperscriptSpan(), ssbFatores.length - valueLength, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                            ssbFatores.setSafeSpan(RelativeSizeSpan(0.8f), ssbFatores.length - valueLength, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
 
                         if (iterator.hasNext()) {
-                            ssb_fatores.append("×")
+                            ssbFatores.append("×")
                         }
 
                         iterator.remove() // avoids a ConcurrentModificationException
                     }
-                    if (k < bgfatores.size - 1) ssb_fatores.append("\n")
+                    if (k < bgfatores.size - 1) ssbFatores.append("\n")
 
-                    ssb_fatores.setSpan(
-                        StyleSpan(BOLD),
-                        0,
-                        ssb_fatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    ssb_fatores.setSpan(
-                        RelativeSizeSpan(0.9f),
-                        0,
-                        ssb_fatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                    ssbFatores.setSafeSpan(StyleSpan(BOLD), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    ssbFatores.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
 
                     //explainTextView_1;
                     (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(
-                        ssb_fatores
+                        ssbFatores
                     )
 
                 }
 
-                val maiores_bases = ArrayList<Long>()
-                val maiores_exps = ArrayList<Long>()
+                val maioresBases = ArrayList<Long>()
+                val maioresExps = ArrayList<Long>()
                 val colors = ArrayList<Long>()
 
                 run {
@@ -874,41 +739,39 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                         val exps = datasets[i + 1]
 
                         for (cb in bases.indices) {
-                            val current_base = bases[cb]
-                            val current_exp = exps[cb]
+                            val currentBase = bases[cb]
+                            val currentExp = exps[cb]
 
-                            if (!maiores_bases.contains(current_base)) {
-                                maiores_bases.add(current_base)
-                                maiores_exps.add(current_exp)
+                            if (!maioresBases.contains(currentBase)) {
+                                maioresBases.add(currentBase)
+                                maioresExps.add(currentExp)
                                 colors.add(i.toLong() / 2)
                             }
 
-                            if (maiores_bases.contains(current_base) && current_exp > maiores_exps[maiores_bases.indexOf(
-                                    current_base
+                            if (maioresBases.contains(currentBase) && currentExp > maioresExps[maioresBases.indexOf(
+                                    currentBase
                                 )]
                             ) {
-                                maiores_exps[maiores_bases.indexOf(current_base)] = current_exp
-                                colors[maiores_bases.indexOf(current_base)] = (i / 2).toLong()
+                                maioresExps[maioresBases.indexOf(currentBase)] = currentExp
+                                colors[maioresBases.indexOf(currentBase)] = (i / 2).toLong()
                             }
 
                             var j = i + 2
                             while (j < datasets.size) {
-                                val next_bases = datasets[j]
-                                val next_exps = datasets[j + 1]
+                                val nextBases = datasets[j]
+                                val nextExps = datasets[j + 1]
 
-                                for (nb in next_bases.indices) {
-                                    val next_base = next_bases[nb]
-                                    val next_exp = next_exps[nb]
+                                for (nb in nextBases.indices) {
+                                    val nextBase = nextBases[nb]
+                                    val nextExp = nextExps[nb]
 
-                                    if (next_base == current_base && next_exp > maiores_exps[maiores_bases.indexOf(
-                                            current_base
-                                        )] && maiores_bases.contains(next_base)
+                                    if (nextBase == currentBase && nextExp > maioresExps[maioresBases.indexOf(
+                                            currentBase
+                                        )] && maioresBases.contains(nextBase)
                                     ) {
-                                        maiores_exps[maiores_bases.indexOf(next_base)] = next_exp
-                                        colors[maiores_bases.indexOf(current_base)] =
-                                            (j / 2).toLong()
+                                        maioresExps[maioresBases.indexOf(nextBase)] = nextExp
+                                        colors[maioresBases.indexOf(currentBase)] = (j / 2).toLong()
                                     }
-
                                 }
                                 j += 2
                             }
@@ -917,71 +780,51 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                     }
                 }
 
-                val ssb_mmc = SpannableStringBuilder()
+                val ssbMmc = SpannableStringBuilder()
 
                 //Criar os expoentes do MMC com os maiores fatores com cores e a negrito
-                for (i in maiores_bases.indices) {
-                    val base_length = maiores_bases[i].toString().length
+                for (i in maioresBases.indices) {
+                    val baseLength = maioresBases[i].toString().length
 
-                    if (maiores_exps[i] == 1L) {
+                    if (maioresExps[i] == 1L) {
                         //Expoente 1
-                        ssb_mmc.append(maiores_bases[i].toString())
-                        ssb_mmc.setSpan(
+                        ssbMmc.append(maioresBases[i].toString())
+                        ssbMmc.setSafeSpan(
                             ForegroundColorSpan(fColors[colors[i].toInt()]),
-                            ssb_mmc.length - base_length, ssb_mmc.length, SPAN_EXCLUSIVE_EXCLUSIVE
+                            ssbMmc.length - baseLength, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE
                         )
 
-                    } else if (maiores_exps[i] > 1L) {
+                    } else if (maioresExps[i] > 1L) {
                         //Expoente superior a 1
-                        val exp_length = maiores_exps[i].toString().length
-                        ssb_mmc.append(maiores_bases[i].toString() + maiores_exps[i].toString())
-                        ssb_mmc.setSpan(
-                            SuperscriptSpan(),
-                            ssb_mmc.length - exp_length,
-                            ssb_mmc.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        ssb_mmc.setSpan(
-                            RelativeSizeSpan(0.8f),
-                            ssb_mmc.length - exp_length,
-                            ssb_mmc.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        ssb_mmc.setSpan(
-                            ForegroundColorSpan(fColors[colors[i].toInt()]),
-                            ssb_mmc.length - exp_length - base_length,
-                            ssb_mmc.length,
-                            SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
+                        val expLength = maioresExps[i].toString().length
+                        ssbMmc.append(maioresBases[i].toString() + maioresExps[i].toString())
+                        ssbMmc.setSafeSpan(SuperscriptSpan(), ssbMmc.length - expLength, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbMmc.setSafeSpan(RelativeSizeSpan(0.8f), ssbMmc.length - expLength, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbMmc.setSafeSpan(ForegroundColorSpan(fColors[colors[i].toInt()]), ssbMmc.length - expLength - baseLength, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
-                    ssb_mmc.append("×")
+                    ssbMmc.append("×")
                 }
-                ssb_mmc.replace(ssb_mmc.length - 1, ssb_mmc.length, "")
+                if (ssbMmc.isNotEmpty()) {
+                    ssbMmc.replace(ssbMmc.length - 1, ssbMmc.length, "")
+                } else {
+                    ssbMmc.append(getString(R.string.no_common_factors))
+                }
 
-                ssb_mmc.setSpan(StyleSpan(BOLD), 0, ssb_mmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb_mmc.setSpan(RelativeSizeSpan(0.9f), 0, ssb_mmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMmc.setSafeSpan(StyleSpan(BOLD), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMmc.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 //explainTextView_2
-                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(
-                    ssb_mmc
-                )
+                (theCardViewBG.findViewWithTag<View>("explainTextView_2") as TextView).append(ssbMmc)
 
-                ssb_mmc.delete(0, ssb_mmc.length)
-                result_mmc = cardTags.resultMDC!!
-                ssb_mmc.append(result_mmc.toString())
+                ssbMmc.delete(0, ssbMmc.length)
+                val resultMmc = cardTags.resultMDC ?: BigInteger.ZERO
+                ssbMmc.append(resultMmc.toString())
 
-                ssb_mmc.setSpan(StyleSpan(BOLD), 0, ssb_mmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb_mmc.setSpan(RelativeSizeSpan(0.9f), 0, ssb_mmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb_mmc.setSpan(
-                    ForegroundColorSpan(f_colors[f_colors.size - 1]),
-                    0,
-                    ssb_mmc.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                ssbMmc.setSafeSpan(StyleSpan(BOLD), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMmc.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbMmc.setSafeSpan(ForegroundColorSpan(fColors.last()), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 //explainTextView_3
-                (theCardViewBG.findViewWithTag<View>("explainTextView_3") as TextView).append(
-                    ssb_mmc
-                )
+                (theCardViewBG.findViewWithTag<View>("explainTextView_3") as TextView).append(ssbMmc)
 
                 progressBar.visibility = View.GONE
 
@@ -989,9 +832,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =
                         getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                    gradient_separator.text = elapsed
+                    gradientSeparator.text = elapsed
                 } else {
-                    gradient_separator.text = ""
+                    gradientSeparator.text = ""
                 }
 
                 cardTags.hasBGOperation = false

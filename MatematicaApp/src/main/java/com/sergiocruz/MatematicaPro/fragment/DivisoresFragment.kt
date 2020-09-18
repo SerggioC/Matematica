@@ -20,13 +20,8 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_divisores.*
-import kotlinx.android.synthetic.main.fragment_divisores.calculateButton
-import kotlinx.android.synthetic.main.fragment_divisores.cancelButton
-import kotlinx.android.synthetic.main.fragment_divisores.clearButton
-import kotlinx.android.synthetic.main.fragment_divisores.history
-import kotlinx.android.synthetic.main.fragment_divisores.inputEditText
 import java.text.DecimalFormat
-import java.util.*
+import kotlin.math.roundToInt
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
@@ -107,7 +102,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         if (editnumText == "0" || num == 0L) {
-            CreateCardView.create(history, R.string.zero_no_divisores, activity as Activity)
+            CreateCardView.withStringRes(history, R.string.zero_no_divisores, activity as Activity)
             return
         }
         asyncTask = BackGroundOperation().execute(num)
@@ -149,11 +144,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
              * Primeiro obtem os fatores primos depois multiplica-os
              * */
             val divisores = ArrayList<Long>()
-            var number: Long? = num[0]
+            var number: Long = num[0] ?: return ArrayList()
             var progress: Float
             var oldProgress = 0.0f
 
-            while (number!! % 2L == 0L) {
+            while (number % 2L == 0L) {
                 divisores.add(2L)
                 number /= 2
             }
@@ -196,7 +191,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@DivisoresFragment.isVisible) {
-                progressParams.width = Math.round(values[0]!! * card_view_1.width)
+                val v0 = values[0] ?: return
+                progressParams.width = (v0 * card_view_1.width).roundToInt()
                 progressBar.layoutParams = progressParams
             }
         }
@@ -216,18 +212,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 if (result.size == 2) {
                     val primeNumber = "\n" + getString(R.string._numero_primo)
                     ssb.append(primeNumber)
-                    ssb.setSpan(
-                        ForegroundColorSpan(Color.parseColor("#29712d")),
-                        ssb.length - primeNumber.length,
-                        ssb.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    ssb.setSpan(
-                        RelativeSizeSpan(0.9f),
-                        ssb.length - primeNumber.length,
-                        ssb.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                    ssb.setSafeSpan(ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                    ssb.setSafeSpan(RelativeSizeSpan(0.9f), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 createCardView(ssb)
                 resetButtons()
@@ -248,18 +234,8 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val ssb = SpannableStringBuilder(strDivisores)
                 val incompleteCalc = "\n" + getString(R.string._incomplete_calc)
                 ssb.append(incompleteCalc)
-                ssb.setSpan(
-                    ForegroundColorSpan(Color.RED),
-                    ssb.length - incompleteCalc.length,
-                    ssb.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ssb.setSpan(
-                    RelativeSizeSpan(0.8f),
-                    ssb.length - incompleteCalc.length,
-                    ssb.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 createCardView(ssb)
                 resetButtons()
             }
@@ -298,7 +274,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setCardBackgroundColor(color)
 
         // Add cardview to history layout at the top (index 0)
-        //val history = requireActivity().findViewById<View>(R.id.history) as LinearLayout
         history.limit(historyLimit)
         history.addView(cardView, 0)
 
@@ -306,7 +281,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         val textView = TextView(activity)
         textView.layoutParams = getMatchWrapParams()
 
-        //Adicionar o texto com o resultado
+        // Adicionar o texto com o resultado
         textView.text = ssb
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
@@ -317,20 +292,20 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Create a generic swipe-to-dismiss touch listener.
         cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardView,
-                activity as Activity,
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?) = true
-                    override fun onDismiss(view: View?) = history.removeView(cardView)
-                })
+                SwipeToDismissTouchListener(
+                        cardView,
+                        activity as Activity,
+                        object : SwipeToDismissTouchListener.DismissCallbacks {
+                            override fun canDismiss(token: Boolean?) = true
+                            override fun onDismiss(view: View?) = history.removeView(cardView)
+                        })
         )
 
         if (shouldShowPerformance) {
             val gradientSeparator = getGradientSeparator(context)
             val formatter1 = DecimalFormat("#.###")
             val elapsed =
-                getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                    getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
             gradientSeparator.text = elapsed
             llVerticalRoot.addView(gradientSeparator)
         }
@@ -340,7 +315,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
     }
-
 
 
 }

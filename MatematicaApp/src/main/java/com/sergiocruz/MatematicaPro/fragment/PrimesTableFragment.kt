@@ -121,8 +121,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         numPrimesTextView.visibility = VISIBLE
         performanceTextView.visibility = VISIBLE
 
-        primesTableRoot.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
+        primesTableRoot.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 initialHeight = cardViewMain.measuredHeight
                 numPrimesTextView.visibility = GONE
@@ -159,13 +158,16 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 this.state = newState
+                if (recyclerView.height <= (recyclerView.parent as ConstraintLayout).height && (cardViewMain.getTag(R.id.expanded) as Boolean?) == false && state == SCROLL_STATE_SETTLING) {
+                    expandIt(cardViewMain, initialHeight)
+                }
             }
         })
 
     }
 
     private fun writeCalcMode() {
-        calcMode.setText(if (bruteForceMode) R.string.pref_title_brute_force else R.string.pref_title_probabilistic)
+        calcMode?.setText(if (bruteForceMode) R.string.pref_title_brute_force else R.string.pref_title_probabilistic)
     }
 
     override fun onActionDone() = makePrimesTable()
@@ -303,8 +305,14 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             val swap = minValue
             minValue = maxValue
             maxValue = swap
-            min_pt.setText(minValue.toString())
-            max_pt.setText(maxValue.toString())
+            if (shouldFormatNumbers) {
+                min_pt.setText(minValue.toString().getFormattedString())
+                max_pt.setText(maxValue.toString().getFormattedString())
+            } else {
+                min_pt.setText(minValue.toString())
+                max_pt.setText(maxValue.toString())
+            }
+
             makePrimesTable()
             return
         }
@@ -552,12 +560,20 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                     }
                 }
                 if (isPrime) {
-                    fullTable[index] = Pair(i.toString(), true)
+                    if (shouldFormatNumbers) {
+                        fullTable[index] = Pair(i.formatForLocale(), true)
+                    } else {
+                        fullTable[index] = Pair(i.toString(), true)
+                    }
                     primesTable[indexPrimes] = Pair(i.toString(), true)
                     index++
                     indexPrimes++
                 } else {
-                    fullTable[index] = Pair(i.toString(), false)
+                    if (shouldFormatNumbers) {
+                        fullTable[index] = Pair(i.formatForLocale(), false)
+                    } else {
+                        fullTable[index] = Pair(i.toString(), false)
+                    }
                     index++
                 }
 

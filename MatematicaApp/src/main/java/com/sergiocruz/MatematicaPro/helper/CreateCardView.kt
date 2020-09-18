@@ -18,14 +18,14 @@ import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 
 object CreateCardView {
 
-    fun create(history: LinearLayout?, helpStringRes: Int?, activity: Activity) {
+    fun withStringRes(history: LinearLayout?, helpStringRes: Int?, activity: Activity) {
         if (history == null || helpStringRes == null) return
         val helpString = activity.getString(helpStringRes)
         val helpSSB = SpannableStringBuilder(helpString)
-        createCardViewWithSSB(history, helpSSB, activity)
+        viewWithSSB(history, helpSSB, activity)
     }
 
-    fun createCardViewWithSSB(
+    fun viewWithSSB(
         history: LinearLayout,
         helpSSB: SpannableStringBuilder,
         activity: Activity
@@ -48,7 +48,7 @@ object CreateCardView {
         cardView.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
-        history?.addView(cardView, 0)
+        history.addView(cardView, 0)
 
         // criar novo Textview
         val textView = TextView(activity)

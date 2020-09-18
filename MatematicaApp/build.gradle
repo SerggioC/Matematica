@@ -9,8 +9,8 @@ android {
         release {
             storeFile file("../../keystore.jks")
             keyAlias "androidappskeystore"
-            keyPassword "Bacanal_46!+1!"
-            storePassword "Bacanal_46!+1!"
+            keyPassword ""
+            storePassword ""
         }
     }
     compileSdkVersion 30
@@ -19,8 +19,8 @@ android {
         applicationId = "com.sergiocruz.MatematicaPro"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 23
-        versionName "4.1"
+        versionCode 24
+        versionName "4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -59,7 +59,9 @@ android {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
-        // abortOnError false
+        abortOnError true
+        enable 'StopShip'
+        error 'StopShip'
     }
 
 }
@@ -67,14 +69,14 @@ android {
 dependencies {
     implementation fileTree(include: ["*.jar"], dir: "libs")
     testImplementation('junit:junit:4.13')
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0-rc03', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0', {
         exclude group: "com.android.support", module: "support-annotations"
     })
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.0.10")
 
-    implementation("com.google.android.material:material:1.2.0")
+    implementation('com.google.android.material:material:1.2.1')
 
     // Constraint layout
     implementation("androidx.constraintlayout:constraintlayout:2.0.1")

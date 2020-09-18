@@ -1,21 +1,29 @@
 package com.sergiocruz.MatematicaPro.helper
 
+import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.text.Editable
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.SettingsFragment
+import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
@@ -41,7 +49,8 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
             if (TextUtils.isEmpty(s)) return
             if (s.digitsOnly().toLongOrNull() == null) {
                 this@watchThis.setText(oldNum)
-                this@watchThis.setSelection(this@watchThis.text?.length ?: 0) // Colocar o cursor no final do texto
+                this@watchThis.setSelection(this@watchThis.text?.length
+                        ?: 0) // Colocar o cursor no final do texto
                 this@watchThis.error = this@watchThis.context.getString(R.string.numero_alto)
                 // Remove error after 4 seconds
                 postDelayed({ this@watchThis.error = null }, clearErrorDelayMillis)
@@ -75,7 +84,8 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
         if (TextUtils.isEmpty(s)) return
         if (s?.digitsOnly()?.toLongOrNull() == null) {
             inputEditText.setText(oldNum)
-            inputEditText.setSelection(inputEditText.text?.length ?: 0) // Colocar o cursor no final do texto
+            inputEditText.setSelection(inputEditText.text?.length
+                    ?: 0) // Colocar o cursor no final do texto
             inputEditText.error = inputEditText.context.getString(R.string.numero_alto)
             // Remove error after 4 seconds
             inputEditText.postDelayed({ inputEditText.error = null }, clearErrorDelayMillis)
@@ -151,16 +161,19 @@ fun CharSequence?.digitsOnly(): String {
     return ""
 }
 
+fun Number.formatForLocale(): String {
+    return NumberFormat
+            .getNumberInstance(Locale.getDefault())
+            .format(this)
+}
+
+fun String.getFormattedString(): String {
+    val bigNumber = this.digitsOnly().toBigIntegerOrNull()
+    return bigNumber?.formatForLocale() ?: this
+}
+
 fun EditText.getFormattedString(): String {
-    val digitsOnly = text.digitsOnly()
-    val bigNumber = digitsOnly.toBigIntegerOrNull()
-    return if (bigNumber != null) {
-        NumberFormat
-                .getNumberInstance(Locale.getDefault())
-                .format(bigNumber)
-    } else {
-        text.toString()
-    }
+    return this.text.toString().getFormattedString()
 }
 
 infix fun ViewGroup.limit(historyLimit: Int) {
@@ -177,6 +190,22 @@ fun getWrapWrapParams() = LinearLayout.LayoutParams(
         LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
         LinearLayoutCompat.LayoutParams.WRAP_CONTENT
 )
+
+fun SpannableStringBuilder.setSafeSpan(which: Any, start: Int, end: Int, flags: Int) {
+    if (end < start || start > length || end > length || start < 0 || end < 0) return
+    setSpan(which, start, end, flags)
+}
+
+fun Activity.getNewTextView(withTag: String, @StringRes andText: Int, textSize: Float = 15f): TextView {
+    val newTextView = TextView(this)
+    newTextView.layoutParams = getMatchWrapParams()
+    newTextView.text = HtmlCompat.fromHtml(getString(andText), 0)
+    newTextView.setTextColor(ContextCompat.getColor(this, R.color.boldColor))
+    newTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
+    newTextView.tag = withTag
+    newTextView.setTag(R.id.texto, "texto")
+    return newTextView
+}
 
 
 //    inline operator fun <reified T : Any?> SharedPreferences.get(key: String, defaultValue: T? = null): T? {

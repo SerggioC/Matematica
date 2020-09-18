@@ -5,15 +5,14 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
@@ -61,7 +60,7 @@ class PrimalityFragment : BaseFragment() {
     }
 
     private fun checkNumberFromInput() {
-        val number = inputEditText.text.filter { it.isDigit() }.toString()
+        val number = inputEditText.text.digitsOnly()
         val bigNumber = number.toBigIntegerOrNull()
         if (bigNumber != null) {
             checkIfProbablePrime(bigNumber)
@@ -122,6 +121,10 @@ class PrimalityFragment : BaseFragment() {
                 getString(R.string.prime_number) else
                 getString(R.string.not_prime_number)
         }"
+
+
+        textView.append(HtmlCompat.fromHtml("Your big island <u>ADVENTURE!</u>", 0))
+
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
         textView.gravity = Gravity.CENTER_HORIZONTAL
