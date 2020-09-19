@@ -58,7 +58,7 @@
     <string name="divisors">Divisoren</string>
     <string name="divisors_of">Divisoren von</string>
     <string name="empty_table">Leeren Tisch</string>
-    <string name="errorsavingimg">Fehler beim Speichern des Bildes. Bitte erlauben Sie der App, Dateien zu speichern.</string>
+    <string name="errorsavingimg">Fehler beim Speichern des Bildes.</string>
     <string name="existem">Es gibt</string>
     <string name="expl_text_divisores_1">▻ Teilen Sie die Nummer nacheinander durch die niedrigste Primzahl, um eine genaue Teilung zu erhalten, bis Sie 1:</string>
     <string name="explain">[+] Erläuterung anzeigen ▾</string>
@@ -70,11 +70,12 @@
 
     <string name="explainMMC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
     <string name="explainMMC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> und <u>nicht gemeinsamen</u> Faktoren, <u>nur einmal</u> mit dem <u>größte Exponenten</u>:<br/>]]></string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multiplizieren Sie</u> die Faktoren, um das kleinste gemeinsame Vielfache zu erhalten:<br/>]]></string>
+    <string name="explainMMC3html"><![CDATA[▻<u>Multiplizieren Sie</u> die Faktoren, um das kleinste gemeinsame Divisor zu erhalten:<br/>]]></string>
 
     <string name="explainMDC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
     <string name="explainMDC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> Faktoren, <u>nur einmal</u> mit den <u>niedrigsten Exponenten</u>:<br/>]]></string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multiplizieren Sie</u> Faktoren, um den größten gemeinsamen Teiler zu erhalten:<br/>]]></string>
+    <string name="explainMDC3html"><![CDATA[▻<u>Multiplizieren Sie</u> Faktoren, um den größten gemeinsamen Multiple zu erhalten:<br/>]]></string>
+
 
     <string name="fatorizar_btn">Faktorisieren</string>
     <string name="fatorizcao">Faktorisieren</string>
@@ -147,23 +148,19 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="its_a_prime">Bild gespeichert</string>
     <string name="lowest_is_high">Anfang</string>
     <string name="lowest_prime">Geben Sie eine ganzzahlige Zahl ein</string>
-    <string name="maior_exps">Nummer einfügen ...</string>
     <string name="maiores_qzero">Zahlen größer als null.</string>
     <string name="mais">Mehr</string>
     <string name="mdc">ggT</string>
     <string name="mdc_description">Größter gemeinsamer Teiler</string>
     <string name="mdc_result_prefix">ggT(</string>
     <string name="mdc_title">ggT - Größter gemeinsamer Teiler</string>
-    <string name="menor_exps">Kleinere exponenten</string>
     <string name="mmc">kgV</string>
     <string name="mmc_description">Kleinstes gemeinsames Vielfaches</string>
     <string name="mmc_result_prefix">kgV(</string>
     <string name="mmc_title">kgV - Kleinstes gemeinsames Vielfaches</string>
     <string name="mostrar_todos">Zeige alles</string>
-    <string name="multiply">▻ Multiply</string>
     <string name="multpl_apresentar">Multiples zum Anzeigen</string>
     <string name="nao">Nein</string>
-    <string name="nao_comuns">nicht üblich</string>
     <string name="nav_about_us">Über diese App</string>
     <string name="nav_divisores">Divisoren</string>
     <string name="nav_fatorizar">Faktorisieren</string>
@@ -182,7 +179,6 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="number_in_field">Anzahl im Feld</string>
     <string name="numero_alto">Die Nummer ist zu hoch</string>
     <string name="open_folder">Ordner öffnen</string>
-    <string name="os_fatores">Faktoren</string>
     <string name="performance">Performance:</string>
     <string name="pref_colors_title">Farben anzeigen</string>
     <string name="pref_description_colors">Zeigen Sie verschiedene Farben für einfache Erklärungen an</string>
@@ -204,13 +200,9 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="table_between">Tabelle der Primzahlen zwischen</string>
     <string name="the_number">Nummer</string>
     <string name="title_activity_settings">Präferenzen</string>
-    <string name="to_obtain_mdc">Faktoren, um den größten gemeinsamen Divisor zu erhalten:</string>
-    <string name="to_obtain_mmc">Die Faktoren, um das Least Common Multiple zu erhalten:</string>
     <string name="too_high">zu hoch</string>
-    <string name="uma_vez">nur einmal</string>
     <string name="valor_maximo">Höchster Wert</string>
     <string name="valor_minimo">Niedrigster Wert</string>
-    <string name="with_the">mit dem</string>
     <string name="working">Arbeiten…</string>
     <string name="zeroPrimorial">Zahlen> 0</string>
     <string name="zero_no_divisores">Divisoren von Null sind alle natürlichen Zahlen größer als Null.</string>

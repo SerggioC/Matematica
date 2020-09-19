@@ -5,9 +5,11 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_popup_style"
     android:orientation="vertical"
+    android:paddingStart="8dp"
     android:paddingLeft="8dp"
-    android:paddingRight="16dp"
     android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingRight="16dp"
     android:paddingBottom="8dp">
 
     <LinearLayout
@@ -15,24 +17,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:paddingBottom="4dp"
+        android:focusable="true"
         android:orientation="horizontal"
-        android:focusable="true">
+        android:paddingBottom="4dp">
 
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:contentDescription="@string/action_clipboard_result"
             android:gravity="center_vertical"
-            android:src="@mipmap/menu_copy"
-            android:contentDescription="TODO" />
+            android:src="@mipmap/menu_copy" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="11dp"
             android:layout_marginLeft="11dp"
             android:text="@string/action_clipboard_result"
-            android:textColor="@color/cardview_dark_background"
+            android:textColor="@color/menuTextColor"
             android:textSize="16sp" />
 
     </LinearLayout>
@@ -41,26 +44,87 @@
         android:id="@+id/action_save_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
-        android:focusable="true">
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:contentDescription="@string/action_save_image"
             android:gravity="center_vertical"
-            android:src="@mipmap/menu_save"
-            android:contentDescription="TODO" />
+            android:src="@mipmap/menu_save" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="11dp"
             android:layout_marginLeft="11dp"
             android:text="@string/action_save_image"
-            android:textColor="@color/cardview_dark_background"
+            android:textColor="@color/menuTextColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/action_share_result_as_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/action_share_result_as_text"
+            android:gravity="center_vertical"
+            android:src="@drawable/menu_share_as_text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="11dp"
+            android:layout_marginLeft="11dp"
+            android:text="@string/action_share_result_as_text"
+            android:textColor="@color/menuTextColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/action_share_result_as_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/action_share_result_as_image"
+            android:gravity="center_vertical"
+            android:src="@drawable/menu_share_as_image" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="11dp"
+            android:layout_marginLeft="11dp"
+            android:text="@string/action_share_result_as_image"
+            android:textColor="@color/menuTextColor"
             android:textSize="16sp" />
 
     </LinearLayout>
@@ -69,19 +133,19 @@
         android:id="@+id/action_clear_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
         android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:focusable="true">
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:contentDescription="@string/action_clear_result"
             android:gravity="center_vertical"
-            android:src="@mipmap/menu_delete"
-            android:contentDescription="TODO" />
+            android:src="@mipmap/menu_delete" />
 
         <TextView
             android:layout_width="match_parent"
@@ -89,39 +153,9 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="11dp"
             android:text="@string/action_clear_result"
-            android:textColor="@color/cardview_dark_background"
+            android:textColor="@color/menuTextColor"
             android:textSize="16sp" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/action_share_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:clickable="true"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:focusable="true">
-
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:gravity="center_vertical"
-            android:src="@mipmap/menu_share"
-            android:contentDescription="TODO" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="11dp"
-            android:text="@string/action_share_result"
-            android:textColor="@color/cardview_dark_background"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
 
 </LinearLayout>

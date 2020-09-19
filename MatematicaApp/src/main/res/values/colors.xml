@@ -13,6 +13,7 @@
     <color name="introCardColor2">#A3FD7F</color>
     <color name="lightGreen">#f1f8e9</color>
     <color name="cardsColor">#FFFFFF</color>
+    <color name="menuTextColor">#FF424242</color>
     <color name="greener">#dcedc8</color>
     <color name="selected_color">#E3F2FD</color>
     <color name="lightGrey">#f5f5f5</color>

@@ -57,11 +57,11 @@
 
     <string name="explainMMC1html"><![CDATA[▻Descomponer los números en <u>factores primos</u>:<br/>]]></string>
     <string name="explainMMC2html"><![CDATA[▻Elija los factores <u>comunes</u> y <u>no comunes</u>, <u>solo una vez</u> con los <u>mayores exponentes</u>:<br/>]]> </string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multiplica</u> los factores para obtener el mínimo común múltiplo:<br/>]]> </string>
+    <string name="explainMMC3html"><![CDATA[▻<u>Multiplica</u> los factores para obtener el Mínimo Común Múltiplo:<br/>]]> </string>
 
     <string name="explainMDC1html"><![CDATA[▻Descomponga los números en <u>factores primos</u>:<br/>]]> </string>
     <string name="explainMDC2html"><![CDATA[▻Elija los factores <u>comunes</u>, <u>solo una vez</u> con los <u>exponentes más bajos</u>:<br/>]]> </string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multiplica</u> factores para obtener el máximo divisor común:<br/>]]> </string>
+    <string name="explainMDC3html"><![CDATA[▻<u>Multiplica</u> factores para obtener el Máximo Común Divisor:<br/>]]> </string>
 
     <string name="fatorizar_btn">Factorizar</string>
     <string name="fatorizcao">Factorización</string>
@@ -100,7 +100,6 @@
     <string name="its_a_prime">Es un número primo.</string>
     <string name="lowest_is_high">El valor mínimo es demasiado alto.</string>
     <string name="lowest_prime">Valor mínimo más bajo = 1</string>
-    <string name="maior_exps">mayores exponentes</string>
     <string name="maiores_qzero">Números mayores que cero.</string>
     <string name="mais">Más</string>
     <string name="mdc">MCD</string>
@@ -112,9 +111,7 @@
     <string name="mmc_result_prefix">MCM(</string>
     <string name="mmc_title">MCM - Mínimo Común Múltiplo</string>
     <string name="mostrar_todos">Mostrar todos</string>
-    <string name="multiply">▻Multiplicar</string>
     <string name="nao">No</string>
-    <string name="nao_comuns">no comunes</string>
     <string name="nav_about_us">Acerca de esta aplicación</string>
     <string name="nav_divisores">Divisores</string>
     <string name="nav_home">Inicio</string>
@@ -149,12 +146,9 @@
     <string name="table_between">Tabla de números primos entre</string>
     <string name="the_number">Número</string>
     <string name="title_activity_settings">Preferencias</string>
-    <string name="to_obtain_mmc">los factores para obtener el Mínimo Común Múltiplo:</string>
     <string name="too_high">demasiado alto</string>
-    <string name="uma_vez">sólo una vez</string>
     <string name="valor_maximo">Valor Máximo</string>
     <string name="valor_minimo">Valor Mínimo</string>
-    <string name="with_the">con los</string>
     <string name="working">Working…</string>
     <string name="zero_no_divisores">Divisores de cero son todos los números naturales mayores que cero.</string>
     <string-array name="pref_list_titles">
@@ -174,8 +168,6 @@
     <string name="explain_divisores2">▻ El número es igual al producto de los factores primos obtenidos:</string>
     <string name="explain_divisores3">▻ Los factores repetidos se cuentan y este valor se coloca como un exponente:</string>
     <string name="image_saved">Imagen guardada</string>
-    <string name="to_obtain_mdc">Factores para obtener el Máximo Común Divisor:</string>
-    <string name="os_fatores">los factores</string>
     <string name="action_ajuda_primorial">Como calcular n#</string>
     <string name="calculate_primorial_title">Calcular primorial de un número</string>
     <string name="help_text_primorial">En matemáticas, y más particularmente en la teoría de números, primorial es una función de los números naturales a los números naturales similares a la función factorial, pero en lugar de multiplicar sucesivamente enteros positivos, sólo los números primos son multiplicados. Primorial de un número se denota por n#.</string>

@@ -19,8 +19,8 @@ android {
         applicationId = "com.sergiocruz.MatematicaPro"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 24
-        versionName "4.2"
+        versionCode 25
+        versionName "4.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -109,8 +109,7 @@ dependencies {
     // Glide image loading library
     implementation("com.github.bumptech.glide:glide:4.11.0")
 
-    def multidex_version = "2.0.1"
-    implementation("androidx.multidex:multidex:$multidex_version")
+    implementation("androidx.multidex:multidex:2.0.1")
 
 }
 

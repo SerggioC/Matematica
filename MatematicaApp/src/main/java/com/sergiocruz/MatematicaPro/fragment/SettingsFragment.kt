@@ -3,6 +3,8 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.preference.*
 import com.sergiocruz.MatematicaPro.R
 
@@ -19,6 +21,11 @@ import com.sergiocruz.MatematicaPro.R
  * API Guide](http://developer.android.com/guide/topics/ui/settings.html) for more information on developing a Settings UI.
  */
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.white))
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_general)

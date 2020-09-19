@@ -30,7 +30,6 @@ import com.sergiocruz.MatematicaPro.helper.InfoLevel.WARNING
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.openFolderSnackBar
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveViewToImage
 import kotlinx.android.synthetic.main.fragment_primes_table.*
 import kotlinx.coroutines.Dispatchers
@@ -177,12 +176,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         when (item.itemId) {
             R.id.action_save_image_pt -> if (childCount > 0) {
                 checkPermissionsWithCallback(activity as Activity) {
-                    val imgPath = saveViewToImage(historyGridRecyclerView, 0, true)
-                    if (imgPath != null) {
-                        openFolderSnackBar(requireActivity(), getString(R.string.image_saved))
-                    } else {
-                        showCustomToast(this.context, getString(R.string.errorsavingimg), ERROR)
-                    }
+                    MenuHelper.saveViewToImageAndOpenSnackbar(historyGridRecyclerView, 0, true)
                 }
             } else {
                 showCustomToast(context, getString(R.string.empty_table), WARNING)

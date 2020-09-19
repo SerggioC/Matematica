@@ -7,7 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
-import android.os.Environment
+import android.provider.MediaStore
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.view.Gravity
@@ -18,6 +18,7 @@ import android.view.animation.Transformation
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
@@ -27,9 +28,6 @@ import com.sergiocruz.MatematicaPro.R.id.history
 import com.sergiocruz.MatematicaPro.activity.MainActivity
 import com.sergiocruz.MatematicaPro.allPermissionsGranted
 import com.sergiocruz.MatematicaPro.getRuntimePermissions
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,14 +53,10 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         if (permitted) savedCallback?.invoke()
     }
 
+    // returns image path
     fun saveViewToImage(theViewToSave: View, index: Int, drawWhiteBG: Boolean): String? {
-        var pathname: String?
         theViewToSave.isDrawingCacheEnabled = true
-        val bitmap = Bitmap.createBitmap(
-            theViewToSave.width,
-            theViewToSave.height,
-            Bitmap.Config.ARGB_8888
-        )
+        var bitmap = Bitmap.createBitmap(theViewToSave.width, theViewToSave.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         if (drawWhiteBG) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.ADD)
@@ -70,56 +64,38 @@ object MenuHelper : MainActivity.PermissionResultInterface {
             canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         }
         theViewToSave.draw(canvas)
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, SAVED_IMAGE_QUALITY, byteArrayOutputStream)
-        val folder =
-            File(Environment.getExternalStorageDirectory().toString() + File.separator + IMAGES_FOLDER)
-        try {
-            if (!folder.exists()) folder.mkdirs()
-            val timeStamp =
-                SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().time)
-            pathname = Environment.getExternalStorageDirectory().toString() + File.separator +
-                    IMAGES_FOLDER + File.separator + "img" + timeStamp + "_" + index + ".jpg"
-            val imageFile = File(pathname)
-            imageFile.parentFile.mkdirs()
-            imageFile.createNewFile()
-            val fileOutputStream = FileOutputStream(imageFile)
-            fileOutputStream.write(byteArrayOutputStream.toByteArray())
-        } catch (e: Exception) {
-            e.printStackTrace()
-            pathname = null
-        }
+        bitmap = theViewToSave.drawingCache
 
-        return pathname
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Calendar.getInstance().time)
+        val fileName = "img" + timeStamp + "_" + index + ".jpg"
+        val context = theViewToSave.context
+        val pathName = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, fileName, context.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME)
+        return pathName
     }
 
-    fun openFolderSnackBar(mActivity: Activity, toastText: String) {
-        val snack = Snackbar.make(
-            mActivity.findViewById(android.R.id.content),
-            toastText,
-            Snackbar.LENGTH_LONG
-        )
-        snack.setAction(mActivity.getString(R.string.open_folder)) {
+    fun saveViewToImageAndOpenSnackbar(theViewToSave: View, index: Int, drawWhiteBG: Boolean) {
+        val path = saveViewToImage(theViewToSave, index, drawWhiteBG)
+        if (path.isNullOrEmpty()) {
+            showCustomToast(theViewToSave.context, theViewToSave.context.getString(R.string.errorsavingimg), InfoLevel.ERROR)
+        } else {
+            openImagesFolderSnackbar(theViewToSave, R.string.image_saved, path)
+        }
+    }
+
+
+    fun openImagesFolderSnackbar(view: View, @StringRes toastText: Int, imagePath: String) {
+        val snack = Snackbar.make(view, toastText, Snackbar.LENGTH_LONG)
+        val context = view.context
+        snack.setAction(context.getString(R.string.open_folder)) {
             val intent = Intent(Intent.ACTION_VIEW)
-            val uri =
-                Uri.parse(Environment.getExternalStorageDirectory().path.toString() + File.separator + IMAGES_FOLDER + File.separator)
-            intent.setDataAndType(uri, "*/*")
+            intent.setDataAndType(Uri.parse(imagePath), "image/jpeg")
             try {
-                mActivity.startActivity(
-                    Intent.createChooser(
-                        intent,
-                        mActivity.getString(R.string.open_folder)
-                    )
-                )
+                context.startActivity(Intent.createChooser(intent, context.getString(R.string.open_folder)))
             } catch (e: java.lang.Exception) {
-                showCustomToast(
-                    mActivity,
-                    mActivity.getString(R.string.error_no_file_manager),
-                    InfoLevel.ERROR
-                )
+                showCustomToast(context, context.getString(R.string.error_no_file_manager), InfoLevel.ERROR)
             }
         }
-        snack.setActionTextColor(ContextCompat.getColor(mActivity, R.color.f_color8))
+        snack.setActionTextColor(ContextCompat.getColor(context, R.color.f_color8))
         snack.show()
     }
 
@@ -142,11 +118,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
                     var textFromView =
                         (textViewsTagTexto[i] as TextView).text.toString() + "\n"
                     val ss = SpannableString((textViewsTagTexto[i] as TextView).text)
-                    val spans = ss.getSpans(
-                        0,
-                        (textViewsTagTexto[i] as TextView).text.length,
-                        SuperscriptSpan::class.java
-                    )
+                    val spans = ss.getSpans(0, (textViewsTagTexto[i] as TextView).text.length, SuperscriptSpan::class.java)
                     for ((corr, span) in spans.withIndex()) {
                         val start = ss.getSpanStart(span) + corr
                         textFromView = textFromView.substring(0, start) + "^" +
@@ -158,17 +130,10 @@ object MenuHelper : MainActivity.PermissionResultInterface {
 
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(
-                Intent.EXTRA_TEXT, activity.resources.getString(R.string.app_long_description) +
-                        BuildConfig.VERSION_NAME + "\n" + finalText
-            )
+            sendIntent.putExtra(Intent.EXTRA_TEXT, activity.resources.getString(R.string.app_long_description) +
+                    BuildConfig.VERSION_NAME + "\n" + finalText)
             sendIntent.type = "text/plain"
-            activity.startActivity(
-                Intent.createChooser(
-                    sendIntent,
-                    activity.resources.getString(R.string.app_name)
-                )
-            )
+            activity.startActivity(Intent.createChooser(sendIntent, activity.resources.getString(R.string.app_name)))
 
         } else {
             val thetoast =
@@ -197,31 +162,17 @@ object MenuHelper : MainActivity.PermissionResultInterface {
                 val fileUris = ArrayList<Uri>(childCount)
                 for (i in 0 until childCount) {
                     val cardAtIndex = historyView.getChildAt(i) as CardView
-                    cardAtIndex.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            mActivity,
-                            R.color.cardsColor
-                        )
-                    )
-                    val imgagePath = saveViewToImage(cardAtIndex, i, false)
-                    fileUris.add(Uri.parse(imgagePath))
+                    cardAtIndex.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor))
+                    val imagePath = saveViewToImage(cardAtIndex, i, false)
+                    fileUris.add(Uri.parse(imagePath))
                 }
 
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND_MULTIPLE
-                sendIntent.putExtra(
-                    Intent.EXTRA_TEXT,
-                    mActivity.resources.getString(R.string.app_long_description) +
-                            BuildConfig.VERSION_NAME + "\n"
-                )
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n")
                 sendIntent.type = "image/jpeg"
                 sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
-                mActivity.startActivity(
-                    Intent.createChooser(
-                        sendIntent,
-                        mActivity.resources.getString(R.string.app_name)
-                    )
-                )
+                mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
             } else {
                 val theToast =
                     Toast.makeText(mActivity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
@@ -238,28 +189,20 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         val childCount = historyView?.childCount
         if (childCount != null && childCount > 0) {
             checkPermissionsWithCallback(mActivity) {
-                var imagePath: String? = null
+                val imagePaths: MutableList<String> = mutableListOf()
                 for (i in 0 until childCount) {
                     val cardAtIndex = historyView.getChildAt(i) as CardView
                     cardAtIndex.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            mActivity,
-                            R.color.cardsColor
-                        )
+                        ContextCompat.getColor(mActivity, R.color.cardsColor)
                     )
-                    imagePath = saveViewToImage(cardAtIndex, i, false)
+                    saveViewToImage(cardAtIndex, i, false)?.also {
+                        imagePaths.add(it)
+                    }
                 }
-                if (imagePath != null) {
-                    openFolderSnackBar(
-                        mActivity,
-                        mActivity.getString(R.string.all_images_saved)
-                    )
+                if (imagePaths.isNotEmpty()) {
+                    openImagesFolderSnackbar(historyView, R.string.all_images_saved, imagePaths.get(0))
                 } else {
-                    val theToast = Toast.makeText(
-                        mActivity,
-                        mActivity.getString(R.string.errorsavingimg),
-                        Toast.LENGTH_SHORT
-                    )
+                    val theToast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT)
                     theToast.setGravity(Gravity.CENTER, 0, 0)
                     theToast.show()
                 }

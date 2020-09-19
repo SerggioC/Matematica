@@ -144,9 +144,6 @@
     <string name="pref_perform_title">Show performance</string>
     <string name="pref_title_explanation">Show explanations</string>
     <string name="title_activity_settings">Preferences</string>
-    <string name="to_obtain_mmc">the factors to obtain the Least Common Multiple:</string>
-    <string name="uma_vez">just once</string>
-    <string name="with_the">with the</string>
     <string-array name="pref_list_titles">
         <item>Always show</item>
         <item>Show when requested</item>
@@ -163,8 +160,6 @@
     <string name="explain_divisores2">▻ The number is equal to the product of the prime factors obtained:</string>
     <string name="explain_divisores3">▻ Repeated factors are counted and this value is placed as an exponent:</string>
     <string name="image_saved">Image saved</string>
-    <string name="to_obtain_mdc">factors to obtain the Greatest Common Divisor:</string>
-    <string name="os_fatores">factors</string>
     <string name="action_ajuda_primorial">How to calculate n#</string>
     <string name="calculate_primorial_title">Calculate Primorial of a number n#</string>
     <string name="help_text_primorial">"In mathematics, and more particularly in number theory, primorial is a function from natural numbers to natural numbers similar to the factorial function, but rather than successively multiplying positive integers, only prime numbers are multiplied. Primorial of a number is denoted by n#. "</string>
@@ -235,7 +230,6 @@
     <string name="prime_number">Prime Number!</string>
     <string name="not_prime_number">Not a prime number</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="cralytics_title_settings">Enable Error Reporting</string>
     <string name="no_common_factors">No factors in common</string>
     <string name="pref_summary_format_numbers">Format numbers with thousands separator</string>
     <string name="pref_title_format_numbers">Number formatting</string>

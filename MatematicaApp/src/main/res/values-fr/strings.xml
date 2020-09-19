@@ -43,17 +43,14 @@
     <string name="cancel_it">Annuler l\'opération?</string>
     <string name="canceled_noprimes">Opération annulée. Aucun nombre premier n\'a été trouvé dans la gamme.</string>
     <string name="canceled_op">Opération annulée.</string>
-    <string name="comuns">communes</string>
     <string name="cardinal_primos"># de premiers</string>
     <string name="copied_toclipboard">Copié dans le presse-papier</string>
-    <string name="decompor_num">▻Décomposer les nombres dans</string>
     <string name="desenvolvido_por">Développé par Sérgio C.</string>
     <string name="divisores_">diviseurs:</string>
     <string name="divisores_number">Diviseurs d\'un nombre</string>
     <string name="divisors">Diviseurs</string>
     <string name="divisors_of">Diviseurs de</string>
     <string name="errorsavingimg">Erreur lors de l\'enregistrement de l\'image.</string>
-    <string name="escolher">▻Choisir</string>
     <string name="existem">Il y a</string>
     <string name="expl_text_divisores_1">▻ Divisez le nombre successivement par le nombre premier le plus bas, afin d\'obtenir une division exacte, jusqu\'à obtenir 1:</string>
     <string name="explain">Afficher l\'explication ▾</string>
@@ -62,7 +59,6 @@
     <string name="factorization_of">Factorisation des</string>
     <string name="factorize">Factorisation</string>
     <string name="factorizing">Factorisation en cours…</string>
-    <string name="fatores_primos">facteurs premiers:</string>
     <string name="fatorizar_btn">Factoriser</string>
     <string name="fatorizcao">Factorisation</string>
     <string name="fatorize_title">Factorisation en nombres premiers</string>
@@ -91,22 +87,18 @@
     <string name="its_a_prime">est un nombre premier.</string>
     <string name="lowest_is_high">Le valeur minimum est trop élevée.</string>
     <string name="lowest_prime">Valeur minimum = 1</string>
-    <string name="maior_exps">les plus grands exposants</string>
     <string name="maiores_qzero">Nombres supérieurs à zéro.</string>
     <string name="mais">Plus</string>
     <string name="mdc">PGCD</string>
     <string name="mdc_description">Plus Grand Commun Diviseur</string>
     <string name="mdc_result_prefix">PGCD(</string>
     <string name="mdc_title">PGCD - Plus Grand Commun Diviseur</string>
-    <string name="menor_exps">les exposants plus bas</string>
     <string name="mmc">PPCM</string>
     <string name="mmc_description">Plus Petit Commun Multiple</string>
     <string name="mmc_result_prefix">PPCM(</string>
     <string name="mmc_title">PPCM - Plus Petit Commun Multiple</string>
     <string name="mostrar_todos">Montre tout</string>
-    <string name="multiply">▻Multiplier</string>
     <string name="nao">Non</string>
-    <string name="nao_comuns">pas communes</string>
     <string name="nav_about_us">À propos de cette application</string>
     <string name="nav_divisores">Diviseurs</string>
     <string name="nav_fatorizar">Factoriser</string>
@@ -121,7 +113,6 @@
     <string name="nothing_toshare">Aucun résultat à partager</string>
     <string name="number_in_field">Nombre dans le champ</string>
     <string name="numero_alto">Le nombre est trop élevé</string>
-    <string name="os_fatores">les facteurs</string>
     <string name="performance">Performance:</string>
     <string name="pref_colors_title">Afficher les couleurs</string>
     <string name="pref_description_colors">Afficher des couleurs distinctes pour des explications faciles</string>
@@ -142,11 +133,7 @@
     <string name="table_between">Tableaux de nombres premiers entre</string>
     <string name="the_number">Nombre</string>
     <string name="title_activity_settings">Préférences</string>
-    <string name="to_obtain_mdc">les facteurs pour obtenir le Plus Grand Commun Diviseur:</string>
-    <string name="to_obtain_mmc">les facteurs pour obtenir le Plus Petit Commun Multiple:</string>
     <string name="too_high">trop haut</string>
-    <string name="uma_vez">juste une fois</string>
-
 
     <string name="explainMMC1html"><![CDATA[▻Décomposez les nombres en <u>facteurs premiers</u>:<br/>]]></string>
     <string name="explainMMC2html"><![CDATA[▻Choisissez les facteurs <u>communs</u> et <u>non communs</u>, <u>une seule fois</u> avec le <u>plus grands exposants</u>:<br/>]]></string>
@@ -159,7 +146,6 @@
 
     <string name="valor_maximo">Valeur maximum</string>
     <string name="valor_minimo">Valeur minimum</string>
-    <string name="with_the">avec le</string>
     <string name="working">Working...</string>
     <string name="zero_no_divisores">Les diviseurs de zéro sont tous des nombres naturels supérieurs à zéro.</string>
 

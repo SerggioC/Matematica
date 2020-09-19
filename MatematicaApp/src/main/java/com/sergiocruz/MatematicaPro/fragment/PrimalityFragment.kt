@@ -122,9 +122,6 @@ class PrimalityFragment : BaseFragment() {
                 getString(R.string.not_prime_number)
         }"
 
-
-        textView.append(HtmlCompat.fromHtml("Your big island <u>ADVENTURE!</u>", 0))
-
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         textView.setTag(R.id.texto, "texto")
         textView.gravity = Gravity.CENTER_HORIZONTAL

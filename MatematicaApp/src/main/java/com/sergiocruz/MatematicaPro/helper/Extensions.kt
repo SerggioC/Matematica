@@ -293,7 +293,7 @@ fun FragmentActivity.openSettingsFragment() {
     supportFragmentManager.commit {
         setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
         addToBackStack(fragment::class.java.simpleName)
-        replace(R.id.frame, fragment, fragment::class.java.simpleName)
+        add(R.id.frame, fragment, fragment::class.java.simpleName)
     }
 }
 

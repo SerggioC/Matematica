@@ -169,10 +169,6 @@
 
     <string name="factorizing">Factorizing…</string>
 
-    <string name="maior_exps">greatest exponents</string>
-    <string name="multiply">▻Multiply</string>
-    <string name="nao_comuns">not common</string>
-
     <string name="performance">Performance:</string>
     <string name="pref_colors_title">Show colors</string>
     <string name="pref_description_colors">Display distinct colors for easy explanations</string>
@@ -181,9 +177,6 @@
     <string name="pref_perform_title">Show performance</string>
     <string name="pref_title_explanation">Show explanations</string>
     <string name="title_activity_settings">Preferences</string>
-    <string name="to_obtain_mmc">the factors to obtain the Least Common Multiple:</string>
-    <string name="uma_vez">just once</string>
-    <string name="with_the">with the</string>
     <string-array name="pref_list_titles">
         <item>Always show</item>
         <item>Show when requested</item>
@@ -195,14 +188,11 @@
         <item>1</item>
     </string-array>
     <string name="cardinal_primos"># of primes:</string>
-    <string name="errorsavingimg">Error while saving image. Please Allow the app to save files.</string>
+    <string name="errorsavingimg">Error while saving the image.</string>
     <string name="expl_text_divisores_1">▻ Divide the number successively by the lowest prime number, so as to obtain an exact division, until you get 1:</string>
     <string name="explain_divisores2">▻ The number is equal to the product of the prime factors obtained:</string>
     <string name="explain_divisores3">▻ Repeated factors are counted and this value is placed as an exponent:</string>
     <string name="image_saved">Image saved</string>
-    <string name="menor_exps">smaller exponents</string>
-    <string name="to_obtain_mdc">factors to obtain the Greatest Common Divisor:</string>
-    <string name="os_fatores">factors</string>
     <string name="action_save_history_images">Save all as images</string>
     <string name="all_images_saved">Saved all as images</string>
     <string name="nothing_tosave">Nothing to save</string>
@@ -292,6 +282,8 @@
     <string name="pref_key_format_numbers" translatable="false">pref_key_format_numbers</string>
     <string name="pref_summary_format_numbers">Formatar números com separador de milhares</string>
     <string name="pref_title_format_numbers">Formatação de números</string>
+    <string name="action_share_result_as_text">Share as text…</string>
+    <string name="action_share_result_as_image">Share as image…</string>
 
     <integer name="default_history_size">10</integer>
 

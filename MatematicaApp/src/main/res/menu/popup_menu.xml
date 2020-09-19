@@ -19,7 +19,7 @@
         android:title="@string/action_clear_result"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_share_result"
+        android:id="@+id/action_share_result_as_text"
         android:icon="@android:drawable/presence_online"
         android:src="@drawable/less_one"
         android:title="@string/action_share_result"

@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
@@ -23,8 +24,6 @@ import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.openFolderSnackBar
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveViewToImage
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
 import java.util.*
 import kotlin.math.abs
@@ -111,17 +110,17 @@ class SwipeToDismissTouchListener(
     private fun showCustomMenuPopup() {
 
         // Inflate the popup_menu_layout.xml
-        val layoutInflater =
-            mView.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val context = mView.context
+        val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupLayout = layoutInflater.inflate(R.layout.popup_menu_layout, null)
 
-        val scale = mView.context.resources.displayMetrics.density
+        val scale = context.resources.displayMetrics.density
 
         val offsetX = (POPUP_WIDTH * scale + 0.5f).toInt()
         val offsetY = (POPUP_HEIGHT * scale + 0.5f).toInt()
 
         // Creating the PopupWindow
-        val customPopUp = PopupWindow(mView.context)
+        val customPopUp = PopupWindow(context)
         customPopUp.contentView = popupLayout
         customPopUp.width = LinearLayout.LayoutParams.WRAP_CONTENT
         customPopUp.height = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -148,7 +147,7 @@ class SwipeToDismissTouchListener(
         }
         popupLayout.action_clipboard.setOnClickListener {
             // aceder ao clipboard manager
-            val clipboard = mActivity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             var hasEqualItem = false
             if (clipboard.hasPrimaryClip()) {
                 val clipItems = clipboard.primaryClip?.itemCount ?: 0
@@ -177,7 +176,7 @@ class SwipeToDismissTouchListener(
             customPopUp.dismiss()
         }
 
-        popupLayout.findViewById<View>(R.id.action_share_result).setOnClickListener {
+        popupLayout.action_share_result_as_text.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n" + formatedTextFromTextView)
@@ -185,25 +184,28 @@ class SwipeToDismissTouchListener(
             mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
             customPopUp.dismiss()
         }
+        
+        popupLayout.action_share_result_as_image.setOnClickListener {
 
-        popupLayout.findViewById<View>(R.id.action_save_image).setOnClickListener {
+            val imageURI = MenuHelper.saveViewToImage(theCardView, 0, true)
+            if (imageURI.isNullOrEmpty()) {
+                showCustomToast(context, context.getString(R.string.errorsavingimg), InfoLevel.ERROR)
+            } else {
+                val uri = Uri.parse(imageURI)
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND_MULTIPLE
+                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n")
+                sendIntent.type = "image/jpeg"
+                sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayListOf(uri))
+                mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
+            }
+            customPopUp.dismiss()
+        }
+
+        popupLayout.action_save_image.setOnClickListener {
             checkPermissionsWithCallback(mActivity) {
-                theCardView.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        mActivity,
-                        R.color.cardsColor
-                    )
-                )
-                val imageFilePath = saveViewToImage(theCardView, 0, false)
-                if (imageFilePath != null) {
-                    openFolderSnackBar(mActivity, mActivity.getString(R.string.image_saved))
-                } else {
-                    showCustomToast(
-                        mView.context,
-                        mView.context.getString(R.string.errorsavingimg),
-                        InfoLevel.ERROR
-                    )
-                }
+                theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor))
+                MenuHelper.saveViewToImageAndOpenSnackbar(theCardView, 0, false)
             }
             customPopUp.dismiss()
         }
