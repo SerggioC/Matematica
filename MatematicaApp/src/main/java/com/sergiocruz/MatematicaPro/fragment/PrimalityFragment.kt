@@ -35,10 +35,6 @@ class PrimalityFragment : BaseFragment() {
 
     override fun getHistoryLayout(): LinearLayout? = null
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
-
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
     override fun getLayoutIdForFragment() = R.layout.fragment_primality
@@ -136,7 +132,6 @@ class PrimalityFragment : BaseFragment() {
                         cardView,
                         activity as Activity,
                         object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun canDismiss(token: Boolean?) = true
                             override fun onDismiss(view: View?) = history.removeView(cardView)
                         })
         )

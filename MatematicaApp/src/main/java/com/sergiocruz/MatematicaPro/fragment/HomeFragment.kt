@@ -8,10 +8,6 @@ import com.sergiocruz.MatematicaPro.R
 
 class HomeFragment : BaseFragment() {
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
-
     @StringRes
     override var title: Int = R.string.app_inicio
 

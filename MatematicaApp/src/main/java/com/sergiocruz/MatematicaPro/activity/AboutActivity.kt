@@ -1,24 +1,26 @@
 package com.sergiocruz.MatematicaPro.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
-import kotlinx.android.synthetic.main.activity_about.*
+import com.sergiocruz.MatematicaPro.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAboutBinding
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_about)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        aboutTitle.text = getString(R.string.app_long_description) + BuildConfig.VERSION_NAME
-        version.text =
-            (getString(R.string.app_version_description) + " " + BuildConfig.VERSION_NAME + "\n" + getString(
-                R.string.app_version_date
-            ))
+        binding.aboutTitle.text = getString(R.string.app_long_description) + BuildConfig.VERSION_NAME
+        binding.version.text = (getString(R.string.app_version_description) + " " + BuildConfig.VERSION_NAME + " b" + BuildConfig.VERSION_CODE+ "\n" + BuildConfig.BUILD_TIME.toString())
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

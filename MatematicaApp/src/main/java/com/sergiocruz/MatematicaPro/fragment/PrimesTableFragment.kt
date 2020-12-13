@@ -2,7 +2,6 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.AsyncTask
@@ -74,16 +73,16 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     override fun getHistoryLayout(): LinearLayout? = null
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
+    override fun getBasePreferences() {
+        super.getBasePreferences()
         getSharedPreferences()
         writeCalcMode()
     }
 
     private fun getSharedPreferences() {
         bruteForceMode = sharedPrefs.getBoolean(
-            getString(R.string.pref_key_brute_force),
-            resources.getBoolean(R.bool.pref_default_brute_force)
+                getString(R.string.pref_key_brute_force),
+                resources.getBoolean(R.bool.pref_default_brute_force)
         )
     }
 
@@ -190,16 +189,16 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                         val sendIntent = Intent()
                         sendIntent.action = Intent.ACTION_SEND_MULTIPLE
                         sendIntent.putExtra(
-                            Intent.EXTRA_TEXT,
-                            getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n"
+                                Intent.EXTRA_TEXT,
+                                getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n"
                         )
                         sendIntent.type = "image/jpeg"
                         sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileUris)
                         startActivity(
-                            Intent.createChooser(
-                                sendIntent,
-                                resources.getString(R.string.app_name)
-                            )
+                                Intent.createChooser(
+                                        sendIntent,
+                                        resources.getString(R.string.app_name)
+                                )
                         )
                     } else {
                         showCustomToast(context, getString(R.string.errorsavingimg), ERROR)
@@ -212,12 +211,12 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             R.id.action_share_history -> if (::tableData.isInitialized) {
                 if (tableData.primesTable.isNotEmpty()) {
                     val primesString =
-                        "${getString(R.string.table_between)} $minValue ${getString(R.string.and)} $maxValue:\n${tableData.primesTable}"
+                            "${getString(R.string.table_between)} $minValue ${getString(R.string.and)} $maxValue:\n${tableData.primesTable}"
                     val sendIntent = Intent()
                     sendIntent.action = Intent.ACTION_SEND
                     sendIntent.putExtra(
-                        Intent.EXTRA_TEXT, getString(R.string.app_long_description) +
-                                BuildConfig.VERSION_NAME + "\n" + primesString
+                            Intent.EXTRA_TEXT, getString(R.string.app_long_description) +
+                            BuildConfig.VERSION_NAME + "\n" + primesString
                     )
                     sendIntent.type = "text/plain"
                     startActivity(sendIntent)
@@ -328,7 +327,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                     tableAdapter.swap(result.fullTable, result.primesTable, switchPrimos.isChecked)
                     numPrimesTextView.visibility = VISIBLE
                     numPrimesTextView.text =
-                        "${getString(R.string.cardinal_primos)} ${result.primesTable.size}"
+                            "${getString(R.string.cardinal_primos)} ${result.primesTable.size}"
                     resetButtons()
                 }
                 tableData = result
@@ -340,8 +339,8 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     /** Data class to wrap the result of the async calculation
      * containing primesTable and fullTable */
     data class ResultWrapper(
-        val fullTable: MutableMap<Int, Pair<String, Boolean>>,
-        val primesTable: MutableMap<Int, Pair<String, Boolean>>
+            val fullTable: MutableMap<Int, Pair<String, Boolean>>,
+            val primesTable: MutableMap<Int, Pair<String, Boolean>>
     )
 
     private suspend fun probabilisticMode(minValue: Long, maxValue: Long): ResultWrapper {
@@ -597,31 +596,32 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
                 numPrimesTextView.visibility = VISIBLE
                 numPrimesTextView.text =
-                    "${getString(R.string.cardinal_primos)} ${result.primesTable.size}"
+                        "${getString(R.string.cardinal_primos)} ${result.primesTable.size}"
                 showPerformance(startTime)
                 resetButtons()
                 tableData = result
             }
         }
 
-        override fun onCancelled(parcial: ResultWrapper) { //resultado parcial obtido após cancelar AsyncTask
+        override fun onCancelled(parcial: ResultWrapper?) { //resultado parcial obtido após cancelar AsyncTask
             super.onCancelled(parcial)
 
-            if (this@PrimesTableFragment.isVisible && parcial.fullTable.isNotEmpty()) {
+            if (this@PrimesTableFragment.isVisible && parcial?.fullTable?.isNotEmpty() == true) {
 
                 tableAdapter.swap(parcial.fullTable, parcial.primesTable, switchPrimos.isChecked)
 
                 numPrimesTextView.visibility = VISIBLE
-                numPrimesTextView.text =
-                    "${getString(R.string.cardinal_primos)} (${parcial.primesTable.size})"
+                numPrimesTextView.text = "${getString(R.string.cardinal_primos)} (${parcial.primesTable.size})"
                 showPerformance(startTime)
                 resetButtons()
-            } else if (parcial.primesTable.isEmpty()) {
+            } else if (parcial?.primesTable?.isEmpty() == true) {
                 showCustomToast(context, getString(R.string.canceled_noprimes))
                 historyGridRecyclerView.adapter = null
                 resetButtons()
             }
-            tableData = parcial
+            if (parcial != null) {
+                tableData = parcial
+            }
         }
 
     }
@@ -631,25 +631,25 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             ConstraintSet().apply {
                 clone(cardViewMain)
                 connect(
-                    R.id.performanceTextView,
-                    ConstraintSet.TOP,
-                    R.id.numPrimesTextView,
-                    ConstraintSet.TOP,
-                    0
+                        R.id.performanceTextView,
+                        ConstraintSet.TOP,
+                        R.id.numPrimesTextView,
+                        ConstraintSet.TOP,
+                        0
                 )
                 connect(
-                    R.id.performanceTextView,
-                    ConstraintSet.BOTTOM,
-                    R.id.numPrimesTextView,
-                    ConstraintSet.BOTTOM,
-                    0
+                        R.id.performanceTextView,
+                        ConstraintSet.BOTTOM,
+                        R.id.numPrimesTextView,
+                        ConstraintSet.BOTTOM,
+                        0
                 )
                 setVisibility(R.id.performanceTextView, VISIBLE)
                 applyTo(cardViewMain)
             }
 
             val elapsed =
-                " " + DecimalFormat("#.###").format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
+                    " " + DecimalFormat("#.###").format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
             performanceTextView.text = "${getString(R.string.performance)} $elapsed"
         } else {
             performanceTextView.visibility = GONE

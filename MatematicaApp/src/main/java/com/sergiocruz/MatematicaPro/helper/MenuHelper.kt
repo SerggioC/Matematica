@@ -143,7 +143,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         }
     }
 
-    fun checkPermissionsWithCallback(activity: Activity, callback: () -> Unit): Unit {
+    fun checkPermissionsWithCallback(activity: Activity, callback: () -> Unit) {
         if (allPermissionsGranted(activity)) {
             callback()
         } else {

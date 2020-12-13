@@ -33,9 +33,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_history_size)))
 
         val prefBruteForce =
-            findPreference<SwitchPreferenceCompat>(getString(R.string.pref_key_brute_force))
+                findPreference<SwitchPreferenceCompat>(getString(R.string.pref_key_brute_force))
         val prefProbabilistic =
-            findPreference<SwitchPreferenceCompat>(getString(R.string.pref_key_probabilistic))
+                findPreference<SwitchPreferenceCompat>(getString(R.string.pref_key_probabilistic))
 
         prefBruteForce?.setOnPreferenceChangeListener { _: Preference?, _: Any? ->
             prefBruteForce.isChecked = prefBruteForce.isChecked.not()
@@ -56,36 +56,36 @@ class SettingsFragment : PreferenceFragmentCompat() {
      * to reflect its new value.
      */
     private val sBindPreferenceSummaryToValueListenerr =
-        Preference.OnPreferenceChangeListener { preference, value ->
-            val stringValue = value.toString()
-            if (preference is ListPreference) {
-                if (preference.title == getString(R.string.pref_title_explanation)) {// For list preferences, look up the correct display value in
-                    // the preference's 'entries' list.
-                    val index = preference.findIndexOfValue(stringValue)
+            Preference.OnPreferenceChangeListener { preference, value ->
+                val stringValue = value.toString()
+                if (preference is ListPreference) {
+                    if (preference.title == getString(R.string.pref_title_explanation)) {// For list preferences, look up the correct display value in
+                        // the preference's 'entries' list.
+                        val index = preference.findIndexOfValue(stringValue)
 
-                    // Set the summary to reflect the new value.
-                    preference.setSummary(if (index >= 0) preference.entries[index] else null)
+                        // Set the summary to reflect the new value.
+                        preference.setSummary(if (index >= 0) preference.entries[index] else null)
 
-                    //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
-                    val showColors = findPreference<CheckBoxPreference>(getString(R.string.pref_key_show_colors))
-                    if (index == 0 || index == 1) {
-                        showColors?.isEnabled = true
-                    } else if (index == 2) {
-                        showColors?.isEnabled = false
+                        //Ativar ou desativar checkbox das cores com a seleção da apresentação de cores
+                        val showColors = findPreference<CheckBoxPreference>(getString(R.string.pref_key_show_colors))
+                        if (index == 0 || index == 1) {
+                            showColors?.isEnabled = true
+                        } else if (index == 2) {
+                            showColors?.isEnabled = false
+                        }
+                    } else if (preference.title == getString(R.string.pref_title_history_size)) {
+                        preference.summary =
+                                "${getString(R.string.pref_summary_hisory_size)} ($stringValue)"
                     }
-                } else if (preference.title == getString(R.string.pref_title_history_size)) {
-                    preference.summary =
-                        "${getString(R.string.pref_summary_hisory_size)} ($stringValue)"
+
+
+                } else {
+                    // For all other preferences, set the summary to the value's
+                    // simple string representation.
+                    preference.summary = stringValue
                 }
-
-
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.summary = stringValue
+                true
             }
-            true
-        }
 
 
     /**
@@ -107,10 +107,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Trigger the listener immediately with the preference's
         // current value.
         sBindPreferenceSummaryToValueListenerr.onPreferenceChange(
-            preference,
-            PreferenceManager
-                .getDefaultSharedPreferences(context)
-                .getString(preference?.key, "")
+                preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(context)
+                        .getString(preference?.key, "")
         )
     }
 

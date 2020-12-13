@@ -11,6 +11,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.opengl.Visibility
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
@@ -23,8 +25,13 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
@@ -82,15 +89,13 @@ class SwipeToDismissTouchListener(
                     var text =
                         (viewsWithTAGTexto[i] as TextView).text.toString() + "\n"
                     val ss = SpannableString((viewsWithTAGTexto[i] as TextView).text)
-                    val spans = ss.getSpans(
-                        0,
+                    val spans = ss.getSpans(0,
                         (viewsWithTAGTexto[i] as TextView).text.length,
                         SuperscriptSpan::class.java
                     )
                     for ((corr, span) in spans.withIndex()) {
                         val start = ss.getSpanStart(span) + corr
-                        text = text.substring(0, start) + "^" +
-                                text.substring(start)
+                        text = text.substring(0, start) + "^" + text.substring(start)
                     }
                     finalText += text
                 }
@@ -124,18 +129,14 @@ class SwipeToDismissTouchListener(
         customPopUp.contentView = popupLayout
         customPopUp.width = LinearLayout.LayoutParams.WRAP_CONTENT
         customPopUp.height = LinearLayout.LayoutParams.WRAP_CONTENT
-        //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        //            customPopUp.setElevation(scale * 10.0f);
-        //        }
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    customPopUp.setElevation(scale * 10.0f);
+//                }
         customPopUp.isFocusable = true
         customPopUp.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) //Clear the default translucent background
         customPopUp.animationStyle = R.style.popup_animation
-        customPopUp.showAtLocation(
-            popupLayout,
-            Gravity.NO_GRAVITY,
-            mDownX.toInt() - offsetX,
-            mDownY.toInt() - offsetY
-        )
+        customPopUp.showAtLocation(popupLayout, Gravity.NO_GRAVITY, mDownX.toInt() - offsetX, mDownY.toInt() - offsetY)
+
 
         val theCardView = this.mView as CardView
         val selectedColor = ContextCompat.getColor(mActivity, R.color.selected_color)
@@ -144,6 +145,31 @@ class SwipeToDismissTouchListener(
         customPopUp.setOnDismissListener {
             val color = ContextCompat.getColor(mActivity, R.color.cardsColor)
             theCardView.setCardBackgroundColor(color)
+        }
+
+        val pk = mView.getTag(R.id.pk) as? String ?: ""
+        val op = mView.getTag(R.id.op) as? String ?: ""
+        var saved = false
+        if (pk.isNotEmpty() && op.isNotBlank()) {
+            CoroutineScope(Dispatchers.Default).launch {
+                saved = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = pk, operation = op) != null
+                if (saved) {
+                    withContext(Dispatchers.Main) {
+                        popupLayout.image_popup_favorite.setImageResource(android.R.drawable.btn_star_big_on)
+                        popupLayout.text_popup_favorite.setText(R.string.action_remove_favorite)
+                    }
+                }
+            }
+        }
+        popupLayout.action_favorite.setOnClickListener {
+            CoroutineScope(Dispatchers.Default).launch {
+                if (pk.isEmpty() || op.isEmpty()) return@launch
+                LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemPersistent(operation = op, key = pk, saved.not())
+                withContext(Dispatchers.Main) {
+                    theCardView.findViewById<View>(R.id.image_favorite_separator).visibility = if (saved) View.GONE else View.VISIBLE
+                }
+            }
+            customPopUp.dismiss()
         }
         popupLayout.action_clipboard.setOnClickListener {
             // aceder ao clipboard manager
@@ -229,7 +255,7 @@ class SwipeToDismissTouchListener(
                 mVelocityTracker = VelocityTracker.obtain()
                 mVelocityTracker?.addMovement(motionEvent)
 
-                // Execute your Runnable after 600 milliseconds = 0.5 second
+                // Execute your Runnable after 600 milliseconds = 0.6 second
                 handler.postDelayed(runnable, 600)
                 mBooleanIsPressed = true
 
@@ -299,6 +325,7 @@ class SwipeToDismissTouchListener(
                 mDownY = 0f
                 mSwiping = false
             }
+
             MotionEvent.ACTION_SCROLL -> {
                 run {
                     if (mBooleanIsPressed) {
@@ -461,10 +488,6 @@ class SwipeToDismissTouchListener(
      * about a successful dismissal of the view for which it was created.
      */
     interface DismissCallbacks {
-        /**
-         * Called to determine whether the view can be dismissed.
-         */
-        fun canDismiss(token: Boolean?): Boolean
 
         /**
          * Called when the user has indicated they she would like to dismiss the view.

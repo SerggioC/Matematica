@@ -16,6 +16,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
@@ -45,10 +46,6 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     override fun getHistoryLayout(): LinearLayout = history
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
 
     override fun getLayoutIdForFragment() = R.layout.fragment_multiplos
 
@@ -159,25 +156,14 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 cardView,
                 requireActivity(),
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?): Boolean {
-                        return true
-                    }
-
-                    override fun onDismiss(view: View?) {
-                        history.removeView(cardView)
-                    }
+                    override fun onDismiss(view: View?) = history.removeView(cardView)
                 })
         )
 
-        if (shouldShowPerformance) {
-            val gradientSeparator = getGradientSeparator(context)
-            val decimalFormatter = DecimalFormat("#.###")
-            val elapsed =
-                getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-            gradientSeparator.text = elapsed
-            llVerticalRoot.addView(gradientSeparator)
+        context?.let {
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+            llVerticalRoot.addView(separator, 0)
         }
-
         llVerticalRoot.addView(textView)
 
         if (showMore) {
@@ -255,8 +241,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                             (theCardView?.getChildAt(0) as LinearLayout).getChildAt(
                                 1
                             ) as TextView
-                        val gradientSeparator =
-                            (theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as TextView
+                        val gradientSeparator = ((theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as ConstraintLayout).getChildAt(0) as TextView
                         val decimalFormatter = DecimalFormat("#.###")
                         val elapsed =
                             getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"

@@ -37,10 +37,6 @@ import java.util.*
 
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
-
     private lateinit var textWatcher: BigNumbersTextWatcher
 
     private var bgOperation: AsyncTask<Long, Float, ArrayList<ArrayList<Long>>> =
@@ -56,9 +52,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override var pageIndex = 4
 
-    override fun getHelpTextId(): Int? = R.string.help_text_fatores
+    override fun getHelpTextId(): Int = R.string.help_text_fatores
 
-    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_fatorizar
+    override fun getHelpMenuTitleId(): Int = R.string.action_ajuda_fatorizar
 
     override fun getHistoryLayout(): LinearLayout? = history
 
@@ -283,26 +279,18 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 }
             }
 
-            val gradientSeparator = getGradientSeparator(context)
-
-            if (shouldShowPerformance) {
-                val decimalFormatter = DecimalFormat("#.###")
-                val elapsed =
-                    "Performance:" + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                gradientSeparator.text = elapsed
-            } else {
-                gradientSeparator.text = ""
-            }
-
             //Linearlayout horizontal com o explainlink e gradiente
             val llHorizontalLink = LinearLayout(activity)
             llHorizontalLink.orientation = HORIZONTAL
             llHorizontalLink.layoutParams = getMatchWrapParams()
             llHorizontalLink.addView(explainLink)
-            llHorizontalLink.addView(gradientSeparator)
+
+            context?.let {
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+                llHorizontalLink.addView(separator)
+            }
 
             llVerticalRoot.addView(llHorizontalLink)
-
             llVerticalExpl.addView(llHorizontal)
 
             val textViewFactExpanded = TextView(activity)
@@ -327,20 +315,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             textViewFactExpanded.setTag(R.id.texto, "texto")
 
             llVerticalExpl.addView(textViewFactExpanded)
-
             llVerticalRoot.addView(llVerticalExpl)
 
-
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
-
-            if (shouldShowPerformance) {
-                //View separator with gradient
-                val gradientSeparator = getGradientSeparator(context)
-                val decimalFormatter = DecimalFormat("#.###")
-                val elapsed =
-                    getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                gradientSeparator.text = elapsed
-                llVerticalRoot.addView(gradientSeparator, 0)
+            context?.let {
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+                llVerticalRoot.addView(separator)
             }
         }
 
@@ -348,11 +328,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Create a generic swipe-to-dismiss touch listener.
         cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardView,
-                activity as Activity,
+            SwipeToDismissTouchListener(cardView, activity as Activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?) = true
                     override fun onDismiss(view: View?) = history.removeView(cardView)
                 })
         )

@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
-import android.content.SharedPreferences
 import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
@@ -81,10 +80,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         language = Locale.getDefault().displayLanguage
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
 
@@ -108,9 +103,9 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
-    override fun getHelpTextId(): Int? = R.string.help_text_mmc
+    override fun getHelpTextId(): Int = R.string.help_text_mmc
 
-    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_mmc
+    override fun getHelpMenuTitleId(): Int = R.string.action_ajuda_mmc
 
     override fun getHistoryLayout(): LinearLayout? = history
 
@@ -390,7 +385,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 cardView,
                 activity as Activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?) = true
                     override fun onDismiss(view: View?) {
                         checkBackgroundOperation(view)
                     }
@@ -422,15 +416,11 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(cardView, llVerticalRoot, shouldShowExplanation)
+            createExplanations(mmcString, cardView, llVerticalRoot, shouldShowExplanation)
         } else {
-            if (shouldShowPerformance) {
-                val gradientSeparator = getGradientSeparator(context)
-                val decimalFormatter = DecimalFormat("#.###")
-                val elapsed =
-                    getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                gradientSeparator.text = elapsed
-                llVerticalRoot.addView(gradientSeparator, 0)
+            context?.let {
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mmcString, DivisoresFragment::class.java.simpleName)
+                llVerticalRoot.addView(separator, 0)
             }
             cardView.addView(llVerticalRoot)
         }
@@ -438,9 +428,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     }
 
     private fun createExplanations(
-        cardview: CardView,
-        llVerticalRoot: LinearLayout,
-        shouldShowExplanation: String?
+            mmcString: String,
+            cardview: CardView,
+            llVerticalRoot: LinearLayout,
+            shouldShowExplanation: String?
     ) {
 
         val hideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
@@ -459,29 +450,30 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
         explainLink.gravity = Gravity.CENTER_VERTICAL
 
-        //View separator with gradient
-        val gradientSeparator = getGradientSeparator(context)
-
         llHorizontal.gravity = Gravity.CENTER_VERTICAL
 
-        val isExpanded = arrayOf(false)
+        var isExpanded = false
         explainLink.setOnClickListener { view ->
             val explView =
                 (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
-            if (!isExpanded[0]) {
+            if (!isExpanded) {
                 (view as TextView).text = hideExpl
                 expandIt(explView, null)
-                isExpanded[0] = true
+                isExpanded = true
 
-            } else if (isExpanded[0]) {
+            } else if (isExpanded) {
                 (view as TextView).text = showExpl
                 collapseIt(explView)
-                isExpanded[0] = false
+                isExpanded = false
             }
         }
 
         llHorizontal.addView(explainLink)
-        llHorizontal.addView(gradientSeparator)
+
+        context?.let {
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mmcString, DivisoresFragment::class.java.simpleName)
+            llVerticalRoot.addView(separator)
+        }
 
         // LL vertical das explicações
         val verticalExpl = LinearLayout(activity)
@@ -520,11 +512,11 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         if (shouldShowExplanation == "-1") {  //Always show Explanation
             verticalExpl.visibility = View.VISIBLE
             explainLink.text = hideExpl
-            isExpanded[0] = true
+            isExpanded = true
         } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
             verticalExpl.visibility = View.GONE
             explainLink.text = showExpl
-            isExpanded[0] = false
+            isExpanded = false
         }
         cardview.addView(llVerticalRoot)
 

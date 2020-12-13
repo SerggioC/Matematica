@@ -50,9 +50,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     internal var startTime: Long = 0
     private lateinit var language: String
     private lateinit var arrayOfEditTexts: Array<EditText>
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
 
     override var title: Int = R.string.mdc_title
     override var pageIndex: Int = 3
@@ -71,9 +68,9 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
     override fun getLayoutIdForFragment() = R.layout.fragment_mdc
 
-    override fun getHelpTextId(): Int? = R.string.help_text_mdc
+    override fun getHelpTextId(): Int = R.string.help_text_mdc
 
-    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_mdc
+    override fun getHelpMenuTitleId(): Int = R.string.action_ajuda_mdc
 
     override fun getHistoryLayout(): LinearLayout? = history
 
@@ -362,9 +359,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         cardView,
                         activity as Activity,
                         object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun canDismiss(token: Boolean?): Boolean {
-                                return true
-                            }
 
                             override fun onDismiss(view: View?) {
                                 //history.removeView(cardview);
@@ -398,21 +392,18 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(cardView, llVerticalRoot, shouldShowExplanation)
+            createExplanations(mdcString, cardView, llVerticalRoot, shouldShowExplanation)
         } else {
-            if (shouldShowPerformance) {
-                val gradientSeparator = getGradientSeparator(context)
-                val decimalFormatter = DecimalFormat("#.###")
-                val elapsed =
-                        getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                gradientSeparator.text = elapsed
-                llVerticalRoot.addView(gradientSeparator, 0)
+            context?.let {
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mdcString, DivisoresFragment::class.java.simpleName)
+                llVerticalRoot.addView(separator, 0)
             }
             cardView.addView(llVerticalRoot) // Só o resultado sem explicações
         }
     }
 
     private fun createExplanations(
+            input: String,
             cardView: CardView,
             llVerticalRoot: LinearLayout,
             shouldShowExplanation: String?
@@ -434,9 +425,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
         //explainLink.setGravity(Gravity.CENTER_VERTICAL);
 
-        //View separator with gradient
-        val gradientSeparator = getGradientSeparator(context)
-
         var isExpanded = false
         explainLink.setOnClickListener { view ->
             val explView = (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
@@ -453,8 +441,10 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         }
 
         llHorizontal.addView(explainLink)
-        llHorizontal.addView(gradientSeparator)
-
+        context?.let {
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, input, DivisoresFragment::class.java.simpleName)
+            llHorizontal.addView(separator, 0)
+        }
         //LL vertical das explicações
         val llVerticalExpl = LinearLayout(activity)
         llVerticalExpl.tag = "ll_vertical_expl"

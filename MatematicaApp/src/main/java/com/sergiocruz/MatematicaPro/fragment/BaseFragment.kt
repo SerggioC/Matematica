@@ -12,12 +12,17 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
+import com.sergiocruz.MatematicaPro.database.HistoryDataClass
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.CreateCardView
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.removeHistory
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveHistoryImages
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistory
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistoryImages
 import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -26,9 +31,8 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var scale: Float = 0f
     var shouldShowPerformance: Boolean = true
     var shouldShowExplanation: String = "0"
-    var shouldShowColors: Boolean = true
     var shouldFormatNumbers: Boolean = false
-
+    private var shouldShowColors: Boolean = true
     private var privateFColors: MutableList<Int> = mutableListOf()
 
     fun getRandomFactorsColors(): MutableList<Int> {
@@ -92,7 +96,13 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             .unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    fun getBasePreferences() {
+
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        getBasePreferences()
+    }
+
+    open fun getBasePreferences() {
         val default: Int = resources.getInteger(R.integer.default_history_size)
         historyLimit = sharedPrefs.getString(
             getString(R.string.pref_key_history_size),
@@ -114,5 +124,15 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     @LayoutRes
     abstract fun getLayoutIdForFragment(): Int
+
+    fun saveCardToDatabase(input: String?, data: String?, operation: String, persist: Boolean = false) {
+        if (input == null || data == null) return
+        context?.let {
+            CoroutineScope(Dispatchers.Default).launch {
+                val history = HistoryDataClass(primaryKey = input, operation, content = data, persist = persist)
+                LocalDatabase.getInstance(it).historyDAO()?.saveCard(history)
+            }
+        }
+    }
 
 }

@@ -48,10 +48,6 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHistoryLayout(): LinearLayout = history
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
-
     override fun getLayoutIdForFragment() = R.layout.fragment_primorial
 
     override fun onOperationCanceled(canceled: Boolean) {
@@ -87,7 +83,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     fun calculatePrimorial() {
         startTime = System.nanoTime()
         hideKeyboard(activity)
-        val editnumText = inputEditText.text.toString()
+        val editnumText = inputEditText.text.digitsOnly()
         if (TextUtils.isEmpty(editnumText)) {
             showCustomToast(context, getString(R.string.add_num_inteiro))
             return
@@ -176,9 +172,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 cardView,
                 requireActivity(),
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?): Boolean {
-                        return true
-                    }
+
 
                     override fun onDismiss(view: View?) {
                         history.removeView(cardView)
@@ -186,15 +180,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 })
         )
 
-        if (shouldShowPerformance) {
-            val gradientSeparator = getGradientSeparator(context)
-            val decimalFormatter = DecimalFormat("#.###")
-            val elapsed =
-                getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-            val numAlgarismos = bigIntegerResult.toString().length
-            val algarismos = getString(R.string.algarismos)
-            gradientSeparator.text = "$numAlgarismos $algarismos, $elapsed"
-            llVerticalRoot.addView(gradientSeparator)
+        context?.let {
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+            llVerticalRoot.addView(separator, 0)
         }
 
         llVerticalRoot.addView(textView)
@@ -206,8 +194,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     lateinit var progressParams: ViewGroup.LayoutParams
 
     private inner class BackGroundOperation : AsyncTask<Long, Float, BigInteger>() {
-        internal var number: Long? = null
-        internal var primes = ArrayList<Long>()
+        var number: Long? = null
+        var primes = ArrayList<Long>()
 
         public override fun onPreExecute() {
             button_calc_primorial.isClickable = false

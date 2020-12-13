@@ -13,6 +13,36 @@
     android:paddingBottom="8dp">
 
     <LinearLayout
+        android:id="@+id/action_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
+
+        <ImageView
+            android:id="@+id/image_popup_favorite"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:contentDescription="@string/action_set_favorite"
+            android:gravity="center_vertical"
+            android:src="@android:drawable/btn_star_big_off" />
+
+        <TextView
+            android:id="@+id/text_popup_favorite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="11dp"
+            android:layout_marginLeft="11dp"
+            android:text="@string/action_set_favorite"
+            android:textColor="@color/menuTextColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/action_clipboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

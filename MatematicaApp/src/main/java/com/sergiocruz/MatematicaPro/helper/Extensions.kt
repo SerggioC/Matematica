@@ -23,7 +23,6 @@ import androidx.fragment.app.commit
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.SettingsFragment
-import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
@@ -84,8 +83,7 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
         if (TextUtils.isEmpty(s)) return
         if (s?.digitsOnly()?.toLongOrNull() == null) {
             inputEditText.setText(oldNum)
-            inputEditText.setSelection(inputEditText.text?.length
-                    ?: 0) // Colocar o cursor no final do texto
+            inputEditText.setSelection(inputEditText.text?.length ?: 0) // Colocar o cursor no final do texto
             inputEditText.error = inputEditText.context.getString(R.string.numero_alto)
             // Remove error after 4 seconds
             inputEditText.postDelayed({ inputEditText.error = null }, clearErrorDelayMillis)

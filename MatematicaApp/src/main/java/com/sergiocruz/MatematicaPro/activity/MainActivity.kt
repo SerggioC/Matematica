@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -11,25 +12,27 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.allPermissionsGranted
+import com.sergiocruz.MatematicaPro.databinding.ActivityMainBinding
 import com.sergiocruz.MatematicaPro.fragment.*
 import com.sergiocruz.MatematicaPro.getRuntimePermissions
 import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
     private lateinit var activityTitles: Array<String>
     private lateinit var mHandler: Handler
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
-        setSupportActionBar(toolbar)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.includedMain.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        mHandler = Handler()
+        mHandler = Handler(Looper.getMainLooper())
 
         // load toolbar titles from string resources
         activityTitles = resources.getStringArray(R.array.nav_item_activity_titles)
@@ -56,7 +59,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionResultInterface?.onPermissionResult(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        permissionResultInterface?.onPermissionResult(grantResults.getOrNull(0) == PackageManager.PERMISSION_GRANTED)
     }
 
     /***
@@ -65,19 +68,19 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
      */
     private fun loadFragment(fragment: BaseFragment) {
         //remove dot in menu
-        nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
+        binding.navView.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
         // selecting appropriate nav menu item
-        nav_view.menu.getItem(fragment.pageIndex).isChecked = true
-        nav_view.menu.getItem(fragment.pageIndex).setActionView(R.layout.menu_dot)
+        binding.navView.menu.getItem(fragment.pageIndex).isChecked = true
+        binding.navView.menu.getItem(fragment.pageIndex).setActionView(R.layout.menu_dot)
 
         // set toolbar title
-        toolbarTitle.setText(fragment.title)
+        binding.includedMain.toolbarTitle.setText(fragment.title)
 
         // if user select the current navigation menu again, don't do anything
         // just close the navigation drawer_layout
         if (supportFragmentManager.fragments.getOrNull(0)?.tag == fragment::class.java.simpleName) {
-            drawer_layout.closeDrawers()
+            binding.drawerLayout.closeDrawers()
             return
         }
 
@@ -94,7 +97,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         }
 
         //Closing drawer_layout on item click
-        drawer_layout.closeDrawers()
+        binding.drawerLayout.closeDrawers()
 
         // refresh toolbar menu
         invalidateOptionsMenu()
@@ -108,24 +111,24 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
 
     private fun goToSettingsFragment() {
-        nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
-        nav_view.menu.getItem(SettingsFragment.index).isChecked = true
-        nav_view.menu.getItem(SettingsFragment.index).setActionView(R.layout.menu_dot)
+        binding.navView.menu.getItem(getCurrentFragmentIndex()).actionView = null
+        binding.navView.menu.getItem(SettingsFragment.index).isChecked = true
+        binding.navView.menu.getItem(SettingsFragment.index).setActionView(R.layout.menu_dot)
         openSettingsFragment()
-        drawer_layout.closeDrawers()
+        binding.drawerLayout.closeDrawers()
     }
 
     private fun setUpNavigationView() {
 
         // Icones coloridos no menu de gaveta lateral
-        nav_view.itemIconTintList = null
+        binding.navView.itemIconTintList = null
 
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         // This method will trigger on item Click of navigation menu
-        nav_view.setNavigationItemSelectedListener { menuItem ->
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
 
             //remove dot in menu
-            nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
+            binding.navView.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
             when (menuItem.itemId) {
                 R.id.home -> loadFragment(HomeFragment())
@@ -149,23 +152,23 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             true
         }
 
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer)
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.includedMain.toolbar, R.string.openDrawer, R.string.closeDrawer)
 
         //Setting the actionbarToggle to drawer_layout layout
-        drawer_layout.addDrawerListener(actionBarDrawerToggle)
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
 
         //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState()
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawers()
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawers()
             return
         }
 
         //remove dot from selected item menu
-        nav_view.menu.getItem(getCurrentFragmentIndex()).actionView = null
+        binding.navView.menu.getItem(getCurrentFragmentIndex()).actionView = null
 
         // checking if user is on other navigation menu
         // rather than home

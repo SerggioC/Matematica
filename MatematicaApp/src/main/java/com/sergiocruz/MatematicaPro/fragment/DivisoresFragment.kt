@@ -1,7 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -15,11 +14,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
+import com.sergiocruz.MatematicaPro.databinding.GradientSeparatorBinding
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_divisores.*
+import kotlinx.android.synthetic.main.popup_menu_layout.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
@@ -49,15 +57,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
-    override fun getHelpTextId(): Int? = R.string.help_text_divisores
+    override fun getHelpTextId(): Int = R.string.help_text_divisores
 
-    override fun getHelpMenuTitleId(): Int? = R.string.action_ajuda_divisores
+    override fun getHelpMenuTitleId(): Int = R.string.action_ajuda_divisores
 
     override fun getHistoryLayout(): LinearLayout? = history
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        getBasePreferences()
-    }
 
     override fun onOperationCanceled(canceled: Boolean) {
         cancelAsyncTask()
@@ -73,6 +77,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (asyncTask.status == AsyncTask.Status.RUNNING) {
             asyncTask.cancel(true)
             showCustomToast(context, getString(R.string.canceled_op))
+        }
+        context?.let {
+            CoroutineScope(Dispatchers.Default).launch {
+                LocalDatabase.getInstance(it).historyDAO()?.deleteNonPersistentFromOperation(this::class.java.simpleName)
+            }
         }
     }
 
@@ -128,7 +137,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     lateinit var progressParams: ViewGroup.LayoutParams
 
-    inner class BackGroundOperation : AsyncTask<Long, Float, ArrayList<Long>>() {
+    inner class BackGroundOperation() : AsyncTask<Long, Float, ArrayList<Long>>() {
+
+        private var input: Long? = null
 
         public override fun onPreExecute() {
             lockInput()
@@ -139,6 +150,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         override fun doInBackground(vararg num: Long?): ArrayList<Long> {
+            this.input = num[0]
             /**
              * Performance update
              * Primeiro obtem os fatores primos depois multiplica-os
@@ -215,7 +227,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     ssb.setSafeSpan(ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                     ssb.setSafeSpan(RelativeSizeSpan(0.9f), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
-                createCardView(ssb)
+                createCardView(input.toString(), ssb)
                 resetButtons()
             }
         }
@@ -236,7 +248,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 ssb.append(incompleteCalc)
                 ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                createCardView(ssb)
+                createCardView(input.toString(), ssb)
                 resetButtons()
             }
         }
@@ -256,7 +268,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         progressBar.visibility = View.GONE
     }
 
-    fun createCardView(ssb: SpannableStringBuilder) {
+    fun createCardView(input: String, ssb: SpannableStringBuilder) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
         cardView.layoutParams = getMatchWrapParams()
@@ -296,24 +308,23 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                         cardView,
                         activity as Activity,
                         object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun canDismiss(token: Boolean?) = true
                             override fun onDismiss(view: View?) = history.removeView(cardView)
                         })
         )
 
-        if (shouldShowPerformance) {
-            val gradientSeparator = getGradientSeparator(context)
-            val formatter1 = DecimalFormat("#.###")
-            val elapsed =
-                    getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-            gradientSeparator.text = elapsed
-            llVerticalRoot.addView(gradientSeparator)
+        context?.let {
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, input, DivisoresFragment::class.java.simpleName)
+            llVerticalRoot.addView(separator)
         }
-
         llVerticalRoot.addView(textView)
 
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
+        cardView.setTag(R.id.pk, input)
+        cardView.setTag(R.id.op, this::class.java.simpleName)
+
+        val data = Gson().toJson(ssb)
+        saveCardToDatabase(input, data, this::class.java.simpleName)
     }
 
 

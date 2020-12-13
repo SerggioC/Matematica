@@ -197,8 +197,6 @@
     <string name="all_images_saved">Saved all as images</string>
     <string name="nothing_tosave">Nothing to save</string>
 
-    <item name="texto" type="id" />
-
     <string-array name="multiplos_size" translatable="false">
         <item>10</item>
         <item>20</item>
@@ -284,6 +282,9 @@
     <string name="pref_title_format_numbers">Formatação de números</string>
     <string name="action_share_result_as_text">Share as text…</string>
     <string name="action_share_result_as_image">Share as image…</string>
+    <string name="action_to_db">Guardar tudo</string>
+    <string name="action_set_favorite">Guardar favorito</string>
+    <string name="action_remove_favorite">Remover favorito</string>
 
     <integer name="default_history_size">10</integer>
 

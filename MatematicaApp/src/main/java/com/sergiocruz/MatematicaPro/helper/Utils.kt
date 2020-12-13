@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.AsyncTask
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,7 +13,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
+import com.sergiocruz.MatematicaPro.databinding.GradientSeparatorBinding
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.DecimalFormat
 
 interface OnCancelBackgroundTask {
     fun onOperationCanceled(canceled: Boolean)
@@ -27,13 +35,13 @@ fun displayCancelDialogBox(context: Context, onCanceled: OnCancelBackgroundTask)
 
     // set dialog message
     alertDialogBuilder
-        .setMessage(R.string.cancel_it)
-        .setCancelable(true)
-        .setPositiveButton(R.string.sim) { dialog, _ ->
-            onCanceled.onOperationCanceled(true)
-            dialog.cancel()
-        }
-        .setNegativeButton(R.string.nao) { dialog, id -> dialog.cancel() }
+            .setMessage(R.string.cancel_it)
+            .setCancelable(true)
+            .setPositiveButton(R.string.sim) { dialog, _ ->
+                onCanceled.onOperationCanceled(true)
+                dialog.cancel()
+            }
+            .setNegativeButton(R.string.nao) { dialog, id -> dialog.cancel() }
     val alertDialog = alertDialogBuilder.create()        // create alert dialog
     alertDialog.show()                                   // show it
 }
@@ -52,10 +60,10 @@ fun cancelAsyncTask(task: AsyncTask<*, *, *>, context: Context?): Boolean {
 
 //fun showCustomToast(context: Context, toastText: String, icon_RID: Int, text_color_Res_Id: Int, duration: Int? = Toast.LENGTH_LONG) {
 fun showCustomToast(
-    context: Context?,
-    toastText: String?,
-    level: InfoLevel = INFO,
-    duration: Int = Toast.LENGTH_LONG
+        context: Context?,
+        toastText: String?,
+        level: InfoLevel = INFO,
+        duration: Int = Toast.LENGTH_LONG
 ) {
     if (context == null) return
     val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -95,6 +103,23 @@ fun showKeyboard(activity: Activity?) {
     imm.showSoftInput(activity.currentFocus, 0)
 }
 
-fun getGradientSeparator(context: Context?): TextView {
-    return LayoutInflater.from(context).inflate(R.layout.gradient_separator, null) as TextView
+fun getGradientSeparator(context: Context, showPerformance: Boolean, startTime: Long, input: String, operation: String): View {
+    val gradientBinding = GradientSeparatorBinding.inflate(LayoutInflater.from(context))
+    gradientBinding.gradientSeparator.visibility = if (showPerformance) View.VISIBLE else View.GONE
+    if (showPerformance) {
+        val formatter1 = DecimalFormat("#.###")
+        val elapsed = context.getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+        gradientBinding.gradientSeparator.text = elapsed
+    }
+    CoroutineScope(Dispatchers.Default).launch {
+        val saved = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operation) != null
+        withContext(Dispatchers.Main) {
+            gradientBinding.imageFavoriteSeparator.visibility = if (saved) View.VISIBLE else View.GONE
+            gradientBinding.imageFavoriteSeparator.setOnClickListener {
+                Toast.makeText(context, "This result is saved to favorites!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    return gradientBinding.root
 }
