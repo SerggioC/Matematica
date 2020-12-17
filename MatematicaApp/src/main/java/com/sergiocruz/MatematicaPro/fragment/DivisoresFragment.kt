@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.databinding.GradientSeparatorBinding
 import com.sergiocruz.MatematicaPro.helper.*
@@ -29,6 +31,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
@@ -63,6 +68,33 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHistoryLayout(): LinearLayout? = history
 
+    private val gson by lazy { Gson() }
+
+    override fun displayAllFavorites() {
+        context?.let {
+            CoroutineScope(Dispatchers.Default).launch {
+                val list: List<HistoryDataClass>? = LocalDatabase.getInstance(it).historyDAO()?.getAllFavoritesForOperation(DivisoresFragment::class.java.simpleName)
+                withContext(Dispatchers.Main) {
+                    list?.forEach { fav ->
+                        createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java))
+                    }
+                }
+            }
+        }
+    }
+
+    override fun makeAllResultsFavorite() {
+        context?.let {
+            CoroutineScope(Dispatchers.Default).launch {
+                LocalDatabase.getInstance(it).historyDAO()?.makeNonFavoriteFavorite(DivisoresFragment::class.java.simpleName)
+                withContext(Dispatchers.Main) {
+                    history.removeAllViews()
+                    displayAllFavorites()
+                }
+            }
+        }
+    }
+
     override fun onOperationCanceled(canceled: Boolean) {
         cancelAsyncTask()
     }
@@ -80,7 +112,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
         context?.let {
             CoroutineScope(Dispatchers.Default).launch {
-                LocalDatabase.getInstance(it).historyDAO()?.deleteNonPersistentFromOperation(this::class.java.simpleName)
+                LocalDatabase.getInstance(it).historyDAO()?.deleteNonPersistentFromOperation(DivisoresFragment::class.java.simpleName)
             }
         }
     }
@@ -114,7 +146,27 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             CreateCardView.withStringRes(history, R.string.zero_no_divisores, activity as Activity)
             return
         }
-        asyncTask = BackGroundOperation().execute(num)
+
+        context?.safe {
+            CoroutineScope(Dispatchers.Default).launch {
+                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), DivisoresFragment::class.java.simpleName)
+                if (result != null) {
+                    val ssb: SpannableStringBuilder = gson.fromJson(result.content, SpannableStringBuilder::class.java)
+                    withContext(Dispatchers.Main) {
+                        createCardView(num.toString(), ssb, limit = false)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        asyncTask = BackGroundOperation().execute(num)
+                    }
+                }
+            }
+        }
+
+    }
+
+    inline fun <T> T.safe(block: (T) -> Unit) {
+        block(this)
     }
 
     fun getAllDivisoresLong(numero: Long?): ArrayList<Long> {
@@ -268,7 +320,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         progressBar.visibility = View.GONE
     }
 
-    fun createCardView(input: String, ssb: SpannableStringBuilder) {
+    fun createCardView(input: String, ssb: SpannableStringBuilder, limit: Boolean = true) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
         cardView.layoutParams = getMatchWrapParams()
@@ -286,7 +338,9 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setCardBackgroundColor(color)
 
         // Add cardview to history layout at the top (index 0)
-        history.limit(historyLimit)
+        if (limit) {
+            history.limit(historyLimit)
+        }
         history.addView(cardView, 0)
 
         // criar novo Textview
@@ -308,7 +362,14 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                         cardView,
                         activity as Activity,
                         object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun onDismiss(view: View?) = history.removeView(cardView)
+                            override fun onDismiss(view: View?) {
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    context?.safe {
+                                        LocalDatabase.getInstance(it).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, DivisoresFragment::class.java.simpleName)
+                                    }
+                                }
+                                history.removeView(cardView)
+                            }
                         })
         )
 
@@ -323,7 +384,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setTag(R.id.pk, input)
         cardView.setTag(R.id.op, this::class.java.simpleName)
 
-        val data = Gson().toJson(ssb)
+        val data = gson.toJson(ssb)
         saveCardToDatabase(input, data, this::class.java.simpleName)
     }
 

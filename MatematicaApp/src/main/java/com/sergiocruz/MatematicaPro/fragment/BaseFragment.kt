@@ -74,11 +74,17 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help).setTitle(it) }
     }
 
+    open fun displayAllFavorites() {}
+
+    open fun makeAllResultsFavorite() {}
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
+            R.id.action_show_favorites -> displayAllFavorites()
+            R.id.action_save_all_to_db -> makeAllResultsFavorite()
             R.id.action_save_history_images -> saveHistoryImages(activity as Activity)
             R.id.action_share_history -> shareHistory(activity as Activity)
             R.id.action_share_history_images -> shareHistoryImages(activity as Activity)
@@ -104,14 +110,9 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     open fun getBasePreferences() {
         val default: Int = resources.getInteger(R.integer.default_history_size)
-        historyLimit = sharedPrefs.getString(
-            getString(R.string.pref_key_history_size),
-            default.toString()
-        )?.toInt() ?: default
-        shouldShowPerformance =
-            sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
-        shouldShowExplanation =
-            sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
+        historyLimit = sharedPrefs.getString(getString(R.string.pref_key_history_size), default.toString())?.toInt() ?: default
+        shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
+        shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
         shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
         shouldFormatNumbers = sharedPrefs.getBoolean(getString(R.string.pref_key_format_numbers), false)
     }

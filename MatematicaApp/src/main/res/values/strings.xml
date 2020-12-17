@@ -282,11 +282,12 @@
     <string name="pref_title_format_numbers">Formatação de números</string>
     <string name="action_share_result_as_text">Share as text…</string>
     <string name="action_share_result_as_image">Share as image…</string>
-    <string name="action_to_db">Guardar tudo</string>
+    <string name="action_to_db">Guardar todos como favorito</string>
     <string name="action_set_favorite">Guardar favorito</string>
     <string name="action_remove_favorite">Remover favorito</string>
+    <string name="action_all_favorites">Mostrar todos os favoritos</string>
 
-    <integer name="default_history_size">10</integer>
+    <integer name="default_history_size">20</integer>
 
     <string-array name="pref_list_history_titles">
         <item>5</item>

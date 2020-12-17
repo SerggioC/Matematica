@@ -259,5 +259,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="no_common_factors">Sem fatores em comum</string>
     <string name="pref_summary_format_numbers">Formatar números com separador de milhares</string>
     <string name="pref_title_format_numbers">Formatação de números</string>
+    <string name="action_all_favorites">Mostrar todos os favoritos</string>
 
 </resources>

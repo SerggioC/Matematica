@@ -2,7 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_save_to_db"
+        android:id="@+id/action_show_favorites"
+        android:title="@string/action_all_favorites"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_save_all_to_db"
         android:title="@string/action_to_db"
         app:showAsAction="never" />
     <item
