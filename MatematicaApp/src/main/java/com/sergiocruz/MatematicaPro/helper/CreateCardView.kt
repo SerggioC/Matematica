@@ -68,7 +68,6 @@ object CreateCardView {
                 cardView,
                 activity,
                 object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun canDismiss(token: Boolean?): Boolean = true
                     override fun onDismiss(view: View?) = history.removeView(cardView)
                 })
         )

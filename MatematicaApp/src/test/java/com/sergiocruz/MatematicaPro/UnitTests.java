@@ -17,8 +17,8 @@ import org.junit.Test;
 public class UnitTests {
 
     @Test
-    public int[] gradingStudents(int[] grades) {
-        int[] result = new int[grades.length - 1];
+    public int[] gradingStudents(final int[] grades) {
+        final int[] result = new int[grades.length - 1];
 
         for (int i = 1; i < grades.length; i++) {
             if (grades[i] >= 38) {
@@ -27,7 +27,7 @@ public class UnitTests {
                 if (grades[i] % 10 < 5) {
                     nextMultipleOf5 = grades[i] - grades[i] % 10 + 5;
                 } else if (grades[i] % 10 > 5) {
-                    nextMultipleOf5 = (grades[i] / 10) * 10 + 10;
+                    nextMultipleOf5 = grades[i] / 10 * 10 + 10;
                 }
 
                 if (nextMultipleOf5 != 0 && Math.abs(nextMultipleOf5 - grades[i]) < 3) {
@@ -51,9 +51,9 @@ public class UnitTests {
     @Test
     public void gradingTest() {
 
-        int[] grades = new int[]{4, 73, 67, 38, 33};
+        final int[] grades = {4, 73, 67, 38, 33};
 
-        int[] result = gradingStudents(grades);
+        final int[] result = this.gradingStudents(grades);
 
         System.out.println(result.toString());
     }
@@ -61,13 +61,13 @@ public class UnitTests {
     @Test
     public void timeConversion() {
 
-        String string = "12:23:12PM";
+        final String string = "12:23:12PM";
 
-        String ampm = string.substring(string.length() - 2);
+        final String ampm = string.substring(string.length() - 2);
         String time = string.substring(0, string.length() - 2);
-        String hours = string.substring(0, 2);
-        int hour = Integer.parseInt(hours);
-        String hourString;
+        final String hours = string.substring(0, 2);
+        final int hour = Integer.parseInt(hours);
+        final String hourString;
 
         if (ampm.equalsIgnoreCase("am")) {
             if (hour == 12) {
@@ -87,7 +87,7 @@ public class UnitTests {
                 hourString = String.valueOf(hour + 12);
             }
 
-            time = time.replace(hours, String.valueOf(hourString));
+            time = time.replace(hours, hourString);
             System.out.println(time);
         }
 
@@ -97,9 +97,9 @@ public class UnitTests {
     @Test
     public void candles() {
 
-        int[] arr = new int[]{5, 7, 9, 1, 9};
+        final int[] arr = {5, 7, 9, 1, 9};
 
-        int length = arr.length;
+        final int length = arr.length;
         long max = arr[length - 1];
         for (int i = 0; i < length; i++) {
             if (arr[i] > max)
@@ -121,9 +121,9 @@ public class UnitTests {
     @Test
     public void miniMaxSum() {
 
-        int[] arr = new int[]{5, 5, 5, 5, 5, 5};
+        final int[] arr = {5, 5, 5, 5, 5, 5};
 
-        int length = arr.length;
+        final int length = arr.length;
         long min = arr[0];
         long max = arr[length - 1];
         for (int i = 0; i < length; i++) {

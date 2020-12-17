@@ -137,7 +137,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     lateinit var progressParams: ViewGroup.LayoutParams
 
-    inner class BackGroundOperation() : AsyncTask<Long, Float, ArrayList<Long>>() {
+    inner class BackGroundOperation : AsyncTask<Long, Float, ArrayList<Long>>() {
 
         private var input: Long? = null
 

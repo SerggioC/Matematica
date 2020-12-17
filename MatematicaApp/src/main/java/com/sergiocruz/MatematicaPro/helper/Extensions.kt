@@ -92,10 +92,6 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
         }
     }
 
-    override fun afterTextChanged(p0: Editable?) {
-        super.afterTextChanged(p0)
-    }
-
 }
 
 open class NumberFormatterTextWatcher(private val inputEditText: EditText, private val formatInput: Boolean, onEditor: OnEditorActions) : TextWatcher {
