@@ -19,9 +19,9 @@ data class HistoryDataClass(
         @ColumnInfo(name = "content")
         val content: String,
 
-        @SerializedName("persist")
-        @ColumnInfo(name = "persist")
-        val persist: Boolean
+        @SerializedName("favorite")
+        @ColumnInfo(name = "favorite")
+        val favorite: Boolean
 
 )
 

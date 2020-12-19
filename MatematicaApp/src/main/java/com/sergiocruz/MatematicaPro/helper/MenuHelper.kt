@@ -99,7 +99,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         snack.show()
     }
 
-    fun removeHistory(activity: Activity) {
+    fun removeResultsFromLayout(activity: Activity) {
         val history: ViewGroup? = activity.findViewById(R.id.history)
         val childCount = history?.childCount
         if (childCount != null && childCount > 0) {

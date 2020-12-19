@@ -17,12 +17,12 @@
         android:textColor="@color/lightBlue"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/image_favorite_separator"
+        app:layout_constraintEnd_toStartOf="@+id/image_star"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/image_favorite_separator"
+        android:id="@+id/image_star"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:contentDescription="Favorite star image"

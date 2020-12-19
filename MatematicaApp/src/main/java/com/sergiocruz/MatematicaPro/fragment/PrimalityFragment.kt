@@ -3,7 +3,6 @@ package com.sergiocruz.MatematicaPro.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -12,17 +11,26 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.database.HistoryDataClass
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.*
-import kotlinx.android.synthetic.main.fragment_primality.*
+import kotlinx.android.synthetic.main.fragment_primality.calculateButton
+import kotlinx.android.synthetic.main.fragment_primality.clearButton
+import kotlinx.android.synthetic.main.fragment_primality.history
+import kotlinx.android.synthetic.main.fragment_primality.inputEditText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
 @SuppressLint("LogNotTimber")
 class PrimalityFragment : BaseFragment() {
+
+    private var startTime: Long = 0
 
     override var title = R.string.primality
     override var pageIndex: Int = 1
@@ -33,11 +41,20 @@ class PrimalityFragment : BaseFragment() {
 
     override fun getHelpMenuTitleId(): Int? = null
 
-    override fun getHistoryLayout(): LinearLayout? = null
+    override fun getHistoryLayout(): LinearLayout? = history
 
     override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
 
     override fun getLayoutIdForFragment() = R.layout.fragment_primality
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allFavoritesCallback = { list: List<HistoryDataClass>? ->
+            list?.forEach { fav ->
+                createCardView(fav.primaryKey.toBigIntegerOrNull() ?: BigInteger.ZERO, fav.content.toBoolean())
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,6 +83,7 @@ class PrimalityFragment : BaseFragment() {
     }
 
     private fun checkIfProbablePrime(bigNumber: BigInteger) {
+        startTime = System.nanoTime()
         val isPrime = bigNumber.isProbablePrime(100)
         hideKeyboard(activity)
         createCardView(bigNumber, isPrime)
@@ -132,16 +150,30 @@ class PrimalityFragment : BaseFragment() {
                         cardView,
                         activity as Activity,
                         object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun onDismiss(view: View?) = history.removeView(cardView)
+                            override fun onDismiss(view: View?) {
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    context?.let { ctx ->
+                                        LocalDatabase.getInstance(ctx).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, PrimalityFragment::class.java.simpleName)
+                                    }
+                                }
+                                history.removeView(cardView)
+                            }
                         })
         )
-
+        context?.let {
+            val separator = getGradientSeparator(it, false, startTime, bigNumber.toString(), PrimalityFragment::class.java.simpleName)
+            llVerticalRoot.addView(separator)
+        }
         llVerticalRoot.addView(textView)
+
+        cardView.setTag(R.id.pk, bigNumber.toString())
+        cardView.setTag(R.id.op, PrimalityFragment::class.java.simpleName)
+
+        saveCardToDatabase(bigNumber.toString(), isPrime.toString(), PrimalityFragment::class.java.simpleName)
 
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

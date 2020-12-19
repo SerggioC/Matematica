@@ -1,7 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
 import android.app.Activity
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -19,21 +18,22 @@ import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.database.HistoryDataClass
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import kotlinx.android.synthetic.main.fragment_fatorizar.*
-import kotlinx.android.synthetic.main.fragment_fatorizar.calculateButton
-import kotlinx.android.synthetic.main.fragment_fatorizar.cancelButton
-import kotlinx.android.synthetic.main.fragment_fatorizar.card_view_1
-import kotlinx.android.synthetic.main.fragment_fatorizar.clearButton
-import kotlinx.android.synthetic.main.fragment_fatorizar.history
-import kotlinx.android.synthetic.main.fragment_fatorizar.progressBar
-import java.text.DecimalFormat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
+
 
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
@@ -58,6 +58,15 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHistoryLayout(): LinearLayout? = history
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allFavoritesCallback = { list: List<HistoryDataClass>? ->
+            list?.forEach { fav ->
+                val type = object : TypeToken<ArrayList<ArrayList<Long>>>() {}.type
+                processData(gson.fromJson(fav.content, type), wasCanceled = false, limitHistory = false, saveToDB = false)
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), this) }
@@ -103,13 +112,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     }
 
     private fun createCardViewLayout(
-        number: Long?,
-        history: ViewGroup,
-        str_results: String,
-        ssb_str_divisores: SpannableStringBuilder,
-        ssbFatores: SpannableStringBuilder,
-        str_fact_exp: SpannableStringBuilder,
-        hasExpoentes: Boolean
+            number: Long?,
+            str_results: String,
+            ssb_str_divisores: SpannableStringBuilder,
+            ssbFatores: SpannableStringBuilder,
+            str_fact_exp: SpannableStringBuilder,
+            hasExpoentes: Boolean
     ) {
 
         //criar novo cardview
@@ -129,7 +137,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.setCardBackgroundColor(cvColor)
 
         // Add cardview to history layout at the top (index 0)
-        history.addView(cardView, 0)
+        getHistoryLayout()?.addView(cardView, 0)
 
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = getMatchWrapParams()
@@ -190,15 +198,15 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             val verticalSeparador = LinearLayout(activity)
             verticalSeparador.layoutParams = LinearLayout.LayoutParams(
-                LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
-                LinearLayoutCompat.LayoutParams.MATCH_PARENT
+                    LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
             )
             verticalSeparador.orientation = LinearLayout.VERTICAL
             verticalSeparador.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireActivity(),
-                    R.color.separatorLineColor
-                )
+                    ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.separatorLineColor
+                    )
             )
             val oneDp = (1.2 * scale + 0.5f).toInt()
             verticalSeparador.setPadding(oneDp, 4, 0, oneDp)
@@ -225,10 +233,10 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             textViewDivisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
             textViewDivisores.gravity = Gravity.LEFT
             ssb_str_divisores.setSafeSpan(
-                RelativeSizeSpan(0.9f),
-                ssb_str_divisores.length - ssb_str_divisores.length,
-                ssb_str_divisores.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
+                    RelativeSizeSpan(0.9f),
+                    ssb_str_divisores.length - ssb_str_divisores.length,
+                    ssb_str_divisores.length,
+                    SPAN_EXCLUSIVE_EXCLUSIVE
             )
             textViewDivisores.text = ssb_str_divisores
 
@@ -286,7 +294,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             llHorizontalLink.addView(explainLink)
 
             context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), FatorizarFragment::class.java.simpleName)
                 llHorizontalLink.addView(separator)
             }
 
@@ -319,7 +327,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
             context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), FatorizarFragment::class.java.simpleName)
                 llVerticalRoot.addView(separator)
             }
         }
@@ -328,13 +336,23 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Create a generic swipe-to-dismiss touch listener.
         cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(cardView, activity as Activity,
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun onDismiss(view: View?) = history.removeView(cardView)
-                })
+                SwipeToDismissTouchListener(cardView, activity as Activity,
+                        object : SwipeToDismissTouchListener.DismissCallbacks {
+                            override fun onDismiss(view: View?) {
+                                getHistoryLayout()?.removeView(cardView) ?: Unit
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    context?.let {
+                                        LocalDatabase.getInstance(it).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, FatorizarFragment::class.java.simpleName)
+                                    }
+                                }
+                            }
+                        })
         )
-
+        cardView.setTag(R.id.pk, number.toString())
+        cardView.setTag(R.id.op, FatorizarFragment::class.java.simpleName)
     }
+
+
 
     lateinit var progressParams: ViewGroup.LayoutParams
 
@@ -405,19 +423,19 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         override fun onPostExecute(result: ArrayList<ArrayList<Long>>) {
             if (this@FatorizarFragment.isVisible) {
-                processData(result, false)
+                processData(result, wasCanceled = false)
             }
         }
 
         override fun onCancelled(parcial: ArrayList<ArrayList<Long>>?) {
             super.onCancelled(parcial)
             if (this@FatorizarFragment.isVisible && parcial != null) {
-                processData(parcial, true)
+                processData(parcial, wasCanceled = true)
             }
         }
     }
 
-    private fun processData(result: ArrayList<ArrayList<Long>>, wasCanceled: Boolean) {
+    private fun processData(result: ArrayList<ArrayList<Long>>, wasCanceled: Boolean, limitHistory: Boolean = true, saveToDB: Boolean = true) {
         /* resultadosDivisao|fatoresPrimos
             *                100|2
             *                 50|2
@@ -426,6 +444,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             *                  1|
             *
             * */
+
+        if (saveToDB) {
+            val type = object : TypeToken<ArrayList<ArrayList<Long>>>() {}.type
+            val data = Gson().toJson(result, type)
+            saveCardToDatabase(result.get(0).get(0).toString(), data, FatorizarFragment::class.java.simpleName)
+        }
 
         val resultadosDivisao = result[0]
         val fatoresPrimos = result[1]
@@ -436,8 +460,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         var strResults = ""
         val ssbFatores: SpannableStringBuilder
 
-        history.limit(historyLimit)
-
+        if (limitHistory) {
+            history.limit(historyLimit)
+        }
         if (sizeList == 1) {
             strFatores = resultadosDivisao[0].toString() + " " + getString(R.string.its_a_prime)
             ssbFatores = SpannableStringBuilder(strFatores)
@@ -467,14 +492,14 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val fi = fatori.toString()
                 ssbFactExpanded.append(fi)
                 ssbFactExpanded.setSafeSpan(
-                    ForegroundColorSpan(fColors[colorIndex]),
-                    ssbFactExpanded.length - fi.length, ssbFactExpanded.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
+                        ForegroundColorSpan(fColors[colorIndex]),
+                        ssbFactExpanded.length - fi.length, ssbFactExpanded.length,
+                        SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 ssbFactExpanded.setSafeSpan(
-                    StyleSpan(android.graphics.Typeface.BOLD),
-                    ssbFactExpanded.length - fi.length, ssbFactExpanded.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
+                        StyleSpan(android.graphics.Typeface.BOLD),
+                        ssbFactExpanded.length - fi.length, ssbFactExpanded.length,
+                        SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 ssbFactExpanded.append("×")
 
@@ -515,9 +540,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                     //Expoente 1
                     ssbFatores.append(key)
                     ssbFatores.setSafeSpan(
-                        ForegroundColorSpan(fColors[colorIndex]),
-                        ssbFatores.length - key.length, ssbFatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                            ForegroundColorSpan(fColors[colorIndex]),
+                            ssbFatores.length - key.length, ssbFatores.length,
+                            SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
                 } else if (value.toInt() > 1) {
@@ -525,23 +550,23 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
                     ssbFatores.append(key)
                     ssbFatores.setSafeSpan(
-                        ForegroundColorSpan(fColors[colorIndex]),
-                        ssbFatores.length - key.length, ssbFatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                            ForegroundColorSpan(fColors[colorIndex]),
+                            ssbFatores.length - key.length, ssbFatores.length,
+                            SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     valueLength = value.length
                     ssbFatores.append(value)
                     ssbFatores.setSafeSpan(
-                        SuperscriptSpan(),
-                        ssbFatores.length - valueLength,
-                        ssbFatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                            SuperscriptSpan(),
+                            ssbFatores.length - valueLength,
+                            ssbFatores.length,
+                            SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     ssbFatores.setSafeSpan(
-                        RelativeSizeSpan(0.8f),
-                        ssbFatores.length - valueLength,
-                        ssbFatores.length,
-                        SPAN_EXCLUSIVE_EXCLUSIVE
+                            RelativeSizeSpan(0.8f),
+                            ssbFatores.length - valueLength,
+                            ssbFatores.length,
+                            SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
 
@@ -557,16 +582,16 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val incompleteCalc = "\n" + getString(R.string._incomplete_calc)
                 ssbFatores.append(incompleteCalc)
                 ssbFatores.setSafeSpan(
-                    ForegroundColorSpan(Color.RED),
-                    ssbFatores.length - incompleteCalc.length,
-                    ssbFatores.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
+                        ForegroundColorSpan(Color.RED),
+                        ssbFatores.length - incompleteCalc.length,
+                        ssbFatores.length,
+                        SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 ssbFatores.setSafeSpan(
-                    RelativeSizeSpan(0.8f),
-                    ssbFatores.length - incompleteCalc.length,
-                    ssbFatores.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
+                        RelativeSizeSpan(0.8f),
+                        ssbFatores.length - incompleteCalc.length,
+                        ssbFatores.length,
+                        SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
 
@@ -584,9 +609,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 val fa = fatorI.toString() + "\n"
                 ssbDivisores.append(fa)
                 ssbDivisores.setSafeSpan(
-                    ForegroundColorSpan(fColors[colorIndex]),
-                    ssbDivisores.length - fa.length, ssbDivisores.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
+                        ForegroundColorSpan(fColors[colorIndex]),
+                        ssbDivisores.length - fa.length, ssbDivisores.length,
+                        SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
 
@@ -596,15 +621,15 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
             ssbDivisores.append(fatorI2.toString())
             ssbDivisores.setSafeSpan(
-                ForegroundColorSpan(fColors[colorIndex]),
-                ssbDivisores.length - fatorI2.toString().length, ssbDivisores.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(fColors[colorIndex]),
+                    ssbDivisores.length - fatorI2.toString().length, ssbDivisores.length,
+                    SPAN_EXCLUSIVE_EXCLUSIVE
             )
             ssbDivisores.setSafeSpan(
-                StyleSpan(android.graphics.Typeface.BOLD),
-                0,
-                ssbDivisores.length,
-                SPAN_EXCLUSIVE_EXCLUSIVE
+                    StyleSpan(android.graphics.Typeface.BOLD),
+                    0,
+                    ssbDivisores.length,
+                    SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
             for (i in 0 until resultadosDivisao.size - 1) {
@@ -613,13 +638,12 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             strResults += resultadosDivisao[resultadosDivisao.size - 1].toString()
 
             createCardViewLayout(
-                resultadosDivisao[0],
-                history,
-                strResults,
-                ssbDivisores,
-                ssbFatores,
-                ssbFactExpanded,
-                hasExpoentes
+                    resultadosDivisao[0],
+                    strResults,
+                    ssbDivisores,
+                    ssbFatores,
+                    ssbFactExpanded,
+                    hasExpoentes
             )
         }
 

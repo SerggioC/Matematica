@@ -2,6 +2,7 @@ package com.sergiocruz.MatematicaPro.helper
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
@@ -11,13 +12,12 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.opengl.Visibility
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -37,6 +37,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+
 /*****
  * Project Matematica
  * Package com.sergiocruz.Matematica.helper
@@ -51,9 +52,9 @@ import kotlin.math.min
  * dismiss this view.
  */
 class SwipeToDismissTouchListener(
-    private val mView: View,
-    private val mActivity: Activity,
-    private val mCallbacks: DismissCallbacks
+        private val mView: View,
+        private val mActivity: Activity,
+        private val mCallbacks: DismissCallbacks
 ) : View.OnTouchListener {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -72,7 +73,6 @@ class SwipeToDismissTouchListener(
     private val runnable = Runnable {
         if (mBooleanIsPressed) {
             showCustomMenuPopup()
-            //show_popup_options();
             mBooleanIsPressed = false
         }
     }
@@ -90,8 +90,8 @@ class SwipeToDismissTouchListener(
                         (viewsWithTAGTexto[i] as TextView).text.toString() + "\n"
                     val ss = SpannableString((viewsWithTAGTexto[i] as TextView).text)
                     val spans = ss.getSpans(0,
-                        (viewsWithTAGTexto[i] as TextView).text.length,
-                        SuperscriptSpan::class.java
+                            (viewsWithTAGTexto[i] as TextView).text.length,
+                            SuperscriptSpan::class.java
                     )
                     for ((corr, span) in spans.withIndex()) {
                         val start = ss.getSpanStart(span) + corr
@@ -114,7 +114,6 @@ class SwipeToDismissTouchListener(
 
     private fun showCustomMenuPopup() {
 
-        // Inflate the popup_menu_layout.xml
         val context = mView.context
         val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupLayout = layoutInflater.inflate(R.layout.popup_menu_layout, null)
@@ -139,12 +138,13 @@ class SwipeToDismissTouchListener(
 
 
         val theCardView = this.mView as CardView
+        val cardOriginalColor = theCardView.cardBackgroundColor
+
         val selectedColor = ContextCompat.getColor(mActivity, R.color.selected_color)
         theCardView.setCardBackgroundColor(selectedColor)
 
         customPopUp.setOnDismissListener {
-            val color = ContextCompat.getColor(mActivity, R.color.cardsColor)
-            theCardView.setCardBackgroundColor(color)
+            theCardView.setCardBackgroundColor(cardOriginalColor)
         }
 
         val pk = mView.getTag(R.id.pk) as? String ?: ""
@@ -164,9 +164,13 @@ class SwipeToDismissTouchListener(
         popupLayout.action_favorite.setOnClickListener {
             CoroutineScope(Dispatchers.Default).launch {
                 if (pk.isEmpty() || op.isEmpty()) return@launch
-                LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemPersistent(operation = op, key = pk, saved.not())
+                LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemFavorite(operation = op, key = pk, saved.not())
                 withContext(Dispatchers.Main) {
-                    theCardView.findViewById<View>(R.id.image_favorite_separator).visibility = if (saved) View.GONE else View.VISIBLE
+                    val star = theCardView.findViewById<View>(R.id.image_star) ?: return@withContext
+                    star.visibility = if (saved) View.GONE else View.VISIBLE
+                    val animation = ObjectAnimator.ofFloat(star, View.ROTATION_Y, 0.0f, 360f)
+                    animation.duration = 1500
+                    animation.start()
                 }
             }
             customPopUp.dismiss()
@@ -185,8 +189,8 @@ class SwipeToDismissTouchListener(
             }
             if (hasEqualItem) {
                 showCustomToast(
-                    mView.context,
-                    mView.context.getString(R.string.already_inclipboard)
+                        mView.context,
+                        mView.context.getString(R.string.already_inclipboard)
                 )
             } else {
                 val clip = ClipData.newPlainText("Clipboard", formatedTextFromTextView)
@@ -284,8 +288,8 @@ class SwipeToDismissTouchListener(
                     dismiss = true
                     dismissRight = deltaX > 0
                 } else if (mMinFlingVelocity <= absVelocityX && absVelocityX <= mMaxFlingVelocity
-                    && absVelocityY < absVelocityX
-                    && absVelocityY < absVelocityX && mSwiping
+                        && absVelocityY < absVelocityX
+                        && absVelocityY < absVelocityX && mSwiping
                 ) {
                     // dismiss only if flinging in the same direction as dragging
                     dismiss = velocityX < 0 == deltaX < 0
@@ -295,24 +299,24 @@ class SwipeToDismissTouchListener(
 
                     // dismiss
                     mView.animate()
-                        .translationX((if (dismissRight) mViewWidth else -mViewWidth).toFloat())
-                        .alpha(0f)
-                        .setDuration(mAnimationTime)
-                        .setListener(object : AnimatorListenerAdapter() {
-                            override fun onAnimationEnd(animation: Animator) {
-                                val history = mView.parent as ViewGroup
-                                history.removeView(mView)
-                                mCallbacks.onDismiss(mView)
-                                //performDismiss();
-                            }
-                        })
+                            .translationX((if (dismissRight) mViewWidth else -mViewWidth).toFloat())
+                            .alpha(0f)
+                            .setDuration(mAnimationTime)
+                            .setListener(object : AnimatorListenerAdapter() {
+                                override fun onAnimationEnd(animation: Animator) {
+                                    val history = mView.parent as ViewGroup
+                                    history.removeView(mView)
+                                    mCallbacks.onDismiss(mView)
+                                    //performDismiss();
+                                }
+                            })
                 } else if (mSwiping) {
                     // cancel
                     mView.animate()
-                        .translationX(0f)
-                        .alpha(1f)
-                        .setDuration(mAnimationTime)
-                        .setListener(null)
+                            .translationX(0f)
+                            .alpha(1f)
+                            .setDuration(mAnimationTime)
+                            .setListener(null)
                 }
                 try {
                     mVelocityTracker?.recycle()
@@ -344,10 +348,10 @@ class SwipeToDismissTouchListener(
                         return true
                     }
                     mView.animate()
-                        .translationX(0f)
-                        .alpha(1f)
-                        .setDuration(mAnimationTime)
-                        .setListener(null)
+                            .translationX(0f)
+                            .alpha(1f)
+                            .setDuration(mAnimationTime)
+                            .setListener(null)
                     try {
                         mVelocityTracker?.recycle()
                     } catch (e: Exception) {
@@ -371,7 +375,7 @@ class SwipeToDismissTouchListener(
                     return true
                 }
                 mView.animate().translationX(0f).alpha(1f).setDuration(mAnimationTime)
-                    .setListener(null)
+                        .setListener(null)
                 try {
                     mVelocityTracker?.recycle()
                 } catch (e: Exception) {
@@ -411,8 +415,8 @@ class SwipeToDismissTouchListener(
                     // Cancel listview's touch
                     val cancelEvent = MotionEvent.obtain(motionEvent)
                     cancelEvent.action =
-                        MotionEvent.ACTION_CANCEL or
-                                (motionEvent.actionIndex shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
+                            MotionEvent.ACTION_CANCEL or
+                                    (motionEvent.actionIndex shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
                     mView.onTouchEvent(cancelEvent)
                     try {
                         cancelEvent.recycle()
@@ -432,7 +436,7 @@ class SwipeToDismissTouchListener(
                     mView.translationX = deltaX - mSwipingSlop
                     // TODO: use an ease-out interpolator or such
                     mView.alpha =
-                        max(0f, min(1f, 1f - 2f * abs(deltaX) / mViewWidth))
+                            max(0f, min(1f, 1f - 2f * abs(deltaX) / mViewWidth))
                     return true
                 }
             }

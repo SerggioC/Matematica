@@ -1,1 +1,1 @@
-include(":MatematicaApp")
+include(":MatematicaApp", ":xtooltip")

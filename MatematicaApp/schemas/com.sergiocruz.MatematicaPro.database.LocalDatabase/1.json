@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ba6980547c213cbaca4353426ae9f4f7",
+    "identityHash": "525457f52b2e517c00932b0dc0473404",
     "entities": [
       {
         "tableName": "HistoryDataClass",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primary_key` TEXT NOT NULL, `operation` TEXT NOT NULL, `content` TEXT NOT NULL, `persist` INTEGER NOT NULL, PRIMARY KEY(`primary_key`, `operation`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primary_key` TEXT NOT NULL, `operation` TEXT NOT NULL, `content` TEXT NOT NULL, `favorite` INTEGER NOT NULL, PRIMARY KEY(`primary_key`, `operation`))",
         "fields": [
           {
             "fieldPath": "primaryKey",
@@ -27,8 +27,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "persist",
-            "columnName": "persist",
+            "fieldPath": "favorite",
+            "columnName": "favorite",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -47,7 +47,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba6980547c213cbaca4353426ae9f4f7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '525457f52b2e517c00932b0dc0473404')"
     ]
   }
 }

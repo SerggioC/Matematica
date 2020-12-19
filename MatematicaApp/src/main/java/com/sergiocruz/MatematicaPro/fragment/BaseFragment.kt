@@ -4,25 +4,25 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.view.*
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.CreateCardView
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.removeHistory
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveHistoryImages
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistory
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.shareHistoryImages
+import com.sergiocruz.MatematicaPro.helper.MenuHelper
 import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -48,6 +48,10 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     abstract var title: Int
     abstract var pageIndex: Int
 
+    private val operationName = javaClass.simpleName
+
+    val gson by lazy { Gson() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -56,6 +60,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         scale = resources.displayMetrics.density
         getBasePreferences()
+        clearTemporaryResultsFromDB()
     }
 
     @StringRes
@@ -74,21 +79,46 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help).setTitle(it) }
     }
 
-    open fun displayAllFavorites() {}
+    var allFavoritesCallback: ((List<HistoryDataClass>?) -> Unit)? = null
 
-    open fun makeAllResultsFavorite() {}
+    open fun getAllFavorites() {
+        context?.let { ctx ->
+            CoroutineScope(Dispatchers.Default).launch {
+                val list: List<HistoryDataClass>? = LocalDatabase.getInstance(ctx).historyDAO()?.getAllFavoritesForOperation(operationName)
+                withContext(Dispatchers.Main) {
+                    allFavoritesCallback?.invoke(list)
+                }
+            }
+        }
+    }
+
+    open fun makeAllResultsFavorite() {
+        context?.let { ctx ->
+            CoroutineScope(Dispatchers.Default).launch {
+                val num = LocalDatabase.getInstance(ctx).historyDAO()?.makeNonFavoriteFavorite(operationName) ?: 0
+                if (num > 0) {
+                    withContext(Dispatchers.Main) {
+                        getHistoryLayout()?.children?.forEach {
+                            it.findViewById<View>(R.id.image_star)?.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_show_favorites -> displayAllFavorites()
+            R.id.action_show_favorites -> getAllFavorites()
             R.id.action_save_all_to_db -> makeAllResultsFavorite()
-            R.id.action_save_history_images -> saveHistoryImages(activity as Activity)
-            R.id.action_share_history -> shareHistory(activity as Activity)
-            R.id.action_share_history_images -> shareHistoryImages(activity as Activity)
-            R.id.action_clear_all_history -> removeHistory(activity as Activity)
+            R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
+            R.id.action_clear_all_history -> clearResultHistory()
             R.id.action_help -> CreateCardView.withStringRes(getHistoryLayout(), getHelpTextId(), activity as Activity)
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> activity?.openSettingsFragment()
@@ -96,12 +126,13 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         return super.onOptionsItemSelected(item)
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
+        clearTemporaryResultsFromDB()
     }
-
 
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -126,12 +157,25 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     @LayoutRes
     abstract fun getLayoutIdForFragment(): Int
 
-    fun saveCardToDatabase(input: String?, data: String?, operation: String, persist: Boolean = false) {
+    fun saveCardToDatabase(input: String?, data: String?, operation: String) {
         if (input == null || data == null) return
+        context?.let { ctx ->
+            CoroutineScope(Dispatchers.Default).launch {
+                val history = HistoryDataClass(primaryKey = input, operation, content = data, favorite = false)
+                LocalDatabase.getInstance(ctx).historyDAO()?.saveCard(history)
+            }
+        }
+    }
+
+    private fun clearResultHistory() {
+        MenuHelper.removeResultsFromLayout(activity as Activity)
+        clearTemporaryResultsFromDB()
+    }
+
+    private fun clearTemporaryResultsFromDB() {
         context?.let {
             CoroutineScope(Dispatchers.Default).launch {
-                val history = HistoryDataClass(primaryKey = input, operation, content = data, persist = persist)
-                LocalDatabase.getInstance(it).historyDAO()?.saveCard(history)
+                LocalDatabase.getInstance(it).historyDAO()?.deleteNonFavoritesFromOperation(operationName)
             }
         }
     }

@@ -18,4 +18,27 @@
         <item name="android:windowExitAnimation">@anim/popup_anim_exit</item>
     </style>
 
+
+    <!--    Tooltip Style-->
+
+    <style name="ToolTipAltStyle" parent="ToolTipLayoutDefaultStyle">
+        <item name="ttlm_padding">16dp</item>
+        <item name="ttlm_backgroundColor">#FF9800</item>
+        <item name="ttlm_cornerRadius">6dp</item>
+        <item name="ttlm_arrowRatio">1.2</item>
+        <item name="ttlm_overlayStyle">@style/ToolTipOverlayAltStyle</item>
+        <item name="ttlm_textStyle">@style/ToolTipAltTextStyle</item>
+    </style>
+
+    <style name="ToolTipAltTextStyle" parent="ToolTipTextStyle">
+        <item name="android:textColor">@color/lightGreen</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ToolTipOverlayAltStyle" parent="ToolTipOverlayDefaultStyle">
+        <item name="android:color">#FF9800</item>
+        <item name="android:alpha">0.3</item>
+    </style>
+
+
 </resources>

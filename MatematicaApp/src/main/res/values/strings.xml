@@ -78,11 +78,11 @@
 
     <string name="nao">No</string>
     <string name="number_in_field">Number in field</string>
-    <string name="numero_alto">Number is too high</string>
+    <string name="numero_alto">Number is too big</string>
     <string name="primos_si">Relatively prime numbers</string>
     <string name="send_it">Send e-mail?</string>
     <string name="sim">Yes</string>
-    <string name="too_high">too high</string>
+    <string name="too_high">too big</string>
     <string name="zero_no_divisores">Divisors of zero are all natural numbers greater than zero.</string>
 
     <string name="desenvolvido_por">Developed by Sérgio C.</string>
@@ -143,7 +143,7 @@
     <string name="highest_is_high">Highest value is to high</string>
     <string name="insert_integer">Insert an integer number</string>
     <string name="its_a_prime">is a prime number.</string>
-    <string name="lowest_is_high">Lowest value is too high.</string>
+    <string name="lowest_is_high">Lowest value is too big.</string>
     <string name="lowest_prime">Lowest minimum value = 1</string>
     <string name="no_data">No data to share</string>
     <string name="no_primes_range">There are no prime numbers in the range.</string>

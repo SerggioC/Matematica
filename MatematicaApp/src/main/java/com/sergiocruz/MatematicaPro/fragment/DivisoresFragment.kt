@@ -4,7 +4,6 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
@@ -15,14 +14,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
-import com.sergiocruz.MatematicaPro.databinding.GradientSeparatorBinding
 import com.sergiocruz.MatematicaPro.helper.*
 import kotlinx.android.synthetic.main.fragment_divisores.*
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
@@ -30,10 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.DecimalFormat
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
-import kotlin.coroutines.CoroutineContext
 import kotlin.math.roundToInt
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
@@ -49,6 +41,15 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun getLayoutIdForFragment() = R.layout.fragment_divisores
 
     override fun onActionDone() = calcDivisors()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allFavoritesCallback = { list: List<HistoryDataClass>? ->
+            list?.forEach { fav ->
+                createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java))
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,33 +69,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHistoryLayout(): LinearLayout? = history
 
-    private val gson by lazy { Gson() }
-
-    override fun displayAllFavorites() {
-        context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
-                val list: List<HistoryDataClass>? = LocalDatabase.getInstance(it).historyDAO()?.getAllFavoritesForOperation(DivisoresFragment::class.java.simpleName)
-                withContext(Dispatchers.Main) {
-                    list?.forEach { fav ->
-                        createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java))
-                    }
-                }
-            }
-        }
-    }
-
-    override fun makeAllResultsFavorite() {
-        context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
-                LocalDatabase.getInstance(it).historyDAO()?.makeNonFavoriteFavorite(DivisoresFragment::class.java.simpleName)
-                withContext(Dispatchers.Main) {
-                    history.removeAllViews()
-                    displayAllFavorites()
-                }
-            }
-        }
-    }
-
     override fun onOperationCanceled(canceled: Boolean) {
         cancelAsyncTask()
     }
@@ -109,11 +83,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (asyncTask.status == AsyncTask.Status.RUNNING) {
             asyncTask.cancel(true)
             showCustomToast(context, getString(R.string.canceled_op))
-        }
-        context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
-                LocalDatabase.getInstance(it).historyDAO()?.deleteNonPersistentFromOperation(DivisoresFragment::class.java.simpleName)
-            }
         }
     }
 
@@ -147,7 +116,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             return
         }
 
-        context?.safe {
+        context?.let {
             CoroutineScope(Dispatchers.Default).launch {
                 val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), DivisoresFragment::class.java.simpleName)
                 if (result != null) {
@@ -163,10 +132,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             }
         }
 
-    }
-
-    inline fun <T> T.safe(block: (T) -> Unit) {
-        block(this)
     }
 
     fun getAllDivisoresLong(numero: Long?): ArrayList<Long> {
@@ -364,7 +329,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                         object : SwipeToDismissTouchListener.DismissCallbacks {
                             override fun onDismiss(view: View?) {
                                 CoroutineScope(Dispatchers.Default).launch {
-                                    context?.safe {
+                                    context?.let {
                                         LocalDatabase.getInstance(it).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, DivisoresFragment::class.java.simpleName)
                                     }
                                 }
@@ -382,10 +347,10 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
         cardView.setTag(R.id.pk, input)
-        cardView.setTag(R.id.op, this::class.java.simpleName)
+        cardView.setTag(R.id.op, DivisoresFragment::class.java.simpleName)
 
         val data = gson.toJson(ssb)
-        saveCardToDatabase(input, data, this::class.java.simpleName)
+        saveCardToDatabase(input, data, DivisoresFragment::class.java.simpleName)
     }
 
 
