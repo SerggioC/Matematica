@@ -34,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-
+//SSH
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
     private lateinit var textWatcher: BigNumbersTextWatcher
