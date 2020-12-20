@@ -120,7 +120,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             hasExpoentes: Boolean
     ) {
 
-        //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
         cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
