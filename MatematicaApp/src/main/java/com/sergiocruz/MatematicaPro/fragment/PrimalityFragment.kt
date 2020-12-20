@@ -4,25 +4,18 @@ package com.sergiocruz.MatematicaPro.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
-import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.*
-import kotlinx.android.synthetic.main.fragment_primality.calculateButton
-import kotlinx.android.synthetic.main.fragment_primality.clearButton
-import kotlinx.android.synthetic.main.fragment_primality.history
-import kotlinx.android.synthetic.main.fragment_primality.inputEditText
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.sergiocruz.MatematicaPro.model.InputTags
+import kotlinx.android.synthetic.main.fragment_primality.*
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
@@ -93,14 +86,16 @@ class PrimalityFragment : BaseFragment() {
     private fun createCardView(bigNumber: BigInteger, isPrime: Boolean) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
+        cardView.tag = InputTags(input = bigNumber.toString(), operation = operationName)
+
         cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
@@ -117,10 +112,6 @@ class PrimalityFragment : BaseFragment() {
         // Add cardview to history layout at the top (index 0)
         history.addView(cardView, 0)
 
-        // criar novo Textview
-        val textView = TextView(activity)
-        textView.layoutParams = getMatchWrapParams()
-
         val theNumber = if (shouldFormatNumbers) {
             NumberFormat
                     .getNumberInstance(Locale.getDefault())
@@ -130,46 +121,26 @@ class PrimalityFragment : BaseFragment() {
         }
 
         //Adicionar o texto com o resultado
-        textView.text = "$theNumber \n ${
+        val ssbText = SpannableStringBuilder("$theNumber \n ${
             if (isPrime)
                 getString(R.string.prime_number) else
                 getString(R.string.not_prime_number)
-        }"
+        }")
 
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        textView.setTag(R.id.texto, "texto")
-        textView.gravity = Gravity.CENTER_HORIZONTAL
+        // criar novo Textview para o resultado da fatorização e estrela dos favoritos
+        val textWithStar = getFavoriteStarForCard(ssb = ssbText, theNumber.toString())
+        textWithStar.textViewTop.gravity = Gravity.CENTER_HORIZONTAL
 
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-                SwipeToDismissTouchListener(
-                        cardView,
-                        activity as Activity,
-                        object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun onDismiss(view: View?) {
-                                CoroutineScope(Dispatchers.Default).launch {
-                                    context?.let { ctx ->
-                                        LocalDatabase.getInstance(ctx).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, PrimalityFragment::class.java.simpleName)
-                                    }
-                                }
-                                history.removeView(cardView)
-                            }
-                        })
-        )
-        context?.let {
-            val separator = getGradientSeparator(it, false, startTime, bigNumber.toString(), PrimalityFragment::class.java.simpleName)
-            llVerticalRoot.addView(separator)
-        }
-        llVerticalRoot.addView(textView)
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity))
 
-        cardView.setTag(R.id.pk, bigNumber.toString())
-        cardView.setTag(R.id.op, PrimalityFragment::class.java.simpleName)
+        llVerticalRoot.addView(textWithStar.root)
 
-        saveCardToDatabase(bigNumber.toString(), isPrime.toString(), PrimalityFragment::class.java.simpleName)
+        saveCardToDatabase(bigNumber.toString(), isPrime.toString(), operationName)
 
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)

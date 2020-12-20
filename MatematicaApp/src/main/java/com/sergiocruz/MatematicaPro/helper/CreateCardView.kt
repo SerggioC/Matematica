@@ -3,12 +3,13 @@ package com.sergiocruz.MatematicaPro.helper
 import android.app.Activity
 import android.text.SpannableStringBuilder
 import android.util.TypedValue
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.fragment.FatorizarFragment
+import com.sergiocruz.MatematicaPro.model.InputTags
 
 /*****
  * Project Matematica
@@ -22,13 +23,15 @@ object CreateCardView {
         if (history == null || helpStringRes == null) return
         val helpString = activity.getString(helpStringRes)
         val helpSSB = SpannableStringBuilder(helpString)
-        viewWithSSB(history, helpSSB, activity)
+        viewWithSSB(history, helpSSB, activity, isResult = false)
     }
 
     fun viewWithSSB(
-        history: LinearLayout,
-        helpSSB: SpannableStringBuilder,
-        activity: Activity
+            history: LinearLayout,
+            helpSSB: SpannableStringBuilder,
+            activity: Activity,
+            isResult: Boolean = true,
+            input: String? = null
     ) {
         //criar novo cardview
         val cardView = ClickableCardView(activity)
@@ -39,8 +42,8 @@ object CreateCardView {
         val scale = activity.resources.displayMetrics.density
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
@@ -63,14 +66,16 @@ object CreateCardView {
         cardView.addView(textView)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardView,
-                activity,
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun onDismiss(view: View?) = history.removeView(cardView)
-                })
-        )
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity))
+
+        if (isResult) {
+            cardView.tag = InputTags(input = input, operation = FatorizarFragment::class.java.simpleName)
+            cardView.context?.let {
+                val separator = getGradientSeparator(it, false, 0, input!!, FatorizarFragment::class.java.simpleName)
+                cardView.addView(separator, 0)
+            }
+        }
+
     }
 
 }

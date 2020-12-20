@@ -17,7 +17,6 @@ import android.os.Looper
 import android.text.SpannableString
 import android.text.style.SuperscriptSpan
 import android.view.*
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -27,6 +26,7 @@ import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
+import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +54,7 @@ import kotlin.math.min
 class SwipeToDismissTouchListener(
         private val mView: View,
         private val mActivity: Activity,
-        private val mCallbacks: DismissCallbacks
+        private val mCallbacks: DismissCallbacks? = null
 ) : View.OnTouchListener {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -147,8 +147,9 @@ class SwipeToDismissTouchListener(
             theCardView.setCardBackgroundColor(cardOriginalColor)
         }
 
-        val pk = mView.getTag(R.id.pk) as? String ?: ""
-        val op = mView.getTag(R.id.op) as? String ?: ""
+        val tags = mView.tag as? InputTags?
+        val pk = tags?.input ?: ""
+        val op = tags?.operation ?: ""
         var saved = false
         if (pk.isNotEmpty() && op.isNotBlank()) {
             CoroutineScope(Dispatchers.Default).launch {
@@ -201,8 +202,7 @@ class SwipeToDismissTouchListener(
         }
 
         popupLayout.action_clear_result.setOnClickListener {
-            val history = theCardView.parent as ViewGroup
-            animateRemoving(theCardView, history)
+            animateRemoving(theCardView)
             customPopUp.dismiss()
         }
 
@@ -304,10 +304,7 @@ class SwipeToDismissTouchListener(
                             .setDuration(mAnimationTime)
                             .setListener(object : AnimatorListenerAdapter() {
                                 override fun onAnimationEnd(animation: Animator) {
-                                    val history = mView.parent as ViewGroup
-                                    history.removeView(mView)
-                                    mCallbacks.onDismiss(mView)
-                                    //performDismiss();
+                                    removeTemporaryResultFromDB(mView)
                                 }
                             })
                 } else if (mSwiping) {
@@ -414,9 +411,7 @@ class SwipeToDismissTouchListener(
 
                     // Cancel listview's touch
                     val cancelEvent = MotionEvent.obtain(motionEvent)
-                    cancelEvent.action =
-                            MotionEvent.ACTION_CANCEL or
-                                    (motionEvent.actionIndex shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
+                    cancelEvent.action = MotionEvent.ACTION_CANCEL or (motionEvent.actionIndex shl MotionEvent.ACTION_POINTER_INDEX_SHIFT)
                     mView.onTouchEvent(cancelEvent)
                     try {
                         cancelEvent.recycle()
@@ -444,18 +439,28 @@ class SwipeToDismissTouchListener(
         return false
     }
 
-    private fun animateRemoving(cardview: CardView, history: ViewGroup) {
+    private fun removeTemporaryResultFromDB(cardview: View) {
+        val history = cardview.parent as? ViewGroup?
+        history?.removeView(cardview)
+        mCallbacks?.onDismiss(mView)
+        CoroutineScope(Dispatchers.Default).launch {
+            val tags = mView.tag as? InputTags?
+            val pk = tags?.input ?: ""
+            val op = tags?.operation ?: ""
+            cardview.context?.let { ctx ->
+                LocalDatabase.getInstance(ctx).historyDAO()?.deleteTemporaryHistoryItem(key = pk, operation = op)
+            }
+        }
+    }
+
+    private fun animateRemoving(cardview: CardView) {
+
         cardview.animate().translationX(cardview.width.toFloat()).alpha(0f).setDuration(200)
             .setListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {}
 
                 override fun onAnimationEnd(animation: Animator) {
-                    try {
-                        history.removeView(cardview)
-                        mCallbacks.onDismiss(mView)
-                    } catch (e: Exception) {
-                    }
-                    //performDismiss();
+                    removeTemporaryResultFromDB(cardview)
                 }
 
                 override fun onAnimationCancel(animation: Animator) {}

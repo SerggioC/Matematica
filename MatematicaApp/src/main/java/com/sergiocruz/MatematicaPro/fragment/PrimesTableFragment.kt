@@ -35,7 +35,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.math.BigInteger
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
@@ -138,14 +137,12 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
-                    if ((cardViewMain.getTag(R.id.expanded) as Boolean?) == true) {
-                        Timber.i("collapsing")
+                    if ((cardViewMain?.getTag(R.id.expanded) as Boolean?) == true) {
                         collapseIt(cardViewMain)
                         locked = true
                     }
                 } else if (dy < 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
-                    if ((cardViewMain.getTag(R.id.expanded) as Boolean?) == false) {
-                        Timber.d("expanding")
+                    if ((cardViewMain?.getTag(R.id.expanded) as Boolean?) == false) {
                         expandIt(cardViewMain, initialHeight)
                         locked = true
                     }
@@ -156,8 +153,10 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 this.state = newState
-                if (recyclerView.height <= (recyclerView.parent as ConstraintLayout).height && (cardViewMain.getTag(R.id.expanded) as Boolean?) == false && state == SCROLL_STATE_SETTLING) {
-                    expandIt(cardViewMain, initialHeight)
+                if (recyclerView.height <= (recyclerView.parent as ConstraintLayout).height && (cardViewMain?.getTag(R.id.expanded) as Boolean?) == false && state == SCROLL_STATE_SETTLING) {
+                    cardViewMain?.let {
+                        expandIt(it, initialHeight)
+                    }
                 }
             }
         })
@@ -171,7 +170,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     override fun onActionDone() = makePrimesTable()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val childCount = historyGridRecyclerView.childCount
+        val childCount = historyGridRecyclerView?.childCount ?: 0
         when (item.itemId) {
             R.id.action_save_image_pt -> if (childCount > 0) {
                 checkPermissionsWithCallback(activity as Activity) {

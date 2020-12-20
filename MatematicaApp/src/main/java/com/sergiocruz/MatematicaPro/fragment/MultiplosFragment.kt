@@ -4,7 +4,6 @@ package com.sergiocruz.MatematicaPro.fragment
  * Created by Sergio on 13/05/2017.
  */
 
-import android.content.SharedPreferences
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.AsyncTask
@@ -116,8 +115,8 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
@@ -151,14 +150,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardView,
-                requireActivity(),
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun onDismiss(view: View?) = history.removeView(cardView)
-                })
-        )
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity()))
 
         context?.let {
             val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
@@ -237,10 +229,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     theCardView?.tag = maxValue
                     val textViewPreResult: TextView
                     if (shouldShowPerformance) {
-                        textViewPreResult =
-                            (theCardView?.getChildAt(0) as LinearLayout).getChildAt(
-                                1
-                            ) as TextView
+                        textViewPreResult = (theCardView?.getChildAt(0) as LinearLayout).getChildAt(1) as TextView
                         val gradientSeparator = ((theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as ConstraintLayout).getChildAt(0) as TextView
                         val decimalFormatter = DecimalFormat("#.###")
                         val elapsed =

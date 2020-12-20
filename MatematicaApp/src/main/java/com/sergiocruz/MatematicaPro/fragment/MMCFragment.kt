@@ -25,12 +25,12 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
+import com.sergiocruz.MatematicaPro.model.MyTags
 import kotlinx.android.synthetic.main.fragment_mmc.*
 import java.math.BigInteger
 import java.text.DecimalFormat
@@ -364,8 +364,8 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 

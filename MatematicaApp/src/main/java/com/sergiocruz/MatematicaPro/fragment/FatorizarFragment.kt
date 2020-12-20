@@ -28,13 +28,14 @@ import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZ
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
+import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.android.synthetic.main.fragment_fatorizar.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
-//SSH
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
     private lateinit var textWatcher: BigNumbersTextWatcher
@@ -107,7 +108,22 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             return
         }
 
-        bgOperation = BackGroundOperation().execute(num)
+        // Check if result exists in DB
+        context?.let {
+            CoroutineScope(Dispatchers.Default).launch {
+                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
+                if (result != null) {
+                    withContext(Dispatchers.Main) {
+                        val type = object : TypeToken<ArrayList<ArrayList<Long>>>() {}.type
+                        processData(gson.fromJson(result.content, type), wasCanceled = false, limitHistory = true, saveToDB = false)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        bgOperation = BackGroundOperation().execute(num)
+                    }
+                }
+            }
+        }
 
     }
 
@@ -127,8 +143,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = 2 * scale + 0.5f
+        cardView.cardElevation = 2 * scale + 0.5f
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
@@ -142,28 +158,22 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
-        // criar novo Textview para o resultado da fatorização
-        val textView = TextView(activity)
-        textView.layoutParams = getMatchWrapParams()
-        textView.setPadding(0, 0, 0, 0)
-
         val ssbFatoresTop = SpannableStringBuilder(ssbFatores)
-        val spans =
-            ssbFatoresTop.getSpans(0, ssbFatoresTop.length, ForegroundColorSpan::class.java)
+        val spans = ssbFatoresTop.getSpans(0, ssbFatoresTop.length, ForegroundColorSpan::class.java)
         for (i in spans.indices) {
             ssbFatoresTop.removeSpan(spans[i])
         }
 
-        //Adicionar o texto com o resultado da fatorizaçãoo com expoentes
+        //Adicionar o texto com o resultado da fatorização com expoentes
         val strNum = getString(R.string.factorization_of) + " " + number + " = \n"
         val ssbNum = SpannableStringBuilder(strNum)
         ssbNum.append(ssbFatoresTop)
-        textView.text = ssbNum
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        textView.setTag(R.id.texto, "texto")
+
+        // criar novo Textview para o resultado da fatorização e estrela dos favoritos
+        val textWithStar = getFavoriteStarForCard(ssb = ssbNum, input = number.toString())
 
         // add the textview com os fatores multiplicados to the Linear layout vertical root
-        llVerticalRoot.addView(textView)
+        llVerticalRoot.addView(textWithStar.root)
 
         // -1 = sempre  0 = quando pedidas   1 = nunca
         if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
@@ -187,7 +197,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
             val llHorizontal = LinearLayout(activity)
             llHorizontal.layoutParams = getMatchWrapParams()
-            llHorizontal.orientation = LinearLayout.HORIZONTAL
+            llHorizontal.orientation = HORIZONTAL
             llHorizontal.tag = "ll_horizontal_expl"
 
             val llVerticalResults = LinearLayout(activity)
@@ -286,14 +296,14 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 }
             }
 
-            //Linearlayout horizontal com o explainlink e gradiente
+            // Linearlayout horizontal com o explainlink e gradiente
             val llHorizontalLink = LinearLayout(activity)
             llHorizontalLink.orientation = HORIZONTAL
             llHorizontalLink.layoutParams = getMatchWrapParams()
             llHorizontalLink.addView(explainLink)
 
             context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), FatorizarFragment::class.java.simpleName)
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime)
                 llHorizontalLink.addView(separator)
             }
 
@@ -326,7 +336,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
             context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), FatorizarFragment::class.java.simpleName)
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), operationName)
                 llVerticalRoot.addView(separator)
             }
         }
@@ -334,21 +344,9 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cardView.addView(llVerticalRoot)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-                SwipeToDismissTouchListener(cardView, activity as Activity,
-                        object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun onDismiss(view: View?) {
-                                getHistoryLayout()?.removeView(cardView) ?: Unit
-                                CoroutineScope(Dispatchers.Default).launch {
-                                    context?.let {
-                                        LocalDatabase.getInstance(it).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, FatorizarFragment::class.java.simpleName)
-                                    }
-                                }
-                            }
-                        })
-        )
-        cardView.setTag(R.id.pk, number.toString())
-        cardView.setTag(R.id.op, FatorizarFragment::class.java.simpleName)
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity))
+        
+        cardView.tag = InputTags(input = number.toString(), operation = operationName)
     }
 
 
@@ -447,7 +445,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (saveToDB) {
             val type = object : TypeToken<ArrayList<ArrayList<Long>>>() {}.type
             val data = Gson().toJson(result, type)
-            saveCardToDatabase(result.get(0).get(0).toString(), data, FatorizarFragment::class.java.simpleName)
+            saveCardToDatabase(result.get(0).get(0).toString(), data, operationName)
         }
 
         val resultadosDivisao = result[0]
@@ -466,7 +464,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             strFatores = resultadosDivisao[0].toString() + " " + getString(R.string.its_a_prime)
             ssbFatores = SpannableStringBuilder(strFatores)
             ssbFatores.setSafeSpan(ForegroundColorSpan(Color.parseColor("#29712d")), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE) //verde
-            CreateCardView.viewWithSSB(history, ssbFatores, activity as Activity)
+            CreateCardView.viewWithSSB(history, ssbFatores, activity as Activity, input = resultadosDivisao[0].toString(), isResult = true)
 
         } else {
             strFatores = ""

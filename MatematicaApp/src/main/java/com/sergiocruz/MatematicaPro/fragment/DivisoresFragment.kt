@@ -9,23 +9,20 @@ import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.*
+import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.android.synthetic.main.fragment_divisores.*
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import java.util.*
 import kotlin.math.roundToInt
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
@@ -46,7 +43,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         super.onCreate(savedInstanceState)
         allFavoritesCallback = { list: List<HistoryDataClass>? ->
             list?.forEach { fav ->
-                createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java))
+                createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java), saveToDB = false)
             }
         }
     }
@@ -118,11 +115,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         context?.let {
             CoroutineScope(Dispatchers.Default).launch {
-                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), DivisoresFragment::class.java.simpleName)
+                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
                 if (result != null) {
                     val ssb: SpannableStringBuilder = gson.fromJson(result.content, SpannableStringBuilder::class.java)
                     withContext(Dispatchers.Main) {
-                        createCardView(num.toString(), ssb, limit = false)
+                        createCardView(num.toString(), ssb, limit = false, saveToDB = false)
                     }
                 } else {
                     withContext(Dispatchers.Main) {
@@ -285,17 +282,18 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         progressBar.visibility = View.GONE
     }
 
-    fun createCardView(input: String, ssb: SpannableStringBuilder, limit: Boolean = true) {
+    fun createCardView(input: String, ssb: SpannableStringBuilder, limit: Boolean = true, saveToDB: Boolean = true) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
+        cardView.tag = InputTags(input = input, operation = operationName)
         cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
 
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
@@ -308,49 +306,29 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
         history.addView(cardView, 0)
 
-        // criar novo Textview
-        val textView = TextView(activity)
-        textView.layoutParams = getMatchWrapParams()
-
-        // Adicionar o texto com o resultado
-        textView.text = ssb
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        textView.setTag(R.id.texto, "texto")
-
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = getMatchWrapParams()
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-                SwipeToDismissTouchListener(
-                        cardView,
-                        activity as Activity,
-                        object : SwipeToDismissTouchListener.DismissCallbacks {
-                            override fun onDismiss(view: View?) {
-                                CoroutineScope(Dispatchers.Default).launch {
-                                    context?.let {
-                                        LocalDatabase.getInstance(it).historyDAO()?.deleteHistoryItem(cardView.getTag(R.id.pk) as String, DivisoresFragment::class.java.simpleName)
-                                    }
-                                }
-                                history.removeView(cardView)
-                            }
-                        })
-        )
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity))
 
         context?.let {
-            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, input, DivisoresFragment::class.java.simpleName)
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime)
             llVerticalRoot.addView(separator)
         }
-        llVerticalRoot.addView(textView)
+
+        // criar novo Textview para o resultado da fatorização e estrela dos favoritos
+        val textWithStar = getFavoriteStarForCard(ssb, input)
+        llVerticalRoot.addView(textWithStar.root)
 
         // add the textview to the cardview
         cardView.addView(llVerticalRoot)
-        cardView.setTag(R.id.pk, input)
-        cardView.setTag(R.id.op, DivisoresFragment::class.java.simpleName)
 
-        val data = gson.toJson(ssb)
-        saveCardToDatabase(input, data, DivisoresFragment::class.java.simpleName)
+        if (saveToDB) {
+            val data = gson.toJson(ssb)
+            saveCardToDatabase(input, data, operationName)
+        }
     }
 
 

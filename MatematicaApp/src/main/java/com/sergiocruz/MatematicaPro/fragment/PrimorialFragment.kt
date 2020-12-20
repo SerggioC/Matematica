@@ -1,6 +1,5 @@
 package com.sergiocruz.MatematicaPro.fragment
 
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Bundle
@@ -9,19 +8,23 @@ import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.database.HistoryDataClass
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.*
+import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.android.synthetic.main.fragment_primorial.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigInteger
-import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -57,6 +60,15 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun onActionDone() = calculatePrimorial()
 
     private lateinit var bigNumbersTextWatcher: BigNumbersTextWatcher
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allFavoritesCallback = { list: List<HistoryDataClass>? ->
+            list?.forEach { fav ->
+                createCardView(fav.primaryKey.toLongOrNull(), fav.content.toBigInteger(), wasCanceled = false, saveToDB = false)
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -101,7 +113,23 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             return
         }
 
-        backgroundTask = BackGroundOperation().execute(num)
+        // check if temp result exists in DB
+        context?.let {
+            CoroutineScope(Dispatchers.Default).launch {
+                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
+                if (result != null) {
+                    val result: BigInteger = gson.fromJson(result.content, BigInteger::class.java)
+                    withContext(Dispatchers.Main) {
+                        createCardView(num, result, wasCanceled = false, limitHistory = false)
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        backgroundTask = BackGroundOperation().execute(num)
+                    }
+                }
+            }
+        }
+
     }
 
     private fun resetButtons() {
@@ -111,9 +139,11 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cancelButton.visibility = View.GONE
     }
 
-    fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean) {
+    fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean, limitHistory: Boolean = true, saveToDB: Boolean = true) {
         //criar novo cardview
         val cardView = ClickableCardView(requireActivity())
+        cardView.tag = InputTags(number.toString(), operationName)
+
         cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
             ViewGroup.LayoutParams.WRAP_CONTENT
@@ -123,21 +153,19 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
 
         val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
         cardView.setCardBackgroundColor(cvColor)
 
-        history.limit(historyLimit)
+        if (limitHistory) {
+            history.limit(historyLimit)
+        }
         // Add cardview to history layout at the top (index 0)
         history.addView(cardView, 0)
-
-        // criar novo Textview
-        val textView = TextView(activity)
-        textView.layoutParams = getMatchWrapParams()
 
         val text =
                 if (shouldFormatNumbers) {
@@ -155,9 +183,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         //Adicionar o texto com o resultado
-        textView.text = ssb
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        textView.setTag(R.id.texto, "texto")
+        val textWithStar = getFavoriteStarForCard(ssb, input = number.toString())
 
         val llVerticalRoot = LinearLayout(activity)
         llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
@@ -167,28 +193,22 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                cardView,
-                requireActivity(),
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-
-
-                    override fun onDismiss(view: View?) {
-                        history.removeView(cardView)
-                    }
-                })
-        )
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity()))
 
         context?.let {
-            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
+            val separator = getGradientSeparator(it, shouldShowPerformance, startTime)
             llVerticalRoot.addView(separator, 0)
         }
 
-        llVerticalRoot.addView(textView)
+        llVerticalRoot.addView(textWithStar.root)
 
         // add the root layout to the cardview
         cardView.addView(llVerticalRoot)
+
+        if (saveToDB) {
+            saveCardToDatabase(number.toString(), bigIntegerResult.toString(), operationName)
+        }
+
     }
 
     lateinit var progressParams: ViewGroup.LayoutParams
@@ -262,7 +282,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         override fun onPostExecute(result: BigInteger) {
             if (this@PrimorialFragment.isVisible) {
-                createCardView(number, result, false)
+                createCardView(number, result, wasCanceled = false, limitHistory = true)
                 resetButtons()
             }
         }
@@ -270,7 +290,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         override fun onCancelled(parcial: BigInteger?) {
             super.onCancelled(parcial)
             if (this@PrimorialFragment.isVisible && parcial != null) {
-                createCardView(primes[primes.size - 1], parcial, true)
+                createCardView(primes[primes.size - 1], parcial, wasCanceled = true, limitHistory = true)
                 resetButtons()
             }
         }

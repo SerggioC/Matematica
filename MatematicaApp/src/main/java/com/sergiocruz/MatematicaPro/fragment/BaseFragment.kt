@@ -1,9 +1,11 @@
 package com.sergiocruz.MatematicaPro.fragment
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.*
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
@@ -13,9 +15,11 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.Ui.TooltipManager
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
+import com.sergiocruz.MatematicaPro.databinding.TextviewStarBinding
 import com.sergiocruz.MatematicaPro.helper.CreateCardView
 import com.sergiocruz.MatematicaPro.helper.MenuHelper
 import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
@@ -35,22 +39,14 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     private var shouldShowColors: Boolean = true
     private var privateFColors: MutableList<Int> = mutableListOf()
 
-    fun getRandomFactorsColors(): MutableList<Int> {
-        privateFColors = resources.getIntArray(R.array.f_colors_xml).toMutableList()
-        if (shouldShowColors) {
-            privateFColors.shuffle() // randomizar as cores
-        } else {
-            privateFColors = MutableList(privateFColors.size) { privateFColors.last() } // just a list with always the same color
-        }
-        return privateFColors
-    }
+    var allFavoritesCallback: ((List<HistoryDataClass>?) -> Unit)? = null
+
+    val operationName: String = javaClass.simpleName
+
+    val gson by lazy { Gson() }
 
     abstract var title: Int
     abstract var pageIndex: Int
-
-    private val operationName = javaClass.simpleName
-
-    val gson by lazy { Gson() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +74,6 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         loadOptionsMenus().forEach { inflater.inflate(it, menu) }
         getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help).setTitle(it) }
     }
-
-    var allFavoritesCallback: ((List<HistoryDataClass>?) -> Unit)? = null
 
     open fun getAllFavorites() {
         context?.let { ctx ->
@@ -148,6 +142,16 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         shouldFormatNumbers = sharedPrefs.getBoolean(getString(R.string.pref_key_format_numbers), false)
     }
 
+    fun getRandomFactorsColors(): MutableList<Int> {
+        privateFColors = resources.getIntArray(R.array.f_colors_xml).toMutableList()
+        if (shouldShowColors) {
+            privateFColors.shuffle() // randomizar as cores
+        } else {
+            privateFColors = MutableList(privateFColors.size) { privateFColors.last() } // just a list with always the same color
+        }
+        return privateFColors
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -166,6 +170,28 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             }
         }
     }
+
+    fun getFavoriteStarForCard(ssb: SpannableStringBuilder, input: String): TextviewStarBinding {
+        val binding = TextviewStarBinding.inflate(layoutInflater)
+        binding.textViewTop.text = ssb
+        binding.textViewTop.setTag(R.id.texto, "texto")
+        context?.let { ctx ->
+            CoroutineScope(Dispatchers.Default).launch {
+                val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
+                withContext(Dispatchers.Main) {
+                    binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
+                    binding.imageStar.setOnClickListener {
+                        TooltipManager.showTooltipOn(binding.imageStar, "This result is saved to favorites!")
+                        val animation = ObjectAnimator.ofFloat(binding.imageStar, View.ROTATION_Y, 0.0f, 360f)
+                        animation.duration = 1500
+                        animation.start()
+                    }
+                }
+            }
+        }
+        return binding
+    }
+
 
     private fun clearResultHistory() {
         MenuHelper.removeResultsFromLayout(activity as Activity)

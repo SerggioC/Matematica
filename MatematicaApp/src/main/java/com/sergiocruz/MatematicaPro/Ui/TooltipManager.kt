@@ -14,7 +14,7 @@ object TooltipManager {
     private var mp: MediaPlayer? = null
 
     fun showTooltipOn(anchor: View, message: String) {
-        mp = MediaPlayer.create(anchor.context, R.raw.ding_sound)
+        mp = MediaPlayer.create(anchor.context, R.raw.correct)
         mp?.setOnCompletionListener {
             mp?.reset()
             mp?.release()

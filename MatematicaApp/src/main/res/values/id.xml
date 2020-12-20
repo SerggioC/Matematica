@@ -2,7 +2,4 @@
 <resources>
     <item name="expanded" type="id" />
     <item name="texto" type="id" />
-    <item name="pk" type="id" />
-    <item name="op" type="id" />
-
 </resources>

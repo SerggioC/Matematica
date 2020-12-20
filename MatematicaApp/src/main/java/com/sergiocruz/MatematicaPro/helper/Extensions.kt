@@ -126,7 +126,9 @@ open class NumberFormatterTextWatcher(private val inputEditText: EditText, priva
         inputEditText.removeTextChangedListener(this)
         var finalString = inputEditText.getFormattedString()
         if (initialString == finalString && initialStart - 1 >= 0) {
-            initialString = initialString.replaceRange(initialStart - 1, initialStart, "")
+            try {
+                initialString = initialString.replaceRange(initialStart - 1, initialStart, "")
+            } catch (ignored: Exception) { }
             inputEditText.setText(initialString)
             finalString = inputEditText.getFormattedString()
             initialStart -= 1

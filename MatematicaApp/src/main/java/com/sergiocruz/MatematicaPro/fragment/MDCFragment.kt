@@ -25,13 +25,13 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import com.sergiocruz.MatematicaPro.MyTags
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
+import com.sergiocruz.MatematicaPro.model.MyTags
 import kotlinx.android.synthetic.main.fragment_mdc.*
 import java.math.BigInteger
 import java.text.DecimalFormat
@@ -128,7 +128,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         val linearLayout78Visibe = linear_layout_78.visibility == View.VISIBLE
         val f7Visible = frame_7.visibility == View.VISIBLE
         val f8Visible = frame_8.visibility == View.VISIBLE
-
 
         if (!ll34Visible || f3Visible || f4Visible) {
             linear_layout_34.visibility = View.VISIBLE
@@ -313,8 +312,12 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             mdcString += bigNumbers[bigNumbers.size - 1].toString() + ")= "
             resultMDC = mdc(bigNumbers)
         }
-
         mdcString += resultMDC
+
+        createResultsCard(mdcString, resultMDC, longNumbers)
+    }
+
+    private fun createResultsCard(mdcString: String, resultMDC: BigInteger?, longNumbers: ArrayList<Long>) {
         val ssb = SpannableStringBuilder(mdcString)
         if (resultMDC.toString() == "1") {
             ssb.append("\n" + getString(R.string.primos_si))
@@ -339,8 +342,8 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         //int pixels = (int) (dips * scale + 0.5f);
         val lrDip = (6 * scale + 0.5f).toInt()
         val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f).toInt().toFloat()
-        cardView.cardElevation = (2 * scale + 0.5f).toInt().toFloat()
+        cardView.radius = (2 * scale + 0.5f)
+        cardView.cardElevation = (2 * scale + 0.5f)
         cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
         cardView.useCompatPadding = true
         cardView.layoutTransition = LayoutTransition()
@@ -359,9 +362,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         cardView,
                         activity as Activity,
                         object : SwipeToDismissTouchListener.DismissCallbacks {
-
                             override fun onDismiss(view: View?) {
-                                //history.removeView(cardview);
                                 checkBackgroundOperation(view)
                             }
                         })
@@ -395,7 +396,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             createExplanations(mdcString, cardView, llVerticalRoot, shouldShowExplanation)
         } else {
             context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mdcString, DivisoresFragment::class.java.simpleName)
+                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mdcString, MDCFragment::class.java.simpleName)
                 llVerticalRoot.addView(separator, 0)
             }
             cardView.addView(llVerticalRoot) // Só o resultado sem explicações
@@ -505,8 +506,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         val thisCardTags = cardView.tag as MyTags
 
         thisCardTags.taskNumber = taskNumber
-        val asyncTask = BackGroundOperation_MDC(thisCardTags)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        val asyncTask = BackGroundOperation_MDC(thisCardTags).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         asyncTaskQueue.add(asyncTask)
         taskNumber++
     }
@@ -779,8 +779,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
-                    val elapsed =
-                            getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                    val elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                     gradientSeparator.text = elapsed
                 } else {
                     gradientSeparator.text = ""

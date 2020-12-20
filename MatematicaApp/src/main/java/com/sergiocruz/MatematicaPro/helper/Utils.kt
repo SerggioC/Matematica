@@ -1,6 +1,5 @@
 package com.sergiocruz.MatematicaPro.helper
 
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.os.AsyncTask
@@ -14,14 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
-import com.sergiocruz.MatematicaPro.Ui.TooltipManager
-import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.databinding.GradientSeparatorBinding
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
 interface OnCancelBackgroundTask {
@@ -105,7 +98,7 @@ fun showKeyboard(activity: Activity?) {
     imm.showSoftInput(activity.currentFocus, 0)
 }
 
-fun getGradientSeparator(context: Context, showPerformance: Boolean, startTime: Long, input: String, operation: String): View {
+fun getGradientSeparator(context: Context, showPerformance: Boolean, startTime: Long, a: String? = null, b: String? = null): View {
     val gradientBinding = GradientSeparatorBinding.inflate(LayoutInflater.from(context))
     gradientBinding.gradientSeparator.visibility = if (showPerformance) View.VISIBLE else View.GONE
     if (showPerformance) {
@@ -113,18 +106,5 @@ fun getGradientSeparator(context: Context, showPerformance: Boolean, startTime: 
         val elapsed = context.getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
         gradientBinding.gradientSeparator.text = elapsed
     }
-    CoroutineScope(Dispatchers.Default).launch {
-        val saved = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operation) != null
-        withContext(Dispatchers.Main) {
-            gradientBinding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
-            gradientBinding.imageStar.setOnClickListener {
-                TooltipManager.showTooltipOn(gradientBinding.imageStar, "This result is saved to favorites!")
-                val animation = ObjectAnimator.ofFloat(gradientBinding.imageStar, View.ROTATION_Y, 0.0f, 360f)
-                animation.duration = 1500
-                animation.start()
-            }
-        }
-    }
-
     return gradientBinding.root
 }
