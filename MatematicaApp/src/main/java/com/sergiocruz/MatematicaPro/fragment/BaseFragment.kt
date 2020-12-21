@@ -181,7 +181,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
                 withContext(Dispatchers.Main) {
                     binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
                     binding.imageStar.setOnClickListener {
-                        TooltipManager.showTooltipOn(binding.imageStar, "This result is saved to favorites!")
+                        TooltipManager.showTooltipOn(binding.imageStar, getString(R.string.result_is_favorite))
                         val animation = ObjectAnimator.ofFloat(binding.imageStar, View.ROTATION_Y, 0.0f, 360f)
                         animation.duration = 1500
                         animation.start()

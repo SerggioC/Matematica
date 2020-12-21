@@ -83,7 +83,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
     }
 
 
-    fun openImagesFolderSnackbar(view: View, @StringRes toastText: Int, imagePath: String) {
+    private fun openImagesFolderSnackbar(view: View, @StringRes toastText: Int, imagePath: String) {
         val snack = Snackbar.make(view, toastText, Snackbar.LENGTH_LONG)
         val context = view.context
         snack.setAction(context.getString(R.string.open_folder)) {

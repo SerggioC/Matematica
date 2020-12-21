@@ -92,7 +92,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         cancelAsyncTask(backgroundTask, context)
     }
 
-    fun calculatePrimorial() {
+    private fun calculatePrimorial() {
         startTime = System.nanoTime()
         hideKeyboard(activity)
         val editnumText = inputEditText.text.digitsOnly()

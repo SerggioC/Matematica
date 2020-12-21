@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.popup_menu_layout.view.*
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
 
@@ -132,7 +133,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     }
 
     fun getAllDivisoresLong(numero: Long?): ArrayList<Long> {
-        val upperlimit = Math.sqrt(numero!!.toDouble()).toLong()
+        val upperlimit = sqrt(numero!!.toDouble()).toLong()
         val divisores = ArrayList<Long>()
         var i = 1
         while (i <= upperlimit) {

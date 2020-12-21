@@ -183,7 +183,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
      * Returns false if image is in initial, unzoomed state. False, otherwise.
      * @return true if image is zoomed
      */
-    val isZoomed: Boolean
+    private val isZoomed: Boolean
         get() = currentZoom != 1f
 
     /**
@@ -294,7 +294,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
     /**
      * Reset zoom and translation to initial state.
      */
-    fun resetZoom() {
+    private fun resetZoom() {
         currentZoom = 1f
         fitImageToView()
     }
@@ -316,7 +316,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
      * @param focusX
      * @param focusY
      */
-    fun setZoom(scale: Float, focusX: Float, focusY: Float) {
+    private fun setZoom(scale: Float, focusX: Float, focusY: Float) {
         setZoom(scale, focusX, focusY, mScaleType)
     }
 
@@ -330,7 +330,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
      * @param focusY
      * @param scaleType
      */
-    fun setZoom(scale: Float, focusX: Float, focusY: Float, scaleType: ScaleType?) {
+    private fun setZoom(scale: Float, focusX: Float, focusY: Float, scaleType: ScaleType?) {
         //
         // setZoom can be called before the image is on the screen, but at this point,
         // image and view sizes have not yet been calculated in onMeasure. Thus, we should
@@ -359,7 +359,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
      * and ScaleType.
      * @param
      */
-    fun setZoom(img: ZoomableImageView) {
+    private fun setZoom(img: ZoomableImageView) {
         val center = img.scrollPosition
         setZoom(img.currentZoom, center!!.x, center.y, img.scaleType)
     }
@@ -371,7 +371,7 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
      * And the bottom right corner would be (1, 1).
      * @return PointF representing the scroll position of the zoomed image.
      */
-    val scrollPosition: PointF?
+    private val scrollPosition: PointF?
         get() {
             val drawable = drawable ?: return null
             val drawableWidth = drawable.intrinsicWidth
@@ -1105,13 +1105,8 @@ class ZoomableImageView : androidx.appcompat.widget.AppCompatImageView {
             }
 
         init {
-            if (VERSION.SDK_INT < VERSION_CODES.GINGERBREAD) {
-                isPreGingerbread = true
-                scroller = Scroller(context)
-            } else {
-                isPreGingerbread = false
-                overScroller = OverScroller(context)
-            }
+            isPreGingerbread = false
+            overScroller = OverScroller(context)
         }
     }
 

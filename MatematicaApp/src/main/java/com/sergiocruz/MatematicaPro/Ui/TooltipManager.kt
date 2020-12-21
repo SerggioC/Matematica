@@ -45,19 +45,5 @@ object TooltipManager {
                 ?.show(anchor, Tooltip.Gravity.LEFT, true)
     }
 
-//    MediaPlayer mp;
-//    mp = MediaPlayer.create(context, R.raw.sound_one);
-//    mp.setOnCompletionListener(new OnCompletionListener()
-//    {
-//        @Override
-//        public void onCompletion(MediaPlayer mp) {
-//            // TODO Auto-generated method stub
-//            mp.reset();
-//            mp.release();
-//            mp = null;
-//        }
-//    });
-//    mp.start();
-
 }
 

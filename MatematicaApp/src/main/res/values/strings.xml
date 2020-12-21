@@ -1,6 +1,5 @@
 <resources>
 
-    <string name="app_version_date">March 2019</string>
     <string name="app_name" translatable="false">Primes PRO</string>
     <string name="app_long_description" translatable="false">Prime Number Tools Pro v</string>
     <string name="app_version_description">App version:</string>
@@ -11,14 +10,6 @@
 
     <!-- Navigation Drawer menu labels -->
 
-    <string name="nav_home">Home</string>
-    <string name="nav_mmc">LCM</string>
-    <string name="nav_mdc">GCD</string>
-    <string name="nav_fatorizar">Factorize</string>
-    <string name="nav_divisores">Divisors</string>
-    <string name="nav_primes_table">Primes Table Generator</string>
-    <string name="nav_sendmail">Send e-mail</string>
-    <string name="nav_share">Share</string>
     <string name="nav_about_us">About this App</string>
 
     <string name="mdc_result_prefix">GCD(</string>
@@ -55,10 +46,8 @@
     <string name="action_clipboard_result">Copy text</string>
     <string name="action_share_history">Share all results as text</string>
     <string name="action_share_history_images">Share all results as images</string>
-    <string name="action_share_result">Share…</string>
     <string name="activity_title_about_us">About</string>
     <string name="activity_title_send_mail">Send e-mail</string>
-    <string name="activity_title_share">Share</string>
     <string name="add_num_inteiro">Enter an integer</string>
     <string name="add_number_pair">Enter at least one pair of integers</string>
     <string name="_incomplete_calc">Incomplete calculation…</string>
@@ -77,12 +66,10 @@
     <string name="maiores_qzero">Numbers larger than zero.</string>
 
     <string name="nao">No</string>
-    <string name="number_in_field">Number in field</string>
     <string name="numero_alto">Number is too big</string>
     <string name="primos_si">Relatively prime numbers</string>
     <string name="send_it">Send e-mail?</string>
     <string name="sim">Yes</string>
-    <string name="too_high">too big</string>
     <string name="zero_no_divisores">Divisors of zero are all natural numbers greater than zero.</string>
 
     <string name="desenvolvido_por">Developed by Sérgio C.</string>
@@ -135,19 +122,11 @@
     <string name="send_mail_contact">Send e-mail / Contact</string>
     <string name="working">Working…</string>
     <string name="canceled_noprimes">Operation canceled. No prime numbers were found in the range.</string>
-    <string name="existem">There are</string>
     <string name="factorization_of">Factorization of</string>
-    <string name="fill_min_max">Fill in both lowest and highest values</string>
-    <string name="found">Found</string>
     <string name="has_no_factors">does not have prime factors.</string>
-    <string name="highest_is_high">Highest value is to high</string>
     <string name="insert_integer">Insert an integer number</string>
     <string name="its_a_prime">is a prime number.</string>
-    <string name="lowest_is_high">Lowest value is too big.</string>
-    <string name="lowest_prime">Lowest minimum value = 1</string>
     <string name="no_data">No data to share</string>
-    <string name="no_primes_range">There are no prime numbers in the range.</string>
-    <string name="primes_in_range">prime numbers in the range.</string>
     <string name="table_between">Table of prime numbers between</string>
     <string name="the_number">Number</string>
 
@@ -176,7 +155,6 @@
     <string name="pref_description_performance">Display CPU runtime after calculation</string>
     <string name="pref_perform_title">Show performance</string>
     <string name="pref_title_explanation">Show explanations</string>
-    <string name="title_activity_settings">Preferences</string>
     <string-array name="pref_list_titles">
         <item>Always show</item>
         <item>Show when requested</item>
@@ -267,7 +245,6 @@
     <string name="cancel_button_description">Cancel Button</string>
     <string name="fill_this">Can\'t be empty</string>
     <string name="invalid_number">Invalid Number</string>
-    <string name="algarismos">Digits</string>
     <string name="other">Other</string>
     <string name="pref_title_history_size">History Size</string>
     <string name="pref_summary_hisory_size">Limit the number of results to keep in history</string>
@@ -280,8 +257,8 @@
     <string name="pref_key_format_numbers" translatable="false">pref_key_format_numbers</string>
     <string name="pref_summary_format_numbers">Formatar números com separador de milhares</string>
     <string name="pref_title_format_numbers">Formatação de números</string>
-    <string name="action_share_result_as_text">Share as text…</string>
-    <string name="action_share_result_as_image">Share as image…</string>
+    <string name="action_share_result_as_text">Partilhar como texto…</string>
+    <string name="action_share_result_as_image">Partilhar como imagem…</string>
     <string name="action_to_db">Guardar todos como favorito</string>
     <string name="action_set_favorite">Guardar favorito</string>
     <string name="action_remove_favorite">Remover favorito</string>
@@ -307,5 +284,7 @@
         <item>75</item>
         <item>100</item>
     </string-array>
+    <string name="you_accept_privacy_policy">Ao usar esta aplicação, você aceita a seguinte Política de Privacidade:</string>
+    <string name="result_is_favorite">This result is saved to favorites!</string>
 
 </resources>

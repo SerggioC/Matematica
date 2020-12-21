@@ -1,17 +1,8 @@
 <resources>
-    <string name="app_version_date">Março 2019</string>
 
     <string name="app_version_description">Versão da Aplicação:</string>
 
     <!-- Navigation Drawer menu labels -->
-    <string name="nav_home">Início</string>
-    <string name="nav_mmc">MMC</string>
-    <string name="nav_mdc">MDC</string>
-    <string name="nav_fatorizar">Fatorizar</string>
-    <string name="nav_divisores">Divisores</string>
-    <string name="nav_primes_table">Tabela de números primos</string>
-    <string name="nav_share">Partilhar</string>
-    <string name="nav_sendmail">Enviar e-mail</string>
     <string name="nav_about_us">Sobre a Aplicação</string>
 
     <string name="activity_title_about_us">Sobre</string>
@@ -19,10 +10,8 @@
     <string name="action_share_history">Partilhar tudo como texto</string>
     <string name="action_share_history_images">Partilhar tudo como imagens</string>
     <string name="activity_title_send_mail">Enviar e-mail</string>
-    <string name="activity_title_share">Partilhar</string>
     <string name="action_clipboard_result">Copiar texto</string>
     <string name="action_clear_result">Apagar</string>
-    <string name="action_share_result">Partilhar...</string>
     <string name="action_ajuda_fatorizar">Como fatorizar um número?</string>
     <string name="action_ajuda_divisores">Como obter os divisores?</string>
     <string name="action_ajuda_mmc">Como calcular o MMC?</string>
@@ -57,8 +46,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="nao">Não</string>
     <string name="numero_alto">Número demasiado grande</string>
     <string name="add_number_pair">Introduzir pelo menos um par de números inteiros.</string>
-    <string name="number_in_field">Número no campo</string>
-    <string name="too_high">demasiado grande</string>
     <string name="maiores_qzero">Números maiores que zero.</string>
     <string name="primos_si">Números primos entre si.</string>
     <string name="gerar">Gerar</string>
@@ -127,15 +114,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="factorization_of">Fatorização de</string>
     <string name="table_between">Tabela de Números Primos entre</string>
     <string name="no_data">Sem dados para partilhar</string>
-    <string name="lowest_is_high">Valor mínimo demasiado alto</string>
-    <string name="highest_is_high">Valor máximo demasiado alto</string>
-    <string name="fill_min_max">Preencher os campos do valor mínimo e máximo</string>
-    <string name="lowest_prime">Menor valor mínimo = 1</string>
-    <string name="existem">Existem</string>
-    <string name="primes_in_range">números primos no intervalo.</string>
-    <string name="no_primes_range">Não existem números primos no intervalo.</string>
     <string name="canceled_noprimes">Operação cancelada. Não foram encontrados números primos no intervalo.</string>
-    <string name="found">Foram encontrados</string>
     <string name="cancel_it">Cancelar operação?</string>
     <string name="and">e</string>
     <string name="explain">Mostar explicação ▾</string>
@@ -145,7 +124,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
 
     <!-- Strings related to Settings -->
     <!-- General settings -->
-    <string name="title_activity_settings">Preferências</string>
     <string name="pref_description_title">Preferências da aplicação</string>
     <string name="pref_description_explanation">Selecionar quando apresentar explicação do cálculo: Sempre, quando pedida ou nunca.</string>
     <string name="pref_title_explanation">Mostrar Explicações</string>
@@ -164,7 +142,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="explainMDC3html"><![CDATA[▻<u>Multiplicar</u> os fatores para obter o Máximo Divisor Comum:<br/>]]></string>
 
 
-    <string name="factorizing">A fatorizar...</string>
+    <string name="factorizing">A fatorizar…</string>
     <string name="expl_text_divisores_1">▻Dividir o número sucessivamente pelo menor número primo, de maneira a obter uma divisão exata, até obter 1:</string>
     <string name="explain_divisores2">▻O número é igual ao produto dos fatores primos obtidos:</string>
     <string name="explain_divisores3">▻Os fatores repetidos são contados e coloca-se esse valor em expoente:</string>
@@ -196,7 +174,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="calculate_multiplos_title">Calcular múltiplos de um número</string>
     <string name="action_ajuda_multiplos">O que são múltiplos de um número?</string>
 
-    <string name="help_text_multiplos"> Denominamos múltiplo de um número ao resultado da multiplicação desse número por um número natural qualquer: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9...}.\n
+    <string name="help_text_multiplos"> Denominamos múltiplo de um número ao resultado da multiplicação desse número por um número natural qualquer: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9…}.\n
         Um bom exemplo de números múltiplos é encontrado na tradicional tabuada:\n
         \t\t2x0=0\t\t\t\t       3x0=0\n
         \t\t2x1=2\t\t\t\t       3x1=3\n
@@ -236,7 +214,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="multiplosde">Múltiplos de</string>
     <string name="primality">Teste de Primalidade</string>
     <string name="application_title_image">Imagem do Titulo da aplicação</string>
-    <string name="algarismos">Algarismos</string>
     <string name="ckeck">Verificar</string>
     <string name="cancel_task">Cancelar tarefa</string>
     <string name="information_icon">Ícone de informação</string>
@@ -260,5 +237,12 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="pref_summary_format_numbers">Formatar números com separador de milhares</string>
     <string name="pref_title_format_numbers">Formatação de números</string>
     <string name="action_all_favorites">Mostrar todos os favoritos</string>
+    <string name="you_accept_privacy_policy">Ao usar esta aplicação, você aceita a seguinte Política de Privacidade:</string>
+    <string name="action_remove_favorite">Remover favorito</string>
+    <string name="action_set_favorite">Guardar favorito</string>
+    <string name="action_to_db">Guardar todos como favorito</string>
+    <string name="action_share_result_as_image">Partilhar como imagem…</string>
+    <string name="action_share_result_as_text">Partilhar como texto…</string>
+    <string name="result_is_favorite">Resultado guardado nos favoritos!</string>
 
 </resources>

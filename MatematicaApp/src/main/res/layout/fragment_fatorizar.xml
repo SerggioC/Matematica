@@ -99,7 +99,7 @@
                             android:layout_marginRight="4dp"
                             android:src="@drawable/stop_button"
                             android:visibility="gone"
-                            android:contentDescription="TODO" />
+                            android:contentDescription="" />
                     </RelativeLayout>
 
                     <View

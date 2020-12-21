@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">March 2019</string>
 
     <string name="has_email">Do you have an email APP installed?</string>
     <string name="action_ajuda_divisores">How to obtain divisors?</string>
@@ -12,10 +11,8 @@
     <string name="action_clipboard_result">Copy text</string>
     <string name="action_share_history">Share all results as text</string>
     <string name="action_share_history_images">Share all results as images</string>
-    <string name="action_share_result">Share…</string>
     <string name="activity_title_about_us">About</string>
     <string name="activity_title_send_mail">Send e-mail</string>
-    <string name="activity_title_share">Share</string>
     <string name="add_num_inteiro">Enter an integer number</string>
     <string name="add_number_pair">Enter at least one pair of integers</string>
     <string name="_incomplete_calc">Incomplete calculation…</string>
@@ -38,21 +35,11 @@
     <string name="mmc_result_prefix">LCM(</string>
     <string name="nao">No</string>
     <string name="nav_about_us">About this App</string>
-    <string name="nav_divisores">Divisors</string>
-    <string name="number_in_field">Number in field</string>
     <string name="numero_alto">Number is too big</string>
     <string name="primos_si">Relatively prime numbers.</string>
     <string name="send_it">Send e-mail?</string>
     <string name="sim">Yes</string>
-    <string name="too_high">too big</string>
     <string name="zero_no_divisores">Divisors of zero are all natural numbers greater than zero.</string>
-    <string name="nav_fatorizar">Factorize</string>
-    <string name="nav_home">Home</string>
-    <string name="nav_mdc">GCD</string>
-    <string name="nav_mmc">LCM</string>
-    <string name="nav_primes_table">Prime Table Generator</string>
-    <string name="nav_sendmail">Send e-mail</string>
-    <string name="nav_share">Share</string>
     <string name="desenvolvido_por">Developed by Sérgio C.</string>
     <string name="about_app_description">
         - Ultra fast Primality Test even for very large numbers (NEW)\n
@@ -104,19 +91,11 @@
     <string name="send_mail_contact">Send e-mail / Contact</string>
     <string name="working">Working…</string>
     <string name="canceled_noprimes">Operation canceled. No prime numbers were found in the range.</string>
-    <string name="existem">There are</string>
     <string name="factorization_of">Factorization of</string>
-    <string name="fill_min_max">Fill in both lowest and highest values</string>
-    <string name="found">Found</string>
     <string name="has_no_factors">does not have prime factors.</string>
-    <string name="highest_is_high">Highest value is to high</string>
     <string name="insert_integer">Insert an integer number</string>
     <string name="its_a_prime">is a prime number.</string>
-    <string name="lowest_is_high">Lowest value is too big.</string>
-    <string name="lowest_prime">Lowest minimum value = 1</string>
     <string name="no_data">No data to share</string>
-    <string name="no_primes_range">There are no prime numbers in the range.</string>
-    <string name="primes_in_range">prime numbers in the range.</string>
     <string name="table_between">Table of prime numbers between</string>
     <string name="the_number">Number</string>
     <string name="cancel_it">Cancel operation?</string>
@@ -143,7 +122,6 @@
     <string name="pref_description_performance">Display CPU runtime after calculation</string>
     <string name="pref_perform_title">Show performance</string>
     <string name="pref_title_explanation">Show explanations</string>
-    <string name="title_activity_settings">Preferences</string>
     <string-array name="pref_list_titles">
         <item>Always show</item>
         <item>Show when requested</item>
@@ -210,7 +188,6 @@
     <string name="application_title_image">Application Title image</string>
     <string name="primality">Primality Test</string>
     <string name="multiplosde">Multiples of</string>
-    <string name="algarismos">Digits</string>
     <string name="ckeck">Check</string>
     <string name="cancel_task">Cancel Task</string>
     <string name="information_icon">Information Icon</string>
@@ -233,4 +210,12 @@
     <string name="no_common_factors">No factors in common</string>
     <string name="pref_summary_format_numbers">Format numbers with thousands separator</string>
     <string name="pref_title_format_numbers">Number formatting</string>
+    <string name="you_accept_privacy_policy">By using this app you accept the following Privacy Policy:</string>
+    <string name="action_share_result_as_text">Share as text…</string>
+    <string name="action_share_result_as_image">Share as image…</string>
+    <string name="action_to_db">Save all as favorite</string>
+    <string name="action_set_favorite">Save favorite</string>
+    <string name="action_remove_favorite">Remove favorite</string>
+    <string name="action_all_favorites">Show al favorites</string>
+    <string name="result_is_favorite">This result is saved to favorites!</string>
 </resources>

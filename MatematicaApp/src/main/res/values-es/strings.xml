@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">Marzo 2019</string>
 
-    <string name="_incomplete_calc">Cálculo incompleto...</string>
+    <string name="_incomplete_calc">Cálculo incompleto…</string>
     <string name="_numero_primo">Número primo</string>
     <string name="about_app_description">
         - Prueba de primalidad ultra rápida incluso para números muy grandes (NUEVO)\n
@@ -28,10 +27,8 @@
     <string name="action_share_history">Compartir todos como texto</string>
     <string name="action_share_history_images">Compartir todos como imágenes</string>
 
-    <string name="action_share_result">Compartir...</string>
     <string name="activity_title_about_us">Acerca de</string>
     <string name="activity_title_send_mail">Enviar correo electrónico</string>
-    <string name="activity_title_share">Compartir</string>
     <string name="add_num_inteiro">Introduzca un número entero</string>
     <string name="add_number_pair">Introduzca al menos un par de números enteros</string>
     <string name="already_inclipboard">Resultado ya en el portapapeles</string>
@@ -49,11 +46,10 @@
     <string name="divisores_number">Divisores de un número</string>
     <string name="divisors">Divisores</string>
     <string name="divisors_of">Divisores de</string>
-    <string name="existem">Existen</string>
     <string name="explain">Mostrar explicación ▾</string>
     <string name="factorization_of">Factorización de</string>
     <string name="factorize">Factorizar el número</string>
-    <string name="factorizing">Factorizando...</string>
+    <string name="factorizing">Factorizando…</string>
 
     <string name="explainMMC1html"><![CDATA[▻Descomponer los números en <u>factores primos</u>:<br/>]]></string>
     <string name="explainMMC2html"><![CDATA[▻Elija los factores <u>comunes</u> y <u>no comunes</u>, <u>solo una vez</u> con los <u>mayores exponentes</u>:<br/>]]> </string>
@@ -66,8 +62,6 @@
     <string name="fatorizar_btn">Factorizar</string>
     <string name="fatorizcao">Factorización</string>
     <string name="fatorize_title">Factorización de números primos</string>
-    <string name="fill_min_max">Complete ambos valores mínimo y máximo</string>
-    <string name="found">Encontró</string>
     <string name="gerar">Generar</string>
     <string name="has">tiene</string>
     <string name="has_email">¿Tienes una aplicación de correo electrónico instalada?</string>
@@ -87,7 +81,6 @@
 </string>
     <string name="help_text_mmc"> Dado dos o más números naturales distintos de cero, el Mínimo Común Múltiplo (MCM) es el menor de sus múltiplos que es común a todos ellos, excepto para cero que es el más pequeño de los números naturales y es un múltiplo de todos ellos.\n    Los múltiplos de un número natural son todos los que se dividen por este número tienen cero como el resto de la división.\n    Los múltiplos de un número natural son el resultado del producto de este número por otro número natural.\n    Puesto que el conjunto de números naturales es un conjunto infinito, los múltiplos de un número son también infinitos.\n    Un método práctico para determinar la MCM de un conjunto de números naturales es la descomposición en factores primos.\n    MCM es el producto de los factores comunes e no comunes, con los mayores exponentes. </string>
     <string name="hide_explain">Ocultar explicación ◂</string>
-    <string name="highest_is_high">Valor máximo demasiado alto</string>
     <string name="history_deleted">Historial de resultados eliminado</string>
     <string name="home_divisors_description">▸ Divisores - Calcular todos los divisores de un entero\n▸ Compruebe si un número es primo</string>
     <string name="home_factorize_description">▸ Factorizar - Descomponer un número en factores primos\n▸ Compruebe si un número es primo / Prueba de primalidad</string>
@@ -96,10 +89,8 @@
     <string name="home_primetable_description">▸ Generador de tabla de números primos para un rango dado</string>
     <string name="inicio">Inicio</string>
     <string name="insert_integer">Introduzca un número entero</string>
-    <string name="introduzir_numero">Introduzca número...</string>
+    <string name="introduzir_numero">Introduzca número…</string>
     <string name="its_a_prime">Es un número primo.</string>
-    <string name="lowest_is_high">El valor mínimo es demasiado alto.</string>
-    <string name="lowest_prime">Valor mínimo más bajo = 1</string>
     <string name="maiores_qzero">Números mayores que cero.</string>
     <string name="mais">Más</string>
     <string name="mdc">MCD</string>
@@ -113,18 +104,8 @@
     <string name="mostrar_todos">Mostrar todos</string>
     <string name="nao">No</string>
     <string name="nav_about_us">Acerca de esta aplicación</string>
-    <string name="nav_divisores">Divisores</string>
-    <string name="nav_home">Inicio</string>
-    <string name="nav_fatorizar">Factorizar</string>
-    <string name="nav_mdc">MCD</string>
-    <string name="nav_mmc">MCM</string>
-    <string name="nav_primes_table">Generador de tabla de primos</string>
-    <string name="nav_sendmail">Enviar correo electrónico</string>
-    <string name="nav_share">Compartir</string>
     <string name="no_data">No hay datos para compartir</string>
-    <string name="no_primes_range">No hay números primos en el rango.</string>
     <string name="nothing_toshare">No hay resultados para compartir</string>
-    <string name="number_in_field">Número en el campo</string>
     <string name="numero_alto">El número es demasiado alto</string>
     <string name="performance">Desempeño:</string>
     <string name="pref_colors_title">Mostrar colores</string>
@@ -134,7 +115,6 @@
     <string name="pref_description_title">Preferencias de la aplicación</string>
     <string name="pref_perform_title">Mostrar el desempeño</string>
     <string name="pref_title_explanation">Mostrar explicaciones</string>
-    <string name="primes_in_range">números primos en el rango.</string>
     <string name="primetable_title">Generador de tabla de números primos</string>
     <string name="primos_si">Números primos relativos.</string>
     <string name="send">Enviar</string>
@@ -145,8 +125,6 @@
     <string name="tabela_primos">Tabla de números primos</string>
     <string name="table_between">Tabla de números primos entre</string>
     <string name="the_number">Número</string>
-    <string name="title_activity_settings">Preferencias</string>
-    <string name="too_high">demasiado alto</string>
     <string name="valor_maximo">Valor Máximo</string>
     <string name="valor_minimo">Valor Mínimo</string>
     <string name="working">Working…</string>
@@ -180,7 +158,7 @@
     <string name="calculate_multiplos_title">Calcular múltiples de un número</string>
     <string name="nothing_tosave">Nada que salvar</string>
     <string name="nav_multiplos">Múltiples de un número</string>
-    <string name="help_text_multiplos">Se denomina múltiplo de un número al resultado de la multiplicación de ese número por un número natural cualquiera: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+    <string name="help_text_multiplos"><![CDATA[Se denomina múltiplo de un número al resultado de la multiplicación de ese número por un número natural cualquiera: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 …}.\n
         Un buen ejemplo de números múltiples se encuentra en la tradicional tabla del multiplicar:\n
         \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
         \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
@@ -205,7 +183,7 @@
     55 es divisible por 5, pues 55: 5 = 11 con resto = 0\n
 
     El cero es múltiplo de cualquier número y múltiplo de sí mismo.
-    El conjunto de los múltiplos de un número es infinito porque el conjunto de los números naturales también es infinito.</string>
+    El conjunto de los múltiplos de un número es infinito porque el conjunto de los números naturales también es infinito.]]></string>
     <string name="home_multiplos_description">▸ Múltiples - Calcular múltiples de un número</string>
     <string name="multpl_apresentar">Múltiples para presentar</string>
     <string name="show_more">Mostrar más ▸</string>
@@ -218,7 +196,6 @@
     <string name="application_title_image">Imagen del título de la aplicación</string>
     <string name="primality">Prueba de Primalidad</string>
     <string name="multiplosde">Múltiples de</string>
-    <string name="algarismos">algarismos</string>
     <string name="ckeck">comprobar</string>
     <string name="cancel_task">comprobar tarea</string>
     <string name="information_icon">Icono de información</string>
@@ -241,4 +218,12 @@
     <string name="no_common_factors">Sin factores en común</string>
     <string name="pref_summary_format_numbers">Dar formato a números con separador de miles</string>
     <string name="pref_title_format_numbers">Formato de número</string>
+    <string name="you_accept_privacy_policy">Al utilizar esta aplicación, acepta la siguiente Política de privacidad:</string>
+    <string name="action_all_favorites">Mostrar todos los favoritos</string>
+    <string name="action_remove_favorite">Eliminar favorito</string>
+    <string name="action_set_favorite">Guardar favorito</string>
+    <string name="action_to_db">Guardar todo como favorito</string>
+    <string name="action_share_result_as_image">Compartir como imagen…</string>
+    <string name="action_share_result_as_text">Compartir como texto…</string>
+    <string name="result_is_favorite">¡Este resultado se guarda en favoritos!</string>
 </resources>

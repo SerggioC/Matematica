@@ -342,7 +342,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="@drawable/add_one"
-                        android:contentDescription="TODO" />
+                        android:contentDescription="" />
 
                     <ImageButton
                         android:id="@+id/button_remove_mmc"
@@ -351,7 +351,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toLeftOf="@id/button_add_mmc"
                         android:background="@drawable/less_one"
-                        android:contentDescription="TODO"
+                        android:contentDescription=""
                         android:visibility="invisible" />
 
                 </RelativeLayout>

@@ -1,6 +1,5 @@
 package com.sergiocruz.MatematicaPro.fragment
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.annotation.StringRes

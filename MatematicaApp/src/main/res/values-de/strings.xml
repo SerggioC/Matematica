@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_version_date">März 2019</string>
-    <string name="_incomplete_calc">Unvollständige Berechnung ...</string>
+    <string name="_incomplete_calc">Unvollständige Berechnung …</string>
     <string name="_numero_primo">primzahlen</string>
     <string name="about_app_description">
          - Ultraschneller Primalitätstest auch für sehr große Zahlen (NEU)\n
@@ -32,10 +31,8 @@
     <string name="action_share_history_images">Alle Ergebnisse als Bilder teilen</string>
     <string name="action_share_history_images_pt">Teilen Sie das Bild der Tabelle</string>
     <string name="action_share_history_pt">Tabellentext teilen</string>
-    <string name="action_share_result">Aktie...</string>
     <string name="activity_title_about_us">Über</string>
     <string name="activity_title_send_mail">E-Mail senden</string>
-    <string name="activity_title_share">Aktie</string>
     <string name="add_num_inteiro">Geben Sie eine Ganzzahl ein</string>
     <string name="add_number_pair">Geben Sie mindestens ein Paar Ganzzahlen ein</string>
     <string name="all_images_saved">Gespeichert alle als Bilder</string>
@@ -59,14 +56,13 @@
     <string name="divisors_of">Divisoren von</string>
     <string name="empty_table">Leeren Tisch</string>
     <string name="errorsavingimg">Fehler beim Speichern des Bildes.</string>
-    <string name="existem">Es gibt</string>
     <string name="expl_text_divisores_1">▻ Teilen Sie die Nummer nacheinander durch die niedrigste Primzahl, um eine genaue Teilung zu erhalten, bis Sie 1:</string>
     <string name="explain">[+] Erläuterung anzeigen ▾</string>
     <string name="explain_divisores2">▻ Die Zahl ist gleich dem Produkt der erhaltenen Primfaktoren:</string>
     <string name="explain_divisores3">▻ Wiederholte Faktoren werden gezählt und dieser Wert wird als Exponent platziert:</string>
     <string name="factorization_of">Faktorisierung von</string>
     <string name="factorize">Faktorisierungsnummer</string>
-    <string name="factorizing">Faktorisierung ...</string>
+    <string name="factorizing">Faktorisierung …</string>
 
     <string name="explainMMC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
     <string name="explainMMC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> und <u>nicht gemeinsamen</u> Faktoren, <u>nur einmal</u> mit dem <u>größte Exponenten</u>:<br/>]]></string>
@@ -80,8 +76,6 @@
     <string name="fatorizar_btn">Faktorisieren</string>
     <string name="fatorizcao">Faktorisieren</string>
     <string name="fatorize_title">Primzahlfaktorisierung</string>
-    <string name="fill_min_max">Füllen Sie die niedrigsten und höchsten Werte aus</string>
-    <string name="found">Gefunden</string>
     <string name="gerar">Generieren</string>
     <string name="has">hat</string>
     <string name="has_email">Hast du eine E-Mail-APP installiert?</string>
@@ -105,7 +99,7 @@ Definitionsgemäß sind Primzahlen Zahlen, die zu dem Satz von null ungleichen Z
    Da die Menge der natürlichen Zahlen ein unendlicher Satz ist, sind die Vielfachen einer Zahl auch unendlich.\n
    Eine praktische Methode zur Bestimmung des kgV eines Satzes von natürlichen Zahlen ist die Zersetzung in primäre Faktoren.\n
    LCM ist das Produkt von gemeinsamen und nicht gemeinsamen Faktoren, mit den größten Exponenten.\n</string>
-    <string name="help_text_multiplos">Wir nennen ein Vielfaches einer Zahl zum Ergebnis der Multiplikation dieser Zahl mit einer beliebigen natürlichen Zahl: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ...}.\n
+    <string name="help_text_multiplos"><![CDATA[Wir nennen ein Vielfaches einer Zahl zum Ergebnis der Multiplikation dieser Zahl mit einer beliebigen natürlichen Zahl: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9 …}.\n
  Ein gutes Beispiel für mehrere Zahlen findet sich in den traditionellen Multiplikationstabellen:\n
 \t\t2x0 = 0 \t\t\t\t 3x0 = 0\n
  \t\t2x1 = 2 \t\t\t\t 3x1 = 3\n
@@ -129,10 +123,9 @@ Wenn eine Zahl durch eine andere teilbar ist, das heißt, wenn sie dividiert wir
 55 ist durch 5 teilbar, da 55: 5 = 11 mit Rest = 0\n
 \n
 Zero ist ein Vielfaches von beliebiger Anzahl und Vielfachen von sich selbst.\n
-Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürlichen Zahlen auch unendlich ist.</string>
+Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürlichen Zahlen auch unendlich ist.]]></string>
     <string name="help_text_primorial">In der Mathematik und vor allem in der Zahlentheorie ist das Primarium eine Funktion von natürlichen Zahlen zu natürlichen Zahlen, die der faktoriellen Funktion ähnlich sind, aber anstatt sukzessive positive ganze Zahlen zu multiplizieren, werden nur Primzahlen multipliziert. Primär einer Zahl wird mit n# bezeichnet.</string>
     <string name="hide_explain">[-] Ausblenden ◂</string>
-    <string name="highest_is_high">Höchster Wert ist zu hoch</string>
     <string name="history_deleted">Geschichte der Ergebnisse gelöscht</string>
     <string name="home_divisors_description">▸ Divisoren - Berechnen Sie alle Divisoren einer Ganzzahl</string>
     <string name="home_factorize_description">▸ Prüfen Sie, ob eine Zahl prim ist</string>
@@ -146,8 +139,6 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="insert_integer">▸ Summe der Primzahlen im Bereich</string>
     <string name="introduzir_numero">▸ Primär - Berechnen Sie das Primär einer Zahl n#</string>
     <string name="its_a_prime">Bild gespeichert</string>
-    <string name="lowest_is_high">Anfang</string>
-    <string name="lowest_prime">Geben Sie eine ganzzahlige Zahl ein</string>
     <string name="maiores_qzero">Zahlen größer als null.</string>
     <string name="mais">Mehr</string>
     <string name="mdc">ggT</string>
@@ -162,21 +153,11 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="multpl_apresentar">Multiples zum Anzeigen</string>
     <string name="nao">Nein</string>
     <string name="nav_about_us">Über diese App</string>
-    <string name="nav_divisores">Divisoren</string>
-    <string name="nav_fatorizar">Faktorisieren</string>
-    <string name="nav_home">Zuhause</string>
-    <string name="nav_mdc">GCD</string>
-    <string name="nav_mmc">LCM</string>
     <string name="nav_multiplos">Vielfache einer Zahl</string>
-    <string name="nav_primes_table">Primes Tischgenerator</string>
     <string name="nav_primorial">Berechnen Sie das primäre n #</string>
-    <string name="nav_sendmail">E-Mail senden</string>
-    <string name="nav_share">Aktie</string>
     <string name="no_data">Keine Daten zu teilen</string>
-    <string name="no_primes_range">Es gibt keine Primzahlen im Bereich.</string>
     <string name="nothing_tosave">Nichts zu retten</string>
     <string name="nothing_toshare">Keine Ergebnisse zu teilen</string>
-    <string name="number_in_field">Anzahl im Feld</string>
     <string name="numero_alto">Die Nummer ist zu hoch</string>
     <string name="open_folder">Ordner öffnen</string>
     <string name="performance">Performance:</string>
@@ -187,7 +168,6 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="pref_description_title">Anwendungseinstellungen</string>
     <string name="pref_perform_title">Leistung zeigen</string>
     <string name="pref_title_explanation">Erklärungen anzeigen</string>
-    <string name="primes_in_range">Primzahlen im Bereich.</string>
     <string name="primetable_title">Prime Number Table Generator</string>
     <string name="primos_si">Relativ Primzahlen</string>
     <string name="send">Senden</string>
@@ -199,8 +179,6 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="tabela_primos">Prime Zahlen Tabelle</string>
     <string name="table_between">Tabelle der Primzahlen zwischen</string>
     <string name="the_number">Nummer</string>
-    <string name="title_activity_settings">Präferenzen</string>
-    <string name="too_high">zu hoch</string>
     <string name="valor_maximo">Höchster Wert</string>
     <string name="valor_minimo">Niedrigster Wert</string>
     <string name="working">Arbeiten…</string>
@@ -221,7 +199,6 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="primality">Primalitätstest</string>
     <string name="multiplosde">Vielfache der</string>
     <string name="application_title_image">Titelbild der Anwendung</string>
-    <string name="algarismos">Ziffern</string>
     <string name="ckeck">prüfen</string>
     <string name="cancel_task">Aufgabe abbrechen</string>
     <string name="information_icon">Informationssymbol</string>
@@ -244,4 +221,12 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="no_common_factors">Keine gemeinsamen Faktoren</string>
     <string name="pref_summary_format_numbers">Formatieren Sie Zahlen mit Tausendertrennzeichen</string>
     <string name="pref_title_format_numbers">Zahlenformatierung</string>
+    <string name="you_accept_privacy_policy">Mit dieser App akzeptieren Sie die folgenden Datenschutzbestimmungen:</string>
+    <string name="action_share_result_as_text">Als Text teilen…</string>
+    <string name="action_share_result_as_image">Als Bild teilen…</string>
+    <string name="action_to_db">Speichern Sie alles als Favorit</string>
+    <string name="action_set_favorite">Favorit speichern</string>
+    <string name="action_remove_favorite">Favorit entfernen</string>
+    <string name="action_all_favorites">Alle Favoriten anzeigen</string>
+    <string name="result_is_favorite">Dieses Ergebnis wird in den Favoriten gespeichert!</string>
 </resources>
