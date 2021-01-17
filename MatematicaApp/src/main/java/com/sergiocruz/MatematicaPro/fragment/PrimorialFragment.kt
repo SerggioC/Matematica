@@ -115,7 +115,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // check if temp result exists in DB
         context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
                 if (result != null) {
                     val result: BigInteger = gson.fromJson(result.content, BigInteger::class.java)

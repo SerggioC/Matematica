@@ -152,7 +152,7 @@ class SwipeToDismissTouchListener(
         val op = tags?.operation ?: ""
         var saved = false
         if (pk.isNotEmpty() && op.isNotBlank()) {
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 saved = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = pk, operation = op) != null
                 if (saved) {
                     withContext(Dispatchers.Main) {
@@ -163,8 +163,8 @@ class SwipeToDismissTouchListener(
             }
         }
         popupLayout.action_favorite.setOnClickListener {
-            CoroutineScope(Dispatchers.Default).launch {
-                if (pk.isEmpty() || op.isEmpty()) return@launch
+            launchSafeCoroutine {
+                if (pk.isEmpty() || op.isEmpty()) return@launchSafeCoroutine
                 LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemFavorite(operation = op, key = pk, saved.not())
                 withContext(Dispatchers.Main) {
                     val star = theCardView.findViewById<View>(R.id.image_star) ?: return@withContext
@@ -443,7 +443,7 @@ class SwipeToDismissTouchListener(
         val history = cardview.parent as? ViewGroup?
         history?.removeView(cardview)
         mCallbacks?.onDismiss(mView)
-        CoroutineScope(Dispatchers.Default).launch {
+        launchSafeCoroutine {
             val tags = mView.tag as? InputTags?
             val pk = tags?.input ?: ""
             val op = tags?.operation ?: ""

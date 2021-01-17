@@ -228,7 +228,7 @@ class Tooltip private constructor(private val context: Context, builder: Builder
         return this
     }
 
-    fun update(text: CharSequence?) {
+    private fun update(text: CharSequence?) {
         mText = text
         if (isShowing && null != mPopupView) {
             mTextView.text = if (text is Spannable) {

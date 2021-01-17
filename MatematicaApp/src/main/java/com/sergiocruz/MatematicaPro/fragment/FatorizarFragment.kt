@@ -110,7 +110,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         // Check if result exists in DB
         context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
                 if (result != null) {
                     withContext(Dispatchers.Main) {

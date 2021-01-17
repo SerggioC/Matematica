@@ -115,7 +115,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
                 if (result != null) {
                     val ssb: SpannableStringBuilder = gson.fromJson(result.content, SpannableStringBuilder::class.java)

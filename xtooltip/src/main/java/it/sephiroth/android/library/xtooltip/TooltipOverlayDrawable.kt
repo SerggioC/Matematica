@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.annotation.Keep
 
 /**
  * Created by alessandro crugnola on 12/12/15.
@@ -30,7 +31,10 @@ class TooltipOverlayDrawable(context: Context, defStyleResId: Int) : Drawable() 
     private val mOuterPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val mInnerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var mOuterRadius: Float = 0.toFloat()
+
+    @Keep
     private var innerRadius = 0f
+        @Keep
         set(rippleRadius) {
             field = rippleRadius
             invalidateSelf()

@@ -13,6 +13,7 @@ import androidx.annotation.StringRes
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.TooltipManager
@@ -22,6 +23,7 @@ import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.databinding.TextviewStarBinding
 import com.sergiocruz.MatematicaPro.helper.CreateCardView
 import com.sergiocruz.MatematicaPro.helper.MenuHelper
+import com.sergiocruz.MatematicaPro.helper.launchSafeCoroutine
 import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -77,7 +79,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     open fun getAllFavorites() {
         context?.let { ctx ->
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 val list: List<HistoryDataClass>? = LocalDatabase.getInstance(ctx).historyDAO()?.getAllFavoritesForOperation(operationName)
                 withContext(Dispatchers.Main) {
                     allFavoritesCallback?.invoke(list)
@@ -88,7 +90,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     open fun makeAllResultsFavorite() {
         context?.let { ctx ->
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 val num = LocalDatabase.getInstance(ctx).historyDAO()?.makeNonFavoriteFavorite(operationName) ?: 0
                 if (num > 0) {
                     withContext(Dispatchers.Main) {
@@ -164,7 +166,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     fun saveCardToDatabase(input: String?, data: String?, operation: String) {
         if (input == null || data == null) return
         context?.let { ctx ->
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 val history = HistoryDataClass(primaryKey = input, operation, content = data, favorite = false)
                 LocalDatabase.getInstance(ctx).historyDAO()?.saveCard(history)
             }
@@ -176,18 +178,18 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         binding.textViewTop.text = ssb
         binding.textViewTop.setTag(R.id.texto, "texto")
         context?.let { ctx ->
-            CoroutineScope(Dispatchers.Default).launch {
-                val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
-                withContext(Dispatchers.Main) {
-                    binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
-                    binding.imageStar.setOnClickListener {
-                        TooltipManager.showTooltipOn(binding.imageStar, getString(R.string.result_is_favorite))
-                        val animation = ObjectAnimator.ofFloat(binding.imageStar, View.ROTATION_Y, 0.0f, 360f)
-                        animation.duration = 1500
-                        animation.start()
+                launchSafeCoroutine {
+                    val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
+                    withContext(Dispatchers.Main) {
+                        binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
+                        binding.imageStar.setOnClickListener {
+                            TooltipManager.showTooltipOn(binding.imageStar, getString(R.string.result_is_favorite))
+                            val animation = ObjectAnimator.ofFloat(binding.imageStar, View.ROTATION_Y, 0.0f, 360f)
+                            animation.duration = 1500
+                            animation.start()
+                        }
                     }
                 }
-            }
         }
         return binding
     }
@@ -200,7 +202,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     private fun clearTemporaryResultsFromDB() {
         context?.let {
-            CoroutineScope(Dispatchers.Default).launch {
+            launchSafeCoroutine {
                 LocalDatabase.getInstance(it).historyDAO()?.deleteNonFavoritesFromOperation(operationName)
             }
         }

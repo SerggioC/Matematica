@@ -20,11 +20,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.SettingsFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 /** onActionDone() */
 interface OnEditorActions {
@@ -307,6 +312,18 @@ private inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) 
     operation(editor)
     editor.apply()
 }
+
+
+fun launchSafeCoroutine(block: suspend () -> Unit) {
+    try {
+        CoroutineScope(Dispatchers.Default).launch {
+            block.invoke()
+        }
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
+}
+
 
 //@Suppress("UNCHECKED_CAST")
 //inline operator fun <reified T> SharedPreferences.get(key: String, defaultValue: T): T {

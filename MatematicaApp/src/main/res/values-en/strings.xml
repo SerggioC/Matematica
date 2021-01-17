@@ -216,6 +216,7 @@
     <string name="action_to_db">Save all as favorite</string>
     <string name="action_set_favorite">Save favorite</string>
     <string name="action_remove_favorite">Remove favorite</string>
-    <string name="action_all_favorites">Show al favorites</string>
+    <string name="action_all_favorites">Show all favorites</string>
     <string name="result_is_favorite">This result is saved to favorites!</string>
+    <string name="give">The app is free, no ads, won\'t annoy you with nonsense advertisement, but I need take my time to keep the app updated, need to cover the costs of development, so if you wish to contribute to the development of Prime Number Tools PRO, or would like me to add another feature, functionality to the app consider a donation via PayPal and I\'ll implement it! Check out my blog where you can find the information to help me. Thank you! 😀</string>
 </resources>

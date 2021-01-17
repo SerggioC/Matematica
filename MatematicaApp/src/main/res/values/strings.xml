@@ -286,5 +286,6 @@
     </string-array>
     <string name="you_accept_privacy_policy">Ao usar esta aplicação, você aceita a seguinte Política de Privacidade:</string>
     <string name="result_is_favorite">This result is saved to favorites!</string>
-
+    <string name="give">O aplicativo é gratuito, não tem anúncios, por isso não vai incomodá-lo com propaganda absurda, mas preciso de tirar o meu tempo para manter o aplicativo atualizado, preciso cobrir os custos de desenvolvimento, então, se desejar para contribuir com o desenvolvimento do Prime Number Tools PRO, ou gostaria que eu adicionasse outro recurso ou funcionalidade ao app considere uma doação via PayPal e eu irei implementá-la! Confira meu blog onde você pode encontrar informações para me ajudar. Obrigado! 😀 </string>
+    <string name="blog_web_address">https://sergiocrz.wordpress.com/</string>
 </resources>

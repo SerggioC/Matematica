@@ -10,12 +10,14 @@ import com.sergiocruz.MatematicaPro.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAboutBinding
+    private var _binding: ActivityAboutBinding? = null
+    private val binding: ActivityAboutBinding
+    get() = _binding!!
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAboutBinding.inflate(layoutInflater)
+        _binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -34,5 +36,10 @@ class AboutActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
