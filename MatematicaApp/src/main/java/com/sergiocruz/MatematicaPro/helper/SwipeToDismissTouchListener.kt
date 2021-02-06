@@ -14,12 +14,9 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.text.SpannableString
-import android.text.style.SuperscriptSpan
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.BuildConfig
@@ -28,9 +25,7 @@ import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
 import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.android.synthetic.main.popup_menu_layout.view.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.abs
@@ -59,12 +54,14 @@ class SwipeToDismissTouchListener(
 
     private val handler = Handler(Looper.getMainLooper())
     private var mBooleanIsPressed = false
+
     // Cached ViewConfiguration and system-wide constant values
     private val mSlop: Int
     private val mMinFlingVelocity: Int
     private val mMaxFlingVelocity: Int
     private val mAnimationTime: Long
     private var mViewWidth = 1 // 1 and not 0 to prevent dividing by zero
+
     // Transient properties
     private var mDownX: Float = 0.toFloat()
     private var mDownY: Float = 0.toFloat()
@@ -79,30 +76,11 @@ class SwipeToDismissTouchListener(
     private var mVelocityTracker: VelocityTracker? = null
     private var mTranslationX: Float = 0.toFloat()
 
-    private val formatedTextFromTextView: String
+    private val formattedTextFromTextView: String
         get() {
             val root = mView as? ViewGroup ?: return ""
-            val viewsWithTAGTexto = getViewsByTag(root, "texto")
-            var finalText = ""
-            for (i in viewsWithTAGTexto.indices) {
-                if (viewsWithTAGTexto[i] is TextView) {
-                    var text =
-                        (viewsWithTAGTexto[i] as TextView).text.toString() + "\n"
-                    val ss = SpannableString((viewsWithTAGTexto[i] as TextView).text)
-                    val spans = ss.getSpans(0,
-                            (viewsWithTAGTexto[i] as TextView).text.length,
-                            SuperscriptSpan::class.java
-                    )
-                    for ((corr, span) in spans.withIndex()) {
-                        val start = ss.getSpanStart(span) + corr
-                        text = text.substring(0, start) + "^" + text.substring(start)
-                    }
-                    finalText += text
-                }
-            }
-            return finalText
+            return root.getTextFromTextViews()
         }
-
 
     init {
         val vc = ViewConfiguration.get(mView.context)
@@ -140,7 +118,7 @@ class SwipeToDismissTouchListener(
         val theCardView = this.mView as CardView
         val cardOriginalColor = theCardView.cardBackgroundColor
 
-        val selectedColor = ContextCompat.getColor(mActivity, R.color.selected_color)
+        val selectedColor = ContextCompat.getColor(context, R.color.selected_color)
         theCardView.setCardBackgroundColor(selectedColor)
 
         customPopUp.setOnDismissListener {
@@ -183,18 +161,15 @@ class SwipeToDismissTouchListener(
             if (clipboard.hasPrimaryClip()) {
                 val clipItems = clipboard.primaryClip?.itemCount ?: 0
                 for (i in 0 until clipItems) {
-                    if (clipboard.primaryClip?.getItemAt(i)?.text?.toString() == formatedTextFromTextView) {
+                    if (clipboard.primaryClip?.getItemAt(i)?.text?.toString() == formattedTextFromTextView) {
                         hasEqualItem = true
                     }
                 }
             }
             if (hasEqualItem) {
-                showCustomToast(
-                        mView.context,
-                        mView.context.getString(R.string.already_inclipboard)
-                )
+                showCustomToast(mView.context, mView.context.getString(R.string.already_inclipboard))
             } else {
-                val clip = ClipData.newPlainText("Clipboard", formatedTextFromTextView)
+                val clip = ClipData.newPlainText("Clipboard", formattedTextFromTextView)
                 clipboard.setPrimaryClip(clip)
                 showCustomToast(mView.context, mView.context.getString(R.string.copied_toclipboard))
             }
@@ -209,12 +184,12 @@ class SwipeToDismissTouchListener(
         popupLayout.action_share_result_as_text.setOnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n" + formatedTextFromTextView)
+            sendIntent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n" + formattedTextFromTextView)
             sendIntent.type = "text/plain"
-            mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
+            context.startActivity(Intent.createChooser(sendIntent, context.getString(R.string.app_name)))
             customPopUp.dismiss()
         }
-        
+
         popupLayout.action_share_result_as_image.setOnClickListener {
 
             val imageURI = MenuHelper.saveViewToImage(theCardView, 0, true)
@@ -224,17 +199,17 @@ class SwipeToDismissTouchListener(
                 val uri = Uri.parse(imageURI)
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND_MULTIPLE
-                sendIntent.putExtra(Intent.EXTRA_TEXT, mActivity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n")
+                sendIntent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n")
                 sendIntent.type = "image/jpeg"
                 sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayListOf(uri))
-                mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
+                context.startActivity(Intent.createChooser(sendIntent, context.getString(R.string.app_name)))
             }
             customPopUp.dismiss()
         }
 
         popupLayout.action_save_image.setOnClickListener {
             checkPermissionsWithCallback(mActivity) {
-                theCardView.setCardBackgroundColor(ContextCompat.getColor(mActivity, R.color.cardsColor))
+                theCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.cardsColor))
                 MenuHelper.saveViewToImageAndOpenSnackbar(theCardView, 0, false)
             }
             customPopUp.dismiss()
@@ -456,17 +431,17 @@ class SwipeToDismissTouchListener(
     private fun animateRemoving(cardview: CardView) {
 
         cardview.animate().translationX(cardview.width.toFloat()).alpha(0f).setDuration(200)
-            .setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator) {
-                    removeTemporaryResultFromDB(cardview)
-                }
+                    override fun onAnimationEnd(animation: Animator) {
+                        removeTemporaryResultFromDB(cardview)
+                    }
 
-                override fun onAnimationCancel(animation: Animator) {}
+                    override fun onAnimationCancel(animation: Animator) {}
 
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
+                    override fun onAnimationRepeat(animation: Animator) {}
+                })
     }
 
     companion object {

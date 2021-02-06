@@ -133,8 +133,8 @@
     <string name="cancel_it">Cancel operation?</string>
     <string name="and">and</string>
     <string name="action_save_image">Save image</string>
-    <string name="explain">[+] Show Explanation ▾</string>
-    <string name="hide_explain">[-] Hide Explanation ◂</string>
+    <string name="show_explain"><u>[+] Show Explanation ▾</u></string>
+    <string name="hide_explain"><u>[-] Hide Explanation ◂</u></string>
     <string name="pref_description_title">Application Preferences</string>
     <string name="action_settings">Preferences</string>
 
@@ -288,4 +288,5 @@
     <string name="result_is_favorite">This result is saved to favorites!</string>
     <string name="give">O aplicativo é gratuito, não tem anúncios, por isso não vai incomodá-lo com propaganda absurda, mas preciso de tirar o meu tempo para manter o aplicativo atualizado, preciso cobrir os custos de desenvolvimento, então, se desejar para contribuir com o desenvolvimento do Prime Number Tools PRO, ou gostaria que eu adicionasse outro recurso ou funcionalidade ao app considere uma doação via PayPal e eu irei implementá-la! Confira meu blog onde você pode encontrar informações para me ajudar. Obrigado! 😀 </string>
     <string name="blog_web_address">https://sergiocrz.wordpress.com/</string>
+    <string name="favorite_star">Favorite star</string>
 </resources>

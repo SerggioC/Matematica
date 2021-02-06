@@ -57,7 +57,7 @@
     <string name="empty_table">Leeren Tisch</string>
     <string name="errorsavingimg">Fehler beim Speichern des Bildes.</string>
     <string name="expl_text_divisores_1">▻ Teilen Sie die Nummer nacheinander durch die niedrigste Primzahl, um eine genaue Teilung zu erhalten, bis Sie 1:</string>
-    <string name="explain">[+] Erläuterung anzeigen ▾</string>
+    <string name="show_explain"><u>[+] Erläuterung anzeigen ▾</u></string>
     <string name="explain_divisores2">▻ Die Zahl ist gleich dem Produkt der erhaltenen Primfaktoren:</string>
     <string name="explain_divisores3">▻ Wiederholte Faktoren werden gezählt und dieser Wert wird als Exponent platziert:</string>
     <string name="factorization_of">Faktorisierung von</string>
@@ -125,7 +125,7 @@ Wenn eine Zahl durch eine andere teilbar ist, das heißt, wenn sie dividiert wir
 Zero ist ein Vielfaches von beliebiger Anzahl und Vielfachen von sich selbst.\n
 Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürlichen Zahlen auch unendlich ist.]]></string>
     <string name="help_text_primorial">In der Mathematik und vor allem in der Zahlentheorie ist das Primarium eine Funktion von natürlichen Zahlen zu natürlichen Zahlen, die der faktoriellen Funktion ähnlich sind, aber anstatt sukzessive positive ganze Zahlen zu multiplizieren, werden nur Primzahlen multipliziert. Primär einer Zahl wird mit n# bezeichnet.</string>
-    <string name="hide_explain">[-] Ausblenden ◂</string>
+    <string name="hide_explain"><u>[-] Ausblenden ◂</u></string>
     <string name="history_deleted">Geschichte der Ergebnisse gelöscht</string>
     <string name="home_divisors_description">▸ Divisoren - Berechnen Sie alle Divisoren einer Ganzzahl</string>
     <string name="home_factorize_description">▸ Prüfen Sie, ob eine Zahl prim ist</string>
@@ -230,4 +230,5 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="action_all_favorites">Alle Favoriten anzeigen</string>
     <string name="result_is_favorite">Dieses Ergebnis wird in den Favoriten gespeichert!</string>
     <string name="give">Die App ist kostenlos, keine Werbung, nervt Sie nicht mit unsinniger Werbung, aber ich muss mir Zeit nehmen, um die App auf dem neuesten Stand zu halten, muss die Entwicklungskosten decken, wenn Sie möchten Um zur Entwicklung von Prime Number Tools PRO beizutragen, oder wenn ich der App eine weitere Funktion hinzufügen möchte, erwägen Sie eine Spende über PayPal und ich werde sie implementieren! In meinem Blog finden Sie Informationen, die mir helfen können. Vielen Dank! 😀 </string>
+    <string name="favorite_star">Favorite star</string>
 </resources>

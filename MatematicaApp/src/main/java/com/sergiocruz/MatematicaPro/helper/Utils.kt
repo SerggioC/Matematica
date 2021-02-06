@@ -48,7 +48,7 @@ enum class InfoLevel {
 fun cancelAsyncTask(task: AsyncTask<*, *, *>, context: Context?): Boolean {
     return if (task.status == AsyncTask.Status.RUNNING) {
         task.cancel(true)
-        showCustomToast(context, context?.getString(R.string.canceled_op), InfoLevel.WARNING)
+        showCustomToast(context, context?.getString(R.string.canceled_op), WARNING)
         true
     } else false
 }

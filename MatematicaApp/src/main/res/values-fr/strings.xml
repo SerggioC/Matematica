@@ -49,7 +49,7 @@
     <string name="divisors_of">Diviseurs de</string>
     <string name="errorsavingimg">Erreur lors de l\'enregistrement de l\'image.</string>
     <string name="expl_text_divisores_1">▻ Divisez le nombre successivement par le nombre premier le plus bas, afin d\'obtenir une division exacte, jusqu\'à obtenir 1:</string>
-    <string name="explain">Afficher l\'explication ▾</string>
+    <string name="show_explain"><u>Afficher l\'explication ▾</u></string>
     <string name="explain_divisores2">▻ Le nombre est égal au produit des facteurs premiers obtenus:</string>
     <string name="explain_divisores3">▻ facteurs répétés sont comptés et cette valeur est placée en exposant:</string>
     <string name="factorization_of">Factorisation des</string>
@@ -66,7 +66,7 @@
     <string name="help_text_fatores">La décomposition d\'un nombre naturel en un produit de facteurs premiers est appelée factorisation.\n La factorisation de tout nombre premier entraînera le nombre lui-même, car ceux-ci ne sont pas factorisables. En factorisation, le même facteur premier peut se produire plus d\'une fois. Lorsque cela se produit, nous représentons le facteur sous la forme d\'une puissance dont l\'exposant est le nombre d\'occurrences de ce facteur et la base est le facteur lui-même.\n Pour effectuer la décomposition d\'un nombre en un produit de facteurs premiers, nous devons chercher le nombre premier le plus bas capable de le diviser en une division exacte (reste de la division égale à zéro) et de le diviser par ce nombre aussi longtemps que possible.\n Ensuite, nous devons chercher le prochain nombre premier capable de le diviser et de continuer dans cette procédure jusqu\'à ce que le quotient de la division résulte en 1. A ce moment, nous aurons tous les facteurs premiers qui composent ce nombre.</string>
     <string name="help_text_mdc">Diviseur est un nombre naturel non nul qui, en divisant un autre nombre naturel, produit une division avec le reste égal à zéro, c\'est-à-dire produit une division exacte. En ce sens, l\'ensemble des nombres formés par les diviseurs de n\'importe quel nombre naturel est un ensemble fini.\n Si le nombre 1 est le seul diviseur commun à un ensemble de nombres naturels, on dit que les nombres de cet ensemble sont relativement premiers ou également appelés coprimes.\n Une méthode pratique pour déterminer le PGCD d\'un groupe de nombres naturels est de déterminer l\'ensemble des diviseurs de chaque nombre et de vérifier quelle est la plus grande valeur commune à tous les ensembles, ce sera le plus grand diviseur commun.\n Une autre méthode pour la détermination de PGCD est par factorisation. Le PGCD sera le produit de facteurs communs avec les plus faibles exposants.</string>
     <string name="help_text_mmc">Étant donné que deux ou plusieurs nombres naturels différents de zéro, le plus petit commun multiple (PPCM) est le plus petit de ses multiples qui est commun à tous, à l\'exception de zéro qui est le plus bas des nombres naturels et est un multiple de tous.\n  Les multiples d\'un nombre naturel sont tous ceux qui se divisent par ce nombre ont zéro comme le reste de la division.\n Les multiples d\'un nombre naturel sont le résultat du produit de ce nombre par un autre nombre naturel.\n Puisque l\'ensemble des nombres naturels est un ensemble infini, les multiples d\'un nombre sont également infinis.\n Une méthode pratique pour déterminer le PPCM d\'un ensemble de nombres naturels est la décomposition en facteurs premiers.\n PPCM est le produit de facteurs communs et non commun, avec les plus grands exposants.</string>
-    <string name="hide_explain">Masquer Explication ◂</string>
+    <string name="hide_explain"><u>Masquer Explication ◂</u></string>
     <string name="history_deleted">Historique des résultats supprimés</string>
     <string name="home_divisors_description">▸ Diviseurs - Calcule tous les diviseurs d\'un entier\n▸ Vérifier si un nombre est premier</string>
     <string name="home_factorize_description">▸ Factoriser - Décomposer un nombre en facteurs premiers\n▸ Vérifier si un nombre est premier / test de primalité</string>
@@ -219,6 +219,7 @@
     <string name="action_share_result_as_text">Partager sous forme de texte…</string>
     <string name="result_is_favorite">Ce résultat est enregistré dans les favoris!</string>
     <string name="give">L\'application est gratuite, pas de publicité, ne vous ennuiera pas avec des publicités absurdes, mais je dois prendre mon temps pour garder l\'application à jour, je dois couvrir les coûts de développement, donc si vous le souhaitez pour contribuer au développement de Prime Number Tools PRO, ou souhaiterais que j\'ajoute une autre fonctionnalité, une fonctionnalité à l\'application envisage un don via PayPal et je vais l\'implémenter! Consultez mon blog où vous pouvez trouver les informations pour m\'aider. Je vous remercie! 😀 </string>
+    <string name="favorite_star">Favorite star</string>
 </resources>
 
 

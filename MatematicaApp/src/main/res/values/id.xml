@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="expanded" type="id" />
+    <item name="initialHeight" type="id" />
     <item name="texto" type="id" />
 </resources>

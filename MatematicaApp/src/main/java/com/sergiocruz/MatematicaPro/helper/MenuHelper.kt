@@ -15,12 +15,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import com.google.android.material.snackbar.Snackbar
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
@@ -30,6 +30,7 @@ import com.sergiocruz.MatematicaPro.allPermissionsGranted
 import com.sergiocruz.MatematicaPro.getRuntimePermissions
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /*****
  * Project Matematica
@@ -110,36 +111,30 @@ object MenuHelper : MainActivity.PermissionResultInterface {
 
     fun shareHistory(activity: Activity) {
         val historyView = activity.findViewById<ViewGroup>(history)
-        val textViewsTagTexto = getViewsByTag(historyView, "texto")
-        if (textViewsTagTexto.size > 0) {
+        val textViews = getTextViewsRecursively(historyView)
+        if (textViews.size > 0) {
             var finalText = ""
-            for (i in textViewsTagTexto.indices) {
-                if (textViewsTagTexto[i] is TextView) {
-                    var textFromView =
-                        (textViewsTagTexto[i] as TextView).text.toString() + "\n"
-                    val ss = SpannableString((textViewsTagTexto[i] as TextView).text)
-                    val spans = ss.getSpans(0, (textViewsTagTexto[i] as TextView).text.length, SuperscriptSpan::class.java)
-                    for ((corr, span) in spans.withIndex()) {
-                        val start = ss.getSpanStart(span) + corr
-                        textFromView = textFromView.substring(0, start) + "^" +
-                                textFromView.substring(start)
-                    }
-                    finalText += textFromView + "\n"
+            textViews.forEach { textView ->
+                var textFromView = textView.text.toString() + "\n"
+                val ss = SpannableString(textView.text)
+                val spans = ss.getSpans(0, textView.text.length, SuperscriptSpan::class.java)
+                for ((corr, span) in spans.withIndex()) {
+                    val start = ss.getSpanStart(span) + corr
+                    textFromView = textFromView.substring(0, start) + "^" + textFromView.substring(start)
                 }
+                finalText += textFromView + "\n"
             }
 
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, activity.resources.getString(R.string.app_long_description) +
-                    BuildConfig.VERSION_NAME + "\n" + finalText)
+            sendIntent.putExtra(Intent.EXTRA_TEXT, activity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n" + finalText)
             sendIntent.type = "text/plain"
             activity.startActivity(Intent.createChooser(sendIntent, activity.resources.getString(R.string.app_name)))
 
         } else {
-            val thetoast =
-                Toast.makeText(activity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
-            thetoast.setGravity(Gravity.CENTER, 0, 0)
-            thetoast.show()
+            val toast = Toast.makeText(activity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
+            toast.setGravity(Gravity.CENTER, 0, 0)
+            toast.show()
         }
     }
 
@@ -193,14 +188,14 @@ object MenuHelper : MainActivity.PermissionResultInterface {
                 for (i in 0 until childCount) {
                     val cardAtIndex = historyView.getChildAt(i) as CardView
                     cardAtIndex.setCardBackgroundColor(
-                        ContextCompat.getColor(mActivity, R.color.cardsColor)
+                            ContextCompat.getColor(mActivity, R.color.cardsColor)
                     )
                     saveViewToImage(cardAtIndex, i, false)?.also {
                         imagePaths.add(it)
                     }
                 }
                 if (imagePaths.isNotEmpty()) {
-                    openImagesFolderSnackbar(historyView, R.string.all_images_saved, imagePaths.get(0))
+                    openImagesFolderSnackbar(historyView, R.string.all_images_saved, imagePaths[0])
                 } else {
                     val theToast = Toast.makeText(mActivity, mActivity.getString(R.string.errorsavingimg), Toast.LENGTH_SHORT)
                     theToast.setGravity(Gravity.CENTER, 0, 0)
@@ -215,101 +210,65 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         }
     }
 
-    private fun getViewsByTag(root: ViewGroup, tag: String?): ArrayList<View> {
-        val views = ArrayList<View>()
-        val childCount = root.childCount
-        for (i in 0 until childCount) {
-            val child = root.getChildAt(i)
-            if (child is ViewGroup) {
-                views.addAll(getViewsByTag(child, tag))
-            }
-            val tagObj = child.getTag(R.id.texto)
-            if (tagObj != null && tagObj == tag) {
-                views.add(child)
-            }
-        }
-        return views
-    }
-
-    fun expandIt(view: View, newHeight: Int?) {
-        view.measure(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-
-        val targetHeight = newHeight ?: view.measuredHeight
-
+    fun expandIt(view: View, newHeight: Int? = null) {
+        val targetHeight = view.getTag(R.id.initialHeight) as? Int ?: newHeight ?: 0
         // Older versions of android (pre API 21) cancel animations for views with a height of 0.
         view.layoutParams.height = 1
         view.visibility = View.VISIBLE
         val animation = object : Animation() {
-
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
                 view.layoutParams.height = (targetHeight * interpolatedTime).toInt() + 1
+                view.alpha = interpolatedTime
                 view.requestLayout()
             }
-
             override fun willChangeBounds() = true
         }
-
-        var animating = false
-
-        animation.setAnimationListener(object: Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-
+        animation.duration = 300L
+        var isAnimating = false
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
-                animating = false
-                view.setTag(R.id.expanded, true)
+                isAnimating = false
             }
-
             override fun onAnimationStart(animation: Animation?) {
-                animating = true
+                isAnimating = true
             }
         })
 
-        animation.duration =
-            (targetHeight / view.context.resources.displayMetrics.density).toLong() * 3
-        if (animating.not()) {
+        if (isAnimating.not()) {
             view.startAnimation(animation)
         }
     }
 
     fun collapseIt(view: View) {
         val initialHeight = view.measuredHeight
-        val animation = object : Animation() {
 
+        val animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
                 if (interpolatedTime == 1f) {
                     view.visibility = View.GONE
                 } else {
-                    view.layoutParams.height = initialHeight -
-                            (initialHeight * interpolatedTime).toInt()
+                    view.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                    view.alpha = 1 - interpolatedTime
                     view.requestLayout()
                 }
             }
-
             override fun willChangeBounds() = true
         }
-        var animating = false
+        var isAnimating = false
 
-        animation.duration =
-            (initialHeight / view.context.resources.displayMetrics.density).toLong() * 3
-        animation.setAnimationListener(object: Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {
-            }
-
+        animation.duration = 300L
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
-                animating = false
-                view.setTag(R.id.expanded, false)
+                isAnimating = false
             }
-
             override fun onAnimationStart(animation: Animation?) {
-                animating = true
+                isAnimating = true
             }
         })
 
-        if (animating.not()) {
+        if (isAnimating.not()) {
             view.startAnimation(animation)
         }
     }

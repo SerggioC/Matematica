@@ -78,7 +78,7 @@
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/apptheme_btn_default_holo_light"
+            android:background="@drawable/green_button_style"
             android:text="@string/ckeck"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"

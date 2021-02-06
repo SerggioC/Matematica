@@ -227,21 +227,20 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     button_calc_multiplos.isClickable = true
                 } else {
                     theCardView?.tag = maxValue
-                    val textViewPreResult: TextView
+                    val textViewPreResult: TextView?
                     if (shouldShowPerformance) {
-                        textViewPreResult = (theCardView?.getChildAt(0) as LinearLayout).getChildAt(1) as TextView
-                        val gradientSeparator = ((theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as ConstraintLayout).getChildAt(0) as TextView
+                        textViewPreResult = (theCardView?.getChildAt(0) as LinearLayout).getChildAt(1) as? TextView
+                        val gradientSeparator = ((theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as? ConstraintLayout)?.getChildAt(0) as? TextView
                         val decimalFormatter = DecimalFormat("#.###")
                         val elapsed =
                             getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                        gradientSeparator.text = elapsed
+                        gradientSeparator?.text = elapsed
                     } else {
-                        textViewPreResult =
-                            (theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as TextView
+                        textViewPreResult = (theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as? TextView
                     }
-                    var preResult = textViewPreResult.text.toString()
+                    var preResult = textViewPreResult?.text.toString()
                     preResult = preResult.substring(0, preResult.length - 4) + result
-                    textViewPreResult.text = preResult
+                    textViewPreResult?.text = preResult
                 }
             }
             theCardView = null

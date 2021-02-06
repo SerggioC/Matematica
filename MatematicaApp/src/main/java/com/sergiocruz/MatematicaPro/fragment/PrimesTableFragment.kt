@@ -129,20 +129,18 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             }
         })
 
-        cardViewMain.setTag(R.id.expanded, true)
-
         historyGridRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             var state = SCROLL_STATE_IDLE
             var locked = false
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
-                    if ((cardViewMain?.getTag(R.id.expanded) as Boolean?) == true) {
+                    if (cardViewMain?.visibility == VISIBLE) {
                         collapseIt(cardViewMain)
                         locked = true
                     }
                 } else if (dy < 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
-                    if ((cardViewMain?.getTag(R.id.expanded) as Boolean?) == false) {
+                    if (cardViewMain?.visibility == GONE) {
                         expandIt(cardViewMain, initialHeight)
                         locked = true
                     }
@@ -153,7 +151,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 this.state = newState
-                if (recyclerView.height <= (recyclerView.parent as ConstraintLayout).height && (cardViewMain?.getTag(R.id.expanded) as Boolean?) == false && state == SCROLL_STATE_SETTLING) {
+                if (recyclerView.height <= (recyclerView.parent as ConstraintLayout).height && cardViewMain?.visibility == GONE && state == SCROLL_STATE_SETTLING) {
                     cardViewMain?.let {
                         expandIt(it, initialHeight)
                     }

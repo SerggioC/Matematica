@@ -436,7 +436,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         val hideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
         hideExpl.setSafeSpan(UnderlineSpan(), 0, hideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
-        val showExpl = SpannableStringBuilder(getString(R.string.explain))
+        val showExpl = SpannableStringBuilder(getString(R.string.show_explain))
         showExpl.setSafeSpan(UnderlineSpan(), 0, showExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
         //Linearlayout horizontal com o explainlink e gradiente

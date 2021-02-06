@@ -7,13 +7,15 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.*
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.logEvent
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.TooltipManager
@@ -25,9 +27,7 @@ import com.sergiocruz.MatematicaPro.helper.CreateCardView
 import com.sergiocruz.MatematicaPro.helper.MenuHelper
 import com.sergiocruz.MatematicaPro.helper.launchSafeCoroutine
 import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
@@ -59,6 +59,14 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         scale = resources.displayMetrics.density
         getBasePreferences()
         clearTemporaryResultsFromDB()
+        registerScreenViewForAnalytics()
+    }
+
+    private fun registerScreenViewForAnalytics() {
+        FirebaseAnalytics.getInstance(requireContext()).logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, operationName)
+            param(FirebaseAnalytics.Param.SCREEN_CLASS, operationName)
+        }
     }
 
     @StringRes
@@ -192,6 +200,23 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
                 }
         }
         return binding
+    }
+
+    fun showFavoriteStarForInput(star: ImageView, input: String) {
+        star.context?.let { ctx ->
+            launchSafeCoroutine {
+                val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
+                withContext(Dispatchers.Main) {
+                    star.visibility = if (saved) View.VISIBLE else View.GONE
+                    star.setOnClickListener {
+                        TooltipManager.showTooltipOn(star, getString(R.string.result_is_favorite))
+                        val animation = ObjectAnimator.ofFloat(star, View.ROTATION_Y, 0.0f, 360f)
+                        animation.duration = 1500
+                        animation.start()
+                    }
+                }
+            }
+        }
     }
 
 

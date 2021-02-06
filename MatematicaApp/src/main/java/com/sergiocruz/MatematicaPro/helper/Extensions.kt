@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.text.TextUtils
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.SuperscriptSpan
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -18,6 +16,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.view.children
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -193,8 +192,12 @@ fun getWrapWrapParams() = LinearLayout.LayoutParams(
 )
 
 fun SpannableStringBuilder.setSafeSpan(which: Any, start: Int, end: Int, flags: Int) {
-    if (end < start || start > length || end > length || start < 0 || end < 0) return
-    setSpan(which, start, end, flags)
+    if (end < start || start > length || end > length || start < 0 || end < 0 || this.isEmpty()) return
+    try {
+        setSpan(which, start, end, flags)
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
 }
 
 fun Activity.getNewTextView(withTag: String, @StringRes andText: Int, textSize: Float = 15f): TextView {
@@ -322,6 +325,36 @@ fun launchSafeCoroutine(block: suspend () -> Unit) {
     } catch (e: Exception) {
         FirebaseCrashlytics.getInstance().recordException(e)
     }
+}
+
+fun getTextViewsRecursively(root: ViewGroup): ArrayList<TextView> {
+    val textViews = ArrayList<TextView>()
+    root.children.forEach { child ->
+        if (child is ViewGroup) {
+            textViews.addAll(getTextViewsRecursively(child))
+        } else if (child is TextView) {
+            textViews.add(child)
+        }
+    }
+    return textViews
+}
+
+fun ViewGroup.getTextFromTextViews(): String {
+    val textViews = getTextViewsRecursively(this)
+    var finalText = ""
+    if (textViews.size > 0) {
+        textViews.forEach { textView ->
+            var textFromView = textView.text.toString() + "\n"
+            val ss = SpannableString(textView.text)
+            val spans = ss.getSpans(0, textView.text.length, SuperscriptSpan::class.java)
+            for ((corr, span) in spans.withIndex()) {
+                val start = ss.getSpanStart(span) + corr
+                textFromView = textFromView.substring(0, start) + "^" + textFromView.substring(start)
+            }
+            finalText += textFromView + "\n"
+        }
+    }
+    return finalText
 }
 
 

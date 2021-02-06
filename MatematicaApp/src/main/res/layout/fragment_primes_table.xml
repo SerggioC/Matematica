@@ -136,7 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:background="@drawable/apptheme_btn_default_holo_light"
+            android:background="@drawable/green_button_style"
             android:text="@string/gerar"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="@+id/calcMode"

@@ -1,18 +1,21 @@
 package com.sergiocruz.MatematicaPro.activity
 
 import android.annotation.SuppressLint
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.databinding.ActivityAboutBinding
+import java.util.*
 
 class AboutActivity : AppCompatActivity() {
 
     private var _binding: ActivityAboutBinding? = null
     private val binding: ActivityAboutBinding
-    get() = _binding!!
+        get() = _binding!!
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -46,7 +46,7 @@
     <string name="divisores_number">Divisores de un número</string>
     <string name="divisors">Divisores</string>
     <string name="divisors_of">Divisores de</string>
-    <string name="explain">Mostrar explicación ▾</string>
+    <string name="show_explain"><u>Mostrar explicación ▾</u></string>
     <string name="factorization_of">Factorización de</string>
     <string name="factorize">Factorizar el número</string>
     <string name="factorizing">Factorizando…</string>
@@ -80,7 +80,7 @@
    Otro método para la determinación de MCD es a través de la factorización. El MCD será el producto de los factores comunes con menor exponente.
 </string>
     <string name="help_text_mmc"> Dado dos o más números naturales distintos de cero, el Mínimo Común Múltiplo (MCM) es el menor de sus múltiplos que es común a todos ellos, excepto para cero que es el más pequeño de los números naturales y es un múltiplo de todos ellos.\n    Los múltiplos de un número natural son todos los que se dividen por este número tienen cero como el resto de la división.\n    Los múltiplos de un número natural son el resultado del producto de este número por otro número natural.\n    Puesto que el conjunto de números naturales es un conjunto infinito, los múltiplos de un número son también infinitos.\n    Un método práctico para determinar la MCM de un conjunto de números naturales es la descomposición en factores primos.\n    MCM es el producto de los factores comunes e no comunes, con los mayores exponentes. </string>
-    <string name="hide_explain">Ocultar explicación ◂</string>
+    <string name="hide_explain"><u>Ocultar explicación ◂</u></string>
     <string name="history_deleted">Historial de resultados eliminado</string>
     <string name="home_divisors_description">▸ Divisores - Calcular todos los divisores de un entero\n▸ Compruebe si un número es primo</string>
     <string name="home_factorize_description">▸ Factorizar - Descomponer un número en factores primos\n▸ Compruebe si un número es primo / Prueba de primalidad</string>
@@ -227,4 +227,5 @@
     <string name="action_share_result_as_text">Compartir como texto…</string>
     <string name="result_is_favorite">¡Este resultado se guarda en favoritos!</string>
     <string name="give"> La aplicación es gratuita, sin anuncios, no te molestará con anuncios sin sentido, pero necesito tomarme mi tiempo para mantener la aplicación actualizada, necesito cubrir los costos de desarrollo, así que si lo deseas para contribuir al desarrollo de Prime Number Tools PRO, o me gustaría que agregara otra característica, funcionalidad a la aplicación, considere una donación a través de PayPal y la implementaré. Mira mi blog donde puedes encontrar la información que me ayude. ¡Gracias! 😀 </string>
+    <string name="favorite_star">Favorite star</string>
 </resources>

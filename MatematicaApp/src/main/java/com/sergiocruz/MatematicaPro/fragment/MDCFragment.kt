@@ -411,7 +411,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     ) {
         val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
         ssbHideExpl.setSafeSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
-        val ssbShowExpl = SpannableStringBuilder(getString(R.string.explain))
+        val ssbShowExpl = SpannableStringBuilder(getString(R.string.show_explain))
         ssbShowExpl.setSafeSpan(UnderlineSpan(), 0, ssbShowExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
 
         // Linearlayout

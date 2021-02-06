@@ -1,5 +1,6 @@
 package com.sergiocruz.MatematicaPro.fragment
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.graphics.Color
 import android.os.AsyncTask
@@ -9,9 +10,7 @@ import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
@@ -22,18 +21,21 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.Ui.TooltipManager
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
+import com.sergiocruz.MatematicaPro.databinding.FatorizarResultBinding
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import com.sergiocruz.MatematicaPro.model.InputTags
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_fatorizar.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.text.DecimalFormat
 import java.util.*
 
 class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
@@ -136,217 +138,90 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             hasExpoentes: Boolean
     ) {
 
-        val cardView = ClickableCardView(activity as Activity)
-        cardView.layoutParams = getMatchWrapParams()
-        cardView.preventCornerOverlap = true
-
-        //int pixels = (int) (dips * scale + 0.5f);
-        val lrDip = (6 * scale + 0.5f).toInt()
-        val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = 2 * scale + 0.5f
-        cardView.cardElevation = 2 * scale + 0.5f
-        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardView.useCompatPadding = true
-
-        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
-        cardView.setCardBackgroundColor(cvColor)
-
-        // Add cardview to history layout at the top (index 0)
-        getHistoryLayout()?.addView(cardView, 0)
-
-        val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = getMatchWrapParams()
-        llVerticalRoot.orientation = LinearLayout.VERTICAL
-
         val ssbFatoresTop = SpannableStringBuilder(ssbFatores)
         val spans = ssbFatoresTop.getSpans(0, ssbFatoresTop.length, ForegroundColorSpan::class.java)
         for (i in spans.indices) {
             ssbFatoresTop.removeSpan(spans[i])
         }
 
-        //Adicionar o texto com o resultado da fatorização com expoentes
+        // Adicionar o texto com o resultado da fatorização com expoentes
         val strNum = getString(R.string.factorization_of) + " " + number + " = \n"
         val ssbNum = SpannableStringBuilder(strNum)
         ssbNum.append(ssbFatoresTop)
 
-        // criar novo Textview para o resultado da fatorização e estrela dos favoritos
-        val textWithStar = getFavoriteStarForCard(ssb = ssbNum, input = number.toString())
+        val layout = FatorizarResultBinding.inflate(LayoutInflater.from(context))
+        with(layout) {
+            textViewTop.text = ssbNum
 
-        // add the textview com os fatores multiplicados to the Linear layout vertical root
-        llVerticalRoot.addView(textWithStar.root)
+            showFavoriteStarForInput(imageStar, number.toString())
 
-        // -1 = sempre  0 = quando pedidas   1 = nunca
-        if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-
-            val llVerticalExpl = LinearLayout(activity)
-            llVerticalExpl.layoutParams = getMatchWrapParams()
-            llVerticalExpl.orientation = LinearLayout.VERTICAL
-            llVerticalExpl.tag = "ll_vertical_expl"
-
-            val textViewExplanations = TextView(activity)
-            textViewExplanations.layoutParams = getMatchWrapParams()
-            textViewExplanations.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            val explainText1 = getString(R.string.expl_text_divisores_1)
-            val ssbExplain1 = SpannableStringBuilder(explainText1)
-            val boldColorSpan =
-                ForegroundColorSpan(ContextCompat.getColor(requireActivity(), R.color.boldColor))
-            ssbExplain1.setSafeSpan(boldColorSpan, 0, ssbExplain1.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            textViewExplanations.text = ssbExplain1
-            textViewExplanations.setTag(R.id.texto, "texto")
-            llVerticalExpl.addView(textViewExplanations)
-
-            val llHorizontal = LinearLayout(activity)
-            llHorizontal.layoutParams = getMatchWrapParams()
-            llHorizontal.orientation = HORIZONTAL
-            llHorizontal.tag = "ll_horizontal_expl"
-
-            val llVerticalResults = LinearLayout(activity)
-            llVerticalResults.layoutParams = getWrapWrapParams()
-            llVerticalResults.orientation = LinearLayout.VERTICAL
-            llVerticalResults.setPadding(0, 0, (4 * scale + 0.5f).toInt(), 0)
-
-            val verticalSeparador = LinearLayout(activity)
-            verticalSeparador.layoutParams = LinearLayout.LayoutParams(
-                    LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
-                    LinearLayoutCompat.LayoutParams.MATCH_PARENT
-            )
-            verticalSeparador.orientation = LinearLayout.VERTICAL
-            verticalSeparador.setBackgroundColor(
-                    ContextCompat.getColor(
-                            requireActivity(),
-                            R.color.separatorLineColor
-                    )
-            )
-            val oneDp = (1.2 * scale + 0.5f).toInt()
-            verticalSeparador.setPadding(oneDp, 4, 0, oneDp)
-
-            val llVerticalDivisores = LinearLayout(activity)
-            llVerticalDivisores.layoutParams = getWrapWrapParams()
-            llVerticalDivisores.orientation = LinearLayout.VERTICAL
-            llVerticalDivisores.setPadding((4 * scale + 0.5f).toInt(), 0, (8 * scale + 0.5f).toInt(), 0)
-
-            val textViewResults = TextView(activity)
-            textViewResults.layoutParams = getWrapWrapParams()
-            textViewResults.setTag(R.id.texto, "texto")
-            textViewResults.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            textViewResults.gravity = Gravity.RIGHT
-            val ssbStrResults = SpannableStringBuilder(str_results)
-            ssbStrResults.setSafeSpan(RelativeSizeSpan(0.9f), ssbStrResults.length - str_results.length, ssbStrResults.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            textViewResults.text = ssbStrResults
-
-            llVerticalResults.addView(textViewResults)
-
-            val textViewDivisores = TextView(activity)
-            textViewDivisores.layoutParams = getWrapWrapParams()
-            textViewDivisores.setTag(R.id.texto, "texto")
-            textViewDivisores.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            textViewDivisores.gravity = Gravity.LEFT
-            ssb_str_divisores.setSafeSpan(
-                    RelativeSizeSpan(0.9f),
-                    ssb_str_divisores.length - ssb_str_divisores.length,
-                    ssb_str_divisores.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            textViewDivisores.text = ssb_str_divisores
-
-            llVerticalDivisores.addView(textViewDivisores)
-
-            //Adicionar os LL Verticais ao Horizontal
-            llHorizontal.addView(llVerticalResults)
-
-            llHorizontal.addView(verticalSeparador)
-
-            //LinearLayout divisores
-            llHorizontal.addView(llVerticalDivisores)
-
-            val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
-            ssbHideExpl.setSafeSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
-            val ssbShowExpl = SpannableStringBuilder(getString(R.string.explain))
-            ssbShowExpl.setSafeSpan(UnderlineSpan(), 0, ssbShowExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            val explainLink = TextView(activity)
-            explainLink.layoutParams = getWrapWrapParams()
-            explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
-
-            val isExpanded = arrayOf(false)
-
-            if (shouldShowExplanation == "-1") {  //Always show Explanation
-                llVerticalExpl.visibility = View.VISIBLE
-                explainLink.text = ssbHideExpl
-                isExpanded[0] = true
-            } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
-                llVerticalExpl.visibility = View.GONE
-                explainLink.text = ssbShowExpl
-                isExpanded[0] = false
-            }
-
-            explainLink.setOnClickListener { view ->
-                val explView =
-                    (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
-                if (!isExpanded[0]) {
-                    (view as TextView).text = ssbHideExpl
-                    expandIt(explView, null)
-                    isExpanded[0] = true
-
-                } else if (isExpanded[0]) {
-                    (view as TextView).text = ssbShowExpl
-                    collapseIt(explView)
-                    isExpanded[0] = false
+            explainLink.setOnClickListener {
+                if (explainContainer.visibility == View.VISIBLE) {
+                    collapseIt(explainContainer)
+                    explainLink.setText(R.string.show_explain)
+                } else {
+                    expandIt(explainContainer)
+                    explainLink.setText(R.string.hide_explain)
                 }
             }
 
-            // Linearlayout horizontal com o explainlink e gradiente
-            val llHorizontalLink = LinearLayout(activity)
-            llHorizontalLink.orientation = HORIZONTAL
-            llHorizontalLink.layoutParams = getMatchWrapParams()
-            llHorizontalLink.addView(explainLink)
-
-            context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime)
-                llHorizontalLink.addView(separator)
+            if (shouldShowPerformance) {
+                val formatter1 = DecimalFormat("#.###")
+                val elapsed = context?.getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                textViewPerformance.text = elapsed
+                textViewPerformance.visibility = View.VISIBLE
+            } else {
+                textViewPerformance.visibility = View.GONE
             }
 
-            llVerticalRoot.addView(llHorizontalLink)
-            llVerticalExpl.addView(llHorizontal)
-
-            val textViewFactExpanded = TextView(activity)
-            textViewFactExpanded.layoutParams = getMatchWrapParams()
-            textViewFactExpanded.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-            textViewFactExpanded.gravity = Gravity.LEFT
-            val explainText2 = getString(R.string.explain_divisores2) + "\n"
-            val ssbExplain2 = SpannableStringBuilder(explainText2)
-            ssbExplain2.setSafeSpan(boldColorSpan, 0, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            ssbExplain2.append(str_fact_exp)
-            ssbExplain2.setSafeSpan(RelativeSizeSpan(0.9f), ssbExplain2.length - str_fact_exp.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            if (hasExpoentes) {
-                val textFactRepetidos = "\n" + getString(R.string.explain_divisores3) + "\n"
-                ssbExplain2.append(textFactRepetidos)
-                ssbExplain2.setSafeSpan(boldColorSpan, ssbExplain2.length - textFactRepetidos.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssbExplain2.append(ssbFatores)
-                ssbExplain2.setSafeSpan(RelativeSizeSpan(0.9f), ssbExplain2.length - ssbFatores.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssbExplain2.setSafeSpan(StyleSpan(android.graphics.Typeface.BOLD), ssbExplain2.length - ssbFatores.length, ssbExplain2.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (shouldShowExplanation == "1") {   // 1 = nunca mostrar
+                explainLink.visibility = View.GONE
+                explainContainer.visibility = View.GONE
+                if (shouldShowPerformance.not()) {
+                    gradientSeparator.visibility = View.GONE
+                }
             }
 
-            textViewFactExpanded.text = ssbExplain2
-            textViewFactExpanded.setTag(R.id.texto, "texto")
-
-            llVerticalExpl.addView(textViewFactExpanded)
-            llVerticalRoot.addView(llVerticalExpl)
-
-        } else if (shouldShowExplanation == "1") { //nunca mostrar explicações
-            context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), operationName)
-                llVerticalRoot.addView(separator)
+            // -1 = sempre  0 = quando pedidas
+            if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
+                textViewResults.text = str_results
+                textViewDivisores.text = ssb_str_divisores
+                textViewAllResults.text = str_fact_exp
+                if (hasExpoentes) {
+                    explainTitle3.visibility = View.VISIBLE
+                    textViewFatores.visibility = View.VISIBLE
+                    textViewFatores.text = ssbFatores
+                } else {
+                    explainTitle3.visibility = View.GONE
+                    textViewFatores.visibility = View.GONE
+                }
+                explainContainer.viewTreeObserver.let { vto ->
+                    vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            if (vto.isAlive) {
+                                vto.removeOnGlobalLayoutListener(this)
+                            } else {
+                                explainContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            }
+                            val hei = explainContainer.measuredHeight
+                            explainContainer.setTag(R.id.initialHeight, hei)
+                            if (shouldShowExplanation == "-1") {  //Always show Explanation
+                                explainContainer.visibility = View.VISIBLE
+                                explainLink.setText(R.string.hide_explain)
+                            } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
+                                explainContainer.visibility = View.GONE
+                                explainLink.setText(R.string.show_explain)
+                            }
+                        }
+                    })
+                }
             }
+
+            root.tag = InputTags(input = number.toString(), operation = operationName)
+            root.setOnTouchListener(SwipeToDismissTouchListener(root, activity as Activity))
         }
 
-        cardView.addView(llVerticalRoot)
-
-        // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity))
-        
-        cardView.tag = InputTags(input = number.toString(), operation = operationName)
+        getHistoryLayout()?.addView(layout.root, 0)
     }
 
 

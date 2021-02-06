@@ -339,7 +339,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/apptheme_btn_default_holo_light"
+                            android:background="@drawable/green_button_style"
                             android:text="@string/calculate"
                             android:textAllCaps="false" />
 
