@@ -15,7 +15,7 @@
     <string name="activity_title_send_mail">Send e-mail</string>
     <string name="add_num_inteiro">Enter an integer number</string>
     <string name="add_number_pair">Enter at least one pair of integers</string>
-    <string name="_incomplete_calc">Incomplete calculation…</string>
+    <string name="incomplete_calc">Incomplete calculation…</string>
     <string name="_numero_primo">Prime number</string>
     <string name="calculate">Calculate</string>
     <string name="canceled_op">Operation canceled.</string>

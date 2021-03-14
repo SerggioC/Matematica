@@ -4,13 +4,8 @@
         <shape android:shape="rectangle">
             <gradient
                 android:angle="0"
-                android:startColor="@color/cardsColor"
+                android:startColor="@android:color/transparent"
                 android:endColor="@color/lightBlue" />
-        </shape>
-    </item>
-    <item android:bottom="1dp">
-        <shape android:shape="rectangle">
-            <solid android:color="@color/cardsColor" />
         </shape>
     </item>
 </layer-list>

@@ -4,7 +4,7 @@ import timber.log.Timber
 
 class DebugTree : Timber.DebugTree() {
 
-    override fun createStackElementTag(element: StackTraceElement): String? {
+    override fun createStackElementTag(element: StackTraceElement): String {
         return String.format(
             "Sergio> %s; Method %s; Line %s",
             super.createStackElementTag(element),

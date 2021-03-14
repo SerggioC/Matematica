@@ -27,8 +27,6 @@ import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.ERROR
 import com.sergiocruz.MatematicaPro.helper.InfoLevel.WARNING
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.saveViewToImage
 import kotlinx.android.synthetic.main.fragment_primes_table.*
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +85,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
     override fun getLayoutIdForFragment() = R.layout.fragment_primes_table
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_primes_table, R.menu.menu_sub_main)
+    override fun optionsMenu() = R.menu.menu_primes_table
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getSharedPreferences()
@@ -100,17 +98,17 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
 
         cancelButton.setOnClickListener {
             if (asyncTask.status == AsyncTask.Status.RUNNING || status == OperationStatus.Running) {
-                displayCancelDialogBox(requireContext(), this)
+                displayCancelDialogBox(requireContext(), title, this)
             }
         }
         createTableBtn.setOnClickListener { makePrimesTable() }
         btn_clear_min.setOnClickListener { min_pt.setText("") }
         btn_clear_max.setOnClickListener { max_pt.setText("") }
 
-        bigNumbersTextWatcherMin = BigNumbersTextWatcher(min_pt, shouldFormatNumbers, this)
+        bigNumbersTextWatcherMin = BigNumbersTextWatcher(min_pt, shouldFormatNumbers, onEditor = this)
         min_pt.addTextChangedListener(bigNumbersTextWatcherMin)
 
-        bigNumbersTextWatcherMax = BigNumbersTextWatcher(max_pt, shouldFormatNumbers, this)
+        bigNumbersTextWatcherMax = BigNumbersTextWatcher(max_pt, shouldFormatNumbers, onEditor = this)
         max_pt.addTextChangedListener(bigNumbersTextWatcherMax)
 
         var initialHeight = 0
@@ -136,12 +134,12 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
                     if (cardViewMain?.visibility == VISIBLE) {
-                        collapseIt(cardViewMain)
+                        collapseThis(cardViewMain)
                         locked = true
                     }
                 } else if (dy < 0 && state == SCROLL_STATE_DRAGGING && locked.not()) {
                     if (cardViewMain?.visibility == GONE) {
-                        expandIt(cardViewMain, initialHeight)
+                        expandThis(cardViewMain, initialHeight)
                         locked = true
                     }
                 } else if (state == SCROLL_STATE_SETTLING) {
@@ -153,7 +151,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
                 this.state = newState
                 if (recyclerView.height <= (recyclerView.parent as ConstraintLayout).height && cardViewMain?.visibility == GONE && state == SCROLL_STATE_SETTLING) {
                     cardViewMain?.let {
-                        expandIt(it, initialHeight)
+                        expandThis(it, initialHeight)
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package com.sergiocruz.MatematicaPro.fragment
 
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,25 +9,28 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.android.billingclient.api.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.TooltipManager
 import com.sergiocruz.MatematicaPro.activity.AboutActivity
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.databinding.TextviewStarBinding
-import com.sergiocruz.MatematicaPro.helper.CreateCardView
-import com.sergiocruz.MatematicaPro.helper.MenuHelper
-import com.sergiocruz.MatematicaPro.helper.launchSafeCoroutine
-import com.sergiocruz.MatematicaPro.helper.openSettingsFragment
+import com.sergiocruz.MatematicaPro.helper.*
+import com.sergiocruz.MatematicaPro.model.SpannableSerializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.reflect.Type
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -39,13 +41,22 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var shouldShowExplanation: String = "0"
     var shouldFormatNumbers: Boolean = false
     private var shouldShowColors: Boolean = true
-    private var privateFColors: MutableList<Int> = mutableListOf()
 
     var allFavoritesCallback: ((List<HistoryDataClass>?) -> Unit)? = null
 
+    val withExplanations: Boolean
+        get() {
+            return shouldShowExplanation == "-1" || shouldShowExplanation == "0"
+        }
+
     val operationName: String = javaClass.simpleName
 
-    val gson by lazy { Gson() }
+    val gson: Gson by lazy {
+        val type: Type = object : TypeToken<SpannableStringBuilder>() {}.type
+        GsonBuilder()
+                .registerTypeAdapter(type, SpannableSerializer())
+                .create()
+    }
 
     abstract var title: Int
     abstract var pageIndex: Int
@@ -54,7 +65,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         PreferenceManager.getDefaultSharedPreferences(context)
-            .registerOnSharedPreferenceChangeListener(this)
+                .registerOnSharedPreferenceChangeListener(this)
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context)
         scale = resources.displayMetrics.density
         getBasePreferences()
@@ -77,13 +88,107 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     abstract fun getHistoryLayout(): LinearLayout?
 
-    abstract fun loadOptionsMenus(): List<Int>
+    @MenuRes
+    abstract fun optionsMenu(): Int?
+
+    private val purchasesUpdatedListener =
+            PurchasesUpdatedListener { billingResult, purchases ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+                    for (purchase in purchases) {
+                        handlePurchase(purchase)
+                    }
+                } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                    // Handle an error caused by a user cancelling the purchase flow.
+                } else {
+                    // Handle any other error codes.
+                }
+            }
+
+    private fun handlePurchase(purchase: Purchase?) {
+        // Purchase retrieved from BillingClient#queryPurchases or your PurchasesUpdatedListener.
+
+
+        // Verify the purchase.
+        // Ensure entitlement was not already granted for this purchaseToken.
+        // Grant entitlement to the user.
+
+        val consumeParams = ConsumeParams.newBuilder()
+                .setPurchaseToken(purchase!!.purchaseToken)
+                .build()
+
+        billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                // Handle the success of the consume operation.
+            }
+        }
+    }
+
+
+    private val billingClient: BillingClient by lazy {
+        BillingClient.newBuilder(requireContext())
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build()
+    }
+
+
+    private fun removeAds() {
+        billingClient.queryPurchases("")
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // The BillingClient is ready. You can query purchases here.
+                    launchSafeCoroutine {
+                        queryPurchase()
+                    }
+                }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+                context?.showConfirmAlert(R.string.info, R.string.billing_disconnected) {
+                    removeAds()
+                }
+            }
+        })
+    }
+
+    private suspend fun queryPurchase() {
+        val skuList = ArrayList<String>()
+        skuList.add("remove_ads")
+        val skuBuilder = SkuDetailsParams.newBuilder()
+        skuBuilder.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+        withContext(Dispatchers.IO) {
+            billingClient.querySkuDetailsAsync(skuBuilder.build()) { billingResult, skuDetailsList ->
+                // Process the result.
+                // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
+                skuDetailsList?.forEach { sku ->
+                    val flowParams = BillingFlowParams.newBuilder()
+                            .setSkuDetails(sku)
+                            .build()
+                    val responseCode = billingClient.launchBillingFlow(activity as Activity, flowParams).responseCode
+                    print(responseCode)
+                }
+
+            }
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        loadOptionsMenus().forEach { inflater.inflate(it, menu) }
+        optionsMenu()?.let {
+            inflater.inflate(it, menu)
+        }
+        inflater.inflate(R.menu.menu_sub_main, menu)
         getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help).setTitle(it) }
+
+        // TODO if has bought remove menu entries
+
+
     }
+
 
     open fun getAllFavorites() {
         context?.let { ctx ->
@@ -99,7 +204,8 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     open fun makeAllResultsFavorite() {
         context?.let { ctx ->
             launchSafeCoroutine {
-                val num = LocalDatabase.getInstance(ctx).historyDAO()?.makeNonFavoriteFavorite(operationName) ?: 0
+                val num = LocalDatabase.getInstance(ctx).historyDAO()?.makeNonFavoriteFavorite(operationName)
+                        ?: 0
                 if (num > 0) {
                     withContext(Dispatchers.Main) {
                         getHistoryLayout()?.children?.forEach {
@@ -111,7 +217,6 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -120,12 +225,13 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             R.id.action_show_favorites -> getAllFavorites()
             R.id.action_save_all_to_db -> makeAllResultsFavorite()
             R.id.action_save_history_images -> MenuHelper.saveHistoryImages(activity as Activity)
-            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity)
+            R.id.action_share_history -> MenuHelper.shareHistory(activity as Activity, withExplanations)
             R.id.action_share_history_images -> MenuHelper.shareHistoryImages(activity as Activity)
             R.id.action_clear_all_history -> clearResultHistory()
             R.id.action_help -> CreateCardView.withStringRes(getHistoryLayout(), getHelpTextId(), activity as Activity)
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> activity?.openSettingsFragment()
+            R.id.action_remove_ads, R.id.action_remove_ads2 -> removeAds()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -134,7 +240,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     override fun onDestroy() {
         super.onDestroy()
         PreferenceManager.getDefaultSharedPreferences(context)
-            .unregisterOnSharedPreferenceChangeListener(this)
+                .unregisterOnSharedPreferenceChangeListener(this)
         clearTemporaryResultsFromDB()
     }
 
@@ -145,15 +251,17 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     open fun getBasePreferences() {
         val default: Int = resources.getInteger(R.integer.default_history_size)
-        historyLimit = sharedPrefs.getString(getString(R.string.pref_key_history_size), default.toString())?.toInt() ?: default
+        historyLimit = sharedPrefs.getString(getString(R.string.pref_key_history_size), default.toString())?.toInt()
+                ?: default
         shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
-        shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
+        shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
+                ?: "0"
         shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
         shouldFormatNumbers = sharedPrefs.getBoolean(getString(R.string.pref_key_format_numbers), false)
     }
 
-    fun getRandomFactorsColors(): MutableList<Int> {
-        privateFColors = resources.getIntArray(R.array.f_colors_xml).toMutableList()
+    fun getRandomFactorsColors(): List<Int> {
+        var privateFColors: MutableList<Int> = resources.getIntArray(R.array.f_colors_xml).toMutableList()
         if (shouldShowColors) {
             privateFColors.shuffle() // randomizar as cores
         } else {
@@ -163,9 +271,9 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? = inflater.inflate(getLayoutIdForFragment(), container, false)
 
     @LayoutRes
@@ -186,18 +294,15 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         binding.textViewTop.text = ssb
         binding.textViewTop.setTag(R.id.texto, "texto")
         context?.let { ctx ->
-                launchSafeCoroutine {
-                    val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
-                    withContext(Dispatchers.Main) {
-                        binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
-                        binding.imageStar.setOnClickListener {
-                            TooltipManager.showTooltipOn(binding.imageStar, getString(R.string.result_is_favorite))
-                            val animation = ObjectAnimator.ofFloat(binding.imageStar, View.ROTATION_Y, 0.0f, 360f)
-                            animation.duration = 1500
-                            animation.start()
-                        }
+            launchSafeCoroutine {
+                val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
+                withContext(Dispatchers.Main) {
+                    binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
+                    binding.imageStar.setOnClickListener {
+                        TooltipManager.showTooltipOn(binding.imageStar, getString(R.string.result_is_favorite))
                     }
                 }
+            }
         }
         return binding
     }
@@ -207,12 +312,14 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             launchSafeCoroutine {
                 val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
                 withContext(Dispatchers.Main) {
-                    star.visibility = if (saved) View.VISIBLE else View.GONE
-                    star.setOnClickListener {
-                        TooltipManager.showTooltipOn(star, getString(R.string.result_is_favorite))
-                        val animation = ObjectAnimator.ofFloat(star, View.ROTATION_Y, 0.0f, 360f)
-                        animation.duration = 1500
-                        animation.start()
+                    if (saved) {
+                        star.visibility = View.VISIBLE
+                        star.rotateYAnimation()
+                        star.setOnClickListener {
+                            TooltipManager.showTooltipOn(star, getString(R.string.result_is_favorite))
+                        }
+                    } else {
+                        star.visibility = View.GONE
                     }
                 }
             }

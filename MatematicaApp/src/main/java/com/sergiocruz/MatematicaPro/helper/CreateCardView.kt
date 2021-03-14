@@ -66,7 +66,7 @@ object CreateCardView {
         cardView.addView(textView)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity, withExplanations = false))
 
         if (isResult) {
             cardView.tag = InputTags(input = input, operation = FatorizarFragment::class.java.simpleName)

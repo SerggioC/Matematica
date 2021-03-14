@@ -20,9 +20,7 @@ import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.android.synthetic.main.fragment_primorial.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.util.*
@@ -40,7 +38,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private var num: Long = 0
     private var startTime: Long = 0
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
+    override fun optionsMenu() = R.menu.menu_sub_main
 
     override var title: Int = R.string.nav_primorial
     override var pageIndex: Int = 8
@@ -75,10 +73,10 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         button_calc_primorial.setOnClickListener { calculatePrimorial() }
 
-        bigNumbersTextWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, this)
+        bigNumbersTextWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, onEditor = this)
         inputEditText.addTextChangedListener(bigNumbersTextWatcher)
 
-        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), this) }
+        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), title, this) }
         clearButton.setOnClickListener { inputEditText.setText("") }
     }
 
@@ -176,7 +174,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         val ssb = SpannableStringBuilder(text)
         if (wasCanceled) {
-            val incomplete = "\n" + getString(R.string._incomplete_calc)
+            val incomplete = "\n" + getString(R.string.incomplete_calc)
             ssb.append(incomplete)
             ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -193,7 +191,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity()))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity(), withExplanations = false))
 
         context?.let {
             val separator = getGradientSeparator(it, shouldShowPerformance, startTime)

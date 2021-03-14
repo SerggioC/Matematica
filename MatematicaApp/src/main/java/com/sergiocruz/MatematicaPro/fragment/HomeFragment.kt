@@ -25,6 +25,6 @@ class HomeFragment : BaseFragment() {
 
     override fun getHistoryLayout(): LinearLayout? = null
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_sub_main)
+    override fun optionsMenu(): Int? = null
 
 }

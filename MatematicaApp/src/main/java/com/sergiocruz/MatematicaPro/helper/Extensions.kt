@@ -1,5 +1,6 @@
 package com.sergiocruz.MatematicaPro.helper
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -7,25 +8,28 @@ import android.content.SharedPreferences
 import android.text.*
 import android.text.style.SuperscriptSpan
 import android.util.TypedValue
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.Transformation
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.fragment.SettingsFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.text.NumberFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -74,7 +78,7 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
 }
 
 
-class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Boolean, onEditor: OnEditorActions) : NumberFormatterTextWatcher(inputEditText, formatInput, onEditor) {
+class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Boolean, private val ignoreLongNumbers: Boolean = false, onEditor: OnEditorActions) : NumberFormatterTextWatcher(inputEditText, formatInput, onEditor) {
 
     private lateinit var oldNum: String
 
@@ -85,7 +89,7 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         if (TextUtils.isEmpty(s)) return
-        if (s?.digitsOnly()?.toLongOrNull() == null) {
+        if (s?.digitsOnly()?.toLongOrNull() == null && ignoreLongNumbers.not()) {
             inputEditText.setText(oldNum)
             inputEditText.setSelection(inputEditText.text?.length ?: 0) // Colocar o cursor no final do texto
             inputEditText.error = inputEditText.context.getString(R.string.numero_alto)
@@ -211,32 +215,6 @@ fun Activity.getNewTextView(withTag: String, @StringRes andText: Int, textSize: 
     return newTextView
 }
 
-
-//    inline operator fun <reified T : Any?> SharedPreferences.get(key: String, defaultValue: T? = null): T? {
-//        return when (T::class) {
-//            String::class -> getString(key, defaultValue as? String ?: "") as T?
-//            Int::class -> getInt(key, defaultValue as? Int ?: -1) as T?
-//            Boolean::class -> getBoolean(key, defaultValue as? Boolean ?: false) as T?
-//            Float::class -> getFloat(key, defaultValue as? Float ?: -1f) as T?
-//            Long::class -> getLong(key, defaultValue as? Long ?: -1L) as T?
-//            else -> throw UnsupportedOperationException("Not yet implemented")
-//        }
-//    }
-//
-//operator fun SharedPreferences.set(key: String, value: Any?) {
-//    when (value) {
-//        is String? -> edit { it.putString(key, value) }
-//        is Int -> edit { it.putInt(key, value) }
-//        is Boolean -> edit { it.putBoolean(key, value) }
-//        is Float -> edit { it.putFloat(key, value) }
-//        is Long -> edit { it.putLong(key, value) }
-//        else -> throw UnsupportedOperationException("Not yet implemented")
-//    }
-//}
-
-class OutOfPatienteException : Exception("The coder is out of patience!!")
-
-
 object Extensions {
 
     val Context.myAppPreferences: SharedPreferences
@@ -327,20 +305,24 @@ fun launchSafeCoroutine(block: suspend () -> Unit) {
     }
 }
 
-fun getTextViewsRecursively(root: ViewGroup): ArrayList<TextView> {
+fun getTextViewsRecursively(root: ViewGroup, withExplanations: Boolean = false): ArrayList<TextView> {
     val textViews = ArrayList<TextView>()
     root.children.forEach { child ->
         if (child is ViewGroup) {
-            textViews.addAll(getTextViewsRecursively(child))
+            textViews.addAll(getTextViewsRecursively(child, withExplanations))
         } else if (child is TextView) {
-            textViews.add(child)
+            if (withExplanations) {
+                textViews.add(child)
+            } else if (child.tag == "0") {
+                textViews.add(child)
+            }
         }
     }
     return textViews
 }
 
-fun ViewGroup.getTextFromTextViews(): String {
-    val textViews = getTextViewsRecursively(this)
+fun ViewGroup.getTextFromTextViews(withExplanations: Boolean = false): String {
+    val textViews = getTextViewsRecursively(this, withExplanations)
     var finalText = ""
     if (textViews.size > 0) {
         textViews.forEach { textView ->
@@ -357,80 +339,109 @@ fun ViewGroup.getTextFromTextViews(): String {
     return finalText
 }
 
-
-//@Suppress("UNCHECKED_CAST")
-//inline operator fun <reified T> SharedPreferences.get(key: String, defaultValue: T): T {
-//    when (T::class) {
-//        Boolean::class -> return this.getBoolean(key, defaultValue as Boolean) as T
-//        Float::class -> return this.getFloat(key, defaultValue as Float) as T
-//        Int::class -> return this.getInt(key, defaultValue as Int) as T
-//        Long::class -> return this.getLong(key, defaultValue as Long) as T
-//        String::class -> return this.getString(key, defaultValue as String) as T
-//        else -> {
-//            if (defaultValue is Set<*>) {
-//                return this.getStringSet(key, defaultValue as Set<String>) as T
-//            }
-//        }
-//    }
-//
-//    return defaultValue
+fun delayedTimerAsync(delay: Long = 1000, repeatMillis: Long = 60, action: (Long) -> Unit): Deferred<Unit> {
+    var start: Long = delay
+    return CoroutineScope(Dispatchers.Main).async {
+        delay(start)
+        if (repeatMillis > 0) {
+            while (true) {
+                action(start)
+                delay(repeatMillis)
+                start += repeatMillis
+            }
+        } else {
+            action(start)
+        }
+    }
+}
 
 
-//
-//
-//object PreferenceHelper {
-//
-//    fun defaultPrefs(context: Context): SharedPreferences
-//            = PreferenceManager.getDefaultSharedPreferences(context)
-//
-//    fun customPrefs(context: Context, name: String): SharedPreferences
-//            = context.getSharedPreferences(name, Context.MODE_PRIVATE)
-//
-//    inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) -> Unit) {
-//        val editor = this.edit()
-//        operation(editor)
-//        editor.apply()
-//    }
-//
-//    /**
-//     * puts a key value pair in shared prefs if doesn't exists, otherwise updates value on given [key]
-//     */
-//    operator fun SharedPreferences.set(key: String, value: Any?) {
-//        when (value) {
-//            is String? -> edit { it.putString(key, value) }
-//            is Int -> edit { it.putInt(key, value) }
-//            is Boolean -> edit { it.putBoolean(key, value) }
-//            is Float -> edit { it.putFloat(key, value) }
-//            is Long -> edit { it.putLong(key, value) }
-//            else -> throw UnsupportedOperationException("Not yet implemented")
-//        }
-//    }
-//
-//    /**
-//     * finds value on given key.
-//     * [T] is the type of value
-//     * @param defaultValue optional default value - will take null for strings, false for bool and -1 for numeric values if [defaultValue] is not specified
-//     */
-//    inline operator fun <reified T : Any> SharedPreferences.get(key: String, defaultValue: T? = null): T? {
-//        return when (T::class) {
-//            String::class -> getString(key, defaultValue as? String) as T?
-//            Int::class -> getInt(key, defaultValue as? Int ?: -1) as T?
-//            Boolean::class -> getBoolean(key, defaultValue as? Boolean ?: false) as T?
-//            Float::class -> getFloat(key, defaultValue as? Float ?: -1f) as T?
-//            Long::class -> getLong(key, defaultValue as? Long ?: -1) as T?
-//            else -> throw UnsupportedOperationException("Not yet implemented")
-//        }
-//    }
-//}
-//
+fun expandThis(view: View, newHeight: Int? = null) {
+    val targetHeight = view.getTag(R.id.initialHeight) as? Int ?: newHeight ?: 0
+    // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+    view.layoutParams.height = 1
+    view.visibility = View.VISIBLE
+    val animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+            view.layoutParams.height = (targetHeight * interpolatedTime).toInt() + 1
+            view.alpha = interpolatedTime
+            view.requestLayout()
+        }
+        override fun willChangeBounds() = true
+    }
+    animation.duration = 300L
+    var isAnimating = false
+    animation.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationRepeat(animation: Animation?) {}
+        override fun onAnimationEnd(animation: Animation?) {
+            isAnimating = false
+        }
+        override fun onAnimationStart(animation: Animation?) {
+            isAnimating = true
+        }
+    })
+
+    if (isAnimating.not()) {
+        view.startAnimation(animation)
+    }
+}
+
+fun collapseThis(view: View) {
+    val initialHeight = view.measuredHeight
+
+    val animation = object : Animation() {
+        override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+            if (interpolatedTime == 1f) {
+                view.visibility = View.GONE
+            } else {
+                view.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                view.alpha = 1 - interpolatedTime
+                view.requestLayout()
+            }
+        }
+        override fun willChangeBounds() = true
+    }
+    var isAnimating = false
+
+    animation.duration = 300L
+    animation.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationRepeat(animation: Animation?) {}
+        override fun onAnimationEnd(animation: Animation?) {
+            isAnimating = false
+        }
+        override fun onAnimationStart(animation: Animation?) {
+            isAnimating = true
+        }
+    })
+
+    if (isAnimating.not()) {
+        view.startAnimation(animation)
+    }
+}
 
 
+fun Context.showConfirmAlert(@StringRes title: Int, @StringRes message: Int, onConfirm: (() -> Unit)?) {
+    val alertDialogBuilder = AlertDialog.Builder(this)
+    alertDialogBuilder
+            .setTitle(title)
+            .setMessage(message)
+            .setCancelable(true)
+            .setPositiveButton(R.string.sim) { dialog, _ ->
+                onConfirm?.invoke()
+                dialog.cancel()
+            }
 
+    val alertDialog = alertDialogBuilder.create()        // create alert dialog
+    alertDialog.show()                                   // show it
+}
 
-
-
-
-
+fun View.rotateYAnimation() {
+    if (this.isVisible) {
+        val animation = ObjectAnimator.ofFloat(this, View.ROTATION_Y, 0.0f, 360f)
+        animation.duration = 1500
+        animation.start()
+    }
+}
 
 
 

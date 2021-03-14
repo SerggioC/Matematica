@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="_incomplete_calc">Cálculo incompleto…</string>
+    <string name="incomplete_calc">Cálculo incompleto…</string>
     <string name="_numero_primo">Número primo</string>
     <string name="about_app_description">
         - Prueba de primalidad ultra rápida incluso para números muy grandes (NUEVO)\n

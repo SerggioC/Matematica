@@ -1,9 +1,6 @@
 package com.sergiocruz.MatematicaPro.database
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface HistoryDAO {
@@ -25,6 +22,9 @@ interface HistoryDAO {
 
     @Query("UPDATE HistoryDataClass SET favorite = :favorite WHERE operation == :operation AND primary_key == :key")
     suspend fun makeHistoryItemFavorite(operation: String, key: String, favorite: Boolean)
+
+    @Query("UPDATE HistoryDataClass SET content = :data WHERE operation == :operation AND primary_key == :key")
+    suspend fun updateHistoryData(key: String, operation: String, data: String): Int?
 
     @Query("DELETE FROM HistoryDataClass WHERE primary_key == :key AND operation == :operation AND favorite == 0")
     suspend fun deleteTemporaryHistoryItem(key: String, operation: String): Int

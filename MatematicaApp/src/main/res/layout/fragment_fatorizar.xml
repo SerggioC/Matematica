@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView
                 android:id="@+id/card_view_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,9 +68,11 @@
 
                         <Button
                             android:id="@+id/clearButton"
-                            android:layout_width="27dp"
-                            android:layout_height="27dp"
-                            android:layout_gravity="center_vertical|right"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginRight="4dp"
                             android:background="@drawable/ic_clear_text" />
 
                     </FrameLayout>
@@ -78,6 +81,24 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true">
+
+                        <TextView
+                            android:id="@+id/elapsedTimeMillis"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginRight="4dp"
+                            android:layout_toStartOf="@+id/calculateButton"
+                            android:layout_toLeftOf="@+id/calculateButton"
+                            android:gravity="start|center_vertical"
+                            android:textColor="@color/boldColor"
+                            android:textSize="12sp"
+                            tools:text="1200ms" />
 
                         <Button
                             android:id="@+id/calculateButton"
@@ -99,7 +120,7 @@
                             android:layout_marginRight="4dp"
                             android:src="@drawable/stop_button"
                             android:visibility="gone"
-                            android:contentDescription="" />
+                            tools:visibility="visible" />
                     </RelativeLayout>
 
                     <View
@@ -107,7 +128,9 @@
                         android:layout_width="1dp"
                         android:layout_height="4dp"
                         android:background="@color/lightBlue"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:layout_width="120dp"
+                        tools:visibility="visible" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

@@ -8,19 +8,15 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.provider.MediaStore
-import android.text.SpannableString
-import android.text.style.SuperscriptSpan
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import com.google.android.material.snackbar.Snackbar
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
@@ -109,22 +105,10 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         }
     }
 
-    fun shareHistory(activity: Activity) {
+    fun shareHistory(activity: Activity, withExplanations: Boolean) {
         val historyView = activity.findViewById<ViewGroup>(history)
-        val textViews = getTextViewsRecursively(historyView)
-        if (textViews.size > 0) {
-            var finalText = ""
-            textViews.forEach { textView ->
-                var textFromView = textView.text.toString() + "\n"
-                val ss = SpannableString(textView.text)
-                val spans = ss.getSpans(0, textView.text.length, SuperscriptSpan::class.java)
-                for ((corr, span) in spans.withIndex()) {
-                    val start = ss.getSpanStart(span) + corr
-                    textFromView = textFromView.substring(0, start) + "^" + textFromView.substring(start)
-                }
-                finalText += textFromView + "\n"
-            }
-
+        val finalText = historyView.getTextFromTextViews(withExplanations)
+        if (finalText.isNotEmpty()) {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT, activity.resources.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME + "\n" + finalText)
@@ -210,68 +194,6 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         }
     }
 
-    fun expandIt(view: View, newHeight: Int? = null) {
-        val targetHeight = view.getTag(R.id.initialHeight) as? Int ?: newHeight ?: 0
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-        view.layoutParams.height = 1
-        view.visibility = View.VISIBLE
-        val animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                view.layoutParams.height = (targetHeight * interpolatedTime).toInt() + 1
-                view.alpha = interpolatedTime
-                view.requestLayout()
-            }
-            override fun willChangeBounds() = true
-        }
-        animation.duration = 300L
-        var isAnimating = false
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {}
-            override fun onAnimationEnd(animation: Animation?) {
-                isAnimating = false
-            }
-            override fun onAnimationStart(animation: Animation?) {
-                isAnimating = true
-            }
-        })
-
-        if (isAnimating.not()) {
-            view.startAnimation(animation)
-        }
-    }
-
-    fun collapseIt(view: View) {
-        val initialHeight = view.measuredHeight
-
-        val animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                if (interpolatedTime == 1f) {
-                    view.visibility = View.GONE
-                } else {
-                    view.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
-                    view.alpha = 1 - interpolatedTime
-                    view.requestLayout()
-                }
-            }
-            override fun willChangeBounds() = true
-        }
-        var isAnimating = false
-
-        animation.duration = 300L
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationRepeat(animation: Animation?) {}
-            override fun onAnimationEnd(animation: Animation?) {
-                isAnimating = false
-            }
-            override fun onAnimationStart(animation: Animation?) {
-                isAnimating = true
-            }
-        })
-
-        if (isAnimating.not()) {
-            view.startAnimation(animation)
-        }
-    }
 }
 
 

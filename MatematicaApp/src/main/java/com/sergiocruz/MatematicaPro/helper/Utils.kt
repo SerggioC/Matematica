@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
@@ -21,12 +22,12 @@ interface OnCancelBackgroundTask {
     fun onOperationCanceled(canceled: Boolean)
 }
 
-fun displayCancelDialogBox(context: Context, onCanceled: OnCancelBackgroundTask) {
+fun displayCancelDialogBox(context: Context, @StringRes title: Int, onCanceled: OnCancelBackgroundTask) {
 
     val alertDialogBuilder = AlertDialog.Builder(context)
 
     // set title
-    alertDialogBuilder.setTitle(context.getString(R.string.primetable_title))
+    alertDialogBuilder.setTitle(title)
 
     // set dialog message
     alertDialogBuilder
@@ -45,8 +46,8 @@ enum class InfoLevel {
     INFO, CONFIRM, WARNING, ERROR
 }
 
-fun cancelAsyncTask(task: AsyncTask<*, *, *>, context: Context?): Boolean {
-    return if (task.status == AsyncTask.Status.RUNNING) {
+fun cancelAsyncTask(task: AsyncTask<*, *, *>?, context: Context?): Boolean {
+    return if (task?.status == AsyncTask.Status.RUNNING) {
         task.cancel(true)
         showCustomToast(context, context?.getString(R.string.canceled_op), WARNING)
         true

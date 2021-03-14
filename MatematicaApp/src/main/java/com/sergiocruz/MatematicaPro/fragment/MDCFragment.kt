@@ -29,8 +29,6 @@ import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.fragment.MMCFragment.Companion.CARD_TEXT_SIZE
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import com.sergiocruz.MatematicaPro.model.MyTags
 import kotlinx.android.synthetic.main.fragment_mdc.*
 import java.math.BigInteger
@@ -43,7 +41,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
-    private var fColors: MutableList<Int> = mutableListOf()
+    private var fColors: List<Int> = mutableListOf()
     internal var heightDip: Int = 0
     internal var cvWidth: Int = 0
     private var taskNumber = 0
@@ -74,7 +72,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
     override fun getHistoryLayout(): LinearLayout? = history
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
+    override fun optionsMenu() = R.menu.menu_main
 
     override fun onActionDone() = calculateMDC()
 
@@ -98,7 +96,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         button_remove_mdc.setOnClickListener { removeMdcField() }
 
         arrayOfEditTexts.forEach {
-            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, this))
+            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, onEditor = this))
         }
 
     }
@@ -365,7 +363,8 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                             override fun onDismiss(view: View?) {
                                 checkBackgroundOperation(view)
                             }
-                        })
+                        },
+                        false)
         )
 
         val tags = MyTags(cardView, longNumbers, resultMDC, hasExplanation = false, hasBGOperation = false, texto = "", bGfatores = null, taskNumber = taskNumber)
@@ -431,12 +430,12 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             val explView = (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
             if (isExpanded.not()) {
                 (view as TextView).text = ssbHideExpl
-                expandIt(explView, null)
+                expandThis(explView, null)
                 isExpanded = true
 
             } else if (isExpanded) {
                 (view as TextView).text = ssbShowExpl
-                collapseIt(explView)
+                collapseThis(explView)
                 isExpanded = false
             }
         }

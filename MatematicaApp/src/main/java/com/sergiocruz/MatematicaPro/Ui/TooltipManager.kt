@@ -3,6 +3,7 @@ package com.sergiocruz.MatematicaPro.Ui
 import android.media.MediaPlayer
 import android.view.View
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.helper.rotateYAnimation
 import it.sephiroth.android.library.xtooltip.ClosePolicy
 import it.sephiroth.android.library.xtooltip.Tooltip
 import it.sephiroth.android.library.xtooltip.Typefaces
@@ -14,13 +15,15 @@ object TooltipManager {
     private var mp: MediaPlayer? = null
 
     fun showTooltipOn(anchor: View, message: String) {
-        mp = MediaPlayer.create(anchor.context, R.raw.correct)
+        mp = MediaPlayer.create(anchor.context, R.raw.bling)
         mp?.setOnCompletionListener {
             mp?.reset()
             mp?.release()
             mp = null
         }
         mp?.start()
+
+        anchor.rotateYAnimation()
 
         tooltip?.dismiss()
         tooltip = Tooltip.Builder(anchor.context)

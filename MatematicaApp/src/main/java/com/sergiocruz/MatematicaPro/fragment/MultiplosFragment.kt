@@ -44,7 +44,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     override fun getHistoryLayout(): LinearLayout = history
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
+    override fun optionsMenu() = R.menu.menu_main
 
     override fun getLayoutIdForFragment() = R.layout.fragment_multiplos
 
@@ -55,7 +55,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bigNumbersTextWatcher = BigNumbersTextWatcher(editNumMultiplos, shouldFormatNumbers, this)
+        bigNumbersTextWatcher = BigNumbersTextWatcher(editNumMultiplos, shouldFormatNumbers, onEditor = this)
         editNumMultiplos.addTextChangedListener(bigNumbersTextWatcher)
 
         clearButton.setOnClickListener { editNumMultiplos.setText("") }
@@ -150,7 +150,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity()))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity(), withExplanations = false))
 
         context?.let {
             val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)

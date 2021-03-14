@@ -51,15 +51,15 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), this) }
+        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), title, this) }
         calculateButton.setOnClickListener { calcDivisors() }
         clearButton.setOnClickListener { inputEditText.setText("") }
 
-        textWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, this)
+        textWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, onEditor = this)
         inputEditText.addTextChangedListener(textWatcher)
     }
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
+    override fun optionsMenu() = R.menu.menu_main
 
     override fun getHelpTextId(): Int = R.string.help_text_divisores
 
@@ -94,7 +94,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     private fun calcDivisors() {
         startTime = System.nanoTime()
-        hideKeyboard(activity as Activity)
+        hideKeyboard(activity)
         val editnumText = inputEditText.text.digitsOnly()
         if (TextUtils.isEmpty(editnumText)) {
             showCustomToast(context, getString(R.string.add_num_inteiro))
@@ -259,7 +259,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 }
                 val strDivisores = "$str}"
                 val ssb = SpannableStringBuilder(strDivisores)
-                val incompleteCalc = "\n" + getString(R.string._incomplete_calc)
+                val incompleteCalc = "\n" + getString(R.string.incomplete_calc)
                 ssb.append(incompleteCalc)
                 ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -312,7 +312,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity, withExplanations = false))
 
         context?.let {
             val separator = getGradientSeparator(it, shouldShowPerformance, startTime)

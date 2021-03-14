@@ -28,8 +28,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.helper.*
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.collapseIt
-import com.sergiocruz.MatematicaPro.helper.MenuHelper.expandIt
 import com.sergiocruz.MatematicaPro.model.MyTags
 import kotlinx.android.synthetic.main.fragment_mmc.*
 import java.math.BigInteger
@@ -101,7 +99,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
     }
 
-    override fun loadOptionsMenus() = listOf(R.menu.menu_main, R.menu.menu_sub_main)
+    override fun optionsMenu() = R.menu.menu_main
 
     override fun getHelpTextId(): Int = R.string.help_text_mmc
 
@@ -148,7 +146,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         button_remove_mmc.setOnClickListener { removeMMC() }
 
         arrayOfEditTexts.forEach {
-            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, this))
+            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, onEditor = this))
             it.error = null
         }
 
@@ -382,13 +380,14 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         // Create a generic swipe-to-dismiss touch listener.
         cardView.setOnTouchListener(
             SwipeToDismissTouchListener(
-                cardView,
-                activity as Activity,
-                object : SwipeToDismissTouchListener.DismissCallbacks {
-                    override fun onDismiss(view: View?) {
-                        checkBackgroundOperation(view)
-                    }
-                })
+                    cardView,
+                    activity as Activity,
+                    object : SwipeToDismissTouchListener.DismissCallbacks {
+                        override fun onDismiss(view: View?) {
+                            checkBackgroundOperation(view)
+                        }
+                    },
+                    false)
         )
 
         // Adicionar os números a fatorizar na tag do cardview
@@ -458,12 +457,12 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
             if (!isExpanded) {
                 (view as TextView).text = hideExpl
-                expandIt(explView, null)
+                expandThis(explView, null)
                 isExpanded = true
 
             } else if (isExpanded) {
                 (view as TextView).text = showExpl
-                collapseIt(explView)
+                collapseThis(explView)
                 isExpanded = false
             }
         }
@@ -544,7 +543,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
     }
 
-    private var fColors: MutableList<Int> = mutableListOf()
+    private var fColors: List<Int> = mutableListOf()
 
     // Asynctask <Params, Progress, Result>
     inner class BackGroundOperationMMC internal constructor(private var cardTags: MyTags) :

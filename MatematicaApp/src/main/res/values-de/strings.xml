@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="_incomplete_calc">Unvollständige Berechnung …</string>
+    <string name="incomplete_calc">Unvollständige Berechnung …</string>
     <string name="_numero_primo">primzahlen</string>
     <string name="about_app_description">
          - Ultraschneller Primalitätstest auch für sehr große Zahlen (NEU)\n

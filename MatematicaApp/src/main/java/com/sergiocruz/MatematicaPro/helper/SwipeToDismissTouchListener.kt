@@ -21,6 +21,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.BuildConfig
 import com.sergiocruz.MatematicaPro.R
+import com.sergiocruz.MatematicaPro.Ui.TooltipManager
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
 import com.sergiocruz.MatematicaPro.helper.MenuHelper.checkPermissionsWithCallback
 import com.sergiocruz.MatematicaPro.model.InputTags
@@ -49,7 +50,8 @@ import kotlin.math.min
 class SwipeToDismissTouchListener(
         private val mView: View,
         private val mActivity: Activity,
-        private val mCallbacks: DismissCallbacks? = null
+        private val mCallbacks: DismissCallbacks? = null,
+        private val withExplanations: Boolean = false,
 ) : View.OnTouchListener {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -79,7 +81,7 @@ class SwipeToDismissTouchListener(
     private val formattedTextFromTextView: String
         get() {
             val root = mView as? ViewGroup ?: return ""
-            return root.getTextFromTextViews()
+            return root.getTextFromTextViews(withExplanations)
         }
 
     init {
@@ -147,9 +149,10 @@ class SwipeToDismissTouchListener(
                 withContext(Dispatchers.Main) {
                     val star = theCardView.findViewById<View>(R.id.image_star) ?: return@withContext
                     star.visibility = if (saved) View.GONE else View.VISIBLE
-                    val animation = ObjectAnimator.ofFloat(star, View.ROTATION_Y, 0.0f, 360f)
-                    animation.duration = 1500
-                    animation.start()
+                    star.rotateYAnimation()
+                    star.setOnClickListener {
+                        TooltipManager.showTooltipOn(star, it.context.getString(R.string.result_is_favorite))
+                    }
                 }
             }
             customPopUp.dismiss()
