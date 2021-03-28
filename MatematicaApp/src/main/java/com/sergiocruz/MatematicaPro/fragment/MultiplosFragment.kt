@@ -181,7 +181,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                         }
 
                         val multiplosStr = calculateMultiplos(number = number, minIteration = saved?.lastIteration ?: lastIteration, iterations = iterations)
-                        val multiplesData = MultiplesData((saved?.stringMultiplos ?: "").dropLast(4) + multiplosStr, (saved?.lastIteration ?: lastIteration) + iterations)
+                        val multiplesData = MultiplesData((saved?.stringMultiplos ?: "").dropLast(3) + multiplosStr, (saved?.lastIteration ?: lastIteration) + iterations)
                         val newData = gson.toJson(multiplesData)
                         LocalDatabase.getInstance(root.context).historyDAO()?.updateHistoryData(key = number.toString(), operationName, newData)
                         withContext(Dispatchers.Main) {
@@ -192,7 +192,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                             } else {
                                 textViewPerformance.visibility = View.GONE
                             }
-                            val print = textViewTop.text.toString().dropLast(4) + multiplosStr
+                            val print = textViewTop.text.toString().dropLast(3) + multiplosStr
                             textViewTop.text = print
                         }
                     }
@@ -208,7 +208,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     private fun calculateMultiplos(number: BigInteger, minIteration: Long, iterations: Long) : String {
         val maxIteration = minIteration + iterations
-        val stringMultiples = StringBuilder("{")
+        val stringMultiples = StringBuilder()
         for (i in minIteration until maxIteration) {
             val bigNumber = number.multiply(BigInteger.valueOf(i))
             stringMultiples.append(if (shouldFormatNumbers) {
@@ -217,7 +217,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 "$bigNumber, "
             })
         }
-        stringMultiples.append("...}")
+        stringMultiples.append("...")
         return stringMultiples.toString()
     }
 
