@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,6 +14,7 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.android.billingclient.api.*
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -29,6 +31,11 @@ import com.sergiocruz.MatematicaPro.databinding.TextviewStarBinding
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.model.SpannableSerializer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 
@@ -284,7 +291,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         context?.let { ctx ->
             launchSafeCoroutine {
                 val history = HistoryDataClass(primaryKey = input, operation, content = data, favorite = false)
-                LocalDatabase.getInstance(ctx).historyDAO()?.saveCard(history)
+                LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(history)
             }
         }
     }

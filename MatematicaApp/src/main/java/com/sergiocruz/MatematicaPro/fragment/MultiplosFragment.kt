@@ -5,22 +5,21 @@ package com.sergiocruz.MatematicaPro.fragment
  */
 
 import android.graphics.Paint
-import android.graphics.Typeface
-import android.os.AsyncTask
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.text.TextUtils
-import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
-import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.Ui.TooltipManager
+import com.sergiocruz.MatematicaPro.database.HistoryDataClass
+import com.sergiocruz.MatematicaPro.database.LocalDatabase
+import com.sergiocruz.MatematicaPro.databinding.MultiplosResultItemBinding
 import com.sergiocruz.MatematicaPro.helper.*
+import com.sergiocruz.MatematicaPro.model.InputTags
+import com.sergiocruz.MatematicaPro.model.MultiplesData
 import kotlinx.android.synthetic.main.fragment_multiplos.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.text.DecimalFormat
 
@@ -31,11 +30,11 @@ import java.text.DecimalFormat
  */
 
 class MultiplosFragment : BaseFragment(), OnEditorActions {
-    private var asyncTask: AsyncTask<Long, Double, String> = BackGroundOperation(false, null)
-    private var num: Long = 0
+
     internal var startTime: Long = 0
 
     override var title = R.string.nav_multiplos
+
     override var pageIndex: Int = 7
 
     override fun getHelpTextId() = R.string.help_text_multiplos
@@ -52,6 +51,17 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     private var bigNumbersTextWatcher: BigNumbersTextWatcher? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        allFavoritesCallback = { list: List<HistoryDataClass>? ->
+            list?.forEach { fav ->
+                gson.fromJson(fav.content, MultiplesData::class.java)?.let { md ->
+                    createCardViewMultiplos(fav.primaryKey.toBigInteger(), multiplos = md.stringMultiplos, md.lastIteration, isFavorite = true)
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -59,7 +69,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         editNumMultiplos.addTextChangedListener(bigNumbersTextWatcher)
 
         clearButton.setOnClickListener { editNumMultiplos.setText("") }
-        button_calc_multiplos.setOnClickListener { calculateMultiples() }
+        buttonCalcMultiplos.setOnClickListener { calculateMultiples() }
     }
 
     override fun onDestroyView() {
@@ -67,19 +77,11 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         editNumMultiplos.removeTextChangedListener(bigNumbersTextWatcher)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (asyncTask.status == AsyncTask.Status.RUNNING) {
-            asyncTask.cancel(true)
-            showCustomToast(context, getString(R.string.canceled_op), InfoLevel.WARNING)
-        }
-    }
-
     private fun calculateMultiples() {
         startTime = System.nanoTime()
         hideKeyboard(activity)
-        val editnumText = editNumMultiplos.text.digitsOnly()
-        if (TextUtils.isEmpty(editnumText)) {
+        val strNum = editNumMultiplos.text.digitsOnly()
+        if (TextUtils.isEmpty(strNum)) {
             showCustomToast(context, getString(R.string.add_num_inteiro), InfoLevel.WARNING)
             editNumMultiplos.apply {
                 requestFocus()
@@ -88,164 +90,135 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             }
             return
         }
-        if (editnumText == "0") {
-            createCardView(0L, "{0}", 0L, false)
+        if (strNum == "0") {
+            context?.let { ctx ->
+                launchSafeCoroutine {
+                    val isFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = "0", operation = operationName) != null
+                    val newMD = gson.toJson(MultiplesData("{0}", 0))
+                    LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(HistoryDataClass("0", operationName, newMD, isFavorite))
+                    withContext(Dispatchers.Main) {
+                        createCardViewMultiplos(BigInteger.ZERO, multiplos = "{0}", 0, isFavorite = isFavorite)
+                    }
+                }
+            }
             return
         }
-        try {
-            // Tentar converter o string para long
-            num = java.lang.Long.parseLong(editnumText)
-        } catch (e: Exception) {
+
+        val num: BigInteger? = strNum.toBigIntegerOrNull()
+        if (num == null) {
             showCustomToast(context, getString(R.string.numero_alto), InfoLevel.WARNING)
             return
         }
 
-        val spinnerMaxMultiplos = spinner_multiplos.selectedItem.toString().toLongOrNull()
-        asyncTask = BackGroundOperation(false, null).execute(num, 0L, spinnerMaxMultiplos)
-    }
-
-    fun createCardView(number: Long, multiplos: String, min_multiplos: Long?, showMore: Boolean) {
-        //criar novo cardview
-        val cardView = ClickableCardView(requireActivity())
-        cardView.tag = min_multiplos
-
-        cardView.layoutParams = getMatchWrapParams()
-        cardView.preventCornerOverlap = true
-
-        //int pixels = (int) (dips * scale + 0.5f);
-        val lrDip = (6 * scale + 0.5f).toInt()
-        val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f)
-        cardView.cardElevation = (2 * scale + 0.5f)
-        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardView.useCompatPadding = true
-
-        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
-        cardView.setCardBackgroundColor(cvColor)
-
-        history.limit(historyLimit)
-        // Add cardview to history layout at the top (index 0)
-        history.addView(cardView, 0)
-
-        // criar novo Textview
-        val textView = TextView(activity)
-        textView.layoutParams = getMatchWrapParams()
-
-        val text =
-                if (shouldFormatNumbers) {
-                    getString(R.string.multiplosde) + " " + number.formatForLocale() + "=\n" + multiplos
+        context?.let { ctx ->
+            val maxMultiplos = spinnerMultiplosCount.selectedItem.toString().toLongOrNull() ?: 0L
+            launchSafeCoroutine {
+                val isFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = num.toString(), operation = operationName) != null
+                val result: HistoryDataClass? = LocalDatabase.getInstance(ctx).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
+                val md = result?.content?.let {
+                    gson.fromJson(it, MultiplesData::class.java)
+                }
+                val multiplosStr: String
+                val lastIteration: Long
+                if (md == null) {
+                    multiplosStr = calculateMultiplos(number = num, minIteration = 0, iterations = maxMultiplos)
+                    lastIteration = 10L
+                    val newMD = gson.toJson(MultiplesData(multiplosStr, lastIteration))
+                    LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(HistoryDataClass(num.toString(), operationName, newMD, isFavorite))
                 } else {
-                    getString(R.string.multiplosde) + " " + number + "=\n" + multiplos
+                    multiplosStr = md.stringMultiplos
+                    lastIteration = md.lastIteration
+                    val newMD = gson.toJson(MultiplesData(multiplosStr, lastIteration))
+                    LocalDatabase.getInstance(ctx).historyDAO()?.updateHistoryData(key = num.toString(), operationName, newMD)
                 }
 
-        val ssb = SpannableStringBuilder(text)
-
-        //Adicionar o texto com o resultado
-        textView.text = ssb
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        textView.setTag(R.id.texto, "texto")
-
-        val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = getMatchWrapParams()
-        llVerticalRoot.orientation = LinearLayout.VERTICAL
-
-        // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity(), withExplanations = false))
-
-        context?.let {
-            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, number.toString(), DivisoresFragment::class.java.simpleName)
-            llVerticalRoot.addView(separator, 0)
-        }
-        llVerticalRoot.addView(textView)
-
-        if (showMore) {
-            // criar novo Textview com link para mostrar mais números múltiplos
-            val showMoreTextView = TextView(activity)
-            showMoreTextView.layoutParams = getMatchWrapParams()
-            showMoreTextView.gravity = Gravity.RIGHT
-            showMoreTextView.setText(R.string.show_more)
-            showMoreTextView.paintFlags = Paint.UNDERLINE_TEXT_FLAG
-            showMoreTextView.setTypeface(null, Typeface.BOLD)
-            showMoreTextView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.bgCardColor))
-            showMoreTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            showMoreTextView.setOnClickListener {
-                startTime = System.nanoTime()
-                val spinner =
-                    java.lang.Long.parseLong(spinner_multiplos.selectedItem.toString())
-                asyncTask = BackGroundOperation(true, cardView).execute(
-                    num,
-                    cardView.tag as Long,
-                    spinner
-                )
-            }
-
-            llVerticalRoot.addView(showMoreTextView)
-        }
-
-        // add the root layout to the cardview
-        cardView.addView(llVerticalRoot)
-    }
-
-    inner class BackGroundOperation internal constructor(
-        private var expandResult: Boolean,
-        private var theCardView: ClickableCardView?
-    ) : AsyncTask<Long, Double, String>() {
-        internal var number: Long = 0
-        private var maxValue: Long = 0
-
-        public override fun onPreExecute() {
-            if (expandResult.not()) {
-                button_calc_multiplos.isClickable = false
-                button_calc_multiplos.setText(R.string.working)
-                hideKeyboard(activity)
-            }
-        }
-
-        override fun doInBackground(vararg num: Long?): String {
-            number = num[0] ?: 0
-            val minValue = num[1] ?: 0
-            maxValue = (num[2] ?: 0) + (num[1] ?: 0)
-
-            var stringMultiples = ""
-            for (i in minValue until maxValue) {
-                val bigNumber = BigInteger.valueOf(number).multiply(BigInteger.valueOf(i))
-                stringMultiples += if (shouldFormatNumbers) {
-                    "${bigNumber.formatForLocale()}, "
-                } else {
-                    "$bigNumber, "
+                withContext(Dispatchers.Main) {
+                    createCardViewMultiplos(num, multiplos = multiplosStr, lastIteration, isFavorite)
                 }
             }
-            stringMultiples += "...}"
-            return stringMultiples
         }
 
-        override fun onPostExecute(result: String) {
-            if (this@MultiplosFragment.isVisible) {
-                if (expandResult.not()) {
-                    createCardView(number, "{$result", maxValue, true)
-                    button_calc_multiplos.setText(R.string.calculate)
-                    button_calc_multiplos.isClickable = true
-                } else {
-                    theCardView?.tag = maxValue
-                    val textViewPreResult: TextView?
-                    if (shouldShowPerformance) {
-                        textViewPreResult = (theCardView?.getChildAt(0) as LinearLayout).getChildAt(1) as? TextView
-                        val gradientSeparator = ((theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as? ConstraintLayout)?.getChildAt(0) as? TextView
-                        val decimalFormatter = DecimalFormat("#.###")
-                        val elapsed =
-                            getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
-                        gradientSeparator?.text = elapsed
-                    } else {
-                        textViewPreResult = (theCardView?.getChildAt(0) as LinearLayout).getChildAt(0) as? TextView
+    }
+
+    private fun createCardViewMultiplos(number: BigInteger, multiplos: String, lastIteration: Long, isFavorite: Boolean) {
+        val layout = MultiplosResultItemBinding.inflate(layoutInflater)
+        with(layout) {
+            // Create a generic swipe-to-dismiss touch listener.
+            root.setOnTouchListener(SwipeToDismissTouchListener(root, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
+            val text = if (shouldFormatNumbers) {
+                getString(R.string.multiplosde) + " " + number.formatForLocale() + "=\n" + multiplos
+            } else {
+                getString(R.string.multiplosde) + " " + number + "=\n" + multiplos
+            }
+
+            textViewTop.text = text
+            textViewTop.setTag(R.id.texto, "texto")
+
+            if (shouldShowPerformance) {
+                val formatter1 = DecimalFormat("#.###")
+                val elapsed = root.context.getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1_000_000_000.0) + "s"
+                textViewPerformance.text = elapsed
+                textViewPerformance.visibility = View.VISIBLE
+            } else {
+                textViewPerformance.visibility = View.GONE
+            }
+
+            imageStar.visibility = if (isFavorite) View.VISIBLE else View.GONE
+            imageStar.rotateYAnimation()
+            imageStar.setOnClickListener {
+                TooltipManager.showTooltipOn(imageStar, root.context.getString(R.string.result_is_favorite))
+            }
+
+            if (number > BigInteger.ZERO) {
+                textViewShowMore.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+                textViewShowMore.setOnClickListener {
+                    startTime = System.nanoTime()
+                    val iterations = spinnerMultiplosCount.selectedItem.toString().toLongOrNull() ?: 10L
+                    launchSafeCoroutine {
+                        val savedResult: HistoryDataClass? = LocalDatabase.getInstance(root.context).historyDAO()?.getResultForKeyAndOp(number.toString(), operationName)
+                        val saved = savedResult?.content?.let {
+                            gson.fromJson(it, MultiplesData::class.java)
+                        }
+
+                        val multiplosStr = calculateMultiplos(number = number, minIteration = saved?.lastIteration ?: lastIteration, iterations = iterations)
+                        val multiplesData = MultiplesData((saved?.stringMultiplos ?: "").dropLast(4) + multiplosStr, (saved?.lastIteration ?: lastIteration) + iterations)
+                        val newData = gson.toJson(multiplesData)
+                        LocalDatabase.getInstance(root.context).historyDAO()?.updateHistoryData(key = number.toString(), operationName, newData)
+                        withContext(Dispatchers.Main) {
+                            if (shouldShowPerformance) {
+                                val decimalFormatter = DecimalFormat("#.###")
+                                val elapsed = getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                                textViewPerformance.text = elapsed
+                            } else {
+                                textViewPerformance.visibility = View.GONE
+                            }
+                            val print = textViewTop.text.toString().dropLast(4) + multiplosStr
+                            textViewTop.text = print
+                        }
                     }
-                    var preResult = textViewPreResult?.text.toString()
-                    preResult = preResult.substring(0, preResult.length - 4) + result
-                    textViewPreResult?.text = preResult
                 }
+            } else {
+                textViewShowMore.visibility = View.GONE
             }
-            theCardView = null
+            history.limit(historyLimit)
+            history.addView(root, 0)
         }
 
+    }
+
+    private fun calculateMultiplos(number: BigInteger, minIteration: Long, iterations: Long) : String {
+        val maxIteration = minIteration + iterations
+        val stringMultiples = StringBuilder("{")
+        for (i in minIteration until maxIteration) {
+            val bigNumber = number.multiply(BigInteger.valueOf(i))
+            stringMultiples.append(if (shouldFormatNumbers) {
+                "${bigNumber.formatForLocale()}, "
+            } else {
+                "$bigNumber, "
+            })
+        }
+        stringMultiples.append("...}")
+        return stringMultiples.toString()
     }
 
 }

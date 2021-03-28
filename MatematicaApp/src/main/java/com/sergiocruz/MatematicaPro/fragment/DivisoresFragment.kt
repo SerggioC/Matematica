@@ -110,7 +110,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         }
 
         if (editnumText == "0" || num == 0L) {
-            CreateCardView.withStringRes(history, R.string.zero_no_divisores, activity as Activity)
+            CreateCardView.withStringRes(history, R.string.zero_no_divisores, activity as Activity, operationName)
             return
         }
 
@@ -180,22 +180,21 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 number /= 2
             }
 
-            run {
-                var i: Long = 3
-                while (i <= number / i) {
-                    while (number % i == 0L) {
-                        divisores.add(i)
-                        number /= i
-                    }
-                    progress = i.toFloat() / (number.toFloat() / i.toFloat())
-                    if (progress - oldProgress > 0.1) {
-                        publishProgress(progress)
-                        oldProgress = progress
-                    }
-                    if (isCancelled) break
-                    i += 2
+            var i: Long = 3
+            while (i <= number / i) {
+                while (number % i == 0L) {
+                    divisores.add(i)
+                    number /= i
                 }
+                progress = i.toFloat() / (number.toFloat() / i.toFloat())
+                if (progress - oldProgress > 0.1) {
+                    publishProgress(progress)
+                    oldProgress = progress
+                }
+                if (isCancelled) break
+                i += 2
             }
+
             if (number > 1) {
                 divisores.add(number)
             }
@@ -218,7 +217,7 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@DivisoresFragment.isVisible) {
-                val v0 = values[0] ?: return
+                val v0 = values.getOrNull(0) ?: return
                 progressParams.width = (v0 * card_view_1.width).roundToInt()
                 progressBar.layoutParams = progressParams
             }
@@ -286,7 +285,6 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     fun createCardView(input: String, ssb: SpannableStringBuilder, limit: Boolean = true, saveToDB: Boolean = true) {
         //criar novo cardview
         val cardView = ClickableCardView(activity as Activity)
-        cardView.tag = InputTags(input = input, operation = operationName)
         cardView.layoutParams = getMatchWrapParams()
         cardView.preventCornerOverlap = true
 
@@ -312,7 +310,11 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity as Activity, withExplanations = false))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView,
+                activity as Activity,
+                withExplanations = false,
+                inputTags = InputTags(input = input, operation = operationName))
+        )
 
         context?.let {
             val separator = getGradientSeparator(it, shouldShowPerformance, startTime)

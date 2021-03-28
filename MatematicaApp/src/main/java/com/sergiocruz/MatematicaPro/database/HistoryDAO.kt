@@ -15,7 +15,7 @@ interface HistoryDAO {
     suspend fun getResultForKeyAndOp(key: String, operation: String): HistoryDataClass?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun saveCard(card: HistoryDataClass?)
+    suspend fun saveResult(card: HistoryDataClass?)
 
     @Query("UPDATE HistoryDataClass SET favorite = 1 WHERE favorite == 0 AND operation == :operation")
     suspend fun makeNonFavoriteFavorite(operation: String): Int

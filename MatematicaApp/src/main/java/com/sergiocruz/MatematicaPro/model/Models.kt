@@ -51,6 +51,12 @@ data class PrimalityData(
 )
 
 
+data class MultiplesData(
+        val stringMultiplos: String,
+        val lastIteration: Long,
+)
+
+
 class SpannableSerializer : JsonSerializer<SpannableStringBuilder?>, JsonDeserializer<SpannableStringBuilder?> {
 
     private val gson: Gson

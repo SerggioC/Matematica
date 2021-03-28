@@ -103,7 +103,6 @@ class PrimalityFragment : BaseFragment() {
     private fun createCardView(bigNumber: BigInteger, isPrime: Boolean, factorizationData: FactorizationData? = null) {
         val layout = PrimalityResultItemBinding.inflate(LayoutInflater.from(context))
         with(layout) {
-            root.tag = InputTags(input = bigNumber.toString(), operation = operationName)
 
             val color = ContextCompat.getColor(requireContext(),
                     if (isPrime) R.color.greener else R.color.cardsColor)
@@ -194,8 +193,7 @@ class PrimalityFragment : BaseFragment() {
                         tv.tag = tags
                         val task = FactorizationTask(
                                 numberToFactorize = bigNumber,
-                                incompleteCalcText = context?.getString(R.string.incomplete_calc)
-                                        ?: "",
+                                incompleteCalcText = context?.getString(R.string.incomplete_calc) ?: "",
                                 factorsColors = getRandomFactorsColors(),
                                 updateProgress = { fraction ->
                                     progressParams.width = (fraction * content.width).roundToInt()
@@ -238,7 +236,11 @@ class PrimalityFragment : BaseFragment() {
 
             showFavoriteStarForInput(imageStar, bigNumber.toString())
 
-            root.setOnTouchListener(SwipeToDismissTouchListener(root, activity as Activity, withExplanations = false))
+            root.setOnTouchListener(SwipeToDismissTouchListener(root,
+                    activity as Activity,
+                    withExplanations = false,
+                    inputTags = InputTags(input = bigNumber.toString(), operation = operationName))
+            )
 
             history.limit(historyLimit)
             history.addView(root, 0)

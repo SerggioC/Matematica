@@ -140,7 +140,6 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean, limitHistory: Boolean = true, saveToDB: Boolean = true) {
         //criar novo cardview
         val cardView = ClickableCardView(requireActivity())
-        cardView.tag = InputTags(number.toString(), operationName)
 
         cardView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, // width
@@ -191,7 +190,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         llVerticalRoot.orientation = LinearLayout.VERTICAL
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity(), withExplanations = false))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
 
         context?.let {
             val separator = getGradientSeparator(it, shouldShowPerformance, startTime)

@@ -402,8 +402,11 @@ class FactorizationTask(
                     }
                 }
 
-                root.tag = InputTags(input = number.toString(), operation = operationName)
-                root.setOnTouchListener(SwipeToDismissTouchListener(root, context, withExplanations = explanations == "-1" || explanations == "0"))
+                root.setOnTouchListener(SwipeToDismissTouchListener(root,
+                        context,
+                        withExplanations = explanations == "-1" || explanations == "0",
+                        inputTags = InputTags(input = number.toString(), operation = operationName))
+                )
             }
             return layout.root
         }

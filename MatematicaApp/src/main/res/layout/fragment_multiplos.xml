@@ -99,7 +99,7 @@
                                 android:text="@string/multpl_apresentar" />
 
                             <Spinner
-                                android:id="@+id/spinner_multiplos"
+                                android:id="@+id/spinnerMultiplosCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text1"
@@ -112,7 +112,7 @@
                         </LinearLayout>
 
                         <Button
-                            android:id="@+id/button_calc_multiplos"
+                            android:id="@+id/buttonCalcMultiplos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"

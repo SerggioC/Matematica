@@ -19,11 +19,11 @@ import com.sergiocruz.MatematicaPro.model.InputTags
 
 object CreateCardView {
 
-    fun withStringRes(history: LinearLayout?, helpStringRes: Int?, activity: Activity) {
+    fun withStringRes(history: LinearLayout?, helpStringRes: Int?, activity: Activity, operationName: String = "") {
         if (history == null || helpStringRes == null) return
         val helpString = activity.getString(helpStringRes)
         val helpSSB = SpannableStringBuilder(helpString)
-        viewWithSSB(history, helpSSB, activity, isResult = false)
+        viewWithSSB(history, helpSSB, activity, isResult = false, operationName)
     }
 
     fun viewWithSSB(
@@ -31,7 +31,8 @@ object CreateCardView {
             helpSSB: SpannableStringBuilder,
             activity: Activity,
             isResult: Boolean = true,
-            input: String? = null
+            input: String? = null,
+            operationName: String = "",
     ) {
         //criar novo cardview
         val cardView = ClickableCardView(activity)
@@ -66,7 +67,7 @@ object CreateCardView {
         cardView.addView(textView)
 
         // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity, withExplanations = false))
+        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, activity, withExplanations = false, inputTags = InputTags(input = input, operation = operationName)))
 
         if (isResult) {
             cardView.tag = InputTags(input = input, operation = FatorizarFragment::class.java.simpleName)

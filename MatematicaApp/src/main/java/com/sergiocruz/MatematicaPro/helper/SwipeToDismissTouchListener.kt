@@ -2,7 +2,6 @@ package com.sergiocruz.MatematicaPro.helper
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
@@ -52,6 +51,7 @@ class SwipeToDismissTouchListener(
         private val mActivity: Activity,
         private val mCallbacks: DismissCallbacks? = null,
         private val withExplanations: Boolean = false,
+        private val inputTags: InputTags? = null,
 ) : View.OnTouchListener {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -127,7 +127,7 @@ class SwipeToDismissTouchListener(
             theCardView.setCardBackgroundColor(cardOriginalColor)
         }
 
-        val tags = mView.tag as? InputTags?
+        val tags = mView.tag as? InputTags? ?: inputTags
         val pk = tags?.input ?: ""
         val op = tags?.operation ?: ""
         var saved = false
