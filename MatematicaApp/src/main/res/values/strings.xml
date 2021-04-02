@@ -138,7 +138,7 @@
     <string name="pref_description_title">Application Preferences</string>
     <string name="action_settings">Preferences</string>
 
-    <string name="explainMMC1html"><![CDATA[▻Decompose the numbers in <u>prime factors</u>:<br/>]]></string>
+    <string name="explainMMC1html">▻Decompose the numbers in prime factors:</string>
     <string name="explainMMC2html"><![CDATA[▻Choose the <u>common</u> and <u>non common</u> factors, <u>just once</u> with the <u>greatest exponents</u>:<br/>]]></string>
     <string name="explainMMC3html"><![CDATA[▻<u>Multiply</u> the factors to obtain the Least Common Multiple:<br/>]]></string>
 

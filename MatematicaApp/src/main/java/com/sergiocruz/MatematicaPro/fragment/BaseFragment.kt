@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -14,7 +13,6 @@ import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import com.android.billingclient.api.*
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -31,11 +29,6 @@ import com.sergiocruz.MatematicaPro.databinding.TextviewStarBinding
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.model.SpannableSerializer
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 
@@ -45,15 +38,16 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var historyLimit: Int = 0
     var scale: Float = 0f
     var shouldShowPerformance: Boolean = true
-    var shouldShowExplanation: String = "0"
+    var explanations: Explanations = Explanations.WhenAsked;
     var shouldFormatNumbers: Boolean = false
     private var shouldShowColors: Boolean = true
 
     var allFavoritesCallback: ((List<HistoryDataClass>?) -> Unit)? = null
 
+    // -1 = sempre  0 = quando pedidas   1 = nunca
     val withExplanations: Boolean
         get() {
-            return shouldShowExplanation == "-1" || shouldShowExplanation == "0"
+            return explanations == Explanations.Always || explanations == Explanations.WhenAsked
         }
 
     val operationName: String = javaClass.simpleName
@@ -256,13 +250,31 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         getBasePreferences()
     }
 
+    enum class Explanations(private val value: String) {
+        Never("1"),
+        WhenAsked("0"),
+        Always("-1");
+
+        companion object {
+            fun fromStringValue(value: String): Explanations {
+                var ex = WhenAsked
+                for (enumValue in values()) {
+                    if (enumValue.value == value) {
+                        ex = enumValue
+                        break
+                    }
+                }
+                return ex
+            }
+        }
+    }
+
     open fun getBasePreferences() {
         val default: Int = resources.getInteger(R.integer.default_history_size)
-        historyLimit = sharedPrefs.getString(getString(R.string.pref_key_history_size), default.toString())?.toInt()
-                ?: default
+        historyLimit = sharedPrefs.getString(getString(R.string.pref_key_history_size), default.toString())?.toInt() ?: default
         shouldShowPerformance = sharedPrefs.getBoolean(getString(R.string.pref_key_show_performance), true)
-        shouldShowExplanation = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0")
-                ?: "0"
+        val explStr = sharedPrefs.getString(getString(R.string.pref_key_show_explanation), "0") ?: "0"
+        explanations = Explanations.fromStringValue(explStr)
         shouldShowColors = sharedPrefs.getBoolean(getString(R.string.pref_key_show_colors), true)
         shouldFormatNumbers = sharedPrefs.getBoolean(getString(R.string.pref_key_format_numbers), false)
     }
@@ -319,14 +331,10 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             launchSafeCoroutine {
                 val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
                 withContext(Dispatchers.Main) {
-                    if (saved) {
-                        star.visibility = View.VISIBLE
-                        star.rotateYAnimation()
-                        star.setOnClickListener {
-                            TooltipManager.showTooltipOn(star, getString(R.string.result_is_favorite))
-                        }
-                    } else {
-                        star.visibility = View.GONE
+                    star.visibility = if (saved) View.VISIBLE else View.GONE
+                    star.rotateYAnimation()
+                    star.setOnClickListener {
+                        TooltipManager.showTooltipOn(star, getString(R.string.result_is_favorite))
                     }
                 }
             }

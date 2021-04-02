@@ -4,13 +4,13 @@ import android.animation.LayoutTransition
 import android.animation.LayoutTransition.CHANGE_APPEARING
 import android.animation.LayoutTransition.CHANGE_DISAPPEARING
 import android.app.Activity
+import android.graphics.Paint
 import android.graphics.Typeface.BOLD
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned.*
-import android.text.TextUtils
 import android.text.style.*
 import android.util.TypedValue
 import android.view.Gravity
@@ -26,19 +26,23 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.sergiocruz.MatematicaPro.R
-import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
+import com.sergiocruz.MatematicaPro.databinding.ItemResultMmcBinding
 import com.sergiocruz.MatematicaPro.helper.*
+import com.sergiocruz.MatematicaPro.model.InputTags
 import com.sergiocruz.MatematicaPro.model.MyTags
 import kotlinx.android.synthetic.main.fragment_mmc.*
+import kotlinx.android.synthetic.main.include_mmc_explanation.*
+import kotlinx.coroutines.Deferred
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class MMCFragment : BaseFragment(), OnEditorActions {
     internal var asyncTaskQueue = ArrayList<AsyncTask<*, *, *>?>()
-    private var taskNumber = 0
+    private var taskIndex = 0
     internal var startTime: Long = 0
     private lateinit var language: String
     private lateinit var arrayOfEditTexts: Array<EditText>
@@ -120,10 +124,10 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                 val insetTop: Int = insets?.systemWindowInsetTop ?: 0
                 view?.setPadding(
-                    ((view.paddingLeft) / scale).toInt(),
-                    (view.paddingTop / scale + insetTop).toInt(),
-                    (view.paddingRight / scale).toInt(),
-                    (view.paddingBottom / scale).toInt()
+                        ((view.paddingLeft) / scale).toInt(),
+                        (view.paddingTop / scale + insetTop).toInt(),
+                        (view.paddingRight / scale).toInt(),
+                        (view.paddingBottom / scale).toInt()
                 )
             }
             return@setOnApplyWindowInsetsListener insets?.consumeSystemWindowInsets()
@@ -133,20 +137,11 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         calculateButton.setOnClickListener { calculateMMC() }
 
-        clearButton1.setOnClickListener { mmc_num_1.setText("") }
-        clearButton2.setOnClickListener { mmc_num_2.setText("") }
-        clearButton3.setOnClickListener { mmc_num_3.setText("") }
-        clearButton4.setOnClickListener { mmc_num_4.setText("") }
-        clearButton5.setOnClickListener { mmc_num_5.setText("") }
-        clearButton6.setOnClickListener { mmc_num_6.setText("") }
-        clearButton7.setOnClickListener { mmc_num_7.setText("") }
-        clearButton8.setOnClickListener { mmc_num_8.setText("") }
-
         button_add_mmc.setOnClickListener { addMMC() }
         button_remove_mmc.setOnClickListener { removeMMC() }
 
         arrayOfEditTexts.forEach {
-            it.addTextChangedListener(BigNumbersTextWatcher(it, shouldFormatNumbers, onEditor = this))
+            it.addTextChangedListener(NumberFormatterTextWatcher(it, shouldFormatNumbers, onEditor = this))
             it.error = null
         }
 
@@ -294,24 +289,22 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         val emptyTextView = ArrayList<TextView>()
         val bigNumbers = ArrayList<BigInteger>()
-        val longNumbers = ArrayList<Long>()
 
         arrayOfEditTexts.forEach {
             val numString = it.text.digitsOnly()
-            if (TextUtils.isEmpty(numString)) {
+            if (numString.isEmpty()) {
                 emptyTextView.add(it)
             } else {
-                val number = numString.toLongOrNull()
-                when (number) {
+                when (val number = numString.toBigIntegerOrNull()) {
                     null -> {
                         it.apply {
                             requestFocus()
-                            error = getString(R.string.numero_alto)
+                            error = getString(R.string.invalid_number)
                             postDelayed({ error = null }, clearErrorDelayMillis)
                         }
                         showKeyboard(activity)
                     }
-                    0L -> {
+                    BigInteger.ZERO -> {
                         it.apply {
                             requestFocus()
                             error = getString(R.string.maiores_qzero)
@@ -319,11 +312,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                         }
                         showKeyboard(activity)
                     }
-                    else -> {
-                        longNumbers.add(number)
-                        bigNumbers.add(number.toBigInteger())
-                    }
-
+                    else -> bigNumbers.add(number)
                 }
             }
         }
@@ -342,195 +331,106 @@ class MMCFragment : BaseFragment(), OnEditorActions {
             arrayOfEditTexts.forEach { it.error = null }
         }
 
-        var mmcString = getString(R.string.mmc_result_prefix)
-        var resultMMC: BigInteger? = null
+        var mmcResultString = getString(R.string.mmc_result_prefix)
+        var mmcResult: BigInteger? = null
 
         if (bigNumbers.size > 1) {
-            for (i in 0 until bigNumbers.size - 1) {
-                mmcString += "${bigNumbers[i]}, "
-            }
-            mmcString += "${bigNumbers[bigNumbers.size - 1]})= "
-            resultMMC = mmc(bigNumbers)
+            mmcResultString = bigNumbers.joinToString(
+                    prefix = getString(R.string.mmc_result_prefix),
+                    postfix = ")= ") { it.toString() }
+            mmcResult = mmc(bigNumbers)
         }
 
-        mmcString += resultMMC
+        mmcResultString += mmcResult
 
-        //criar novo cardview
-        val cardView = ClickableCardView(activity as Activity)
-        cardView.layoutParams = getMatchWrapParams()
-        cardView.preventCornerOverlap = true
-        //int pixels = (int) (dips * scale + 0.5f);
-        val lrDip = (6 * scale + 0.5f).toInt()
-        val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f)
-        cardView.cardElevation = (2 * scale + 0.5f)
-        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardView.useCompatPadding = true
+        createResultsCardView(
+                mmcResultString = mmcResultString,
+                mmcResult = mmcResult,
+                numbers = bigNumbers,
+        )
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            val lt = LayoutTransition()
-            lt.enableTransitionType(CHANGE_APPEARING)
-            lt.enableTransitionType(CHANGE_DISAPPEARING)
-            cardView.layoutTransition = lt
-        }
+    private fun createResultsCardView(mmcResultString: String,
+                                      mmcResult: BigInteger?,
+                                      numbers: ArrayList<BigInteger>) {
 
-        val cvColor = ContextCompat.getColor(requireContext(), R.color.cardsColor)
-        cardView.setCardBackgroundColor(cvColor)
+        val layout = ItemResultMmcBinding.inflate(layoutInflater)
+        val input = numbers.sorted().joinToString { it.toString() }
+        with(layout) {
+            textViewTop.text = mmcResultString
 
-        // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(
-            SwipeToDismissTouchListener(
-                    cardView,
+            showFavoriteStarForInput(imageStar, input)
+
+            // TODO check if temp result is saved
+
+            root.setOnTouchListener(SwipeToDismissTouchListener(root,
                     activity as Activity,
                     object : SwipeToDismissTouchListener.DismissCallbacks {
                         override fun onDismiss(view: View?) {
-                            checkBackgroundOperation(view)
+                            checkBackgroundOperation(myTags)
                         }
                     },
-                    false)
-        )
+                    withExplanations = withExplanations,
+                    inputTags = InputTags(input, operationName),
+            ))
 
-        // Adicionar os números a fatorizar na tag do cardview
-        cardView.tag = MyTags(cardView, longNumbers, resultMMC, false, false, "", null, taskNumber)
+            var isExpanded = false
+            var isCalculating = false
+            explain.explainContainer.visibility = View.GONE
 
-        history.limit(historyLimit)
-        // Add cardview to history layout at the top (index 0)
-        history.addView(cardView, 0)
+            if (withExplanations) {
+                explainLink.visibility = View.VISIBLE
+                explainLink.paintFlags = Paint.UNDERLINE_TEXT_FLAG
 
-        val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = getMatchWrapParams()
-        llVerticalRoot.orientation = LinearLayout.VERTICAL
+                if (explanations == Explanations.Always) {
+                    explainLink.setText(R.string.calculating)
+                    isCalculating = true
+                    // Adicionar os números a fatorizar na tag do cardview
+                    val myTags = MyTags(root,
+                            numbers,
+                            mmcResult,
+                            hasExplanation = false,
+                            hasBGOperation = false,
+                            texto = "",
+                            bGfatores = null,
+                            taskNumber = taskIndex)
+                    val asyncTask = BackGroundOperationMMC(myTags).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                    asyncTaskQueue.add(asyncTask)
+                    taskIndex++
 
-        // criar novo Textview
-        val textView = TextView(activity)
-        textView.layoutParams = getMatchWrapParams()
-
-        //Adicionar o texto com o resultado
-        textView.text = mmcString
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        textView.setTag(R.id.texto, "texto")
-
-        // add the textview to the cardview
-        llVerticalRoot.addView(textView)
-
-        // -1 = sempre  0 = quando pedidas   1 = nunca
-        if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(mmcString, cardView, llVerticalRoot, shouldShowExplanation)
-        } else {
-            context?.let {
-                val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mmcString, DivisoresFragment::class.java.simpleName)
-                llVerticalRoot.addView(separator, 0)
+                } else if (explanations == Explanations.WhenAsked) {
+                    explainLink.setText(R.string.show_explain)
+                }
+                explainLink.setOnClickListener { view -> (view as TextView)
+                    if (isCalculating) return@setOnClickListener
+                    if (isExpanded.not()) {
+                        view.setText(R.string.hide_explain)
+                        expandThis(explain.explainContainer)
+                        isExpanded = true
+                    } else if (isExpanded) {
+                        view.setText(R.string.show_explain)
+                        collapseThis(explain.explainContainer)
+                        isExpanded = false
+                    }
+                }
+            } else {
+                explainLink.visibility = View.GONE
+                progressBar.visibility = View.GONE
+                if (shouldShowPerformance) {
+                    val formatter = DecimalFormat("#.###")
+                    val elapsed = root.context.getString(R.string.performance) + " " + formatter.format((System.nanoTime() - startTime) / 1_000_000_000.0) + "s"
+                    textViewPerformance.text = elapsed
+                    textViewPerformance.visibility = View.VISIBLE
+                } else {
+                    textViewPerformance.visibility = View.GONE
+                }
             }
-            cardView.addView(llVerticalRoot)
+            history.addView(root, 0)
         }
 
     }
 
-    private fun createExplanations(
-            mmcString: String,
-            cardview: CardView,
-            llVerticalRoot: LinearLayout,
-            shouldShowExplanation: String?
-    ) {
-
-        val hideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
-        hideExpl.setSafeSpan(UnderlineSpan(), 0, hideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
-        val showExpl = SpannableStringBuilder(getString(R.string.show_explain))
-        showExpl.setSafeSpan(UnderlineSpan(), 0, showExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        //Linearlayout horizontal com o explainlink e gradiente
-        val llHorizontal = LinearLayout(activity)
-        llHorizontal.orientation = HORIZONTAL
-        llHorizontal.layoutParams = getMatchWrapParams()
-        val explainLink = TextView(activity)
-        explainLink.tag = "explainLink"
-        explainLink.layoutParams = getWrapWrapParams()
-        explainLink.setTextSize(TypedValue.COMPLEX_UNIT_SP, CARD_TEXT_SIZE)
-        explainLink.setTextColor(ContextCompat.getColor(requireActivity(), R.color.linkBlue))
-        explainLink.gravity = Gravity.CENTER_VERTICAL
-
-        llHorizontal.gravity = Gravity.CENTER_VERTICAL
-
-        var isExpanded = false
-        explainLink.setOnClickListener { view ->
-            val explView =
-                (view.parent.parent.parent as CardView).findViewWithTag<View>("ll_vertical_expl")
-            if (!isExpanded) {
-                (view as TextView).text = hideExpl
-                expandThis(explView, null)
-                isExpanded = true
-
-            } else if (isExpanded) {
-                (view as TextView).text = showExpl
-                collapseThis(explView)
-                isExpanded = false
-            }
-        }
-
-        llHorizontal.addView(explainLink)
-
-        context?.let {
-            val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mmcString, DivisoresFragment::class.java.simpleName)
-            llVerticalRoot.addView(separator)
-        }
-
-        // LL vertical das explicações
-        val verticalExpl = LinearLayout(activity)
-        verticalExpl.tag = "ll_vertical_expl"
-        verticalExpl.layoutParams = getMatchWrapParams()
-        verticalExpl.orientation = LinearLayout.VERTICAL
-        verticalExpl.layoutTransition = LayoutTransition()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            val lt = LayoutTransition()
-            lt.enableTransitionType(CHANGE_APPEARING)
-            lt.enableTransitionType(CHANGE_DISAPPEARING)
-            verticalExpl.layoutTransition = lt
-        }
-
-        // ProgressBar
-        val heightDp = (3 * scale + 0.5f).toInt()
-        val progressBar = View(activity)
-        progressBar.tag = "progressBar"
-        val layoutParams = LinearLayout.LayoutParams(1, heightDp) //Largura, Altura
-        progressBar.layoutParams = layoutParams
-
-
-        // Ponto 1
-        val explainTextView1 = requireActivity().getNewTextView("explainTextView_1", R.string.explainMMC1html)
-        val explainTextView2 = requireActivity().getNewTextView("explainTextView_2", R.string.explainMMC2html)
-        val explaintextView3 = requireActivity().getNewTextView("explainTextView_3", R.string.explainMMC3html)
-
-        verticalExpl.addView(explainTextView1)
-        verticalExpl.addView(explainTextView2)
-        verticalExpl.addView(explaintextView3)
-
-        llVerticalRoot.addView(llHorizontal)
-        llVerticalRoot.addView(progressBar)
-        llVerticalRoot.addView(verticalExpl)
-
-        if (shouldShowExplanation == "-1") {  //Always show Explanation
-            verticalExpl.visibility = View.VISIBLE
-            explainLink.text = hideExpl
-            isExpanded = true
-        } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
-            verticalExpl.visibility = View.GONE
-            explainLink.text = showExpl
-            isExpanded = false
-        }
-        cardview.addView(llVerticalRoot)
-
-        val thisCardTags = cardview.tag as MyTags
-
-        thisCardTags.taskNumber = taskNumber
-        val asyncTask = BackGroundOperationMMC(thisCardTags)
-            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        asyncTaskQueue.add(asyncTask)
-        taskNumber++
-
-    }
-
-    fun checkBackgroundOperation(view: View?) {
-        val theTags = view?.tag as MyTags
+    fun checkBackgroundOperation(theTags: MyTags) {
         if (theTags.hasBGOperation == true) {
             val taskNumber = theTags.taskNumber
             val task = asyncTaskQueue[taskNumber]
@@ -546,11 +446,11 @@ class MMCFragment : BaseFragment(), OnEditorActions {
     private var fColors: List<Int> = mutableListOf()
 
     // Asynctask <Params, Progress, Result>
-    inner class BackGroundOperationMMC internal constructor(private var cardTags: MyTags) :
-        AsyncTask<Void, Float, Void>() {
+    inner class BackGroundOperationMMC(private var cardTags: MyTags) :
+            AsyncTask<Void, Float, Void>() {
         private lateinit var theCardViewBG: CardView
-        private lateinit var mmcNumbers: ArrayList<Long>
-        private lateinit var bgfatores: ArrayList<ArrayList<Long>>
+        private lateinit var mmcNumbers: ArrayList<BigInteger>
+        private lateinit var bgfatores: ArrayList<ArrayList<BigInteger>>
 
         private lateinit var gradientSeparator: TextView
         lateinit var progressBar: View
@@ -558,14 +458,15 @@ class MMCFragment : BaseFragment(), OnEditorActions {
 
         private lateinit var progressParams: ViewGroup.LayoutParams
 
+        private var timerProgressUpdate: Deferred<Unit>? = null
+
         public override fun onPreExecute() {
             percentFormatter = DecimalFormat("#.###%")
             theCardViewBG = cardTags.cardView
             progressBar = theCardViewBG.findViewWithTag("progressBar")
             progressBar.visibility = View.VISIBLE
             progressParams = progressBar.layoutParams
-            gradientSeparator =
-                theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
+            gradientSeparator = theCardViewBG.findViewWithTag<View>("gradient_separator") as TextView
             cardTags.hasBGOperation = true
 
             fColors = getRandomFactorsColors()
@@ -577,39 +478,44 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         override fun doInBackground(vararg voids: Void): Void? {
-            val fatores = ArrayList<ArrayList<Long>>()
-            mmcNumbers = cardTags.longNumbers
+            val fatores = ArrayList<ArrayList<BigInteger>>()
+            mmcNumbers = cardTags.bigNumbers
 
             val numbersSize = mmcNumbers.size
             for (i in 0 until numbersSize) { // fatorizar todos os números inseridos em MMC
-                var oldProgress = 0.0f
                 var progress: Float
-                val fatoresIx = ArrayList<Long>()
+                val fatoresIx = ArrayList<BigInteger>()
 
-                var number: Long = mmcNumbers[i]
-                if (number == 1L) {
-                    fatoresIx.add(1L)
+                var number = mmcNumbers[i]
+                if (number == BigInteger.ONE) {
+                    fatoresIx.add(BigInteger.ONE)
                 }
-                while (number % 2L == 0L) {
-                    fatoresIx.add(2L)
-                    number /= 2L
+                while (number % BigInteger.valueOf(2) == BigInteger.ZERO) {
+                    fatoresIx.add(BigInteger.valueOf(2))
+                    number /= BigInteger.valueOf(2)
                 }
 
-                var j: Long = 3
+                var j: BigInteger = BigInteger.valueOf(3)
+
+                timerProgressUpdate = delayedTimerAsync(repeatMillis = 1000) {
+                    progress = try {
+                        (j.toBigDecimal(scale = 2) / (number.toBigDecimal(scale = 2) / j.toBigDecimal(scale = 2))).toFloat()
+                    } catch (e: Exception) {
+                        0f
+                    }
+                    publishProgress(progress, i.toFloat())
+                }
+                timerProgressUpdate?.start()
+
                 while (j <= number / j) {
                     if (isCancelled) break
-                    while (number % j == 0L) {
+                    while (number % j == BigInteger.ZERO) {
                         fatoresIx.add(j)
                         number /= j
                     }
-                    progress = j.toFloat() / (number.toFloat() / j.toFloat())
-                    if (progress - oldProgress > 0.1) {
-                        publishProgress(progress, i.toFloat())
-                        oldProgress = progress
-                    }
-                    j += 2
+                    j += BigInteger.valueOf(2)
                 }
-                if (number > 1) {
+                if (number > BigInteger.ONE) {
                     fatoresIx.add(number)
                 }
 
@@ -620,7 +526,6 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         override fun onProgressUpdate(vararg values: Float?) {
-
             if (this@MMCFragment.isVisible) {
                 val color = fColors[(values[1] ?: 0f).roundToInt()]
                 progressBar.setBackgroundColor(color)
@@ -637,45 +542,47 @@ class MMCFragment : BaseFragment(), OnEditorActions {
         }
 
         override fun onPostExecute(result: Void?) {
+            timerProgressUpdate?.cancel()
             if (this@MMCFragment.isVisible) {
 
                 bgfatores = cardTags.bGfatores!!
 
-                val datasets = ArrayList<ArrayList<Long>>()
+                val datasets = ArrayList<ArrayList<BigInteger>>()
 
                 for (k in bgfatores.indices) {
-                    val bases = ArrayList<Long>()
-                    val exps = ArrayList<Long>()
+                    val bases = ArrayList<BigInteger>()
+                    val exps = ArrayList<BigInteger>()
 
                     val strFatores = mmcNumbers[k].toString() + "="
-                    val ssbFatores: SpannableStringBuilder
-                    ssbFatores = SpannableStringBuilder(strFatores)
+                    val ssbFatores = SpannableStringBuilder(strFatores)
                     ssbFatores.setSafeSpan(ForegroundColorSpan(fColors[k]), 0, ssbFatores.length, SPAN_EXCLUSIVE_INCLUSIVE)
 
-                    var counter = 1
+                    var counter = BigInteger.ONE
                     var nextFactor = 0
-                    var lastItem: Long? = bgfatores[k][0]
+                    var lastItem: BigInteger = bgfatores[k][0]
 
                     //TreeMap
-                    val dataset = LinkedHashMap<String, Int>()
+                    val dataset = LinkedHashMap<String, BigInteger>()
 
-                    //Contar os expoentes  (sem comentários....)
+                    //Contar os expoentes
                     for (i in 0 until bgfatores[k].size) {
                         if (i == 0) {
-                            dataset[bgfatores[k][0].toString()] = 1
+                            dataset[bgfatores[k][0].toString()] = BigInteger.ONE
                             bases.add(bgfatores[k][0])
-                            exps.add(1L)
-                        } else if (bgfatores[k][i] == lastItem && i > 0) {
-                            counter++
-                            dataset[bgfatores[k][i].toString()] = counter
-                            bases[nextFactor] = bgfatores[k][i]
-                            exps[nextFactor] = counter.toLong()
-                        } else if (bgfatores[k][i] != lastItem && i > 0) {
-                            counter = 1
-                            nextFactor++
-                            dataset[bgfatores[k][i].toString()] = counter
-                            bases.add(bgfatores[k][i])
-                            exps.add(counter.toLong())
+                            exps.add(BigInteger.ONE)
+                        } else {
+                            if (bgfatores[k][i] == lastItem) {
+                                counter++
+                                dataset[bgfatores[k][i].toString()] = counter
+                                bases[nextFactor] = bgfatores[k][i]
+                                exps[nextFactor] = counter
+                            } else if (bgfatores[k][i] != lastItem) {
+                                counter = BigInteger.ONE
+                                nextFactor++
+                                dataset[bgfatores[k][i].toString()] = counter
+                                bases.add(bgfatores[k][i])
+                                exps.add(counter)
+                            }
                         }
                         lastItem = bgfatores[k][i]
                     }
@@ -687,16 +594,16 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                     var valueLength: Int
                     val iterator = dataset.entries.iterator()
                     while (iterator.hasNext()) {
-                        val pair = iterator.next() as Map.Entry<*, *>
+                        val pair = iterator.next()
 
-                        if (Integer.parseInt(pair.value.toString()) == 1) {
+                        if (pair.value == BigInteger.ONE) {
                             //Expoente 1
-                            ssbFatores.append(pair.key.toString())
+                            ssbFatores.append(pair.key)
 
-                        } else if (Integer.parseInt(pair.value.toString()) > 1) {
+                        } else if (pair.value > BigInteger.ONE) {
                             //Expoente superior a 1
                             valueLength = pair.value.toString().length
-                            ssbFatores.append(pair.key.toString() + pair.value.toString())
+                            ssbFatores.append(pair.key + pair.value.toString())
                             ssbFatores.setSafeSpan(SuperscriptSpan(), ssbFatores.length - valueLength, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                             ssbFatores.setSafeSpan(RelativeSizeSpan(0.8f), ssbFatores.length - valueLength, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
@@ -713,14 +620,12 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                     ssbFatores.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
 
                     //explainTextView_1;
-                    (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(
-                        ssbFatores
-                    )
+                    (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(ssbFatores)
 
                 }
 
-                val maioresBases = ArrayList<Long>()
-                val maioresExps = ArrayList<Long>()
+                val maioresBases = ArrayList<BigInteger>()
+                val maioresExps = ArrayList<BigInteger>()
                 val colors = ArrayList<Long>()
 
                 run {
@@ -739,9 +644,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                                 colors.add(i.toLong() / 2)
                             }
 
-                            if (maioresBases.contains(currentBase) && currentExp > maioresExps[maioresBases.indexOf(
-                                    currentBase
-                                )]
+                            if (maioresBases.contains(currentBase) && currentExp > maioresExps[maioresBases.indexOf(currentBase)]
                             ) {
                                 maioresExps[maioresBases.indexOf(currentBase)] = currentExp
                                 colors[maioresBases.indexOf(currentBase)] = (i / 2).toLong()
@@ -757,8 +660,8 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                                     val nextExp = nextExps[nb]
 
                                     if (nextBase == currentBase && nextExp > maioresExps[maioresBases.indexOf(
-                                            currentBase
-                                        )] && maioresBases.contains(nextBase)
+                                                    currentBase
+                                            )] && maioresBases.contains(nextBase)
                                     ) {
                                         maioresExps[maioresBases.indexOf(nextBase)] = nextExp
                                         colors[maioresBases.indexOf(currentBase)] = (j / 2).toLong()
@@ -777,15 +680,15 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 for (i in maioresBases.indices) {
                     val baseLength = maioresBases[i].toString().length
 
-                    if (maioresExps[i] == 1L) {
+                    if (maioresExps[i] == BigInteger.ONE) {
                         //Expoente 1
                         ssbMmc.append(maioresBases[i].toString())
                         ssbMmc.setSafeSpan(
-                            ForegroundColorSpan(fColors[colors[i].toInt()]),
-                            ssbMmc.length - baseLength, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE
+                                ForegroundColorSpan(fColors[colors[i].toInt()]),
+                                ssbMmc.length - baseLength, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE
                         )
 
-                    } else if (maioresExps[i] > 1L) {
+                    } else if (maioresExps[i] > BigInteger.ONE) {
                         //Expoente superior a 1
                         val expLength = maioresExps[i].toString().length
                         ssbMmc.append(maioresBases[i].toString() + maioresExps[i].toString())
@@ -822,7 +725,7 @@ class MMCFragment : BaseFragment(), OnEditorActions {
                 if (shouldShowPerformance) {
                     val decimalFormatter = DecimalFormat("#.###")
                     val elapsed =
-                        getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                            getString(R.string.performance) + " " + decimalFormatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                     gradientSeparator.text = elapsed
                 } else {
                     gradientSeparator.text = ""

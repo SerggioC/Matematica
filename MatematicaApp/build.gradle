@@ -85,7 +85,7 @@ dependencies {
         exclude group: "com.android.support", module: "support-annotations"
     })
 
-    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.31')
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     implementation project(":xtooltip")

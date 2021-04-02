@@ -10,10 +10,9 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.LinearLayout
 import com.sergiocruz.MatematicaPro.R
-import com.sergiocruz.MatematicaPro.Ui.TooltipManager
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
-import com.sergiocruz.MatematicaPro.databinding.MultiplosResultItemBinding
+import com.sergiocruz.MatematicaPro.databinding.ItemResultMultiplosBinding
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.model.InputTags
 import com.sergiocruz.MatematicaPro.model.MultiplesData
@@ -56,7 +55,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         allFavoritesCallback = { list: List<HistoryDataClass>? ->
             list?.forEach { fav ->
                 gson.fromJson(fav.content, MultiplesData::class.java)?.let { md ->
-                    createCardViewMultiplos(fav.primaryKey.toBigInteger(), multiplos = md.stringMultiplos, md.lastIteration, isFavorite = true)
+                    createCardViewMultiplos(fav.primaryKey.toBigInteger(), multiplos = md.stringMultiplos, lastIteration = md.lastIteration)
                 }
             }
         }
@@ -93,11 +92,10 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         if (strNum == "0") {
             context?.let { ctx ->
                 launchSafeCoroutine {
-                    val isFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = "0", operation = operationName) != null
                     val newMD = gson.toJson(MultiplesData("{0}", 0))
-                    LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(HistoryDataClass("0", operationName, newMD, isFavorite))
+                    LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(HistoryDataClass("0", operationName, newMD, favorite = false))
                     withContext(Dispatchers.Main) {
-                        createCardViewMultiplos(BigInteger.ZERO, multiplos = "{0}", 0, isFavorite = isFavorite)
+                        createCardViewMultiplos(BigInteger.ZERO, multiplos = "{0}", lastIteration = 0)
                     }
                 }
             }
@@ -133,15 +131,15 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 }
 
                 withContext(Dispatchers.Main) {
-                    createCardViewMultiplos(num, multiplos = multiplosStr, lastIteration, isFavorite)
+                    createCardViewMultiplos(num, multiplos = multiplosStr, lastIteration = lastIteration)
                 }
             }
         }
 
     }
 
-    private fun createCardViewMultiplos(number: BigInteger, multiplos: String, lastIteration: Long, isFavorite: Boolean) {
-        val layout = MultiplosResultItemBinding.inflate(layoutInflater)
+    private fun createCardViewMultiplos(number: BigInteger, multiplos: String, lastIteration: Long) {
+        val layout = ItemResultMultiplosBinding.inflate(layoutInflater)
         with(layout) {
             // Create a generic swipe-to-dismiss touch listener.
             root.setOnTouchListener(SwipeToDismissTouchListener(root, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
@@ -163,11 +161,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                 textViewPerformance.visibility = View.GONE
             }
 
-            imageStar.visibility = if (isFavorite) View.VISIBLE else View.GONE
-            imageStar.rotateYAnimation()
-            imageStar.setOnClickListener {
-                TooltipManager.showTooltipOn(imageStar, root.context.getString(R.string.result_is_favorite))
-            }
+            showFavoriteStarForInput(imageStar, number.toString())
 
             if (number > BigInteger.ZERO) {
                 textViewShowMore.paintFlags = Paint.UNDERLINE_TEXT_FLAG
@@ -206,7 +200,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     }
 
-    private fun calculateMultiplos(number: BigInteger, minIteration: Long, iterations: Long) : String {
+    private fun calculateMultiplos(number: BigInteger, minIteration: Long, iterations: Long): String {
         val maxIteration = minIteration + iterations
         val stringMultiples = StringBuilder()
         for (i in minIteration until maxIteration) {

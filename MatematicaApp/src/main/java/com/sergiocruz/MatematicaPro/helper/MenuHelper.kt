@@ -11,8 +11,6 @@ import android.provider.MediaStore
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Transformation
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.cardview.widget.CardView
@@ -66,7 +64,10 @@ object MenuHelper : MainActivity.PermissionResultInterface {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Calendar.getInstance().time)
         val fileName = "img" + timeStamp + "_" + index + ".jpg"
         val context = theViewToSave.context
-        val pathName = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, fileName, context.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME)
+        val pathName = MediaStore.Images.Media.insertImage(context.contentResolver,
+                bitmap,
+                fileName,
+                context.getString(R.string.app_long_description) + BuildConfig.VERSION_NAME)
         return pathName
     }
 
@@ -154,7 +155,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
                 mActivity.startActivity(Intent.createChooser(sendIntent, mActivity.resources.getString(R.string.app_name)))
             } else {
                 val theToast =
-                    Toast.makeText(mActivity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
+                        Toast.makeText(mActivity, R.string.nothing_toshare, Toast.LENGTH_SHORT)
                 theToast.setGravity(Gravity.CENTER, 0, 0)
                 theToast.show()
             }
@@ -188,7 +189,7 @@ object MenuHelper : MainActivity.PermissionResultInterface {
             }
         } else {
             val theToast =
-                Toast.makeText(mActivity, R.string.nothing_tosave, Toast.LENGTH_SHORT)
+                    Toast.makeText(mActivity, R.string.nothing_tosave, Toast.LENGTH_SHORT)
             theToast.setGravity(Gravity.CENTER, 0, 0)
             theToast.show()
         }

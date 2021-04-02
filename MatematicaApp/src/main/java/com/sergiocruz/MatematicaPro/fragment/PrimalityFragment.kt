@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.database.HistoryDataClass
 import com.sergiocruz.MatematicaPro.database.LocalDatabase
-import com.sergiocruz.MatematicaPro.databinding.PrimalityResultItemBinding
+import com.sergiocruz.MatematicaPro.databinding.ItemResultPrimalityBinding
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.model.FactorizationData
 import com.sergiocruz.MatematicaPro.model.InputTags
@@ -25,6 +25,8 @@ import kotlinx.android.synthetic.main.fragment_primality.*
 import kotlinx.android.synthetic.main.fragment_primality.calculateButton
 import kotlinx.android.synthetic.main.fragment_primality.clearButton
 import kotlinx.android.synthetic.main.fragment_primality.history
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -56,8 +58,7 @@ class PrimalityFragment : BaseFragment() {
             startTime = System.nanoTime()
             list?.forEach { fav ->
                 val data = gson.fromJson(fav.content, PrimalityData::class.java) ?: return@forEach
-                createCardView(fav.primaryKey.toBigIntegerOrNull()
-                        ?: BigInteger.ZERO, data.isPrime, data.factorizationData)
+                createCardView(fav.primaryKey.toBigIntegerOrNull() ?: BigInteger.ZERO, data.isPrime, data.factorizationData)
             }
         }
     }
@@ -92,20 +93,29 @@ class PrimalityFragment : BaseFragment() {
         startTime = System.nanoTime()
         val isPrime = bigNumber.isProbablePrime(100)
         hideKeyboard(activity)
-        createCardView(bigNumber, isPrime)
-        val data = gson.toJson(PrimalityData(isPrime), PrimalityData::class.java)
-        saveCardToDatabase(bigNumber.toString(), data, operationName)
+        context?.let { ctx ->
+            launchSafeCoroutine {
+                val savedFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = bigNumber.toString(), operation = operationName)
+                val fav = if (savedFavorite?.content != null) {
+                    gson.fromJson(savedFavorite.content, PrimalityData::class.java).factorizationData
+                } else null
+                withContext(Dispatchers.Main) {
+                    createCardView(bigNumber, isPrime, factorizationData = fav)
+                }
+                val data = gson.toJson(PrimalityData(isPrime), PrimalityData::class.java)
+                saveCardToDatabase(bigNumber.toString(), data, operationName)
+            }
+        }
     }
 
     private var currentTasks: MutableMap<String, AsyncTask<Unit?, Float, ArrayList<ArrayList<BigInteger>>>> = mutableMapOf()
 
     @SuppressLint("SetTextI18n")
-    private fun createCardView(bigNumber: BigInteger, isPrime: Boolean, factorizationData: FactorizationData? = null) {
-        val layout = PrimalityResultItemBinding.inflate(LayoutInflater.from(context))
+    private fun createCardView(bigNumber: BigInteger, isPrime: Boolean, factorizationData: FactorizationData?) {
+        val layout = ItemResultPrimalityBinding.inflate(LayoutInflater.from(context))
         with(layout) {
 
-            val color = ContextCompat.getColor(requireContext(),
-                    if (isPrime) R.color.greener else R.color.cardsColor)
+            val color = ContextCompat.getColor(requireContext(), if (isPrime) R.color.greener else R.color.cardsColor)
             root.setCardBackgroundColor(color)
 
             val theNumber = if (shouldFormatNumbers) {
@@ -123,15 +133,15 @@ class PrimalityFragment : BaseFragment() {
             }"
 
             if (shouldShowPerformance) {
-                val formatter1 = DecimalFormat("#.###")
-                val elapsed = context?.getString(R.string.performance) + " " + formatter1.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
+                val formatter = DecimalFormat("#.###")
+                val elapsed = context?.getString(R.string.performance) + " " + formatter.format((System.nanoTime() - startTime) / 1000000000.0) + "s"
                 textViewPerformance.text = elapsed
                 textViewPerformance.visibility = View.VISIBLE
             } else {
                 textViewPerformance.visibility = View.GONE
             }
 
-            if (withExplanations.not() || isPrime || bigNumber < BigInteger.valueOf(2L)) {   // 1 = nunca mostrar
+            if (withExplanations.not() || isPrime || bigNumber < BigInteger.valueOf(2L)) {
                 fatorizeLink.visibility = View.GONE
                 explain.explainContainer.visibility = View.GONE
                 if (shouldShowPerformance.not()) {
@@ -158,27 +168,33 @@ class PrimalityFragment : BaseFragment() {
                         explain.textViewFatores.visibility = View.GONE
                     }
 
-                    explain.explainContainer.viewTreeObserver.let { vto ->
-                        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                            override fun onGlobalLayout() {
-                                if (vto.isAlive) {
-                                    vto.removeOnGlobalLayoutListener(this)
-                                } else {
-                                    explain.explainContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    if ((fatorizeLink.tag as? OperationStatusTags)?.vtoIsCompleted == false) {
+                        explain.explainContainer.viewTreeObserver.let { vto ->
+                            vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    if (vto.isAlive) {
+                                        vto.removeOnGlobalLayoutListener(this)
+                                    } else {
+                                        explain.explainContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    }
+                                    val hei = explain.explainContainer.measuredHeight
+                                    explain.explainContainer.setTag(R.id.initialHeight, hei)
+                                    fatorizeLink.setText(R.string.hide_fatorize)
+                                    explain.explainContainer.visibility = View.GONE
+                                    val ost = fatorizeLink.tag as? OperationStatusTags
+                                    if (ost?.isExpanded == false) {
+                                        expandThis(explain.explainContainer)
+                                        ost.isExpanded = true
+                                    }
+                                    ost?.vtoIsCompleted = true
+                                    fatorizeLink.tag = ost
                                 }
-                                val hei = explain.explainContainer.measuredHeight
-                                explain.explainContainer.setTag(R.id.initialHeight, hei)
-                                fatorizeLink.setText(R.string.hide_fatorize)
-                                explain.explainContainer.visibility = View.GONE
-                                expandThis(explain.explainContainer)
-                            }
-                        })
+                            })
+                        }
                     }
-
                 }
 
-                fatorizeLink.setOnClickListener { tv ->
-                    tv as TextView
+                fatorizeLink.setOnClickListener { tv -> tv as TextView
                     val tags = tv.tag as OperationStatusTags
 
                     if (factorizationData != null) {
@@ -222,15 +238,23 @@ class PrimalityFragment : BaseFragment() {
                     }
 
                     if (tags.isCompleted) {
-                        if (explain.explainContainer.visibility == View.VISIBLE) {
+                        if (tags.isExpanded) {
                             collapseThis(explain.explainContainer)
+                            tags.isExpanded = false
+                            fatorizeLink.tag = tags
                             tv.setText(R.string.show_fatorize)
-                        } else {
+                        } else if (tags.vtoIsCompleted) {
                             expandThis(explain.explainContainer)
+                            tags.isExpanded = true
+                            fatorizeLink.tag = tags
                             tv.setText(R.string.hide_fatorize)
                         }
                     }
 
+                }
+
+                if (explanations == Explanations.Always) {
+                    fatorizeLink.callOnClick()
                 }
             }
 

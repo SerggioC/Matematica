@@ -25,6 +25,8 @@ import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.commit
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.sergiocruz.MatematicaPro.R
@@ -32,7 +34,6 @@ import com.sergiocruz.MatematicaPro.fragment.SettingsFragment
 import kotlinx.coroutines.*
 import java.text.NumberFormat
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 /** onActionDone() */
 interface OnEditorActions {
@@ -91,7 +92,8 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
         if (TextUtils.isEmpty(s)) return
         if (s?.digitsOnly()?.toLongOrNull() == null && ignoreLongNumbers.not()) {
             inputEditText.setText(oldNum)
-            inputEditText.setSelection(inputEditText.text?.length ?: 0) // Colocar o cursor no final do texto
+            inputEditText.setSelection(inputEditText.text?.length
+                    ?: 0) // Colocar o cursor no final do texto
             inputEditText.error = inputEditText.context.getString(R.string.numero_alto)
             // Remove error after 4 seconds
             inputEditText.postDelayed({ inputEditText.error = null }, clearErrorDelayMillis)
@@ -102,7 +104,9 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
 
 }
 
-open class NumberFormatterTextWatcher(private val inputEditText: EditText, private val formatInput: Boolean, onEditor: OnEditorActions) : TextWatcher {
+open class NumberFormatterTextWatcher(private val inputEditText: EditText,
+                                      private val formatInput: Boolean,
+                                      onEditor: OnEditorActions) : TextWatcher {
 
     private var initialStart = 0
     private var initialString = ""
@@ -145,12 +149,10 @@ open class NumberFormatterTextWatcher(private val inputEditText: EditText, priva
         if (finalString.length > changedText.length && initialStart + 1 <= finalString.length) {
             inputEditText.setSelection(initialStart + 1)
         } else {
-            if (initialStart <= finalString.length) {
-                inputEditText.setSelection(initialStart)
-            } else if (initialStart - 1 <= finalString.length) {
-                inputEditText.setSelection(initialStart - 1)
-            } else if (initialStart <= 0) {
-                inputEditText.setSelection(0)
+            when {
+                initialStart <= finalString.length -> inputEditText.setSelection(initialStart)
+                initialStart - 1 <= finalString.length -> inputEditText.setSelection(initialStart - 1)
+                initialStart <= 0 -> inputEditText.setSelection(0)
             }
         }
         inputEditText.addTextChangedListener(this)
@@ -294,6 +296,15 @@ private inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) 
     editor.apply()
 }
 
+fun LifecycleOwner.launchSafeCoroutine(block: suspend () -> Unit) {
+    try {
+        lifecycleScope.launch(Dispatchers.Default) {
+            block.invoke()
+        }
+    } catch (e: Exception) {
+        FirebaseCrashlytics.getInstance().recordException(e)
+    }
+}
 
 fun launchSafeCoroutine(block: suspend () -> Unit) {
     try {
@@ -367,6 +378,7 @@ fun expandThis(view: View, newHeight: Int? = null) {
             view.alpha = interpolatedTime
             view.requestLayout()
         }
+
         override fun willChangeBounds() = true
     }
     animation.duration = 300L
@@ -376,6 +388,7 @@ fun expandThis(view: View, newHeight: Int? = null) {
         override fun onAnimationEnd(animation: Animation?) {
             isAnimating = false
         }
+
         override fun onAnimationStart(animation: Animation?) {
             isAnimating = true
         }
@@ -399,6 +412,7 @@ fun collapseThis(view: View) {
                 view.requestLayout()
             }
         }
+
         override fun willChangeBounds() = true
     }
     var isAnimating = false
@@ -409,6 +423,7 @@ fun collapseThis(view: View) {
         override fun onAnimationEnd(animation: Animation?) {
             isAnimating = false
         }
+
         override fun onAnimationStart(animation: Animation?) {
             isAnimating = true
         }

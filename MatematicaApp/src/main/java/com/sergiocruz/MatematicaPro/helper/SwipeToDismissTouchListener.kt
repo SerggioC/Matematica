@@ -130,11 +130,11 @@ class SwipeToDismissTouchListener(
         val tags = mView.tag as? InputTags? ?: inputTags
         val pk = tags?.input ?: ""
         val op = tags?.operation ?: ""
-        var saved = false
+        var isFavorite = false
         if (pk.isNotEmpty() && op.isNotBlank()) {
             launchSafeCoroutine {
-                saved = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = pk, operation = op) != null
-                if (saved) {
+                isFavorite = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = pk, operation = op) != null
+                if (isFavorite) {
                     withContext(Dispatchers.Main) {
                         popupLayout.image_popup_favorite.setImageResource(android.R.drawable.btn_star_big_on)
                         popupLayout.text_popup_favorite.setText(R.string.action_remove_favorite)
@@ -142,17 +142,18 @@ class SwipeToDismissTouchListener(
                 }
             }
         }
+
+        val star = theCardView.findViewById<View>(R.id.image_star)
         popupLayout.action_favorite.setOnClickListener {
+            if (pk.isEmpty() || op.isEmpty()) return@setOnClickListener
             launchSafeCoroutine {
-                if (pk.isEmpty() || op.isEmpty()) return@launchSafeCoroutine
-                LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemFavorite(operation = op, key = pk, saved.not())
+                LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemFavorite(operation = op, key = pk, isFavorite.not())
                 withContext(Dispatchers.Main) {
-                    val star = theCardView.findViewById<View>(R.id.image_star) ?: return@withContext
-                    star.visibility = if (saved) View.GONE else View.VISIBLE
+                    star.visibility = if (isFavorite) View.GONE else View.VISIBLE
                     star.rotateYAnimation()
-                    star.setOnClickListener {
-                        TooltipManager.showTooltipOn(star, it.context.getString(R.string.result_is_favorite))
-                    }
+//                    star.setOnClickListener {
+//                        TooltipManager.showTooltipOn(star, it.context.getString(R.string.result_is_favorite))
+//                    }
                 }
             }
             customPopUp.dismiss()
@@ -194,7 +195,6 @@ class SwipeToDismissTouchListener(
         }
 
         popupLayout.action_share_result_as_image.setOnClickListener {
-
             val imageURI = MenuHelper.saveViewToImage(theCardView, 0, true)
             if (imageURI.isNullOrEmpty()) {
                 showCustomToast(context, context.getString(R.string.errorsavingimg), InfoLevel.ERROR)

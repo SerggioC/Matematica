@@ -20,16 +20,18 @@ data class InputTags(
 data class OperationStatusTags(
         var isCalculating: Boolean = false,
         var isCompleted: Boolean = false,
+        var vtoIsCompleted: Boolean = false,
+        var isExpanded: Boolean = false,
 )
 
 class MyTags(
         internal var cardView: CardView,
-        internal var longNumbers: ArrayList<Long>,
+        internal var bigNumbers: ArrayList<BigInteger>,
         internal var resultMDC: BigInteger?,
         internal var hasExplanation: Boolean?,
         internal var hasBGOperation: Boolean?,
         internal var texto: String,
-        internal var bGfatores: ArrayList<ArrayList<Long>>?,
+        internal var bGfatores: ArrayList<ArrayList<BigInteger>>?,
         internal var taskNumber: Int
 )
 

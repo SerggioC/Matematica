@@ -255,7 +255,6 @@ class MDCFragment : BaseFragment(), OnEditorActions,
 
         val emptyTextView = ArrayList<TextView>()
         val bigNumbers = ArrayList<BigInteger>()
-        val longNumbers = ArrayList<Long>()
 
         arrayOfEditTexts.forEach {
             val numString = it.text.digitsOnly()
@@ -279,10 +278,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         }
                         showKeyboard(activity)
                     }
-                    else -> {
-                        longNumbers.add(number)
-                        bigNumbers.add(number.toBigInteger())
-                    }
+                    else -> bigNumbers.add(number.toBigInteger())
                 }
             }
         }
@@ -312,10 +308,10 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         }
         mdcString += resultMDC
 
-        createResultsCard(mdcString, resultMDC, longNumbers)
+        createResultsCard(mdcString, resultMDC, bigNumbers)
     }
 
-    private fun createResultsCard(mdcString: String, resultMDC: BigInteger?, longNumbers: ArrayList<Long>) {
+    private fun createResultsCard(mdcString: String, resultMDC: BigInteger?, bigNumbers: ArrayList<BigInteger>) {
         val ssb = SpannableStringBuilder(mdcString)
         if (resultMDC.toString() == "1") {
             ssb.append("\n" + getString(R.string.primos_si))
@@ -367,8 +363,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         false)
         )
 
-        val tags = MyTags(cardView, longNumbers, resultMDC, hasExplanation = false, hasBGOperation = false, texto = "", bGfatores = null, taskNumber = taskNumber)
-        cardView.tag = tags
+        val myTags = MyTags(cardView, bigNumbers, resultMDC, hasExplanation = false, hasBGOperation = false, texto = "", bGfatores = null, taskNumber = taskNumber)
 
         history.limit(historyLimit)
         // Add cardview to history layout at the top (index 0)
@@ -390,9 +385,8 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         // add the textview to the cardview
         llVerticalRoot.addView(textView)
 
-        // -1 = sempre  0 = quando pedidas   1 = nunca
-        if (shouldShowExplanation == "-1" || shouldShowExplanation == "0") {
-            createExplanations(mdcString, cardView, llVerticalRoot, shouldShowExplanation)
+        if (withExplanations) {
+            createExplanations(mdcString, cardView, llVerticalRoot, explanations, myTags)
         } else {
             context?.let {
                 val separator = getGradientSeparator(it, shouldShowPerformance, startTime, mdcString, MDCFragment::class.java.simpleName)
@@ -406,7 +400,8 @@ class MDCFragment : BaseFragment(), OnEditorActions,
             input: String,
             cardView: CardView,
             llVerticalRoot: LinearLayout,
-            shouldShowExplanation: String?
+            explanation: Explanations,
+            tags: MyTags,
     ) {
         val ssbHideExpl = SpannableStringBuilder(getString(R.string.hide_explain))
         ssbHideExpl.setSafeSpan(UnderlineSpan(), 0, ssbHideExpl.length - 2, SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -490,11 +485,11 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         llVerticalRoot.addView(progressBar)
         llVerticalRoot.addView(llVerticalExpl)
 
-        if (shouldShowExplanation == "-1") {  // Always show Explanation
+        if (explanation == Explanations.Always) {  // Always show Explanation
             llVerticalExpl.visibility = View.VISIBLE
             explainLink.text = ssbHideExpl
             isExpanded = true
-        } else if (shouldShowExplanation == "0") { // Show Explanation on demand on click
+        } else if (explanation == Explanations.WhenAsked) { // Show Explanation on demand on click
             llVerticalExpl.visibility = View.GONE
             explainLink.text = ssbShowExpl
             isExpanded = false
@@ -528,8 +523,8 @@ class MDCFragment : BaseFragment(), OnEditorActions,
     inner class BackGroundOperation_MDC internal constructor(private var cardTags: MyTags) :
             AsyncTask<Void, Double, Void>() {
         private lateinit var theCardViewBG: CardView
-        private lateinit var mdcNumbers: ArrayList<Long>
-        private var bgFactors: ArrayList<ArrayList<Long>>? = null
+        private lateinit var mdcNumbers: ArrayList<BigInteger>
+        private var bgFactors: ArrayList<ArrayList<BigInteger>>? = null
 
         private lateinit var gradientSeparator: TextView
         private lateinit var progressBar: View
@@ -551,24 +546,23 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         }
 
         override fun doInBackground(vararg voids: Void): Void? {
-            val fatores = ArrayList<ArrayList<Long>>()
-            mdcNumbers = cardTags.longNumbers
+            val fatores = ArrayList<ArrayList<BigInteger>>()
+            mdcNumbers = cardTags.bigNumbers
             val numbersSize = mdcNumbers.size
             for (i in 0 until numbersSize) { // fatorizar todos os números inseridos em MMC
                 var oldProgress = 0.0
                 var progress: Double
-                val fatoresIx = ArrayList<Long>()
-                var numberI: Long = mdcNumbers[i]
-                //if (number_i == 1L) { //adicionar o fator 1 para calibrar em baixo a contagem....
-                fatoresIx.add(1L)
-                //}
-                while (numberI % 2L == 0L) {
-                    fatoresIx.add(2L)
-                    numberI /= 2L
+                val fatoresIx = ArrayList<BigInteger>()
+                var numberI: BigInteger = mdcNumbers[i]
+
+                fatoresIx.add(BigInteger.ONE)
+                while (numberI % BigInteger.valueOf(2) == BigInteger.ZERO) {
+                    fatoresIx.add(BigInteger.valueOf(2))
+                    numberI /= BigInteger.valueOf(2)
                 }
-                var j: Long = 3
+                var j = BigInteger.valueOf(3)
                 while (j <= numberI / j) {
-                    while (numberI % j == 0L) {
+                    while (numberI % j == BigInteger.ZERO) {
                         fatoresIx.add(j)
                         numberI /= j
                     }
@@ -578,9 +572,9 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         oldProgress = progress
                     }
                     if (isCancelled) break
-                    j += 2
+                    j += BigInteger.valueOf(2)
                 }
-                if (numberI > 1) {
+                if (numberI > BigInteger.ONE) {
                     fatoresIx.add(numberI)
                 }
                 fatores.add(fatoresIx)
@@ -605,32 +599,32 @@ class MDCFragment : BaseFragment(), OnEditorActions,
         override fun onPostExecute(result: Void?) {
             if (this@MDCFragment.isVisible) {
                 bgFactors = cardTags.bGfatores
-                val datasets = ArrayList<ArrayList<Long>>()
+                val datasets = ArrayList<ArrayList<BigInteger>>()
                 bgFactors?.forEachIndexed { outerIndex, outerList ->
-                    val bases = ArrayList<Long>()
-                    val exps = ArrayList<Long>()
+                    val bases = ArrayList<BigInteger>()
+                    val exps = ArrayList<BigInteger>()
 
                     val strFatores = mdcNumbers[outerIndex].toString() + "="
                     val ssbFatores = SpannableStringBuilder(strFatores)
                     ssbFatores.setSafeSpan(ForegroundColorSpan(fColors[outerIndex]), 0, ssbFatores.length, SPAN_EXCLUSIVE_INCLUSIVE)
 
-                    var counter = 1L
+                    var counter = BigInteger.ONE
                     var nextFactor = 0
-                    var lastItem: Long = outerList[0]
+                    var lastItem = outerList[0]
 
-                    val dataSet = LinkedHashMap<Long, Long>()
+                    val dataSet = LinkedHashMap<BigInteger, BigInteger>()
                     outerList.forEachIndexed { innerIndex, innerValue ->
                         if (innerIndex == 0) {
-                            dataSet[outerList[0]] = 1L
+                            dataSet[outerList[0]] = BigInteger.ONE
                             bases.add(outerList[0])
-                            exps.add(1L)
+                            exps.add(BigInteger.ONE)
                         } else if (innerValue == lastItem && innerIndex > 0L) {
                             counter++
                             dataSet[innerValue] = counter
                             bases[nextFactor] = innerValue
                             exps[nextFactor] = counter
                         } else if (innerValue != lastItem && innerIndex > 0L) {
-                            counter = 1L
+                            counter = BigInteger.ONE
                             nextFactor++
                             dataSet[innerValue] = counter
                             bases.add(innerValue)
@@ -645,14 +639,14 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                     // Criar os expoentes
                     var valueLength: Int
                     val dataCount = dataSet.entries.count()
-                    dataSet.entries.forEachIndexed { index, pair: Map.Entry<Long, Long> ->
-                        if (pair.value == 1L) {
+                    dataSet.entries.forEachIndexed { index, pair: Map.Entry<BigInteger, BigInteger> ->
+                        if (pair.value == BigInteger.ONE) {
                             //Expoente 1
-                            if (pair.key > 1L) {
+                            if (pair.key > BigInteger.ONE) {
                                 ssbFatores.append(pair.key.toString())
                             }
 
-                        } else if (pair.value > 1L) {
+                        } else if (pair.value > BigInteger.ONE) {
                             //Expoente superior a 1
                             valueLength = pair.value.toString().length
                             ssbFatores.append(pair.key.toString() + pair.value.toString())
@@ -681,16 +675,16 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                     (theCardViewBG.findViewWithTag<View>("explainTextView_1") as TextView).append(ssbFatores)
                 }
 
-                val basesComuns = ArrayList<Long>()
-                val expsComuns = ArrayList<Long>()
+                val basesComuns = ArrayList<BigInteger>()
+                val expsComuns = ArrayList<BigInteger>()
                 val colors = ArrayList<Int>()
                 val bases = datasets[0]
                 val exps = datasets[1]
                 currentBaseLoop@ for (cb in bases.indices) {
                     val currentBase = bases[cb]
                     val currentExp = exps[cb]
-                    val tempBases = ArrayList<Long>()
-                    val tempExps = ArrayList<Long>()
+                    val tempBases = ArrayList<BigInteger>()
+                    val tempExps = ArrayList<BigInteger>()
                     val tempColors = ArrayList<Long>()
                     tempBases.add(currentBase)
                     tempExps.add(currentExp)
@@ -713,7 +707,7 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                         }
                         j += 2
                     }
-                    var lowerExp: Long = tempExps[0]
+                    var lowerExp = tempExps[0]
                     var lowerIndex = 0
                     if (Collections.frequency(tempBases, currentBase) == datasets.size / 2) {
                         for (i in tempExps.indices) {
@@ -734,13 +728,13 @@ class MDCFragment : BaseFragment(), OnEditorActions,
                 for (i in basesComuns.indices) {
                     val baseLength = basesComuns[i].toString().length
 
-                    if (expsComuns[i] == 1L) {
+                    if (expsComuns[i] == BigInteger.ONE) {
                         //Expoente 1
-                        if (basesComuns[i] > 1) {
+                        if (basesComuns[i] > BigInteger.ONE) {
                             ssbMdc.append(basesComuns[i].toString())
                             ssbMdc.setSafeSpan(ForegroundColorSpan(fColors[colors[i]]), ssbMdc.length - baseLength, ssbMdc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
-                    } else if (expsComuns[i] > 1L) {
+                    } else if (expsComuns[i] > BigInteger.ONE) {
                         //Expoente superior a 1
                         val expLength = expsComuns[i].toString().length
                         ssbMdc.append(basesComuns[i].toString() + expsComuns[i].toString())

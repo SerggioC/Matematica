@@ -10,7 +10,6 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.text.style.SuperscriptSpan
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -19,13 +18,12 @@ import androidx.core.content.ContextCompat
 import com.sergiocruz.MatematicaPro.R
 import com.sergiocruz.MatematicaPro.Ui.ClickableCardView
 import com.sergiocruz.MatematicaPro.Ui.TooltipManager
-import com.sergiocruz.MatematicaPro.databinding.FatorizarResultItemBinding
+import com.sergiocruz.MatematicaPro.databinding.ItemResultFatorizarBinding
+import com.sergiocruz.MatematicaPro.fragment.BaseFragment
 import com.sergiocruz.MatematicaPro.helper.*
 import com.sergiocruz.MatematicaPro.model.FactorizationData
 import com.sergiocruz.MatematicaPro.model.InputTags
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.delay
-import timber.log.Timber
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.util.*
@@ -69,8 +67,7 @@ class FactorizationTask(
             } catch (e: Exception) {
                 0f
             }
-            publishProgress(progress)
-            Log.i("TAG", "$progress: ")
+            updateProgress(progress)
         }
         timer?.start()
 
@@ -96,13 +93,6 @@ class FactorizationTask(
         factoresPrimos.add(divisores)
 
         return factoresPrimos
-    }
-
-    override fun onProgressUpdate(vararg values: Float?) {
-        super.onProgressUpdate(*values)
-        values.getOrNull(0)?.let {
-            updateProgress(it)
-        }
     }
 
     override fun onPostExecute(result: ArrayList<ArrayList<BigInteger>>) {
@@ -240,7 +230,8 @@ class FactorizationTask(
                         valueLength = value.length
                         ssbFatores.append(value)
                         ssbFatores.setSafeSpan(SuperscriptSpan(), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        ssbFatores.setSafeSpan(RelativeSizeSpan(0.8f), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(RelativeSizeSpan(0.85f), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
 
                     if (iterator.hasNext()) ssbFatores.append("×")
@@ -304,7 +295,7 @@ class FactorizationTask(
 
         }
 
-        fun createCardViewLayout(data: FactorizationData, isFavorite: Boolean, showPerformance: Boolean, explanations: String, operationName: String, startTime: Long, context: Activity): ClickableCardView {
+        fun createCardViewLayout(data: FactorizationData, isFavorite: Boolean, showPerformance: Boolean, explanations: BaseFragment.Explanations, operationName: String, startTime: Long, context: Activity): ClickableCardView {
             val number = data.numberToFatorize
             val strResults = data.strResults
             val ssbStrDivisores = data.ssbStrDivisores
@@ -318,7 +309,7 @@ class FactorizationTask(
                 ssbFatores.removeSpan(spans[i])
             }
 
-            val layout = FatorizarResultItemBinding.inflate(LayoutInflater.from(context))
+            val layout = ItemResultFatorizarBinding.inflate(LayoutInflater.from(context))
             with(layout) {
                 val strNum: String
                 if (isPrime) {
@@ -349,7 +340,7 @@ class FactorizationTask(
                     textViewPerformance.visibility = View.GONE
                 }
 
-                if (explanations == "1" || isPrime) {   // 1 = nunca mostrar
+                if (explanations == BaseFragment.Explanations.Never || isPrime) {   // 1 = nunca mostrar
                     explainLink.visibility = View.GONE
                     explain.explainContainer.visibility = View.GONE
                     if (showPerformance.not()) {
@@ -368,7 +359,7 @@ class FactorizationTask(
                 }
 
                 // -1 = sempre  0 = quando pedidas
-                if ((explanations == "-1" || explanations == "0") && isPrime.not()) {
+                if ((explanations == BaseFragment.Explanations.Always || explanations == BaseFragment.Explanations.WhenAsked) && isPrime.not()) {
                     explain.textViewResults.text = strResults
                     explain.textViewDivisores.text = ssbStrDivisores
                     explain.textViewAllResults.text = strFactExp
@@ -390,10 +381,10 @@ class FactorizationTask(
                                 }
                                 val hei = explain.explainContainer.measuredHeight
                                 explain.explainContainer.setTag(R.id.initialHeight, hei)
-                                if (explanations == "-1") {  // Always show Explanation
+                                if (explanations == BaseFragment.Explanations.Always) {
                                     explain.explainContainer.visibility = View.VISIBLE
                                     explainLink.setText(R.string.hide_explain)
-                                } else if (explanations == "0") { // Show Explanation on demand on click
+                                } else if (explanations == BaseFragment.Explanations.WhenAsked) {
                                     explain.explainContainer.visibility = View.GONE
                                     explainLink.setText(R.string.show_explain)
                                 }
@@ -404,7 +395,7 @@ class FactorizationTask(
 
                 root.setOnTouchListener(SwipeToDismissTouchListener(root,
                         context,
-                        withExplanations = explanations == "-1" || explanations == "0",
+                        withExplanations = explanations == BaseFragment.Explanations.WhenAsked || explanations == BaseFragment.Explanations.Always,
                         inputTags = InputTags(input = number.toString(), operation = operationName))
                 )
             }

@@ -160,7 +160,6 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
         <item>1</item>
     </string-array>
 
-    <item name="texto" type="id" />
     <string name="action_ajuda_primorial">Como calcular n#</string>
     <string name="calculate_primorial_title">Calcular Primorial de um número n#</string>
     <string name="help_text_primorial">Em matemática, mais particularmente na teoria dos números, primorial é uma função de números naturais para números naturais semelhantes à função factorial mas, em vez de se multiplicar sucessivamente números inteiros positivos, são apenas multiplicados números primos. Primorial de um número é denotado por n#. Por exemplo 7#=2x3x5x7=210</string>
