@@ -1,4 +1,4 @@
-package com.sergiocruz.MatematicaPro
+package com.sergiocruz.matematica
 
 import timber.log.Timber
 

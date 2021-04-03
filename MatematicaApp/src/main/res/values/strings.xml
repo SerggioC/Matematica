@@ -139,12 +139,12 @@
     <string name="action_settings">Preferences</string>
 
     <string name="explainMMC1html">▻Decompose the numbers in prime factors:</string>
-    <string name="explainMMC2html"><![CDATA[▻Choose the <u>common</u> and <u>non common</u> factors, <u>just once</u> with the <u>greatest exponents</u>:<br/>]]></string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multiply</u> the factors to obtain the Least Common Multiple:<br/>]]></string>
+    <string name="explainMMC2html">▻Choose the common and non common factors, just once with the greatest exponents:</string>
+    <string name="explainMMC3html">▻Multiply the factors to obtain the Least Common Multiple:</string>
 
-    <string name="explainMDC1html"><![CDATA[▻Decompose the numbers in <u>prime factors</u>:<br/>]]></string>
-    <string name="explainMDC2html"><![CDATA[▻Choose the <u>common</u> factors, <u>just once</u> with the <u>lowest exponents</u>:<br/>]]></string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multiply</u> factors to obtain the Greatest Common Divisor:<br/>]]></string>
+    <string name="explainMDC1html">▻Decompose the numbers in prime factors:</string>
+    <string name="explainMDC2html">▻Choose the common factors, just once with the lowest exponents:</string>
+    <string name="explainMDC3html">▻Multiply factors to obtain the Greatest Common Divisor:</string>
 
     <string name="factorizing">Factorizing…</string>
 
@@ -287,7 +287,7 @@
     <string name="you_accept_privacy_policy">Ao usar esta aplicação, você aceita a seguinte Política de Privacidade:</string>
     <string name="result_is_favorite">This result is saved to favorites!</string>
     <string name="give">O aplicativo é gratuito, não tem anúncios, por isso não vai incomodá-lo com propaganda absurda, mas preciso de tirar o meu tempo para manter o aplicativo atualizado, preciso cobrir os custos de desenvolvimento, então, se desejar para contribuir com o desenvolvimento do Prime Number Tools PRO, ou gostaria que eu adicionasse outro recurso ou funcionalidade ao app considere uma doação via PayPal e eu irei implementá-la! Confira meu blog onde você pode encontrar informações para me ajudar. Obrigado! 😀 </string>
-    <string name="blog_web_address">https://sergiocrz.wordpress.com/</string>
+    <string name="blog_web_address" translatable="false">https://sergiocrz.wordpress.com/</string>
     <string name="favorite_star">Favorite star</string>
     <string name="show_fatorize">Mostrar fatorização</string>
     <string name="hide_fatorize">Ocultar fatorização</string>

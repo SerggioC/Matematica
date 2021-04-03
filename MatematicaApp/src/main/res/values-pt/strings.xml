@@ -133,13 +133,13 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="pref_perform_title">Mostrar performance</string>
     <string name="performance">Performance:</string>
 
-    <string name="explainMMC1html"><![CDATA[▻Decompor os números em <u>fatores primos</u>:<br/>]]></string>
-    <string name="explainMMC2html"><![CDATA[▻Escolher os fatores <u>comuns</u> e <u>não comuns</u>, <u>apenas uma vez</u>, com os <u>maiores expoentes</u>:<br/>]]></string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multiplicar</u> os fatores para obter o Mínimo Multiplo Comum:<br/>]]></string>
+    <string name="explainMMC1html">▻Decompor os números em fatores primos:</string>
+    <string name="explainMMC2html">▻Escolher os fatores comuns e não comuns, apenas uma vez, com os maiores expoentes:</string>
+    <string name="explainMMC3html">▻Multiplicar os fatores para obter o Mínimo Multiplo Comum:</string>
 
-    <string name="explainMDC1html"><![CDATA[▻Decompor os números em <u>fatores primos</u>:<br/>]]></string>
-    <string name="explainMDC2html"><![CDATA[▻Escolher os fatores <u>comuns</u>, <u>apenas uma vez</u> com os <u>menores expoentes</u>:<br/>]]></string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multiplicar</u> os fatores para obter o Máximo Divisor Comum:<br/>]]></string>
+    <string name="explainMDC1html">▻Decompor os números em fatores primos:</string>
+    <string name="explainMDC2html">▻Escolher os fatores comuns, apenas uma vez com os menores expoentes:</string>
+    <string name="explainMDC3html">▻Multiplicar os fatores para obter o Máximo Divisor Comum:</string>
 
 
     <string name="factorizing">A fatorizar…</string>

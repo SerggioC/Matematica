@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sergiocruz.MatematicaPro.fragment.FatorizarFragment">
+    tools:context="com.sergiocruz.matematica.fragment.FatorizarFragment">
 
     <ScrollView
         android:id="@+id/scrollView2"

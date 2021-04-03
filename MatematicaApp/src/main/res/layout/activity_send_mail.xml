@@ -13,7 +13,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="8dp"
-        tools:context="com.sergiocruz.MatematicaPro.activity.SendMailActivity">
+        tools:context="com.sergiocruz.matematica.activity.SendMailActivity">
 
         <TextView
             android:id="@+id/textView3"

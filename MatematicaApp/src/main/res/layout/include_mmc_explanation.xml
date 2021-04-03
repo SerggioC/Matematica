@@ -22,12 +22,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewResults"
+        android:id="@+id/textViewFactorization"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:gravity="end"
-        android:textAlignment="viewEnd"
+        android:gravity="start"
+        android:textAlignment="textStart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/explainTitle1"
         tools:text="resultados\nresult\nres" />
@@ -43,10 +43,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewResults" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFactorization" />
 
     <TextView
-        android:id="@+id/textViewAllResults"
+        android:id="@+id/textViewFactorsExpanded"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -66,14 +66,15 @@
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAllResults" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewFactorsExpanded" />
 
     <TextView
-        android:id="@+id/textViewFatores"
+        android:id="@+id/textViewResult"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

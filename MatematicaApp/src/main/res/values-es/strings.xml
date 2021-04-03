@@ -51,13 +51,13 @@
     <string name="factorize">Factorizar el número</string>
     <string name="factorizing">Factorizando…</string>
 
-    <string name="explainMMC1html"><![CDATA[▻Descomponer los números en <u>factores primos</u>:<br/>]]></string>
-    <string name="explainMMC2html"><![CDATA[▻Elija los factores <u>comunes</u> y <u>no comunes</u>, <u>solo una vez</u> con los <u>mayores exponentes</u>:<br/>]]> </string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multiplica</u> los factores para obtener el Mínimo Común Múltiplo:<br/>]]> </string>
+    <string name="explainMMC1html">▻Descomponer los números en factores primos:</string>
+    <string name="explainMMC2html">▻Elija los factores comunes y no comunes, solo una vez con los mayores exponentes:</string>
+    <string name="explainMMC3html">▻Multiplica los factores para obtener el Mínimo Común Múltiplo:</string>
 
-    <string name="explainMDC1html"><![CDATA[▻Descomponga los números en <u>factores primos</u>:<br/>]]> </string>
-    <string name="explainMDC2html"><![CDATA[▻Elija los factores <u>comunes</u>, <u>solo una vez</u> con los <u>exponentes más bajos</u>:<br/>]]> </string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multiplica</u> factores para obtener el Máximo Común Divisor:<br/>]]> </string>
+    <string name="explainMDC1html">▻Descomponga los números en factores primos:</string>
+    <string name="explainMDC2html">▻Elija los factores comunes, solo una vez con los exponentes más bajos:</string>
+    <string name="explainMDC3html">▻Multiplica factores para obtener el Máximo Común Divisor:</string>
 
     <string name="fatorizar_btn">Factorizar</string>
     <string name="fatorizcao">Factorización</string>

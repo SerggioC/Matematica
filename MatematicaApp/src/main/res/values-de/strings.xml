@@ -64,13 +64,13 @@
     <string name="factorize">Faktorisierungsnummer</string>
     <string name="factorizing">Faktorisierung …</string>
 
-    <string name="explainMMC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
-    <string name="explainMMC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> und <u>nicht gemeinsamen</u> Faktoren, <u>nur einmal</u> mit dem <u>größte Exponenten</u>:<br/>]]></string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multiplizieren Sie</u> die Faktoren, um das kleinste gemeinsame Divisor zu erhalten:<br/>]]></string>
+    <string name="explainMMC1html">▻Zusammensetzen Sie die Zahlen in Primfaktoren:</string>
+    <string name="explainMMC2html">▻Wählen Sie die gemeinsamen und nicht gemeinsamen Faktoren, nur einmal mit dem größte Exponenten:</string>
+    <string name="explainMMC3html">▻Multiplizieren Sie die Faktoren, um das kleinste gemeinsame Divisor zu erhalten:</string>
 
-    <string name="explainMDC1html"><![CDATA[▻Zusammensetzen Sie die Zahlen in <u>Primfaktoren</u>:<br/>]]></string>
-    <string name="explainMDC2html"><![CDATA[▻Wählen Sie die <u>gemeinsamen</u> Faktoren, <u>nur einmal</u> mit den <u>niedrigsten Exponenten</u>:<br/>]]></string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multiplizieren Sie</u> Faktoren, um den größten gemeinsamen Multiple zu erhalten:<br/>]]></string>
+    <string name="explainMDC1html">▻Zusammensetzen Sie die Zahlen in Primfaktoren:</string>
+    <string name="explainMDC2html">▻Wählen Sie die gemeinsamen Faktoren, nur einmal mit den niedrigsten Exponenten:</string>
+    <string name="explainMDC3html">▻Multiplizieren Sie Faktoren, um den größten gemeinsamen Multiple zu erhalten:</string>
 
 
     <string name="fatorizar_btn">Faktorisieren</string>

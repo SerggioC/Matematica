@@ -113,13 +113,13 @@
     <string name="table_between">Tableaux de nombres premiers entre</string>
     <string name="the_number">Nombre</string>
 
-    <string name="explainMMC1html"><![CDATA[▻Décomposez les nombres en <u>facteurs premiers</u>:<br/>]]></string>
-    <string name="explainMMC2html"><![CDATA[▻Choisissez les facteurs <u>communs</u> et <u>non communs</u>, <u>une seule fois</u> avec le <u>plus grands exposants</u>:<br/>]]></string>
-    <string name="explainMMC3html"><![CDATA[▻<u>Multipliez</u> les facteurs pour obtenir le Plus Petit Commun Multiple:<br/>]]></string>
+    <string name="explainMMC1html">▻Décomposez les nombres en facteurs premiers:</string>
+    <string name="explainMMC2html">▻Choisissez les facteurs communs et non communs, une seule fois avec le plus grands exposants:</string>
+    <string name="explainMMC3html">▻Multipliez les facteurs pour obtenir le Plus Petit Commun Multiple:</string>
 
-    <string name="explainMDC1html"><![CDATA[▻Décomposez les nombres en <u>facteurs premiers</u>: <br/>]]> </string>
-    <string name="explainMDC2html"><![CDATA[▻Choisissez les facteurs <u>communs</u>, <u>une seule fois </u>avec les<u> exposants les plus bas</u>:<br/>]]></string>
-    <string name="explainMDC3html"><![CDATA[▻<u>Multipliez</u> les facteurs pour obtenir le Plus Grand Commun Diviseur:<br/>]]></string>
+    <string name="explainMDC1html">▻Décomposez les nombres en facteurs premiers:</string>
+    <string name="explainMDC2html">▻Choisissez les facteurs communs, une seule fois avec les exposants les plus bas:</string>
+    <string name="explainMDC3html">▻Multipliez les facteurs pour obtenir le Plus Grand Commun Diviseur:</string>
 
 
     <string name="valor_maximo">Valeur maximum</string>
