@@ -43,12 +43,7 @@ import kotlin.math.roundToInt
  * Created by Sergio on 11/11/2016 16:31
  */
 
-class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
-
-    companion object {
-        // isProbablePrime function returns a prime with probability = 1 - (1/2)^certainty
-        private const val certainty = 100
-    }
+class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask {
 
     private lateinit var bigNumbersTextWatcherMin: BigNumbersTextWatcher
     private lateinit var bigNumbersTextWatcherMax: BigNumbersTextWatcher
@@ -102,13 +97,11 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
             }
         }
         createTableBtn.setOnClickListener { makePrimesTable() }
-        btn_clear_min.setOnClickListener { min_pt.setText("") }
-        btn_clear_max.setOnClickListener { max_pt.setText("") }
 
-        bigNumbersTextWatcherMin = BigNumbersTextWatcher(min_pt, shouldFormatNumbers, onEditor = this)
+        bigNumbersTextWatcherMin = BigNumbersTextWatcher(min_pt, shouldFormatNumbers, onEditor = ::makePrimesTable)
         min_pt.addTextChangedListener(bigNumbersTextWatcherMin)
 
-        bigNumbersTextWatcherMax = BigNumbersTextWatcher(max_pt, shouldFormatNumbers, onEditor = this)
+        bigNumbersTextWatcherMax = BigNumbersTextWatcher(max_pt, shouldFormatNumbers, onEditor = ::makePrimesTable)
         max_pt.addTextChangedListener(bigNumbersTextWatcherMax)
 
         var initialHeight = 0
@@ -162,8 +155,6 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
     private fun writeCalcMode() {
         calcMode?.setText(if (bruteForceMode) R.string.pref_title_brute_force else R.string.pref_title_probabilistic)
     }
-
-    override fun onActionDone() = makePrimesTable()
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val childCount = historyGridRecyclerView?.childCount ?: 0
@@ -347,7 +338,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         for ((index, i) in (minValue..maxValue).withIndex()) {
             fullTable[index] = Pair(i.toString(), false)
             val currentVal: BigInteger = BigInteger.valueOf(i)
-            if (currentVal.isProbablePrime(certainty)) {
+            if (currentVal.isProbablePrime(100)) {
                 primesOnlyTable[indexPrimes] = Pair(i.toString(), true)
                 indexPrimes++
                 fullTable[index] = Pair(i.toString(), true)
@@ -397,7 +388,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActi
         var tracker = minValue
         var nextTracker = tracker
 
-        if (BigInteger.valueOf(minValue).isProbablePrime(certainty)) {
+        if (BigInteger.valueOf(minValue).isProbablePrime(100)) {
             fullTable[index] = Pair(minValue.toString(), true)
             index++
             primesOnlyTable[indexPrimes] = Pair(minValue.toString(), true)

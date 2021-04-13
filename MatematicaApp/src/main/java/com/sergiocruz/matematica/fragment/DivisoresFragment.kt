@@ -6,60 +6,57 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import com.sergiocruz.matematica.helper.*
 import com.sergiocruz.matematica.R
-import com.sergiocruz.matematica.Ui.ClickableCardView
 import com.sergiocruz.matematica.database.HistoryDataClass
 import com.sergiocruz.matematica.database.LocalDatabase
-import com.sergiocruz.matematica.helper.BigNumbersTextWatcher
+import com.sergiocruz.matematica.databinding.FragmentDivisoresBinding
+import com.sergiocruz.matematica.databinding.ItemResultDivisoresBinding
 import com.sergiocruz.matematica.helper.CreateCardView
-import com.sergiocruz.matematica.helper.OnEditorActions
 import com.sergiocruz.matematica.model.InputTags
-import kotlinx.android.synthetic.main.fragment_divisores.*
-import kotlinx.android.synthetic.main.popup_menu_layout.view.*
 import kotlinx.coroutines.*
+import java.math.BigInteger
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask {
 
-    private var textWatcher: BigNumbersTextWatcher? = null
-    private var asyncTask: AsyncTask<Long, Float, ArrayList<Long>> = BackGroundOperation()
-    internal var num: Long = 0
-    private var startTime: Long = 0
+    private var textWatcher: NumberFormatterTextWatcher? = null
+    private var asyncTask: AsyncTask<BigInteger, Float, SpannableStringBuilder> = BackGroundOperation(0)
 
     override var title: Int = R.string.divisors
     override var pageIndex: Int = 5
 
-    override fun getLayoutIdForFragment() = R.layout.fragment_divisores
+    private var binding: FragmentDivisoresBinding? = null
 
-    override fun onActionDone() = calcDivisors()
+    override fun getLayoutIdForFragment() = R.layout.fragment_divisores
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         allFavoritesCallback = { list: List<HistoryDataClass>? ->
             list?.forEach { fav ->
-                createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java), saveToDB = false)
+                createCardView(fav.primaryKey, gson.fromJson(fav.content, SpannableStringBuilder::class.java), saveToDB = false, startTime = System.nanoTime())
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), title, this) }
-        calculateButton.setOnClickListener { calcDivisors() }
-        clearButton.setOnClickListener { inputEditText.setText("") }
+        binding = FragmentDivisoresBinding.bind(view)
+        binding?.run {
+            cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), title, this@DivisoresFragment) }
+            calculateButton.setOnClickListener { calcDivisors() }
+            clearButton.setOnClickListener { inputEditText.setText("") }
+            textWatcher = NumberFormatterTextWatcher(inputEditText, shouldFormatNumbers, onEditor = ::calcDivisors)
+            inputEditText.addTextChangedListener(textWatcher)
+        }
 
-        textWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, onEditor = this)
-        inputEditText.addTextChangedListener(textWatcher)
     }
 
     override fun optionsMenu() = R.menu.menu_main
@@ -68,15 +65,16 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHelpMenuTitleId(): Int = R.string.action_ajuda_divisores
 
-    override fun getHistoryLayout(): LinearLayout? = history
+    override fun getHistoryLayout(): LinearLayout? = binding?.history
 
     override fun onOperationCanceled(canceled: Boolean) {
         cancelAsyncTask()
     }
 
     override fun onDestroyView() {
+        binding?.inputEditText?.removeTextChangedListener(textWatcher)
+        binding = null
         super.onDestroyView()
-        inputEditText.removeTextChangedListener(textWatcher)
     }
 
     override fun onDestroy() {
@@ -96,38 +94,36 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     }
 
     private fun calcDivisors() {
-        startTime = System.nanoTime()
+        val startTime = System.nanoTime()
         hideKeyboard(activity)
-        val editnumText = inputEditText.text.digitsOnly()
-        if (TextUtils.isEmpty(editnumText)) {
+        val editnumText = binding?.inputEditText?.text?.digitsOnly()
+        if (editnumText.isNullOrEmpty()) {
             showCustomToast(context, getString(R.string.add_num_inteiro))
             return
         }
 
-        try {
-            // Tentar converter o string para long
-            num = java.lang.Long.parseLong(editnumText)
-        } catch (e: Exception) {
-            showCustomToast(context, getString(R.string.numero_alto), InfoLevel.WARNING)
+        val input: BigInteger? = editnumText.toBigIntegerOrNull()
+        if (input == null) {
+            showCustomToast(context, getString(R.string.invalid_number), InfoLevel.WARNING)
             return
         }
 
-        if (editnumText == "0" || num == 0L) {
-            CreateCardView.withStringRes(history, R.string.zero_no_divisores, activity as Activity, operationName)
+        if (input == BigInteger.ZERO) {
+            CreateCardView.withStringRes(getHistoryLayout(), R.string.zero_no_divisores, activity as Activity, operationName)
             return
         }
 
         context?.let {
             launchSafeCoroutine {
-                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
+                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO().getResultForKeyAndOp(input.toString(), operationName)
                 if (result != null) {
                     val ssb: SpannableStringBuilder = gson.fromJson(result.content, SpannableStringBuilder::class.java)
                     withContext(Dispatchers.Main) {
-                        createCardView(num.toString(), ssb, limit = false, saveToDB = false)
+                        createCardView(input.toString(), ssb, limit = false, saveToDB = false, startTime)
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        asyncTask = BackGroundOperation().execute(num)
+                        asyncTask = BackGroundOperation(startTime).execute(input)
                     }
                 }
             }
@@ -153,58 +149,70 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         return divisores
     }
 
-    lateinit var progressParams: ViewGroup.LayoutParams
+    inner class BackGroundOperation(private val startTime: Long) : AsyncTask<BigInteger, Float, SpannableStringBuilder>() {
+        private var progressParams: ViewGroup.LayoutParams? = null
 
-    inner class BackGroundOperation : AsyncTask<Long, Float, ArrayList<Long>>() {
+        private var input: BigInteger? = null
 
-        private var input: Long? = null
+        private var timerJob: Job = Job()
+
+        private var isFinished = false
 
         public override fun onPreExecute() {
             lockInput()
-            progressParams = progressBar.layoutParams
-            progressParams.width = 1
-            progressBar.layoutParams = progressParams
-            progressBar.visibility = View.VISIBLE
+            binding?.run {
+                progressParams = progressBar.layoutParams
+                progressParams?.width = 1
+                progressBar.layoutParams = progressParams
+                progressBar.visibility = View.VISIBLE
+            }
         }
 
-        override fun doInBackground(vararg num: Long?): ArrayList<Long> {
+        override fun doInBackground(vararg num: BigInteger?): SpannableStringBuilder {
             this.input = num[0]
             /**
              * Performance update
              * Primeiro obtem os fatores primos depois multiplica-os
              * */
-            val divisores = ArrayList<Long>()
-            var number: Long = num[0] ?: return ArrayList()
+            val divisores = ArrayList<BigInteger>()
+            var number: BigInteger = num[0] ?: return SpannableStringBuilder()
             var progress: Float
             var oldProgress = 0.0f
 
-            while (number % 2L == 0L) {
-                divisores.add(2L)
-                number /= 2
+            while (number % BigInteger.valueOf(2L) == BigInteger.ZERO) {
+                divisores.add(BigInteger.valueOf(2L))
+                number /= BigInteger.valueOf(2L)
             }
 
-            var i: Long = 3
+            var i: BigInteger = BigInteger.valueOf(3L)
+
+            delayedTimerAsync(repeatMillis = 1000, job = timerJob) {
+                progress = try {
+                    (i.toBigDecimal(scale = 2) / (number.toBigDecimal(scale = 2) / i.toBigDecimal(scale = 2))).toFloat()
+                } catch (e: Exception) {
+                    0f
+                }
+                if (isFinished) return@delayedTimerAsync
+                publishProgress(progress)
+            }
+            timerJob.start()
+
             while (i <= number / i) {
-                while (number % i == 0L) {
+                while (number % i == BigInteger.ZERO) {
                     divisores.add(i)
                     number /= i
                 }
-                progress = i.toFloat() / (number.toFloat() / i.toFloat())
-                if (progress - oldProgress > 0.1) {
-                    publishProgress(progress)
-                    oldProgress = progress
-                }
                 if (isCancelled) break
-                i += 2
+                i += BigInteger.valueOf(2L)
             }
 
-            if (number > 1) {
+            if (number > BigInteger.ONE) {
                 divisores.add(number)
             }
 
-            val allDivisores = ArrayList<Long>()
+            val allDivisores = ArrayList<BigInteger>()
             var size: Int
-            allDivisores.add(1L)
+            allDivisores.add(BigInteger.ONE)
             for (i in divisores.indices) {
                 size = allDivisores.size
                 for (j in 0 until size) {
@@ -215,121 +223,86 @@ class DivisoresFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 }
             }
             allDivisores.sort()
-            return allDivisores
+            val str = allDivisores.joinToString(
+                    prefix = "$input ${getString(R.string.has)} ${allDivisores.size} ${getString(R.string.divisores_)}\n{",
+                    postfix = "}",
+                    transform = { it.toString() }
+            )
+            val ssb = SpannableStringBuilder(str)
+            if (allDivisores.size == 2) {
+                val primeNumber = "\n" + getString(R.string._numero_primo)
+                ssb.append(primeNumber)
+                ssb.setSafeSpan(ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.setSafeSpan(RelativeSizeSpan(0.9f), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            timerJob.cancel()
+            return ssb
         }
 
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@DivisoresFragment.isVisible) {
                 val v0 = values.getOrNull(0) ?: return
-                progressParams.width = (v0 * card_view_1.width).roundToInt()
-                progressBar.layoutParams = progressParams
+                progressParams?.width = (v0 * (binding?.viewHeaderDivisores?.width ?: 0)).roundToInt()
+                binding?.progressBar?.layoutParams = progressParams
             }
         }
 
-        override fun onPostExecute(result: ArrayList<Long>) {
+        override fun onPostExecute(result: SpannableStringBuilder) {
+            isFinished = true
             if (this@DivisoresFragment.isVisible) {
-                var str = ""
-                for (i in result) {
-                    str = "$str, $i"
-                    if (i == 1L) {
-                        str = num.toString() + " " + getString(R.string.has) + " " + result.size +
-                                " " + getString(R.string.divisores_) + "\n{" + i
-                    }
-                }
-                val strDivisores = "$str}"
-                val ssb = SpannableStringBuilder(strDivisores)
-                if (result.size == 2) {
-                    val primeNumber = "\n" + getString(R.string._numero_primo)
-                    ssb.append(primeNumber)
-                    ssb.setSafeSpan(ForegroundColorSpan(Color.parseColor("#29712d")), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                    ssb.setSafeSpan(RelativeSizeSpan(0.9f), ssb.length - primeNumber.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                createCardView(input.toString(), ssb)
+                createCardView(input.toString(), result, startTime = startTime)
                 resetButtons()
             }
         }
 
-        override fun onCancelled(parcial: ArrayList<Long>?) {
+        override fun onCancelled(parcial: SpannableStringBuilder?) {
             super.onCancelled(parcial)
+            isFinished = true
             if (this@DivisoresFragment.isVisible && parcial != null) {
-                var str = ""
-                for (i in parcial) {
-                    str = "$str, $i"
-                    if (i == 1L) {
-                        str = getString(R.string.divisors_of) + " " + num + ":\n" + "{" + i
-                    }
-                }
-                val strDivisores = "$str}"
-                val ssb = SpannableStringBuilder(strDivisores)
-                val incompleteCalc = "\n" + getString(R.string.incomplete_calc)
-                ssb.append(incompleteCalc)
-                ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incompleteCalc.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-                createCardView(input.toString(), ssb)
+                val incomplete = getString(R.string.incomplete_calc)
+                val ssb = parcial.append("\n").append(incomplete)
+                ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                createCardView(input.toString(), ssb, startTime = startTime)
                 resetButtons()
             }
         }
     }
 
     private fun lockInput() {
-        calculateButton.isClickable = false
-        calculateButton.setText(R.string.working)
-        cancelButton.visibility = View.VISIBLE
+        binding?.run {
+            calculateButton.isClickable = false
+            calculateButton.setText(R.string.working)
+            cancelButton.visibility = View.VISIBLE
+        }
         hideKeyboard(activity)
     }
 
     private fun resetButtons() {
-        calculateButton.setText(R.string.calculate)
-        calculateButton.isClickable = true
-        cancelButton.visibility = View.GONE
-        progressBar.visibility = View.GONE
+        binding?.run {
+            calculateButton.setText(R.string.calculate)
+            calculateButton.isClickable = true
+            cancelButton.visibility = View.GONE
+            progressBar.visibility = View.GONE
+        }
     }
 
-    fun createCardView(input: String, ssb: SpannableStringBuilder, limit: Boolean = true, saveToDB: Boolean = true) {
-        //criar novo cardview
-        val cardView = ClickableCardView(activity as Activity)
-        cardView.layoutParams = getMatchWrapParams()
-        cardView.preventCornerOverlap = true
+    fun createCardView(input: String, ssb: SpannableStringBuilder, limit: Boolean = true, saveToDB: Boolean = true, startTime: Long) {
+        ItemResultDivisoresBinding.inflate(layoutInflater).run {
+            textViewTop.text = ssb
+            showFavoriteStarForInput(imageStar, input)
+            textViewPerformance.writePerformanceValue(startTime)
+            divisoresRootCardViewItem.setOnTouchListener(SwipeToDismissTouchListener(divisoresRootCardViewItem,
+                    activity as Activity,
+                    withExplanations = false,
+                    inputTags = InputTags(input = input, operation = operationName))
+            )
 
-        //int pixels = (int) (dips * scale + 0.5f);
-        val lrDip = (6 * scale + 0.5f).toInt()
-        val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f)
-        cardView.cardElevation = (2 * scale + 0.5f)
-        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardView.useCompatPadding = true
-
-        val color = ContextCompat.getColor(requireContext(), R.color.cardsColor)
-        cardView.setCardBackgroundColor(color)
-
-        // Add cardview to history layout at the top (index 0)
-        if (limit) {
-            history.limit(historyLimit)
+            if (limit) {
+                getHistoryLayout()?.limit(historyLimit)
+            }
+            getHistoryLayout()?.addView(root, 0)
         }
-        history.addView(cardView, 0)
-
-        val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = getMatchWrapParams()
-        llVerticalRoot.orientation = LinearLayout.VERTICAL
-
-        // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView,
-                activity as Activity,
-                withExplanations = false,
-                inputTags = InputTags(input = input, operation = operationName))
-        )
-
-        context?.let {
-            val separator = getGradientSeparator(it, shouldShowPerformance, startTime)
-            llVerticalRoot.addView(separator)
-        }
-
-        // criar novo Textview para o resultado da fatorização e estrela dos favoritos
-        val textWithStar = getFavoriteStarForCard(ssb, input)
-        llVerticalRoot.addView(textWithStar.root)
-
-        // add the textview to the cardview
-        cardView.addView(llVerticalRoot)
 
         if (saveToDB) {
             val data = gson.toJson(ssb)

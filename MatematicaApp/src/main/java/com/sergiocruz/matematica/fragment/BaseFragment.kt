@@ -3,18 +3,24 @@ package com.sergiocruz.matematica.fragment
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.android.billingclient.api.*
+import com.google.android.play.core.ktx.launchReview
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.review.testing.FakeReviewManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -30,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import java.math.BigInteger
+import java.text.DecimalFormat
 
 abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -37,7 +44,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     var historyLimit: Int = 0
     var scale: Float = 0f
     var shouldShowPerformance: Boolean = true
-    var explanations: Explanations = Explanations.WhenAsked;
+    var explanations: Explanations = Explanations.WhenAsked
     var shouldFormatNumbers: Boolean = false
     private var shouldShowColors: Boolean = true
 
@@ -58,7 +65,13 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
                 .create()
     }
 
+    private val reviewManager by lazy {
+//        FakeReviewManager(context)
+        ReviewManagerFactory.create(requireContext())
+    }
+
     abstract var title: Int
+
     abstract var pageIndex: Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -182,7 +195,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             inflater.inflate(it, menu)
         }
         inflater.inflate(R.menu.menu_sub_main, menu)
-        getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help).setTitle(it) }
+        getHelpMenuTitleId()?.let { menu.findItem(R.id.action_help)?.setTitle(it) }
 
         // TODO if has bought remove menu entries
 
@@ -193,7 +206,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     open fun getAllFavorites() {
         context?.let { ctx ->
             launchSafeCoroutine {
-                val list: List<HistoryDataClass>? = LocalDatabase.getInstance(ctx).historyDAO()?.getAllFavoritesForOperation(operationName)
+                val list: List<HistoryDataClass>? = LocalDatabase.getInstance(ctx).historyDAO().getAllFavoritesForOperation(operationName)
                 withContext(Dispatchers.Main) {
                     allFavoritesCallback?.invoke(list)
                 }
@@ -204,8 +217,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     open fun makeAllResultsFavorite() {
         context?.let { ctx ->
             launchSafeCoroutine {
-                val num = LocalDatabase.getInstance(ctx).historyDAO()?.makeNonFavoriteFavorite(operationName)
-                        ?: 0
+                val num = LocalDatabase.getInstance(ctx).historyDAO().makeNonFavoriteFavorite(operationName)
                 if (num > 0) {
                     withContext(Dispatchers.Main) {
                         getHistoryLayout()?.children?.forEach {
@@ -213,6 +225,36 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
                         }
                     }
                 }
+            }
+        }
+    }
+
+
+    private fun sendFeedbackRating() {
+        var mp = MediaPlayer.create(context, R.raw.bling)
+        mp?.setOnCompletionListener {
+            mp?.reset()
+            mp?.release()
+            mp = null
+        }
+        mp?.start()
+        val request = reviewManager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // We got the ReviewInfo object
+                val reviewInfo = task.result
+                val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
+                flow.addOnCompleteListener { listener ->
+                    // The flow has finished. The API does not indicate whether the user
+                    // reviewed or not, or even whether the review dialog was shown. Thus, no
+                    // matter the result, we continue our app flow.
+                }
+            } else {
+                // There was some problem, log or handle the error code.
+//                @ReviewErrorCode
+//                val reviewErrorCode = (task.exception as TaskException).errorCode
+                val t = Throwable(task.exception?.localizedMessage)
+                FirebaseCrashlytics.getInstance().recordException(t)
             }
         }
     }
@@ -231,7 +273,8 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
             R.id.action_help -> CreateCardView.withStringRes(getHistoryLayout(), getHelpTextId(), activity as Activity)
             R.id.action_about -> startActivity(Intent(activity, AboutActivity::class.java))
             R.id.action_settings -> activity?.openSettingsFragment()
-            R.id.action_remove_ads, R.id.action_remove_ads2 -> removeAds()
+            R.id.action_feedback_rating -> sendFeedbackRating()
+            R.id.action_remove_ads2 -> removeAds()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -303,7 +346,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         context?.let { ctx ->
             launchSafeCoroutine {
                 val history = HistoryDataClass(primaryKey = input, operation, content = data, favorite = false)
-                LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(history)
+                LocalDatabase.getInstance(ctx).historyDAO().saveResult(history)
             }
         }
     }
@@ -314,7 +357,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         binding.textViewTop.setTag(R.id.texto, "texto")
         context?.let { ctx ->
             launchSafeCoroutine {
-                val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
+                val saved = LocalDatabase.getInstance(ctx).historyDAO().getFavoriteForKeyAndOp(key = input, operation = operationName) != null
                 withContext(Dispatchers.Main) {
                     binding.imageStar.visibility = if (saved) View.VISIBLE else View.GONE
                     binding.imageStar.setOnClickListener {
@@ -329,7 +372,7 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     fun showFavoriteStarForInput(star: ImageView, input: String) {
         star.context?.let { ctx ->
             launchSafeCoroutine {
-                val saved = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = input, operation = operationName) != null
+                val saved = LocalDatabase.getInstance(ctx).historyDAO().getFavoriteForKeyAndOp(key = input, operation = operationName) != null
                 withContext(Dispatchers.Main) {
                     star.visibility = if (saved) View.VISIBLE else View.GONE
                     star.rotateYAnimation()
@@ -350,13 +393,24 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
     private fun clearTemporaryResultsFromDB() {
         context?.let {
             launchSafeCoroutine {
-                LocalDatabase.getInstance(it).historyDAO()?.deleteNonFavoritesFromOperation(operationName)
+                LocalDatabase.getInstance(it).historyDAO().deleteNonFavoritesFromOperation(operationName)
             }
         }
     }
 
     fun BigInteger.conditionalFormat(): String {
         return if (shouldFormatNumbers) this.formatForLocale() else this.toString()
+    }
+
+    fun TextView.writePerformanceValue(startTime: Long) {
+        if (shouldShowPerformance) {
+            val formatter = DecimalFormat("#.###")
+            val elapsed = context.getString(R.string.performance) + " " + formatter.format((System.nanoTime() - startTime) / 1_000_000_000.0) + "s"
+            text = elapsed
+            visibility = View.VISIBLE
+        } else {
+            visibility = View.GONE
+        }
     }
 
 }

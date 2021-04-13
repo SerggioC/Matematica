@@ -132,7 +132,7 @@ class SwipeToDismissTouchListener(
         var isFavorite = false
         if (pk.isNotEmpty() && op.isNotBlank()) {
             launchSafeCoroutine {
-                isFavorite = LocalDatabase.getInstance(context).historyDAO()?.getFavoriteForKeyAndOp(key = pk, operation = op) != null
+                isFavorite = LocalDatabase.getInstance(context).historyDAO().getFavoriteForKeyAndOp(key = pk, operation = op) != null
                 if (isFavorite) {
                     withContext(Dispatchers.Main) {
                         popupLayout.image_popup_favorite.setImageResource(android.R.drawable.btn_star_big_on)
@@ -146,7 +146,7 @@ class SwipeToDismissTouchListener(
         popupLayout.action_favorite.setOnClickListener {
             if (pk.isEmpty() || op.isEmpty()) return@setOnClickListener
             launchSafeCoroutine {
-                LocalDatabase.getInstance(context).historyDAO()?.makeHistoryItemFavorite(operation = op, key = pk, isFavorite.not())
+                LocalDatabase.getInstance(context).historyDAO().makeHistoryItemFavorite(operation = op, key = pk, isFavorite.not())
                 withContext(Dispatchers.Main) {
                     star.visibility = if (isFavorite) View.GONE else View.VISIBLE
                     star.rotateYAnimation()
@@ -425,7 +425,7 @@ class SwipeToDismissTouchListener(
             val pk = tags?.input ?: ""
             val op = tags?.operation ?: ""
             cardview.context?.let { ctx ->
-                LocalDatabase.getInstance(ctx).historyDAO()?.deleteTemporaryHistoryItem(key = pk, operation = op)
+                LocalDatabase.getInstance(ctx).historyDAO().deleteTemporaryHistoryItem(key = pk, operation = op)
             }
         }
     }

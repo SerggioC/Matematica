@@ -28,7 +28,7 @@ import java.text.DecimalFormat
  * Created by Sergio on 13/05/2017 14:00
  */
 
-class MultiplosFragment : BaseFragment(), OnEditorActions {
+class MultiplosFragment : BaseFragment() {
 
     internal var startTime: Long = 0
 
@@ -46,8 +46,6 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
 
     override fun getLayoutIdForFragment() = R.layout.fragment_multiplos
 
-    override fun onActionDone() = calculateMultiples()
-
     private var bigNumbersTextWatcher: BigNumbersTextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +62,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bigNumbersTextWatcher = BigNumbersTextWatcher(editNumMultiplos, shouldFormatNumbers, onEditor = this)
+        bigNumbersTextWatcher = BigNumbersTextWatcher(editNumMultiplos, shouldFormatNumbers, onEditor = ::calculateMultiples)
         editNumMultiplos.addTextChangedListener(bigNumbersTextWatcher)
 
         clearButton.setOnClickListener { editNumMultiplos.setText("") }
@@ -93,7 +91,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
             context?.let { ctx ->
                 launchSafeCoroutine {
                     val newMD = gson.toJson(MultiplesData("{0}", 0))
-                    LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(HistoryDataClass("0", operationName, newMD, favorite = false))
+                    LocalDatabase.getInstance(ctx).historyDAO().saveResult(HistoryDataClass("0", operationName, newMD, favorite = false))
                     withContext(Dispatchers.Main) {
                         createCardViewMultiplos(BigInteger.ZERO, multiplos = "{0}", lastIteration = 0)
                     }
@@ -111,8 +109,8 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
         context?.let { ctx ->
             val maxMultiplos = spinnerMultiplosCount.selectedItem.toString().toLongOrNull() ?: 0L
             launchSafeCoroutine {
-                val isFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = num.toString(), operation = operationName) != null
-                val result: HistoryDataClass? = LocalDatabase.getInstance(ctx).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
+                val isFavorite = LocalDatabase.getInstance(ctx).historyDAO().getFavoriteForKeyAndOp(key = num.toString(), operation = operationName) != null
+                val result: HistoryDataClass? = LocalDatabase.getInstance(ctx).historyDAO().getResultForKeyAndOp(num.toString(), operationName)
                 val md = result?.content?.let {
                     gson.fromJson(it, MultiplesData::class.java)
                 }
@@ -122,12 +120,12 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     multiplosStr = calculateMultiplos(number = num, minIteration = 0, iterations = maxMultiplos)
                     lastIteration = 10L
                     val newMD = gson.toJson(MultiplesData(multiplosStr, lastIteration))
-                    LocalDatabase.getInstance(ctx).historyDAO()?.saveResult(HistoryDataClass(num.toString(), operationName, newMD, isFavorite))
+                    LocalDatabase.getInstance(ctx).historyDAO().saveResult(HistoryDataClass(num.toString(), operationName, newMD, isFavorite))
                 } else {
                     multiplosStr = md.stringMultiplos
                     lastIteration = md.lastIteration
                     val newMD = gson.toJson(MultiplesData(multiplosStr, lastIteration))
-                    LocalDatabase.getInstance(ctx).historyDAO()?.updateHistoryData(key = num.toString(), operationName, newMD)
+                    LocalDatabase.getInstance(ctx).historyDAO().updateHistoryData(key = num.toString(), operationName, newMD)
                 }
 
                 withContext(Dispatchers.Main) {
@@ -169,7 +167,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                     startTime = System.nanoTime()
                     val iterations = spinnerMultiplosCount.selectedItem.toString().toLongOrNull() ?: 10L
                     launchSafeCoroutine {
-                        val savedResult: HistoryDataClass? = LocalDatabase.getInstance(root.context).historyDAO()?.getResultForKeyAndOp(number.toString(), operationName)
+                        val savedResult: HistoryDataClass? = LocalDatabase.getInstance(root.context).historyDAO().getResultForKeyAndOp(number.toString(), operationName)
                         val saved = savedResult?.content?.let {
                             gson.fromJson(it, MultiplesData::class.java)
                         }
@@ -177,7 +175,7 @@ class MultiplosFragment : BaseFragment(), OnEditorActions {
                         val multiplosStr = calculateMultiplos(number = number, minIteration = saved?.lastIteration ?: lastIteration, iterations = iterations)
                         val multiplesData = MultiplesData((saved?.stringMultiplos ?: "").dropLast(3) + multiplosStr, (saved?.lastIteration ?: lastIteration) + iterations)
                         val newData = gson.toJson(multiplesData)
-                        LocalDatabase.getInstance(root.context).historyDAO()?.updateHistoryData(key = number.toString(), operationName, newData)
+                        LocalDatabase.getInstance(root.context).historyDAO().updateHistoryData(key = number.toString(), operationName, newData)
                         withContext(Dispatchers.Main) {
                             if (shouldShowPerformance) {
                                 val decimalFormatter = DecimalFormat("#.###")

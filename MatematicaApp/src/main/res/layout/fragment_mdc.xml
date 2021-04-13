@@ -78,13 +78,6 @@
                                 android:imeOptions="flagNavigateNext"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton1"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
 
                         <FrameLayout
@@ -107,14 +100,8 @@
                                 android:imeOptions="actionDone"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton2"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -148,13 +135,6 @@
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton3"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
 
                         <FrameLayout
@@ -178,14 +158,8 @@
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton4"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -218,13 +192,6 @@
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton5"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
 
                         <FrameLayout
@@ -248,14 +215,8 @@
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton6"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -288,13 +249,6 @@
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton7"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
 
                         <FrameLayout
@@ -318,14 +272,8 @@
                                 android:textAlignment="center"
                                 android:textSize="@dimen/edittextsize" />
 
-                            <Button
-                                android:id="@+id/clearButton8"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:layout_gravity="center_vertical|right"
-                                android:background="@drawable/ic_clear_text" />
-
                         </FrameLayout>
+
                     </LinearLayout>
 
                     <RelativeLayout
@@ -363,6 +311,7 @@
                             android:contentDescription="" />
 
                     </RelativeLayout>
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

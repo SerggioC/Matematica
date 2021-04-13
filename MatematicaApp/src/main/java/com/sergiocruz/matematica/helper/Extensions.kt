@@ -38,16 +38,11 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-/** onActionDone() */
-interface OnEditorActions {
-    fun onActionDone()
-}
-
 const val clearErrorDelayMillis: Long = 4500
 
 /** EditText Editor Action Extension Function */
 //fun EditText.watchThis(onActionDone : OnEditorActionDone, onActionError: OnEditorActionError) {
-fun EditText.watchThis(onEditor: OnEditorActions) {
+fun EditText.watchThis(onEditor: () -> Unit) {
 
     this.addTextChangedListener(object : TextWatcher {
         lateinit var oldNum: String
@@ -60,8 +55,7 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
             if (TextUtils.isEmpty(s)) return
             if (s.digitsOnly().toLongOrNull() == null) {
                 this@watchThis.setText(oldNum)
-                this@watchThis.setSelection(this@watchThis.text?.length
-                        ?: 0) // Colocar o cursor no final do texto
+                this@watchThis.setSelection(this@watchThis.text?.length ?: 0) // Colocar o cursor no final do texto
                 this@watchThis.error = this@watchThis.context.getString(R.string.numero_alto)
                 // Remove error after 4 seconds
                 postDelayed({ this@watchThis.error = null }, clearErrorDelayMillis)
@@ -73,7 +67,7 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
 
     this.setOnEditorActionListener { _, actionId, _ ->
         if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
-            onEditor.onActionDone()
+            onEditor.invoke()
             return@setOnEditorActionListener true
         }
         false
@@ -82,7 +76,7 @@ fun EditText.watchThis(onEditor: OnEditorActions) {
 }
 
 
-class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Boolean, private val ignoreLongNumbers: Boolean = false, onEditor: OnEditorActions) : NumberFormatterTextWatcher(inputEditText, formatInput, onEditor) {
+class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Boolean, private val ignoreLongNumbers: Boolean = false, onEditor: () -> Unit) : NumberFormatterTextWatcher(inputEditText, formatInput, onEditor) {
 
     private lateinit var oldNum: String
 
@@ -95,8 +89,7 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
         if (TextUtils.isEmpty(s)) return
         if (s?.digitsOnly()?.toLongOrNull() == null && ignoreLongNumbers.not()) {
             inputEditText.setText(oldNum)
-            inputEditText.setSelection(inputEditText.text?.length
-                    ?: 0) // Colocar o cursor no final do texto
+            inputEditText.setSelection(inputEditText.text?.length ?: 0) // Colocar o cursor no final do texto
             inputEditText.error = inputEditText.context.getString(R.string.numero_alto)
             // Remove error after 4 seconds
             inputEditText.postDelayed({ inputEditText.error = null }, clearErrorDelayMillis)
@@ -109,7 +102,7 @@ class BigNumbersTextWatcher(private val inputEditText: EditText, formatInput: Bo
 
 open class NumberFormatterTextWatcher(private val inputEditText: EditText,
                                       private val formatInput: Boolean,
-                                      onEditor: OnEditorActions) : TextWatcher {
+                                      onEditor: () -> Unit) : TextWatcher {
 
     private var initialStart = 0
     private var initialString = ""
@@ -118,7 +111,7 @@ open class NumberFormatterTextWatcher(private val inputEditText: EditText,
     init {
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO) {
-                onEditor.onActionDone()
+                onEditor.invoke()
                 return@setOnEditorActionListener true
             }
             false

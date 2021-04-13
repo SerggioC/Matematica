@@ -15,6 +15,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class MMCExplanationTask(
+        private val noCommonFactors: String,
         private val inputNumbers: List<BigInteger>,
         private val fColors: List<Int>,
         updateProgress: (percent: List<Float>) -> Unit,
@@ -43,7 +44,6 @@ class MMCExplanationTask(
             var nextFactor = 0
             var lastItem: BigInteger = factorizationData[k][0]
 
-            //TreeMap
             val dataset = LinkedHashMap<String, BigInteger>()
 
             //Contar os expoentes
@@ -182,14 +182,13 @@ class MMCExplanationTask(
         if (ssbMmc.isNotEmpty()) {
             ssbMmc.replace(ssbMmc.length - 1, ssbMmc.length, "")
         } else {
-            //ssbMmc.append(getString(R.string.no_common_factors))
-            // TODO
+            ssbMmc.append(noCommonFactors)
         }
 
         ssbMmc.setSafeSpan(StyleSpan(Typeface.BOLD), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
         ssbMmc.setSafeSpan(RelativeSizeSpan(0.9f), 0, ssbMmc.length, SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        return MDData(ssbFactorization = ssbFatorization, ssbExpanded = ssbMmc)
+        return MDData(inputNumbers, ssbFactorization = ssbFatorization, ssbExpanded = ssbMmc)
     }
 
 }

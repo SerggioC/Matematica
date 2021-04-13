@@ -22,7 +22,7 @@ import java.math.BigInteger
 import java.util.*
 import kotlin.math.roundToInt
 
-class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask {
 
     private lateinit var textWatcher: BigNumbersTextWatcher
 
@@ -57,7 +57,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 calculateButton.isClickable = true
                 cancelButton.visibility = View.GONE
                 progressBar.visibility = View.GONE
-                timerJob?.cancel()
+                timerJob.cancel()
                 Handler(Looper.getMainLooper()).postDelayed({
                     elapsedTimeMillis?.visibility = View.GONE
                 }, 2500)
@@ -104,7 +104,7 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         calculateButton.setOnClickListener { calculatePrimeFactors() }
         clearButton.setOnClickListener { factorizeTextView.setText("") }
 
-        textWatcher = BigNumbersTextWatcher(factorizeTextView, shouldFormatNumbers, ignoreLongNumbers = true, this)
+        textWatcher = BigNumbersTextWatcher(factorizeTextView, shouldFormatNumbers, ignoreLongNumbers = true, ::calculatePrimeFactors)
         factorizeTextView.addTextChangedListener(textWatcher)
     }
 
@@ -112,10 +112,6 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         if (cancelAsyncTask(bgOperation, context)) {
             isCalculating = false
         }
-    }
-
-    override fun onActionDone() {
-        calculatePrimeFactors()
     }
 
     private fun calculatePrimeFactors() {
@@ -136,8 +132,8 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         context?.let { ctx ->
             isCalculating = true
             launchSafeCoroutine {
-                val result: HistoryDataClass? = LocalDatabase.getInstance(ctx).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
-                val isFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = num.toString(), operation = operationName) != null
+                val result: HistoryDataClass? = LocalDatabase.getInstance(ctx).historyDAO().getResultForKeyAndOp(num.toString(), operationName)
+                val isFavorite = LocalDatabase.getInstance(ctx).historyDAO().getFavoriteForKeyAndOp(key = num.toString(), operation = operationName) != null
                 lateinit var fd: FactorizationData
                 if (result != null) {
                     fd = gson.fromJson(result.content, FactorizationData::class.java)

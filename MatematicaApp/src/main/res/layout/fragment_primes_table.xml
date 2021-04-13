@@ -66,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
+                android:gravity="center_horizontal"
                 android:imeOptions="flagNavigateNext"
                 android:inputType="number"
                 android:maxLines="1"
@@ -74,17 +75,6 @@
                 tools:text="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btn_clear_min"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/ic_clear_text"
-            app:layout_constraintBottom_toBottomOf="@+id/minInputLayout"
-            app:layout_constraintEnd_toEndOf="@+id/minInputLayout"
-            app:layout_constraintTop_toTopOf="@+id/minInputLayout" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/maxInputLayout"
@@ -110,6 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
+                android:gravity="center_horizontal"
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:maxLines="1"
@@ -119,16 +110,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_clear_max"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/ic_clear_text"
-            app:layout_constraintBottom_toBottomOf="@+id/maxInputLayout"
-            app:layout_constraintEnd_toEndOf="@+id/maxInputLayout"
-            app:layout_constraintTop_toTopOf="@+id/maxInputLayout" />
 
         <Button
             android:id="@+id/createTableBtn"

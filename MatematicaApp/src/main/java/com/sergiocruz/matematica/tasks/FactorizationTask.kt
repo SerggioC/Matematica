@@ -70,7 +70,7 @@ class FactorizationTask(
             }
             updateProgress(progress)
         }
-        timer?.start()
+        timer.start()
 
         while (i <= number / i) {
             while (number % i == BigInteger.ZERO) {
@@ -222,16 +222,18 @@ class FactorizationTask(
                         //Expoente 1
                         ssbFatores.append(key)
                         ssbFatores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                     } else if (value.toInt() > 1) {
                         //Expoente superior a 1 // pair.getkey = fator; pair.getvalue = expoente
 
                         ssbFatores.append(key)
                         ssbFatores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         valueLength = value.length
                         ssbFatores.append(value)
                         ssbFatores.setSafeSpan(SuperscriptSpan(), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        ssbFatores.setSafeSpan(RelativeSizeSpan(0.85f), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(RelativeSizeSpan(.95f), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         ssbFatores.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFatores.length - valueLength, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
 

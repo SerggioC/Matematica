@@ -60,6 +60,7 @@ data class MultiplesData(
 
 /** MMC e MDC **/
 data class MDData(
+        val inputNumbers: List<BigInteger>,
         var resultString: String? = null,
         var result: BigInteger? = null,
         var ssbFactorization: SpannableStringBuilder? = null,

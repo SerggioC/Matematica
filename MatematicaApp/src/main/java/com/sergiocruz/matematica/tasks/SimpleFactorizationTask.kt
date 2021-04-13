@@ -45,10 +45,7 @@ open class SimpleFactorizationTask(
                 }
                 updateProgress(listOf(progress, i.toFloat()))
             }
-            Log.i("TAG", "doInBackground pre-start: $timerJob")
             timerJob.start()
-            Log.i("TAG", "doInBackground: after-start: $timerJob")
-
 
             while (j <= number / j) {
                 if (isCancelled) break

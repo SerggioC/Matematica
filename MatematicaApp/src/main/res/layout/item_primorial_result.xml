@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sergiocruz.matematica.Ui.ClickableCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/primorialRootCardViewItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textViewTop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:tag="0"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.48"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gradient_separator"
+            tools:text="Divisores de 123=" />
+
+        <ImageView
+            android:id="@+id/image_star"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:clickable="true"
+            android:contentDescription="@string/favorite_star"
+            android:focusable="true"
+            android:src="@android:drawable/btn_star_big_on"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/gradient_separator"
+            android:layout_width="0dp"
+            android:layout_height="1.5dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/bottom_border2"
+            app:layout_constraintEnd_toStartOf="@+id/image_star"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPerformance" />
+
+        <TextView
+            android:id="@+id/textViewPerformance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:gravity="bottom|end"
+            android:tag="0"
+            android:textColor="@color/lightBlue"
+            android:textSize="10sp"
+            app:layout_constraintEnd_toStartOf="@+id/image_star"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SmallSp"
+            tools:text="performance" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.sergiocruz.matematica.Ui.ClickableCardView>

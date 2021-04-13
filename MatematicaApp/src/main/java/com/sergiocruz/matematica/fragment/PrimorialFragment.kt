@@ -5,23 +5,20 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
 import com.sergiocruz.matematica.helper.*
 import com.sergiocruz.matematica.model.InputTags
 import com.sergiocruz.matematica.R
-import com.sergiocruz.matematica.Ui.ClickableCardView
 import com.sergiocruz.matematica.database.HistoryDataClass
 import com.sergiocruz.matematica.database.LocalDatabase
-import com.sergiocruz.matematica.helper.*
-import kotlinx.android.synthetic.main.fragment_primorial.*
+import com.sergiocruz.matematica.databinding.FragmentPrimorialBinding
+import com.sergiocruz.matematica.databinding.ItemPrimorialResultBinding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.util.*
@@ -33,13 +30,14 @@ import kotlin.math.roundToInt
  * Created by Sergio on 05/02/2017 12:47
  */
 
-class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorActions {
+class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask {
 
     private var backgroundTask: AsyncTask<Long, Float, BigInteger> = BackGroundOperation()
     private var num: Long = 0
     private var startTime: Long = 0
+    private var binding: FragmentPrimorialBinding? = null
 
-    override fun optionsMenu() = R.menu.menu_sub_main
+    override fun optionsMenu() = R.menu.menu_main
 
     override var title: Int = R.string.nav_primorial
     override var pageIndex: Int = 8
@@ -48,15 +46,13 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
 
     override fun getHelpMenuTitleId() = R.string.action_ajuda_primorial
 
-    override fun getHistoryLayout(): LinearLayout = history
+    override fun getHistoryLayout(): LinearLayout? = binding?.history
 
     override fun getLayoutIdForFragment() = R.layout.fragment_primorial
 
     override fun onOperationCanceled(canceled: Boolean) {
         if (cancelAsyncTask(backgroundTask, context)) resetButtons()
     }
-
-    override fun onActionDone() = calculatePrimorial()
 
     private lateinit var bigNumbersTextWatcher: BigNumbersTextWatcher
 
@@ -72,18 +68,19 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_calc_primorial.setOnClickListener { calculatePrimorial() }
-
-        bigNumbersTextWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, onEditor = this)
-        inputEditText.addTextChangedListener(bigNumbersTextWatcher)
-
-        cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), title, this) }
-        clearButton.setOnClickListener { inputEditText.setText("") }
+        binding = FragmentPrimorialBinding.bind(view)
+        binding?.run {
+            buttonCalcPrimorial.setOnClickListener { calculatePrimorial() }
+            bigNumbersTextWatcher = BigNumbersTextWatcher(inputEditText, shouldFormatNumbers, onEditor = ::calculatePrimorial)
+            inputEditText.addTextChangedListener(bigNumbersTextWatcher)
+            cancelButton.setOnClickListener { displayCancelDialogBox(requireContext(), title, this@PrimorialFragment) }
+            clearButton.setOnClickListener { inputEditText.setText("") }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        inputEditText.removeTextChangedListener(bigNumbersTextWatcher)
+        binding?.inputEditText?.removeTextChangedListener(bigNumbersTextWatcher)
     }
 
     override fun onDestroy() {
@@ -94,8 +91,8 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     private fun calculatePrimorial() {
         startTime = System.nanoTime()
         hideKeyboard(activity)
-        val editnumText = inputEditText.text.digitsOnly()
-        if (TextUtils.isEmpty(editnumText)) {
+        val editnumText = binding?.inputEditText?.text.digitsOnly()
+        if (editnumText.isEmpty()) {
             showCustomToast(context, getString(R.string.add_num_inteiro))
             return
         }
@@ -115,11 +112,11 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         // check if temp result exists in DB
         context?.let {
             launchSafeCoroutine {
-                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO()?.getResultForKeyAndOp(num.toString(), operationName)
+                val result: HistoryDataClass? = LocalDatabase.getInstance(it).historyDAO().getResultForKeyAndOp(num.toString(), operationName)
                 if (result != null) {
-                    val result: BigInteger = gson.fromJson(result.content, BigInteger::class.java)
+                    val bi: BigInteger = gson.fromJson(result.content, BigInteger::class.java)
                     withContext(Dispatchers.Main) {
-                        createCardView(num, result, wasCanceled = false, limitHistory = false)
+                        createCardView(num, bi, wasCanceled = false, limitHistory = false)
                     }
                 } else {
                     withContext(Dispatchers.Main) {
@@ -132,76 +129,40 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     }
 
     private fun resetButtons() {
-        progressBar.visibility = View.GONE
-        button_calc_primorial.setText(R.string.calculate)
-        button_calc_primorial.isClickable = true
-        cancelButton.visibility = View.GONE
+        binding?.run {
+            progressBar.visibility = View.GONE
+            buttonCalcPrimorial.setText(R.string.calculate)
+            buttonCalcPrimorial.isClickable = true
+            cancelButton.visibility = View.GONE
+        }
     }
 
     fun createCardView(number: Long?, bigIntegerResult: BigInteger, wasCanceled: Boolean, limitHistory: Boolean = true, saveToDB: Boolean = true) {
-        //criar novo cardview
-        val cardView = ClickableCardView(requireActivity())
+        val itemBinding = ItemPrimorialResultBinding.inflate(layoutInflater)
+        itemBinding.run {
+            val text =
+                    if (shouldFormatNumbers) {
+                        number.toString() + "#=\n" + bigIntegerResult.formatForLocale()
+                    } else {
+                        number.toString() + "#=\n" + bigIntegerResult
+                    }
 
-        cardView.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, // width
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ) // height
-        cardView.preventCornerOverlap = true
-
-        //int pixels = (int) (dips * scale + 0.5f);
-        val lrDip = (6 * scale + 0.5f).toInt()
-        val tbDip = (8 * scale + 0.5f).toInt()
-        cardView.radius = (2 * scale + 0.5f)
-        cardView.cardElevation = (2 * scale + 0.5f)
-        cardView.setContentPadding(lrDip, tbDip, lrDip, tbDip)
-        cardView.useCompatPadding = true
-
-        val cvColor = ContextCompat.getColor(requireActivity(), R.color.cardsColor)
-        cardView.setCardBackgroundColor(cvColor)
-
-        if (limitHistory) {
-            history.limit(historyLimit)
+            val ssb = SpannableStringBuilder(text)
+            textViewTop.text = ssb
+            textViewPerformance.writePerformanceValue(startTime)
+            showFavoriteStarForInput(imageStar, input = number.toString())
+            if (wasCanceled) {
+                val incomplete = "\n" + getString(R.string.incomplete_calc)
+                ssb.append(incomplete)
+                ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            root.setOnTouchListener(SwipeToDismissTouchListener(root, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
+            if (limitHistory) {
+                getHistoryLayout()?.limit(historyLimit)
+            }
+            getHistoryLayout()?.addView(root, 0)
         }
-        // Add cardview to history layout at the top (index 0)
-        history.addView(cardView, 0)
-
-        val text =
-                if (shouldFormatNumbers) {
-                    number.toString() + "#=\n" + bigIntegerResult.formatForLocale()
-                } else {
-                    number.toString() + "#=\n" + bigIntegerResult
-                }
-
-        val ssb = SpannableStringBuilder(text)
-        if (wasCanceled) {
-            val incomplete = "\n" + getString(R.string.incomplete_calc)
-            ssb.append(incomplete)
-            ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-            ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-
-        //Adicionar o texto com o resultado
-        val textWithStar = getFavoriteStarForCard(ssb, input = number.toString())
-
-        val llVerticalRoot = LinearLayout(activity)
-        llVerticalRoot.layoutParams = LinearLayout.LayoutParams(
-            LinearLayoutCompat.LayoutParams.MATCH_PARENT,
-            LinearLayoutCompat.LayoutParams.WRAP_CONTENT
-        )
-        llVerticalRoot.orientation = LinearLayout.VERTICAL
-
-        // Create a generic swipe-to-dismiss touch listener.
-        cardView.setOnTouchListener(SwipeToDismissTouchListener(cardView, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
-
-        context?.let {
-            val separator = getGradientSeparator(it, shouldShowPerformance, startTime)
-            llVerticalRoot.addView(separator, 0)
-        }
-
-        llVerticalRoot.addView(textWithStar.root)
-
-        // add the root layout to the cardview
-        cardView.addView(llVerticalRoot)
 
         if (saveToDB) {
             saveCardToDatabase(number.toString(), bigIntegerResult.toString(), operationName)
@@ -212,24 +173,26 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
     lateinit var progressParams: ViewGroup.LayoutParams
 
     private inner class BackGroundOperation : AsyncTask<Long, Float, BigInteger>() {
-        var number: Long? = null
-        var primes = ArrayList<Long>()
+        private var input: Long = 0
+        private var primes = ArrayList<Long>()
 
         public override fun onPreExecute() {
-            button_calc_primorial.isClickable = false
-            button_calc_primorial.setText(R.string.working)
-            cancelButton.visibility = View.VISIBLE
-            hideKeyboard(activity)
-            progressParams = progressBar.layoutParams
-            progressParams.width = 1
-            progressBar.layoutParams = progressParams
-            progressBar.visibility = View.VISIBLE
+            binding?.run {
+                buttonCalcPrimorial.isClickable = false
+                buttonCalcPrimorial.setText(R.string.working)
+                cancelButton.visibility = View.VISIBLE
+                hideKeyboard(activity)
+                progressParams = progressBar.layoutParams
+                progressParams.width = 1
+                progressBar.layoutParams = progressParams
+                progressBar.visibility = View.VISIBLE
+            }
         }
 
         override fun doInBackground(vararg num: Long?): BigInteger {
-            number = num[0] ?: return BigInteger.ONE
-            if (number == 1L) return BigInteger.ONE
-            if (number == 2L) return BigInteger.valueOf(2L)
+            input = num[0] ?: return BigInteger.ONE
+            if (input == 1L) return BigInteger.ONE
+            if (input == 2L) return BigInteger.valueOf(2L)
 
             primes.add(1L)
             primes.add(2L)
@@ -237,7 +200,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
             var progress: Float
             var oldProgress = 0.0f
 
-            for (i in 3L..number!!) {
+            for (i in 3L..input) {
                 var isPrime = true
                 if (i % 2 == 0L) isPrime = false
                 if (isPrime) {
@@ -253,7 +216,7 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
                 if (isPrime) {
                     primes.add(i)
                 }
-                progress = i.toFloat() / number!!.toFloat()
+                progress = i.toFloat() / input.toFloat()
                 if (progress - oldProgress > 0.05) { // update a cada 5%
                     publishProgress(progress)
                     oldProgress = progress
@@ -273,14 +236,14 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask, OnEditorAction
         override fun onProgressUpdate(vararg values: Float?) {
             if (this@PrimorialFragment.isVisible) {
                 val fl = values[0] ?: 0f
-                progressParams.width = (fl * card_view_1.width).roundToInt()
-                progressBar.layoutParams = progressParams
+                progressParams.width = (fl * (binding?.cardView1?.width ?: 0)).roundToInt()
+                binding?.progressBar?.layoutParams = progressParams
             }
         }
 
         override fun onPostExecute(result: BigInteger) {
             if (this@PrimorialFragment.isVisible) {
-                createCardView(number, result, wasCanceled = false, limitHistory = true)
+                createCardView(input, result, wasCanceled = false, limitHistory = true)
                 resetButtons()
             }
         }

@@ -68,15 +68,8 @@ class PrimalityFragment : BaseFragment() {
         calculateButton.setOnClickListener { checkNumberFromInput() }
         clearButton.setOnClickListener { inputEditText.setText("") }
 
-        val onEditor = object : OnEditorActions {
-            override fun onActionDone() {
-                checkNumberFromInput()
-            }
-        }
-
-        textWatcher = NumberFormatterTextWatcher(inputEditText, shouldFormatNumbers, onEditor)
+        textWatcher = NumberFormatterTextWatcher(inputEditText, shouldFormatNumbers, ::checkNumberFromInput)
         inputEditText.addTextChangedListener(textWatcher)
-
     }
 
     private fun checkNumberFromInput() {
@@ -95,7 +88,7 @@ class PrimalityFragment : BaseFragment() {
         hideKeyboard(activity)
         context?.let { ctx ->
             launchSafeCoroutine {
-                val savedFavorite = LocalDatabase.getInstance(ctx).historyDAO()?.getFavoriteForKeyAndOp(key = bigNumber.toString(), operation = operationName)
+                val savedFavorite = LocalDatabase.getInstance(ctx).historyDAO().getFavoriteForKeyAndOp(key = bigNumber.toString(), operation = operationName)
                 val fav = if (savedFavorite?.content != null) {
                     gson.fromJson(savedFavorite.content, PrimalityData::class.java).factorizationData
                 } else null
@@ -228,7 +221,7 @@ class PrimalityFragment : BaseFragment() {
                                         launchSafeCoroutine {
                                             val pd = PrimalityData(isPrime = false, factorizationData = fd)
                                             val data = gson.toJson(pd, PrimalityData::class.java)
-                                            LocalDatabase.getInstance(ctx).historyDAO()?.updateHistoryData(key = bigNumber.toString(), operationName, data)
+                                            LocalDatabase.getInstance(ctx).historyDAO().updateHistoryData(key = bigNumber.toString(), operationName, data)
                                         }
                                     }
                                 }

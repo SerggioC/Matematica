@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/action_remove_ads"
+        android:id="@+id/action_feedback_rating"
         android:icon="@drawable/thumbs_up"
         android:orderInCategory="1"
         android:title="@string/remove_ads"
@@ -23,6 +23,7 @@
         android:id="@+id/action_remove_ads2"
         android:icon="@drawable/thumbs_up"
         android:orderInCategory="101"
+        android:visible="false"
         android:title="@string/remove_ads"
         app:showAsAction="never" />
 </menu>

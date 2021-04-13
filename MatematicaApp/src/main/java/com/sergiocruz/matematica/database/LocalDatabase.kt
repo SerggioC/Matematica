@@ -7,15 +7,12 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineScope
 
 @Database(entities = [HistoryDataClass::class], version = 1, exportSchema = true)
-//@TypeConverters([DateConverter::class, StringListConverter::class])
 abstract class LocalDatabase : RoomDatabase() {
 
     abstract fun historyDAO(): HistoryDAO
 
     companion object {
-
         private val LOCK = Any()
-
         private const val DATABASE_NAME = "matematica_database.db"
 
         @Volatile
@@ -34,17 +31,17 @@ abstract class LocalDatabase : RoomDatabase() {
 
         fun getDatabase(
                 context: Context,
-                scope: CoroutineScope
+                scope: CoroutineScope,
         ): LocalDatabase {
             // if the INSTANCE is not null, then return it,
             // if it is, then create the database
             return INSTANCE ?: synchronized(this) {
                 return Room
                         .databaseBuilder(
-                        context.applicationContext,
-                        LocalDatabase::class.java,
-                        "word_database"
-                )
+                                context.applicationContext,
+                                LocalDatabase::class.java,
+                                DATABASE_NAME
+                        )
                         .fallbackToDestructiveMigration()
                         .build()
                         .also { INSTANCE = it }
