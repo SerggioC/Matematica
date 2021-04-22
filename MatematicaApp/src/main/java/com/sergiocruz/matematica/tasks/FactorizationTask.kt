@@ -23,7 +23,6 @@ import com.sergiocruz.matematica.databinding.ItemResultFatorizarBinding
 import com.sergiocruz.matematica.fragment.BaseFragment
 import com.sergiocruz.matematica.model.FactorizationData
 import com.sergiocruz.matematica.model.InputTags
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import java.math.BigInteger
 import java.text.DecimalFormat
@@ -104,7 +103,7 @@ class FactorizationTask(
                 incompleteCalcText = incompleteCalcText,
                 onFinished = onFinished,
         )
-        timer?.cancel()
+        timer.cancel()
     }
 
     override fun onCancelled(parcial: ArrayList<ArrayList<BigInteger>>?) {
@@ -119,7 +118,7 @@ class FactorizationTask(
                     onFinished = onFinished,
             )
         }
-        timer?.cancel()
+        timer.cancel()
     }
 
     companion object {
@@ -181,7 +180,7 @@ class FactorizationTask(
 
                     val fi = fatori.toString()
                     ssbFactExpanded.append(fi)
-                    ssbFactExpanded.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbFactExpanded.length - fi.length, ssbFactExpanded.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    ssbFactExpanded.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex % factorsColors.size]), ssbFactExpanded.length - fi.length, ssbFactExpanded.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     ssbFactExpanded.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFactExpanded.length - fi.length, ssbFactExpanded.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     ssbFactExpanded.append("×")
 
@@ -221,14 +220,14 @@ class FactorizationTask(
                     if (value.toInt() == 1) {
                         //Expoente 1
                         ssbFatores.append(key)
-                        ssbFatores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex % factorsColors.size]), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         ssbFatores.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                     } else if (value.toInt() > 1) {
                         //Expoente superior a 1 // pair.getkey = fator; pair.getvalue = expoente
 
                         ssbFatores.append(key)
-                        ssbFatores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        ssbFatores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex % factorsColors.size]), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         ssbFatores.setSafeSpan(StyleSpan(Typeface.BOLD), ssbFatores.length - key.length, ssbFatores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                         valueLength = value.length
                         ssbFatores.append(value)
@@ -265,7 +264,7 @@ class FactorizationTask(
 
                     val fa = fatorI.toString() + "\n"
                     ssbDivisores.append(fa)
-                    ssbDivisores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbDivisores.length - fa.length, ssbDivisores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    ssbDivisores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex % factorsColors.size]), ssbDivisores.length - fa.length, ssbDivisores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 val fatorI2 = fatoresPrimos[sizeList - 1]
@@ -273,7 +272,7 @@ class FactorizationTask(
                     colorIndex++
                 }
                 ssbDivisores.append(fatorI2.toString())
-                ssbDivisores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex]), ssbDivisores.length - fatorI2.toString().length, ssbDivisores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                ssbDivisores.setSafeSpan(ForegroundColorSpan(factorsColors[colorIndex % factorsColors.size]), ssbDivisores.length - fatorI2.toString().length, ssbDivisores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssbDivisores.setSafeSpan(StyleSpan(Typeface.BOLD), 0, ssbDivisores.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
                 for (i in 0 until resultadosDivisao.size - 1) {

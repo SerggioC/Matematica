@@ -247,15 +247,16 @@
                         android:visibility="invisible"
                         tools:visibility="visible" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/calculateButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:background="@drawable/green_button_style"
                         android:text="@string/calculate"
-                        android:textAllCaps="false" />
+                        android:textAllCaps="false"
+                        app:backgroundTint="@color/greeButtonColor"
+                        app:elevation="8dp" />
 
                 </RelativeLayout>
             </LinearLayout>

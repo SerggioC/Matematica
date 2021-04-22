@@ -15,9 +15,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.android.billingclient.api.*
-import com.google.android.play.core.ktx.launchReview
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.android.play.core.review.testing.FakeReviewManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -242,12 +240,14 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
         request.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 // We got the ReviewInfo object
-                val reviewInfo = task.result
-                val flow = reviewManager.launchReviewFlow(requireActivity(), reviewInfo)
-                flow.addOnCompleteListener { listener ->
-                    // The flow has finished. The API does not indicate whether the user
-                    // reviewed or not, or even whether the review dialog was shown. Thus, no
-                    // matter the result, we continue our app flow.
+                activity?.let { act ->
+                    val reviewInfo = task.result
+                    val flow = reviewManager.launchReviewFlow(act, reviewInfo)
+                    flow.addOnCompleteListener { listener ->
+                        // The flow has finished. The API does not indicate whether the user
+                        // reviewed or not, or even whether the review dialog was shown. Thus, no
+                        // matter the result, we continue our app flow.
+                    }
                 }
             } else {
                 // There was some problem, log or handle the error code.
@@ -323,13 +323,13 @@ abstract class BaseFragment : Fragment(), SharedPreferences.OnSharedPreferenceCh
 
     @ColorRes
     fun getRandomFactorsColors(): List<Int> {
-        var privateFColors: MutableList<Int> = resources.getIntArray(R.array.f_colors_xml).toMutableList()
+        var fColors: MutableList<Int> = resources.getIntArray(R.array.f_colors_xml).toMutableList()
         if (shouldShowColors) {
-            privateFColors.shuffle() // randomizar as cores
+            fColors.shuffle() // randomizar as cores
         } else {
-            privateFColors = MutableList(privateFColors.size) { privateFColors.last() } // just a list with always the same color
+            fColors = MutableList(fColors.size) { fColors.last() } // just a list with always the same color
         }
-        return privateFColors
+        return fColors
     }
 
     override fun onCreateView(

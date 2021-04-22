@@ -182,7 +182,7 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="valor_maximo">Höchster Wert</string>
     <string name="valor_minimo">Niedrigster Wert</string>
     <string name="working">Arbeiten…</string>
-    <string name="zeroPrimorial">Zahlen> 0</string>
+    <string name="zeroPrimorial">Zahlen > 0</string>
     <string name="zero_no_divisores">Divisoren von Null sind alle natürlichen Zahlen größer als Null.</string>
 
     <string-array name="pref_list_titles">
@@ -231,4 +231,9 @@ Der Satz von Vielfachen einer Zahl ist unendlich, weil die Menge der natürliche
     <string name="result_is_favorite">Dieses Ergebnis wird in den Favoriten gespeichert!</string>
     <string name="give">Die App ist kostenlos, keine Werbung, nervt Sie nicht mit unsinniger Werbung, aber ich muss mir Zeit nehmen, um die App auf dem neuesten Stand zu halten, muss die Entwicklungskosten decken, wenn Sie möchten Um zur Entwicklung von Prime Number Tools PRO beizutragen, oder wenn ich der App eine weitere Funktion hinzufügen möchte, erwägen Sie eine Spende über PayPal und ich werde sie implementieren! In meinem Blog finden Sie Informationen, die mir helfen können. Vielen Dank! 😀 </string>
     <string name="favorite_star">Favorite star</string>
+    <string name="hide_fatorize">Faktorisierung ausblenden</string>
+    <string name="show_fatorize">Faktorisierung anzeigen</string>
+    <string name="remove_ads">Werbung entfernen</string>
+    <string name="info">Information</string>
+    <string name="calculating">Berechnen...</string>
 </resources>

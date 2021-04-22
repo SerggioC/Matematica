@@ -228,4 +228,9 @@
     <string name="result_is_favorite">¡Este resultado se guarda en favoritos!</string>
     <string name="give"> La aplicación es gratuita, sin anuncios, no te molestará con anuncios sin sentido, pero necesito tomarme mi tiempo para mantener la aplicación actualizada, necesito cubrir los costos de desarrollo, así que si lo deseas para contribuir al desarrollo de Prime Number Tools PRO, o me gustaría que agregara otra característica, funcionalidad a la aplicación, considere una donación a través de PayPal y la implementaré. Mira mi blog donde puedes encontrar la información que me ayude. ¡Gracias! 😀 </string>
     <string name="favorite_star">Favorite star</string>
+    <string name="hide_fatorize">Ocultar factorización</string>
+    <string name="show_fatorize">Mostrar factorización</string>
+    <string name="remove_ads">Quitar publicidad</string>
+    <string name="info">información</string>
+    <string name="calculating">Calculando...</string>
 </resources>

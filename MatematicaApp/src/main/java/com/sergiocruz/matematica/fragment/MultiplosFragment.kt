@@ -140,7 +140,9 @@ class MultiplosFragment : BaseFragment() {
         val layout = ItemResultMultiplosBinding.inflate(layoutInflater)
         with(layout) {
             // Create a generic swipe-to-dismiss touch listener.
-            root.setOnTouchListener(SwipeToDismissTouchListener(root, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
+            activity?.let{ act ->
+                root.setOnTouchListener(SwipeToDismissTouchListener(root, act, withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
+            }
             val text = if (shouldFormatNumbers) {
                 getString(R.string.multiplosde) + " " + number.formatForLocale() + "=\n" + multiplos
             } else {

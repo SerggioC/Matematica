@@ -52,39 +52,21 @@ class SendMailActivity : AppCompatActivity() {
 
     private fun sendMeMail() {
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.type = "text/plain"
-        intent.data = Uri.parse(getString(R.string.app_email)) // only email apps should handle this
-        intent.putExtra(
-            Intent.EXTRA_SUBJECT, application.resources.getString(R.string.app_long_description) +
-                    BuildConfig.VERSION_NAME + "e-mail"
-        )
-        val mailText = mail_text.text?.toString() ?: ""
-        intent.putExtra(Intent.EXTRA_TEXT, mailText)
+        intent.apply {
+            type = "text/plain"
+            data = Uri.parse("mailto:" + getString(R.string.app_email)) // only email apps should handle this
+            putExtra(
+                    Intent.EXTRA_SUBJECT, application.resources.getString(R.string.app_long_description) +
+                    BuildConfig.VERSION_NAME + " e-mail"
+            )
+            val mailText = mail_text.text?.toString() ?: ""
+            putExtra(Intent.EXTRA_TEXT, mailText)
+        }
         if (intent.resolveActivity(packageManager) != null) {
-            displayDialogBox(intent)
+            startActivity(intent)
         } else {
             showCustomToast(this, getString(R.string.has_email), InfoLevel.ERROR)
         }
-    }
-
-
-    private fun displayDialogBox(intent: Intent) {
-        val alertDialogBuilder = AlertDialog.Builder(this)
-
-        // set title
-        //alertDialogBuilder.setTitle("Enviar email?");
-
-        // set dialog message
-        alertDialogBuilder
-            .setMessage(R.string.send_it)
-            .setCancelable(true)
-            .setPositiveButton(R.string.sim) { dialog, _ ->
-                startActivity(intent)
-                dialog.cancel()
-            }
-            .setNegativeButton(R.string.nao) { dialog, id -> dialog.cancel() }
-        val alertDialog = alertDialogBuilder.create()        // create alert dialog
-        alertDialog.show()                                           // show it
     }
 
 }

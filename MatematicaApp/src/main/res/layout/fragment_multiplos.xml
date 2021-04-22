@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -68,7 +69,7 @@
                             android:maxLines="1"
                             android:textAlignment="center" />
 
-                        <Button
+                        <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/clearButton"
                             android:layout_width="27dp"
                             android:layout_height="27dp"
@@ -111,16 +112,16 @@
                             </Spinner>
                         </LinearLayout>
 
-                        <Button
+                        <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/buttonCalcMultiplos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_centerInParent="true"
-                            android:background="@drawable/green_button_style"
-                            android:elevation="4dp"
                             android:text="@string/calculate"
-                            android:textAllCaps="false" />
+                            android:textAllCaps="false"
+                            app:backgroundTint="@color/greeButtonColor"
+                            app:elevation="8dp" />
 
                     </RelativeLayout>
 

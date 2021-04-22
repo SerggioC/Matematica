@@ -381,7 +381,7 @@ abstract class MDAbstractFragment : BaseFragment() {
                                 fColors = fColors,
                                 updateProgress = { percent: List<Float> ->
                                     if (isVisible.not()) return@getExplanationTask
-                                    val color = fColors[percent[1].toInt()]
+                                    val color = fColors[percent[1].toInt() % fColors.size]
                                     progressBar.setBackgroundColor(color)
                                     val value0 = percent[0].coerceIn(0.0f, 1.0f)
                                     progressParams.width = (value0 * explain.root.width).roundToInt()

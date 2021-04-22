@@ -63,7 +63,7 @@
                         android:maxLines="1"
                         android:textAlignment="center" />
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/clearButton"
                         android:layout_width="27dp"
                         android:layout_height="27dp"
@@ -77,15 +77,15 @@
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true">
 
-                    <Button
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/calculateButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:background="@drawable/green_button_style"
-                        android:elevation="4dp"
                         android:text="@string/calculate"
-                        android:textAllCaps="false" />
+                        android:textAllCaps="false"
+                        app:backgroundTint="@color/greeButtonColor"
+                        app:elevation="8dp" />
 
                     <ImageView
                         android:id="@+id/cancelButton"

@@ -110,16 +110,16 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/createTableBtn"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:background="@drawable/green_button_style"
             android:text="@string/gerar"
             android:textAllCaps="false"
+            app:backgroundTint="@color/greeButtonColor"
+            app:elevation="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/calcMode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/switchPrimos" />
@@ -151,7 +151,7 @@
             app:layout_constraintTop_toBottomOf="@+id/switchPrimos"
             tools:text="Probabilistic Mode" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchPrimos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

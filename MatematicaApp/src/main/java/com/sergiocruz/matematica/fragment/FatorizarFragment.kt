@@ -1,5 +1,6 @@
 package com.sergiocruz.matematica.fragment
 
+import android.app.Activity
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
@@ -82,19 +83,21 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask {
         super.onCreate(savedInstanceState)
         allFavoritesCallback = { list: List<HistoryDataClass>? ->
             list?.forEach { fav ->
-                startTime = System.nanoTime()
-                val data = gson.fromJson(fav.content, FactorizationData::class.java) ?: return@forEach
-                val cardView = FactorizationTask.createCardViewLayout(
-                        data = data,
-                        isFavorite = true,
-                        showPerformance = shouldShowPerformance,
-                        explanations = explanations,
-                        operationName = operationName,
-                        startTime = startTime,
-                        context = requireActivity(),
-                )
-                getHistoryLayout()?.limit(historyLimit)
-                getHistoryLayout()?.addView(cardView, 0)
+                activity?.let { act ->
+                    startTime = System.nanoTime()
+                    val data = gson.fromJson(fav.content, FactorizationData::class.java) ?: return@forEach
+                    val cardView = FactorizationTask.createCardViewLayout(
+                            data = data,
+                            isFavorite = true,
+                            showPerformance = shouldShowPerformance,
+                            explanations = explanations,
+                            operationName = operationName,
+                            startTime = startTime,
+                            context = act,
+                    )
+                    getHistoryLayout()?.limit(historyLimit)
+                    getHistoryLayout()?.addView(cardView, 0)
+                }
             }
         }
     }
@@ -140,17 +143,19 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask {
                 }
                 withContext(Dispatchers.Main) {
                     if (result != null) {
-                        val cardView = FactorizationTask.createCardViewLayout(
-                                data = fd,
-                                isFavorite = isFavorite,
-                                showPerformance = shouldShowPerformance,
-                                explanations = explanations,
-                                operationName = operationName,
-                                startTime = startTime,
-                                context = requireActivity(),
-                        )
-                        getHistoryLayout()?.limit(historyLimit)
-                        getHistoryLayout()?.addView(cardView, 0)
+                        activity?.let { act ->
+                            val cardView = FactorizationTask.createCardViewLayout(
+                                    data = fd,
+                                    isFavorite = isFavorite,
+                                    showPerformance = shouldShowPerformance,
+                                    explanations = explanations,
+                                    operationName = operationName,
+                                    startTime = startTime,
+                                    context = act,
+                            )
+                            getHistoryLayout()?.limit(historyLimit)
+                            getHistoryLayout()?.addView(cardView, 0)
+                        }
                         isCalculating = false
                     } else {
                         bgOperation = FactorizationTask(
@@ -162,17 +167,19 @@ class FatorizarFragment : BaseFragment(), OnCancelBackgroundTask {
                                     progressBar.layoutParams = progressParams
                                 },
                                 onFinished = { fd: FactorizationData ->
-                                    val cardView = FactorizationTask.createCardViewLayout(
-                                            data = fd,
-                                            isFavorite = isFavorite,
-                                            showPerformance = shouldShowPerformance,
-                                            explanations = explanations,
-                                            operationName = operationName,
-                                            startTime = startTime,
-                                            context = requireActivity(),
-                                    )
-                                    getHistoryLayout()?.limit(historyLimit)
-                                    getHistoryLayout()?.addView(cardView, 0)
+                                    activity?.let { act ->
+                                        val cardView = FactorizationTask.createCardViewLayout(
+                                                data = fd,
+                                                isFavorite = isFavorite,
+                                                showPerformance = shouldShowPerformance,
+                                                explanations = explanations,
+                                                operationName = operationName,
+                                                startTime = startTime,
+                                                context = act,
+                                        )
+                                        getHistoryLayout()?.limit(historyLimit)
+                                        getHistoryLayout()?.addView(cardView, 0)
+                                    }
                                     val data = gson.toJson(fd, FactorizationData::class.java)
                                     saveCardToDatabase(fd.numberToFatorize.toString(), data, operationName)
                                     isCalculating = false

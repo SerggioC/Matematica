@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,8 +22,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="@dimen/left_right_layout_margin"
-                android:layout_marginRight="@dimen/left_right_layout_margin"
                 android:layout_marginTop="4dp"
+                android:layout_marginRight="@dimen/left_right_layout_margin"
                 card_view:cardBackgroundColor="@color/bgCardColor"
                 card_view:cardCornerRadius="4dp">
 
@@ -35,10 +36,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingBottom="4dp"
                     android:paddingLeft="@dimen/left_right_layout_margin"
+                    android:paddingTop="4dp"
                     android:paddingRight="@dimen/left_right_layout_margin"
-                    android:paddingTop="4dp">
+                    android:paddingBottom="4dp">
 
                     <TextView
                         android:id="@+id/titleTextView"
@@ -72,10 +73,10 @@
                                 android:layout_gravity="center"
                                 android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
+                                android:imeOptions="flagNavigateNext"
                                 android:inputType="number"
                                 android:maxLines="1"
                                 android:textAlignment="center"
-                                android:imeOptions="flagNavigateNext"
                                 android:textSize="@dimen/edittextsize" />
 
                         </FrameLayout>
@@ -94,10 +95,10 @@
                                 android:layout_marginLeft="@dimen/edittext_margin_left"
                                 android:background="@drawable/edittext_statelist"
                                 android:gravity="center"
+                                android:imeOptions="actionDone"
                                 android:inputType="number"
                                 android:maxLines="1"
                                 android:textAlignment="center"
-                                android:imeOptions="actionDone"
                                 android:textSize="@dimen/edittextsize" />
 
                         </FrameLayout>
@@ -111,8 +112,8 @@
                         android:animateLayoutChanges="true"
                         android:baselineAligned="false"
                         android:orientation="horizontal"
-                        android:paddingBottom="4dp"
                         android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:visibility="gone">
 
                         <FrameLayout
@@ -281,15 +282,16 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal">
 
-                        <Button
+                        <androidx.appcompat.widget.AppCompatButton
                             android:id="@+id/calculateButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
-                            android:background="@drawable/green_button_style"
                             android:text="@string/calculate"
-                            android:textAllCaps="false" />
+                            android:textAllCaps="false"
+                            app:backgroundTint="@color/greeButtonColor"
+                            app:elevation="8dp" />
 
                         <ImageButton
                             android:id="@+id/button_add_mdc"
@@ -307,8 +309,8 @@
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@id/button_add_mdc"
                             android:background="@drawable/less_one"
-                            android:visibility="invisible"
-                            android:contentDescription="" />
+                            android:contentDescription=""
+                            android:visibility="invisible" />
 
                     </RelativeLayout>
 
@@ -320,10 +322,10 @@
                 android:id="@+id/history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="8dp"
                 android:animateLayoutChanges="true"
                 android:orientation="vertical" />
 

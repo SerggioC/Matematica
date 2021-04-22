@@ -20,8 +20,8 @@ android {
         applicationId = "com.sergiocruz.MatematicaPro"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 34
-        versionName "4.6.0"
+        versionCode 36
+        versionName "4.6.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -111,7 +111,7 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.6")
 
-    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation platform('com.google.firebase:firebase-bom:27.0.0')
     implementation("com.google.firebase:firebase-analytics-ktx")        // Recommended: Firebase SDK for Google Analytics.
     implementation("com.google.firebase:firebase-crashlytics")          // Firebase Crashlytics SDK.
 

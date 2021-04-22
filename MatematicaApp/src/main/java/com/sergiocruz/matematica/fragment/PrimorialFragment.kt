@@ -157,7 +157,9 @@ class PrimorialFragment : BaseFragment(), OnCancelBackgroundTask {
                 ssb.setSafeSpan(ForegroundColorSpan(Color.RED), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 ssb.setSafeSpan(RelativeSizeSpan(0.8f), ssb.length - incomplete.length, ssb.length, SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            root.setOnTouchListener(SwipeToDismissTouchListener(root, requireActivity(), withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
+            activity?.let {
+                root.setOnTouchListener(SwipeToDismissTouchListener(root, it, withExplanations = false, inputTags = InputTags(number.toString(), operationName)))
+            }
             if (limitHistory) {
                 getHistoryLayout()?.limit(historyLimit)
             }

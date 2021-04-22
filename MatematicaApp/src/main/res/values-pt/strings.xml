@@ -247,4 +247,7 @@ Nesse sentido, o conjunto dos números formados pelos divisores de um número na
     <string name="favorite_star">Favorite star</string>
     <string name="remove_ads">Remover publicidade</string>
     <string name="info">Informação</string>
+    <string name="show_fatorize">Mostrar fatorização</string>
+    <string name="hide_fatorize">Ocultar fatorização</string>
+    <string name="calculating">A calcular…</string>
 </resources>
