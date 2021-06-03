@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sergiocruz.matematica.R
 import com.sergiocruz.matematica.database.HistoryDataClass
 import com.sergiocruz.matematica.database.LocalDatabase
@@ -459,12 +460,16 @@ abstract class MDAbstractFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         var hasCanceled = false
-        asyncTaskMap.forEach { (key, task) ->
-            if (task?.status == AsyncTask.Status.RUNNING) {
-                task.cancel(true)
-                asyncTaskMap.remove(key)
-                hasCanceled = true
+        try {
+            asyncTaskMap.forEach { (key, task) ->
+                if (task?.status == AsyncTask.Status.RUNNING) {
+                    task.cancel(true)
+                    asyncTaskMap.remove(key)
+                    hasCanceled = true
+                }
             }
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
 
         if (hasCanceled) {

@@ -93,7 +93,7 @@ class MDCExplanationTask(
                     ssbFatores.setSafeSpan(RelativeSizeSpan(0.9f), ssbFatores.length - valueLength, ssbFatores.length, SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
-                if (index in 1 until (dataCount - 1)) {
+                if (index in 0 until (dataCount - 1)) {
                     ssbFatores.append("×")
                 }
             }

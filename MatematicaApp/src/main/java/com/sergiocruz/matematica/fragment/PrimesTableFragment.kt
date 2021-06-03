@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import java.text.DecimalFormat
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /*****
@@ -451,7 +452,7 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask {
         val numMaxLength = maxValue.toString().length
         val scale = resources.displayMetrics.density
         val numLength = numMaxLength * (18 * scale + 0.5f).toInt() + 8
-        return (width / numLength).toFloat().roundToInt()
+        return max((width / numLength).toFloat().roundToInt(), 1)
     }
 
     override fun onDestroy() {
@@ -601,9 +602,11 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask {
                 showPerformance(startTime)
                 resetButtons()
             } else if (parcial?.primesTable?.isEmpty() == true) {
-                showCustomToast(context, getString(R.string.canceled_noprimes))
-                historyGridRecyclerView.adapter = null
-                resetButtons()
+                context?.let { ctx ->
+                    showCustomToast(ctx, ctx.getString(R.string.canceled_noprimes))
+                    historyGridRecyclerView.adapter = null
+                    resetButtons()
+                }
             }
             if (parcial != null) {
                 tableData = parcial
@@ -615,30 +618,32 @@ class PrimesTableFragment : BaseFragment(), OnCancelBackgroundTask {
     private fun showPerformance(startTime: Long) {
         if (shouldShowPerformance) {
             ConstraintSet().apply {
-                clone(cardViewMain)
-                connect(
+                cardViewMain?.let {
+                    clone(it)
+                    connect(
                         R.id.performanceTextView,
                         ConstraintSet.TOP,
                         R.id.numPrimesTextView,
                         ConstraintSet.TOP,
                         0
-                )
-                connect(
+                    )
+                    connect(
                         R.id.performanceTextView,
                         ConstraintSet.BOTTOM,
                         R.id.numPrimesTextView,
                         ConstraintSet.BOTTOM,
                         0
-                )
-                setVisibility(R.id.performanceTextView, VISIBLE)
-                applyTo(cardViewMain)
+                    )
+                    setVisibility(R.id.performanceTextView, VISIBLE)
+                    applyTo(it)
+                }
             }
 
             val elapsed =
                     " " + DecimalFormat("#.###").format((System.currentTimeMillis() - startTime) / 1000.0) + "s"
-            performanceTextView.text = "${getString(R.string.performance)} $elapsed"
+            performanceTextView?.text = "${getString(R.string.performance)} $elapsed"
         } else {
-            performanceTextView.visibility = GONE
+            performanceTextView?.visibility = GONE
         }
     }
 
